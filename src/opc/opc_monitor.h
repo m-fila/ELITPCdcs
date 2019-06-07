@@ -2,7 +2,7 @@
 #define OPC_MONITOR_H
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
-#include <map>
+
 #include "../ConnectionParameters.h"
 class opc_monitor
 {

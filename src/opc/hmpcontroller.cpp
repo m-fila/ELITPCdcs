@@ -1,5 +1,5 @@
 #include "hmpcontroller.h"
-#include "nodemap.h"
+//#include "nodemap.h"
 #include <cstring>
 
 HMPController::HMPController(std::string name)
@@ -17,8 +17,8 @@ HMPController::HMPController(std::string name)
     MeasurementsVariableName=new char[measurementsname.length() + 1];
     std::strcpy(MeasurementsVariableName,measurementsname.c_str());
 
-    NodeMap::Nodes.insert(std::pair<string,opc_monitor*>(measurementsname,this));
-    NodeMap::Nodes.insert(std::pair<string,opc_monitor*>(name,this));
+    //NodeMap::Nodes.insert(std::pair<string,opc_monitor*>(measurementsname,this));
+  //  NodeMap::Nodes.insert(std::pair<string,opc_monitor*>(name,this));
 
 }
 HMPController::~HMPController(){
@@ -54,8 +54,9 @@ UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
-    std::string NodeName=reinterpret_cast<char*>(objectId->identifier.string.data);
-    HMPController* Monitor=dynamic_cast<HMPController*>(NodeMap::Nodes[NodeName]);
+    //std::string NodeName=reinterpret_cast<char*>(objectId->identifier.string.data);
+    //HMPController* Monitor=dynamic_cast<HMPController*>(NodeMap::Nodes[NodeName]);
+    HMPController* Monitor=static_cast<HMPController*>(methodContext);
     UA_Boolean state = *(UA_Boolean*)input->data;
     Monitor->device->setOutputGen(state);
     return UA_STATUSCODE_GOOD;
@@ -80,7 +81,7 @@ void HMPController::addSetOutputMethod(UA_Server *server) {
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             UA_QUALIFIEDNAME(1, "setoutput"),
                             helloAttr, &SetOutputCallback,
-                            1,&inputArgument, 0, nullptr,nullptr, nullptr);
+                            1,&inputArgument, 0, nullptr,this, nullptr);
 }
 
 UA_StatusCode HMPController::SetChannelCallback(UA_Server *server,
@@ -90,8 +91,9 @@ UA_StatusCode HMPController::SetChannelCallback(UA_Server *server,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
-    std::string NodeName=reinterpret_cast<char*>(objectId->identifier.string.data);
-    HMPController* Monitor=dynamic_cast<HMPController*>(NodeMap::Nodes[NodeName]);
+   // std::string NodeName=reinterpret_cast<char*>(objectId->identifier.string.data);
+   // HMPController* Monitor=dynamic_cast<HMPController*>(NodeMap::Nodes[NodeName]);
+    HMPController* Monitor=static_cast<HMPController*>(methodContext);
     UA_Int16 channel = *(UA_Int16*)input[0].data;
     UA_Boolean state = *(UA_Boolean*)input[1].data;
     Monitor->device->setOutputSel(channel,state);
@@ -122,7 +124,7 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             UA_QUALIFIEDNAME(1, "setchannel"),
                             helloAttr, &SetChannelCallback,
-                            2,inputArguments, 0, nullptr,nullptr, nullptr);
+                            2,inputArguments, 0, nullptr,this, nullptr);
 }
 
 

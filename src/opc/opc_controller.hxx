@@ -17,13 +17,13 @@ void opc_template_controller<T,D>::addVariable(UA_Server *server,T variable){
     vattr.displayName = UA_LOCALIZEDTEXT(language, MeasurementsVariableName);
     vattr.dataType = VariableType.typeId;
     vattr.valueRank = UA_VALUERANK_SCALAR;
-    UA_Variant_setScalar(&vattr.value, &variable, &VariableType);
+    //UA_Variant_setScalar(&vattr.value, &variable, &VariableType);
 
     UA_Server_addVariableNode(server, UA_NODEID_STRING(1, MeasurementsVariableName),
                               objectId,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                               UA_QUALIFIEDNAME(1, MeasurementsVariableName),
-                              VariableType.typeId, vattr, nullptr, nullptr);
+                              VariableType.typeId, vattr, this, nullptr);
 
     UA_VariableAttributes statusAttr = UA_VariableAttributes_default;
     UA_Boolean status = false;
@@ -41,7 +41,7 @@ void opc_template_controller<T,D>::addVariable(UA_Server *server,T variable){
 template <class T,class D>
 void opc_template_controller<T,D>::updateVariable(UA_Server *server){
     if(isConnected()){
-        T now =this->getMeasurements();
+       auto now =this->getMeasurements();
         UA_Variant value;
         UA_Variant_setScalar(&value, &now, &VariableType);
         UA_NodeId NodeId = UA_NODEID_STRING(1, MeasurementsVariableName);

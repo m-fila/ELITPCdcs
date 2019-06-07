@@ -13,7 +13,6 @@ public:
     HMPController(std::string name);
     ~HMPController();
     void addVariable(UA_Server *server){opc_template_controller::addVariable(server,new_HMPMeasurements());}
-    //bool isConnected();
     HMPMeasurements getMeasurements();
     //HMP specific methods:
     static UA_StatusCode SetOutputCallback(UA_Server *server,
