@@ -6,7 +6,6 @@
 #include <string>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
-
 typedef struct{
     UA_Boolean CH1;
     UA_Boolean CH2;
@@ -53,7 +52,7 @@ static UA_DataTypeMember HMP_members[7] = {
         },
         {
                 UA_TYPENAME("CH2_current")
-                UA_TYPES_STRING, HMP_padding_CH2_current, true, false  
+                UA_TYPES_STRING, HMP_padding_CH2_current, true, false
         }
 };
 
@@ -82,87 +81,56 @@ static HMPMeasurements new_HMPMeasurements(bool ch1, bool ch2, bool output,
     hmp.CH1 = ch1;
     hmp.CH2 = ch2;
     hmp.Output = output;
+
+  //  hmp.CH1_voltage = std::stod(ch1_v);
+  //  hmp.CH2_voltage = std::stod(ch2_v);
+  //  hmp.CH1_current = std::stod(ch1_c);
+  //  hmp.CH2_current = std::stod(ch2_c);
+
     /*
-    hmp.CH1_voltage = UA_STRING(ch1_v);
-    hmp.CH2_voltage = UA_STRING(ch2_v);
-    hmp.CH1_current = UA_STRING(ch1_c);
-    hmp.CH2_current = UA_STRING(ch2_c);
-    */
-    char * writable1 = new char[ch1_v.size() + 1];
+    hmp.CH1_voltage = UA_String_fromChars(ch1_v.c_str());
+    hmp.CH2_voltage = UA_String_fromChars(ch2_v.c_str());
+    hmp.CH1_current = UA_String_fromChars(ch1_c.c_str());
+    hmp.CH2_current = UA_String_fromChars(ch2_c.c_str());
+*/
+    char * writable1 = (char*)malloc(ch1_v.length()+1);
     std::copy(ch1_v.begin(), ch1_v.end(), writable1);
-    writable1[ch1_v.size()] = '\0';
-    char * writable2 = new char[ch2_v.size() + 1];
+   writable1[ch1_v.size()] = '\0';
+    char * writable2 = (char*)malloc(ch2_v.length()+1);
     std::copy(ch2_v.begin(), ch2_v.end(), writable2);
     writable2[ch2_v.size()] = '\0';
-    char * writable3 = new char[ch1_c.size() + 1];
+    char * writable3 = (char*)malloc(ch1_c.length()+1);
     std::copy(ch1_c.begin(), ch1_c.end(), writable3);
     writable3[ch1_c.size()] = '\0';
-    char * writable4 = new char[ch2_c.size() + 1];
+    char * writable4 = (char*)malloc(ch2_c.length()+1);
     std::copy(ch2_c.begin(), ch2_c.end(), writable4);
     writable4[ch2_c.size()] = '\0';
-    hmp.CH1_voltage = UA_STRING(writable1);
+
+    /*
+    char* writable1 = strcpy((char*)malloc(ch1_v.length()+1), ch1_v.c_str());
+    char* writable2 = strcpy((char*)malloc(ch2_v.length()+1), ch2_v.c_str());
+    char* writable3 = strcpy((char*)malloc(ch1_c.length()+1), ch1_c.c_str());
+    char* writable4 = strcpy((char*)malloc(ch2_c.length()+1), ch2_c.c_str());
+*/
+
+
+     hmp.CH1_voltage = UA_STRING(writable1);
     hmp.CH2_voltage = UA_STRING(writable2);
     hmp.CH1_current = UA_STRING(writable3);
     hmp.CH2_current = UA_STRING(writable4);
 
     return hmp;}
+static void delete_HMPMeasurementes(HMPMeasurements* hmp){
+   UA_String_deleteMembers(&(hmp->CH1_voltage));
+    UA_String_deleteMembers(&(hmp->CH2_voltage));
+    UA_String_deleteMembers(&(hmp->CH1_current));
+    UA_String_deleteMembers(&(hmp->CH2_current));
+}
 
 static HMPMeasurements new_HMPMeasurements(){
     //char* zero=const_cast<char*>("12");
     std::string zero="12";
     HMPMeasurements hmp=new_HMPMeasurements(true,false,false,zero,zero,zero,zero);
 return hmp;}
-
-static void addHMPMeasurementsDataType(UA_Server *server, UA_ServerConfig *config) {
-        UA_DataType *types = static_cast<UA_DataType*> (UA_malloc(sizeof(UA_DataType)));
-        UA_DataTypeMember *members = static_cast<UA_DataTypeMember*>(UA_malloc(sizeof(UA_DataTypeMember) * 7));
-        for(int i=0; i!=7;i++){
-        members[i] = HMP_members[i];}
-        types[0] = HMPType;
-        types[0].members = members;
-
-        UA_DataTypeArray customDataTypes = {config->customDataTypes, 1, types};
-        config->customDataTypes = &customDataTypes;
-
-
-        char* language=const_cast<char*>("en-Us");
-        char* hmpname=const_cast<char*>("HMPMeasurements");
-        UA_VariableTypeAttributes dattr = UA_VariableTypeAttributes_default;
-        dattr.description = UA_LOCALIZEDTEXT(language, hmpname);
-        dattr.displayName = UA_LOCALIZEDTEXT(language, hmpname);
-        dattr.dataType = HMPType.typeId;
-        dattr.valueRank = UA_VALUERANK_SCALAR;
-        HMPMeasurements hmp=new_HMPMeasurements();
-        UA_Variant_setScalar(&dattr.value, &hmp, &HMPType);
-
-        UA_Server_addVariableTypeNode(server, HMPType.typeId,
-                                      UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                      UA_NODEID_NUMERIC(0, UA_NS0ID_HASSUBTYPE),
-                                      UA_QUALIFIEDNAME(1, const_cast<char*>("HMPMeasurements")),
-                                      UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                      dattr, nullptr, nullptr);
-    }
-
-/*
-static char* HMPVariableName=const_cast<char*>("HMP.variable");
-static void addHMPMeasurementsVariable(UA_Server *server) {
-        HMPMeasurements hmp=new_HMPMeasurements();
-        UA_VariableAttributes vattr = UA_VariableAttributes_default;
-        char* language=const_cast<char*>("en-Us");
-        char* variablename=const_cast<char*>("HMPvariable");
-        vattr.description = UA_LOCALIZEDTEXT(language, variablename);
-        vattr.displayName = UA_LOCALIZEDTEXT(language, variablename);
-        vattr.dataType = HMPType.typeId;
-        vattr.valueRank = UA_VALUERANK_SCALAR;
-        UA_Variant_setScalar(&vattr.value, &hmp, &HMPType);
-
-        UA_Server_addVariableNode(server, UA_NODEID_STRING(1, HMPVariableName),
-                                  UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
-                                  UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
-                                  UA_QUALIFIEDNAME(1, HMPVariableName),
-                                  HMPType.typeId, vattr, nullptr, nullptr);
-    }
-*/
-
 
 #endif // HMPMeasurementsCONTAINERS_H

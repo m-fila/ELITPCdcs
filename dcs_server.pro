@@ -2,7 +2,7 @@ TEMPLATE = app
 CONFIG += console c++11
 
 QMAKE_CXXFLAGS += -Wall -Wno-unused
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -ggdb3
 CONFIG -= app_bundle
 CONFIG -= qt
 LIBS += /usr/local/lib/libopen62541.a

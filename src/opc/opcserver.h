@@ -2,6 +2,7 @@
 #define OPCSERVER_H
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
+#include <open62541/server_config_default.h>
 #include <signal.h>
 
 class opcserver
@@ -14,7 +15,7 @@ public:
     int run();
 
 private:    
-    void addTypesandVariables();
+
     static UA_Boolean running;
     static void stopHandler(int sig) {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");

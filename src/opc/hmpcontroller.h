@@ -12,8 +12,9 @@ class HMPController :public opc_template_controller<HMPMeasurements,HMP2020>
 public:
     HMPController(std::string name);
     ~HMPController();
-    void addVariable(UA_Server *server){opc_template_controller::addVariable(server,new_HMPMeasurements());}
-    HMPMeasurements getMeasurements();
+//    void addVariable(UA_Server *server){opc_template_controller::addVariable(server,new_HMPMeasurements());}
+
+
     //HMP specific methods:
     static UA_StatusCode SetOutputCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
@@ -29,6 +30,11 @@ public:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     void addSetChannelMethod(UA_Server *server);
+    void addCustomDataType(UA_Server *server, UA_ServerConfig *config);
+private:
+    void clearTemporaryVariable(HMPMeasurements now) {delete_HMPMeasurementes(&now);}
+    HMPMeasurements getMeasurements();
+    HMPMeasurements getSettings();
 
 };
 

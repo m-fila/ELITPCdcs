@@ -2,7 +2,11 @@
 //#include <open62541/plugin/log_stdout.h>
 //#include <open62541/server.h>
 //#include <open62541/server_config_default.h>
-#include "HMPDataType.h"
+
+
+
+
+
 opcserver::opcserver()
 {
     server=UA_Server_new();
@@ -10,19 +14,15 @@ opcserver::opcserver()
     //UA_ServerConfig_setDefault(config);
     UA_ServerConfig_setMinimal(config, 6666, nullptr);
     const UA_String hostname= UA_STRING(const_cast<char*>("127.0.0.1"));
-    UA_ServerConfig_setCustomHostname(config,
-    hostname);
-    addTypesandVariables();
+    UA_ServerConfig_setCustomHostname(config,hostname);
+
     //UA_Server_addRepeatedCallback(server, Scan, nullptr, 100, NULL);
 
 }
 opcserver::~opcserver(){
-    config->customHostname = UA_STRING_NULL;
+   // config->customHostname = UA_STRING_NULL;
+  //  UA_ServerConfig_clean(config);
     UA_Server_delete(server);
-}
-
-void opcserver::addTypesandVariables(){
-    addHMPMeasurementsDataType(server, config);
 }
 
 void opcserver::Scan(UA_Server* server, void *data){

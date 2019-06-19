@@ -1,6 +1,6 @@
 #include "GenericDevice.h"
 
-GenericDevice::GenericDevice()
+GenericDevice::GenericDevice(): connected(false)
 {
 
 }
