@@ -12,7 +12,7 @@ class HMPController :public opc_template_controller<HMPMeasurements,HMP2020>
 public:
     HMPController(std::string name);
     ~HMPController();
-//    void addVariable(UA_Server *server){opc_template_controller::addVariable(server,new_HMPMeasurements());}
+
 
 
     //HMP specific methods:
@@ -32,7 +32,6 @@ public:
     void addSetChannelMethod(UA_Server *server);
     void addCustomDataType(UA_Server *server, UA_ServerConfig *config);
 private:
-    void clearTemporaryVariable(HMPMeasurements now) {delete_HMPMeasurementes(&now);}
     HMPMeasurements getMeasurements();
     HMPMeasurements getSettings();
 

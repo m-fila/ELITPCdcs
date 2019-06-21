@@ -4,27 +4,30 @@
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/client_subscriptions.h>
 #include "../ConnectionParameters.h"
-class opc_monitor
+#include "opc_object.h"
+class opc_monitor: public opc_object
 {
 public:
-    opc_monitor(){}
+
     opc_monitor(std::string name);
-    ~opc_monitor(){}
+    ~opc_monitor();
 
 
-    const std::string ObjectName;
-    UA_NodeId ObjectNodeId;
     const std::string MeasurementsVariableName;
-    const std::string SettingsVariableName;
+    const std::string ConfigurationVariableName;
     const std::string StatusVariableName;
 
     UA_DataType VariableType;
 
     void addObject(UA_Server *server);
-    void addMeasurementsVariable(UA_Server *server){addCustomTypeVariable(server,MeasurementsVariableName);}
-    void addSettingsVariable(UA_Server *server){addCustomTypeVariable(server,SettingsVariableName);}
-    void addCustomTypeVariable(UA_Server *server,std::string VariableName);
-    void addStatusVariable(UA_Server *server);
+    void addMeasurementsVariable(UA_Server *server){addVariable(server,MeasurementsVariableName,VariableType,VariableType.typeId);}
+    void addConfigurationVariable(UA_Server *server){addVariable(server,ConfigurationVariableName,VariableType,VariableType.typeId);}
+    void addStatusVariable(UA_Server *server){addVariable(server,StatusVariableName,UA_TYPES[UA_TYPES_BOOLEAN],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE) );}
+//    void addMeasurementsVariable(UA_Server *server){addCustomTypeVariable(server,MeasurementsVariableName);}
+//    void addConfigurationVariable(UA_Server *server){addCustomTypeVariable(server,ConfigurationVariableName);}
+
+//    void addCustomTypeVariable(UA_Server *server,std::string VariableName);
+
 
     virtual void disconnectDevice()=0;
     virtual void connectDevice(TCPConnectionParameters* parameters)=0;
@@ -37,7 +40,7 @@ public:
                        const UA_NodeId *sessionId, void *sessionContext,
                        const UA_NodeId *nodeid, void *nodeContext,
                        const UA_NumericRange *range, const UA_DataValue *data);
-    static void SettingsReadCallback(UA_Server *server,
+    static void ConfigurationReadCallback(UA_Server *server,
                        const UA_NodeId *sessionId, void *sessionContext,
                        const UA_NodeId *nodeid, void *nodeContext,
                        const UA_NumericRange *range, const UA_DataValue *data);
@@ -47,7 +50,7 @@ public:
                        const UA_NumericRange *range, const UA_DataValue *data);
 
     virtual void updateMeasurements(UA_Server *server)=0;
-    virtual void updateSettings(UA_Server *server)=0;
+    virtual void updateConfiguration(UA_Server *server)=0;
     virtual void updateStatus(UA_Server *server)=0;
      //generic device methods:
      void addDisconnectDeviceMethod(UA_Server *server);

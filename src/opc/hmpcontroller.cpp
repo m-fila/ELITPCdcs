@@ -176,7 +176,6 @@ void HMPController::addCustomDataType(UA_Server *server, UA_ServerConfig *config
                                       UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
                                       dattr, nullptr, nullptr);
         UA_QualifiedName_deleteMembers(&TypeQName);
-        delete_HMPMeasurementes(&hmp);
         UA_free(types);
         UA_free(members);
     }

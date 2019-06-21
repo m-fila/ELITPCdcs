@@ -1,15 +1,18 @@
 #include "opc_monitor.h"
 #include <iostream>
-opc_monitor::opc_monitor(std::string name):
-    ObjectName(name),
+opc_monitor::opc_monitor(std::string name): opc_object(name),
+//    ObjectName(name),
     MeasurementsVariableName(name+".Measurements"),
-    SettingsVariableName(name+".Settings"),
+    ConfigurationVariableName(name+".Configuration"),
     StatusVariableName(name+".Status")
-{ObjectNodeId=UA_NODEID_STRING_ALLOC(1,name.c_str());
+{//ObjectNodeId=UA_NODEID_STRING_ALLOC(1,name.c_str());
 }
+
+opc_monitor::~opc_monitor(){
+        UA_NodeId_deleteMembers(&ObjectNodeId);
+}
+
 void opc_monitor::addObject(UA_Server *server){
-   // char* language=const_cast<char*>("en-Us");
-   // UA_NodeId objectNodeId=UA_NODEID_STRING_ALLOC(1,ObjectName.c_str()); /* get the nodeid assigned by the server */
     UA_ObjectAttributes oAttr = UA_ObjectAttributes_default;
     UA_QualifiedName NodeQName=UA_QUALIFIEDNAME_ALLOC(1,ObjectName.c_str());
     oAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US", ObjectName.c_str());
@@ -21,6 +24,7 @@ void opc_monitor::addObject(UA_Server *server){
     UA_ObjectAttributes_deleteMembers(&oAttr);
     UA_QualifiedName_deleteMembers(&NodeQName);
 }
+/*
 void opc_monitor::addCustomTypeVariable(UA_Server *server, std::string VariableName){
 
     UA_VariableAttributes vattr = UA_VariableAttributes_default;
@@ -39,8 +43,9 @@ void opc_monitor::addCustomTypeVariable(UA_Server *server, std::string VariableN
     UA_NodeId_deleteMembers(&VariableNodeId);
     UA_QualifiedName_deleteMembers(&VariableQName);
 }
+*/
 
-void opc_monitor::addStatusVariable(UA_Server *server){
+/*void opc_monitor::addStatusVariable(UA_Server *server){
     UA_VariableAttributes statusAttr = UA_VariableAttributes_default;
     //UA_Boolean status = false;
     //UA_Variant_setScalar(&statusAttr.value, &status, &UA_TYPES[UA_TYPES_BOOLEAN]);
@@ -58,7 +63,7 @@ void opc_monitor::addStatusVariable(UA_Server *server){
     UA_NodeId_deleteMembers(&StatusNodeId);
     UA_QualifiedName_deleteMembers(&StatusQName);
 }
-
+*/
 
 
 
@@ -69,12 +74,12 @@ void opc_monitor::MeasurementsReadCallback(UA_Server *server,
         opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
         Monitor->updateMeasurements(server);
         }
-void opc_monitor::SettingsReadCallback(UA_Server *server,
+void opc_monitor::ConfigurationReadCallback(UA_Server *server,
                    const UA_NodeId *sessionId, void *sessionContext,
                    const UA_NodeId *nodeid, void *nodeContext,
                    const UA_NumericRange *range, const UA_DataValue *data){
         opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
-        Monitor->updateSettings(server);
+        Monitor->updateConfiguration(server);
         }
 void opc_monitor::StatusReadCallback(UA_Server *server,
                    const UA_NodeId *sessionId, void *sessionContext,

@@ -18,9 +18,11 @@ SOURCES += src/main.cpp \
     src/hw/TPG362.cpp \
     src/DeviceController.cpp \
  #   src/utl/lvpsucontroller.cpp \
-    src/opc/opcserver.cpp \
     src/opc/hmpcontroller.cpp \
-    src/opc/opc_monitor.cpp
+    src/opc/opc_monitor.cpp \
+    src/opc/opc_state.cpp \
+    src/opc/opc_object.cpp \
+    src/opc/opc_server.cpp
 
 
 
@@ -34,11 +36,13 @@ HEADERS  +=  src/ConnectionParameters.h \
     src/hw/TPG362.h \
     src/DeviceController.h \
  #   src/utl/lvpsucontroller.h \
-    src/opc/opcserver.h \
     src/opc/hmpcontroller.h \
     src/opc/HMPDataType.h \
     src/opc/opc_monitor.h \
     src/opc/opc_controller.h \
-    src/opc/opc_controller.hxx
+    src/opc/opc_controller.hxx \
+    src/opc/opc_state.h \
+    src/opc/opc_object.h \
+    src/opc/opc_server.h
 
 

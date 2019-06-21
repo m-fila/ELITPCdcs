@@ -1,18 +1,20 @@
-#ifndef OPCSERVER_H
-#define OPCSERVER_H
+#ifndef OPC_SERVER_H
+#define OPC_SERVER_H
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 #include <signal.h>
 
-class opcserver
+class opc_server
 {
 public:
-    opcserver();
-    ~opcserver();
+    opc_server();
+    ~opc_server();
     UA_Server* server;
     UA_ServerConfig * config;
+    int init();
     int run();
+
 
 private:    
 
@@ -24,4 +26,4 @@ private:
     static void Scan(UA_Server* server, void *data);
 };
 
-#endif // OPCSERVER_H
+#endif // OPC_SERVER_H

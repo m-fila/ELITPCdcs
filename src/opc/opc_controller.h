@@ -14,7 +14,7 @@ public:
 
     virtual void addCustomDataType(UA_Server *server, UA_ServerConfig *config)=0;
     void updateMeasurements(UA_Server *server);
-    void updateSettings(UA_Server *server);
+    void updateConfiguration(UA_Server *server);
     void updateStatus(UA_Server *server);
 
     // adding abstract device support
@@ -23,7 +23,6 @@ public:
     bool isConnected();
 
 private:
-    virtual void clearTemporaryVariable(T now)=0;
     virtual T getMeasurements()=0;
     virtual T getSettings()=0;
 };

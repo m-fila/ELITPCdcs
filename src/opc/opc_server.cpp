@@ -1,4 +1,4 @@
-#include "opcserver.h"
+#include "opc_server.h"
 //#include <open62541/plugin/log_stdout.h>
 //#include <open62541/server.h>
 //#include <open62541/server_config_default.h>
@@ -7,7 +7,7 @@
 
 
 
-opcserver::opcserver()
+opc_server::opc_server()
 {
     server=UA_Server_new();
     config=UA_Server_getConfig(server);
@@ -19,18 +19,16 @@ opcserver::opcserver()
     //UA_Server_addRepeatedCallback(server, Scan, nullptr, 100, NULL);
 
 }
-opcserver::~opcserver(){
-   // config->customHostname = UA_STRING_NULL;
-  //  UA_ServerConfig_clean(config);
+opc_server::~opc_server(){
     UA_Server_delete(server);
 }
 
-void opcserver::Scan(UA_Server* server, void *data){
+void opc_server::Scan(UA_Server* server, void *data){
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "YO!");}
 
-UA_Boolean opcserver::running = false;
+UA_Boolean opc_server::running = false;
 
-int opcserver::run(){
+int opc_server::run(){
     signal(SIGINT, stopHandler);
     signal(SIGTERM, stopHandler);
     running=true;
