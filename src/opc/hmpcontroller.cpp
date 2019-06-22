@@ -148,9 +148,11 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
 }
 
 void HMPController::addCustomDataType(UA_Server *server, UA_ServerConfig *config) {
+        int custom_size=HMPType.membersSize;
         UA_DataType *types = static_cast<UA_DataType*> (UA_malloc(sizeof(UA_DataType)));
-        UA_DataTypeMember *members = static_cast<UA_DataTypeMember*>(UA_malloc(sizeof(UA_DataTypeMember) * 7));
-        for(int i=0; i!=7;i++){
+        UA_DataTypeMember *members = static_cast<UA_DataTypeMember*>(UA_malloc(sizeof(UA_DataTypeMember) * custom_size));
+
+        for(int i=0; i!=custom_size;i++){
             members[i] = HMP_members[i];
         }
         types[0] = HMPType;

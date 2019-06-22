@@ -1,6 +1,8 @@
 #include "opc_state.h"
 #include <iostream>
-opc_state::opc_state(): opc_object("STATE"){}
+opc_state::opc_state(): opc_object("MachineState"),state(0){
+    VariableName=ObjectName+".State";
+}
 
 
 opc_state::~opc_state(){
@@ -9,7 +11,7 @@ opc_state::~opc_state(){
 
 void opc_state::init(UA_Server *server){
     addObject(server);
-    addVariable(server,"State",UA_TYPES[UA_TYPES_INT32],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE));
+    addVariable(server,VariableName.c_str(),UA_TYPES[UA_TYPES_INT32],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE));
     setState(server,MachineState::Idle);
     addSetStateMethod(server);
 }
@@ -17,7 +19,7 @@ void opc_state::init(UA_Server *server){
 void opc_state::setState(UA_Server *server, MachineState state){
     UA_Variant value;
     UA_Variant_setScalar(&value, &state, &UA_TYPES[UA_TYPES_INT32]);
-    UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, "State");
+    UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
     UA_Server_writeValue(server, NodeId, value);
     UA_NodeId_deleteMembers(&NodeId);
 }
@@ -30,10 +32,11 @@ UA_StatusCode opc_state::SetStateCallback(UA_Server *server,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
-    opc_state* Monitor=static_cast<opc_state*>(methodContext);
+    opc_state* AssociatedObj=static_cast<opc_state*>(methodContext);
 
     MachineState state = *(MachineState*)input->data;
-    Monitor->setState(server,state);
+    AssociatedObj->setState(server,state);
+    AssociatedObj->state=state;
 
 
     return UA_STATUSCODE_GOOD;

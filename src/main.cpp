@@ -42,12 +42,12 @@ int main(int argc, char *argv[])
 
     controller.addMonitoredItem(server.server, controller.MeasurementsVariableName);
     controller.addValueCallback(server.server,controller.MeasurementsVariableName ,controller.MeasurementsReadCallback);
-//    controller.addValueCallback(server.server,controller.ConfigurationVariableName ,controller.ConfiguarationReadCallback);
-//    controller.addValueCallback(server.server,controller.StatusVariableName ,controller.StatusReadCallback);
-//    controller.addDisconnectDeviceMethod(server.server);
-//      controller.addConnectDeviceMethod(server.server);
-//    controller.addSetOutputMethod(server.server);
-//    controller.addSetChannelMethod(server.server);
+    controller.addValueCallback(server.server,controller.ConfigurationVariableName ,controller.ConfigurationReadCallback);
+    controller.addValueCallback(server.server,controller.StatusVariableName ,controller.StatusReadCallback);
+    controller.addDisconnectDeviceMethod(server.server);
+    controller.addConnectDeviceMethod(server.server);
+    controller.addSetOutputMethod(server.server);
+    controller.addSetChannelMethod(server.server);
 
 
 
