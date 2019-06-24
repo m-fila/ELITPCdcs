@@ -14,6 +14,9 @@ public:
     virtual std::string translateValue()=0;
     virtual std::string translateName()=0;
     virtual void addSubsciption(){}
+    static void handler_ValueChanged(UA_Client *client, UA_UInt32 subId, void *subContext,
+                                     UA_UInt32 monId, void *monContext, UA_DataValue *value);
+    virtual void updateData(UA_DataValue *value)=0;
 };
 
 #endif // ABSTRACT_VARIABLE_H

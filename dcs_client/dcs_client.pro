@@ -12,14 +12,14 @@ INCLUDEPATH +=I/user/local/include
 
 SOURCES += \
         main.cpp \
-        src/db.cpp \
+    src/database.cpp \
         src/opc_client.cpp \
     src/abstract_variable.cpp \
     src/hmp_variable.cpp
 
 HEADERS += \
     src/HMPDataType.h \
-    src/db.h \
+    src/database.h \
     src/opc_client.h \
     src/abstract_variable.h \
     src/template_variable.h \

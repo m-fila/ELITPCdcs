@@ -8,3 +8,8 @@ abstract_variable::~abstract_variable(){
     UA_NodeId_deleteMembers(&VariableId);
 }
 
+void abstract_variable::handler_ValueChanged(UA_Client *client, UA_UInt32 subId, void *subContext,
+                                             UA_UInt32 monId, void *monContext, UA_DataValue *value){
+    abstract_variable *variable=static_cast<abstract_variable*>(monContext);
+    variable->updateData(value);
+}
