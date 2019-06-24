@@ -10,17 +10,16 @@ LIBS += -lsqlite3
 INCLUDEPATH +=I/user/local/include
 
 
-SOURCES += \
-        main.cpp \
+SOURCES += main.cpp \
     src/database.cpp \
-        src/opc_client.cpp \
+    src/opc_client.cpp \
     src/abstract_variable.cpp \
     src/hmp_variable.cpp
 
 HEADERS += \
-    src/HMPDataType.h \
-    src/database.h \
-    src/opc_client.h \
-    src/abstract_variable.h \
-    src/template_variable.h \
-    src/hmp_variable.h
+    include/HMPDataType.h \
+    include/database.h \
+    include/opc_client.h \
+    include/abstract_variable.h \
+    include/template_variable.h \
+    include/hmp_variable.h

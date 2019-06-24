@@ -1,18 +1,18 @@
-#include "src/utl/TCPConnector.h"
-#include "src/hw/HMP2020.h"
-#include "src/DeviceController.h"
-#include "src/ConnectionParameters.h"
+#include "include/utl/TCPConnector.h"
+#include "include/hw/HMP2020.h"
+#include "include/DeviceController.h"
+#include "include/ConnectionParameters.h"
 #include <sstream>
 #include <iostream>
 #include <time.h>
-#include "opc/opc_server.h"
+#include "include/opc/opc_server.h"
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
-#include "opc/HMPDataType.h"
-#include "opc/hmpcontroller.h"
-#include "opc/opc_state.h"
-//#include <string>
+#include "include/opc/HMPDataType.h"
+#include "include/opc/hmpcontroller.h"
+#include "include/opc/opc_state.h"
+
 
 int main(int argc, char *argv[])
 {

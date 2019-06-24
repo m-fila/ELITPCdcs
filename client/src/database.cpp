@@ -1,4 +1,4 @@
-#include "database.h"
+#include "../include/database.h"
 #include <stdio.h>
 database::~database(){
     sqlite3_free(err_msg);

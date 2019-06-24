@@ -3,9 +3,9 @@
 
 //#include <QThread>
 #include <memory>
-#include "src/utl/TCPStream.h"
-#include "src/ConnectionParameters.h"
-#include "src/utl/TCPConnector.h"
+#include "include/utl/TCPStream.h"
+#include "include/ConnectionParameters.h"
+#include "include/utl/TCPConnector.h"
 #include <iostream>
 
 class DeviceController //: public QThread

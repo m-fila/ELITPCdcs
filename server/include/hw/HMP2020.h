@@ -1,7 +1,7 @@
 #ifndef HMP2020_H
 #define HMP2020_H
 
-#include "src/utl/GenericDevice.h"
+#include "include/utl/GenericDevice.h"
 
 class HMP2020 : public GenericDevice
 {

@@ -8,7 +8,7 @@ CONFIG -= qt
 LIBS += /usr/local/lib/libopen62541.a
 INCLUDEPATH +=/user/local/include
 
-SOURCES += src/main.cpp \
+SOURCES += main.cpp \
     src/hw/HMP2020.cpp \
     src/utl/ConnectionStream.cpp \
     src/utl/TCPConnector.cpp \
@@ -17,7 +17,6 @@ SOURCES += src/main.cpp \
     src/hw/DT1415ET.cpp \
     src/hw/TPG362.cpp \
     src/DeviceController.cpp \
- #   src/utl/lvpsucontroller.cpp \
     src/opc/hmpcontroller.cpp \
     src/opc/opc_monitor.cpp \
     src/opc/opc_state.cpp \
@@ -26,23 +25,23 @@ SOURCES += src/main.cpp \
 
 
 
-HEADERS  +=  src/ConnectionParameters.h \
-    src/hw/HMP2020.h \
-    src/utl/TCPStream.h \
-    src/utl/TCPConnector.h \
-    src/utl/ConnectionStream.h \
-    src/utl/GenericDevice.h \
-    src/hw/DT1415ET.h \
-    src/hw/TPG362.h \
-    src/DeviceController.h \
- #   src/utl/lvpsucontroller.h \
-    src/opc/hmpcontroller.h \
-    src/opc/HMPDataType.h \
-    src/opc/opc_monitor.h \
-    src/opc/opc_controller.h \
-    src/opc/opc_controller.hxx \
-    src/opc/opc_state.h \
-    src/opc/opc_object.h \
-    src/opc/opc_server.h
+HEADERS  +=  \
+    include/ConnectionParameters.h \
+    include/hw/HMP2020.h \
+    include/utl/TCPStream.h \
+    include/utl/TCPConnector.h \
+    include/utl/ConnectionStream.h \
+    include/utl/GenericDevice.h \
+    include/hw/DT1415ET.h \
+    include/hw/TPG362.h \
+    include/DeviceController.h \
+    include/opc/hmpcontroller.h \
+    include/opc/HMPDataType.h \
+    include/opc/opc_monitor.h \
+    include/opc/opc_controller.h \
+    include/opc/opc_controller.hxx \
+    include/opc/opc_state.h \
+    include/opc/opc_object.h \
+    include/opc/opc_server.h
 
 

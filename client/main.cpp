@@ -1,5 +1,5 @@
-#include "src/database.h"
-#include "src/opc_client.h"
+#include "include/database.h"
+#include "include/opc_client.h"
 #include <iostream>
 int main(int argc, char *argv[])
 {

@@ -1,4 +1,4 @@
-#include "abstract_variable.h"
+#include "../include/abstract_variable.h"
 
 abstract_variable::abstract_variable(std::string name) : VariableName(name)
 {

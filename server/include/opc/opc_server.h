@@ -12,7 +12,6 @@ public:
     ~opc_server();
     UA_Server* server;
     UA_ServerConfig * config;
-    int init();
     int run();
 
 

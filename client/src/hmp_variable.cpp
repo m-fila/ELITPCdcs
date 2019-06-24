@@ -1,4 +1,4 @@
-#include "hmp_variable.h"
+#include "../include/hmp_variable.h"
 
 hmp_variable::hmp_variable(std::string name): template_variable<HMPMeasurements>(name)
 {
