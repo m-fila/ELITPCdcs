@@ -1,4 +1,4 @@
-#include "opc_object.h"
+#include "../../include/opc/opc_object.h"
 
 opc_object::opc_object(std::string name): ObjectName(name){
     ObjectNodeId=UA_NODEID_STRING_ALLOC(1,name.c_str());

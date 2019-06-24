@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 //        return 1;
 //    }
    client.go();
-   //client.run();
+   client.addSubscription();
+   client.run();
     return 0;
 }

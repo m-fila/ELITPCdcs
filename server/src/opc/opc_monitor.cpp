@@ -1,4 +1,4 @@
-#include "opc_monitor.h"
+#include "../../include/opc/opc_monitor.h"
 #include <iostream>
 opc_monitor::opc_monitor(std::string name): opc_object(name),
 //    ObjectName(name),

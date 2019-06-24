@@ -5,7 +5,7 @@
  *      Author: Marcin Zaremba
  */
 
-#include "TCPStream.h"
+#include "../../include/utl/TCPStream.h"
 #include <arpa/inet.h>
 
 TCPStream::TCPStream() {}

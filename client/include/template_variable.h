@@ -2,7 +2,7 @@
 #define TEMPLATE_VARIABLE
 #include "abstract_variable.h"
 #include <sstream>
-
+#include <iostream>
 
 
 template <class T>
@@ -15,7 +15,6 @@ public:
     virtual std::string translateValue();
     virtual std::string translateName();
     virtual void updateData(UA_DataValue *value);
-    virtual void addSubsciption(){}
 
 };
 template <class T>
@@ -31,8 +30,9 @@ std::string template_variable<T>::translateName(){
 
 template <class T>
 void template_variable<T>::updateData(UA_DataValue *value){
-
+    std::cout<< *static_cast<T*>(value->value.data)<<std::endl;
     data=*static_cast<T*>(value->value.data);
+    std::cout<<data<<std::endl;
 }
 
 template <class T>

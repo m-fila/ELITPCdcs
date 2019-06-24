@@ -5,7 +5,7 @@
 #include "../DeviceController.h"
 #include "../hw/HMP2020.h"
 #include "opc_controller.h"
-#include "HMPDataType.h"
+#include "../../../common/HMPDataType.h"
 
 class HMPController :public opc_template_controller<HMPMeasurements,HMP2020>
 {

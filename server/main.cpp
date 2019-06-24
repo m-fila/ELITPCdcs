@@ -1,15 +1,14 @@
-#include "include/utl/TCPConnector.h"
-#include "include/hw/HMP2020.h"
-#include "include/DeviceController.h"
-#include "include/ConnectionParameters.h"
-#include <sstream>
-#include <iostream>
-#include <time.h>
-#include "include/opc/opc_server.h"
+//#include "include/utl/TCPConnector.h"
+//#include "include/hw/HMP2020.h"
+//#include "include/DeviceController.h"
+//#include "include/ConnectionParameters.h"
+//#include <sstream>
+//#include <iostream>
+//#include <time.h>
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
-#include "include/opc/HMPDataType.h"
+#include "include/opc/opc_server.h"
 #include "include/opc/hmpcontroller.h"
 #include "include/opc/opc_state.h"
 
@@ -40,7 +39,7 @@ int main(int argc, char *argv[])
   //  controller.connect(&parameters);
 //    controller.updateStatus(server.server);
 
-    controller.addMonitoredItem(server.server, controller.MeasurementsVariableName);
+ //   controller.addMonitoredItem(server.server, controller.MeasurementsVariableName);
     controller.addValueCallback(server.server,controller.MeasurementsVariableName ,controller.MeasurementsReadCallback);
     controller.addValueCallback(server.server,controller.ConfigurationVariableName ,controller.ConfigurationReadCallback);
     controller.addValueCallback(server.server,controller.StatusVariableName ,controller.StatusReadCallback);

@@ -5,8 +5,8 @@ QMAKE_CXXFLAGS += -Wall -Wno-unused
 QMAKE_CXXFLAGS += -std=c++11 -ggdb3
 CONFIG -= app_bundle
 CONFIG -= qt
-LIBS += /usr/local/lib/libopen62541.a
-INCLUDEPATH +=/user/local/include
+LIBS += -L/usr/local/lib/ -lopen62541
+INCLUDEPATH +=/user/local/include -I.
 
 SOURCES += main.cpp \
     src/hw/HMP2020.cpp \
@@ -36,7 +36,7 @@ HEADERS  +=  \
     include/hw/TPG362.h \
     include/DeviceController.h \
     include/opc/hmpcontroller.h \
-    include/opc/HMPDataType.h \
+    ../common/HMPDataType.h \
     include/opc/opc_monitor.h \
     include/opc/opc_controller.h \
     include/opc/opc_controller.hxx \

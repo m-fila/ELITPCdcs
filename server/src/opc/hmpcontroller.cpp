@@ -1,4 +1,4 @@
-#include "hmpcontroller.h"
+#include "../../include/opc/hmpcontroller.h"
 //#include "nodemap.h"
 #include <cstring>
 

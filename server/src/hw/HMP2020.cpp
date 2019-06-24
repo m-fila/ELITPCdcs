@@ -1,4 +1,4 @@
-#include "HMP2020.h"
+#include "../../include/hw/HMP2020.h"
 #include <sstream>
 
 HMP2020::HMP2020() : GenericDevice(ConnectionType::TCP | ConnectionType::Serial, ConnectionType::TCP)

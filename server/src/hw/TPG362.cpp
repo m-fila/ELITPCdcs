@@ -1,4 +1,4 @@
-#include "TPG362.h"
+#include "../../include/hw/TPG362.h"
 
 TPG362::TPG362()
 {

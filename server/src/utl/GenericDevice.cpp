@@ -1,4 +1,4 @@
-#include "GenericDevice.h"
+#include "../../include/utl/GenericDevice.h"
 
 GenericDevice::GenericDevice(): connected(false)
 {

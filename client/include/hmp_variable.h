@@ -1,7 +1,7 @@
 #ifndef HMP_VARIABLE_H
 #define HMP_VARIABLE_H
 #include "template_variable.h"
-#include "HMPDataType.h"
+#include "../../common/HMPDataType.h"
 class hmp_variable : public template_variable<HMPMeasurements>
 {
 public:

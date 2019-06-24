@@ -7,7 +7,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 LIBS += -L/usr/local/lib/ -lopen62541
 LIBS += -lsqlite3
-INCLUDEPATH +=I/user/local/include
+INCLUDEPATH +=I/user/local/include -I.
 
 
 SOURCES += main.cpp \
@@ -17,7 +17,7 @@ SOURCES += main.cpp \
     src/hmp_variable.cpp
 
 HEADERS += \
-    include/HMPDataType.h \
+    ../common/HMPDataType.h \
     include/database.h \
     include/opc_client.h \
     include/abstract_variable.h \

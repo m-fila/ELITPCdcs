@@ -1,4 +1,4 @@
-#include "opc_state.h"
+#include "../../include/opc/opc_state.h"
 #include <iostream>
 opc_state::opc_state(): opc_object("MachineState"),state(0){
     VariableName=ObjectName+".State";

@@ -1,11 +1,13 @@
 #include "../include/opc_client.h"
 
-
+opc_client* opc_client::ptr=nullptr;
 opc_client::opc_client()
 {
     client = UA_Client_new();
     config= UA_Client_getConfig(client);
     UA_ClientConfig_setDefault(config);
+    config->stateCallback=stateCallback;
+    ptr=this;
 
 
 }
@@ -20,16 +22,45 @@ bool opc_client::init(){
 
 void opc_client::go(){
 
-    hmp_variable *a=new hmp_variable("HMP2.Measurements");
-    a->data=new_HMPMeasurements();
-    variables.push_back(a);
-    std::vector<abstract_variable*>::iterator it;
-    for(it = variables.begin(); it != variables.end(); ++it) {
-    std::cout<<(*it)->translateValue()<<std::endl;
-    std::cout<<(*it)->translateName()<<std::endl;
-    }
-    std::cout<<HMP_members[0].memberName;
+    std::unique_ptr<hmp_variable> a (new hmp_variable("HMP2.Measurements"));
+    //a->data=new_HMPMeasurements();
+    variables.push_back(std::move(a));
+
+ //   for(auto &i : variables) {
+ //       std::cout<<i->translateName()<<std::endl;
+ //       std::cout<<i->translateName()<<std::endl;
+//    }
 }
+
+
+void opc_client::addSubscription(){
+    UA_CreateSubscriptionRequest request = UA_CreateSubscriptionRequest_default();
+    UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,nullptr, nullptr, nullptr);
+    if(response.responseHeader.serviceResult == UA_STATUSCODE_GOOD){
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsciption");
+    }
+    else{
+
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"unable to create subsciption");
+    }
+    for(auto &i : variables) {
+        i->addMonitoredItem(client, response);
+    }
+
+}
+
+
+
+void opc_client::stateCallback(UA_Client *client, UA_ClientState clientState){
+    if(clientState==UA_CLIENTSTATE_SESSION) {
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
+        ptr->addSubscription();
+     }
+}
+
+
+
+
 
 UA_Boolean opc_client::running = false;
 
