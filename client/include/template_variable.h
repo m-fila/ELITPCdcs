@@ -14,7 +14,7 @@ public:
     T data;
     virtual std::string translateValue();
     virtual std::string translateName();
-    virtual void updateData(UA_DataValue *value);
+    virtual void updateData(void* data);
 
 };
 template <class T>
@@ -29,9 +29,8 @@ std::string template_variable<T>::translateName(){
 }
 
 template <class T>
-void template_variable<T>::updateData(UA_DataValue *value){
-    std::cout<< *static_cast<T*>(value->value.data)<<std::endl;
-    data=*static_cast<T*>(value->value.data);
+void template_variable<T>::updateData(void* value){
+    data=*(static_cast<T*>(value));
     std::cout<<data<<std::endl;
 }
 
@@ -44,7 +43,7 @@ template_variable<T>::~template_variable(){
     UA_NodeId_deleteMembers(&VariableId);
 }
 
-typedef template_variable<int> status_Variable;
-typedef template_variable<int> state_Variable;
+typedef template_variable<int> status_variable;
+typedef template_variable<int> state_variable;
 #endif // TEMPLATE_VARIABLE
 

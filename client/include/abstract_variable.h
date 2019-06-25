@@ -17,7 +17,7 @@ public:
     virtual void addMonitoredItem(UA_Client *client,UA_CreateSubscriptionResponse response);
     static void handler_ValueChanged(UA_Client *client, UA_UInt32 subId, void *subContext,
                                      UA_UInt32 monId, void *monContext, UA_DataValue *value);
-    virtual void updateData(UA_DataValue *value)=0;
+    virtual void updateData(void * data)=0;
 };
 
 #endif // ABSTRACT_VARIABLE_H

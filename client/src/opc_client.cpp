@@ -1,38 +1,38 @@
 #include "../include/opc_client.h"
 
-opc_client* opc_client::ptr=nullptr;
+opc_client* opc_client::context=nullptr;
+UA_Boolean opc_client::running = false;
+
 opc_client::opc_client()
 {
     client = UA_Client_new();
     config= UA_Client_getConfig(client);
     UA_ClientConfig_setDefault(config);
     config->stateCallback=stateCallback;
-    ptr=this;
-
-
+    context=this;
+    addCustomTypes();
 }
+
 opc_client::~opc_client(){
     UA_Client_delete(client);
 }
-
-bool opc_client::init(){
-    UA_StatusCode retval = UA_Client_connect(client, "opc.tcp://localhost:6666");
-    return retval;
+void opc_client::addVariable(abstract_variable *variable){
+    variables.push_back(variable);
 }
-
+/*
 void opc_client::go(){
-
     std::unique_ptr<hmp_variable> a (new hmp_variable("HMP2.Measurements"));
-    //a->data=new_HMPMeasurements();
+    a->data=new_HMPMeasurements();
+ //   std::unique_ptr<state_variable> b (new state_variable("MachineState.State"));
     variables.push_back(std::move(a));
+//    variables.push_back(std::move(b));
 
  //   for(auto &i : variables) {
  //       std::cout<<i->translateName()<<std::endl;
  //       std::cout<<i->translateName()<<std::endl;
 //    }
 }
-
-
+*/
 void opc_client::addSubscription(){
     UA_CreateSubscriptionRequest request = UA_CreateSubscriptionRequest_default();
     UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,nullptr, nullptr, nullptr);
@@ -49,20 +49,12 @@ void opc_client::addSubscription(){
 
 }
 
-
-
 void opc_client::stateCallback(UA_Client *client, UA_ClientState clientState){
     if(clientState==UA_CLIENTSTATE_SESSION) {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
-        ptr->addSubscription();
+        context->addSubscription();
      }
 }
-
-
-
-
-
-UA_Boolean opc_client::running = false;
 
 int opc_client::run(){
     signal(SIGINT, stopHandler);
@@ -87,4 +79,7 @@ int opc_client::run(){
     signal(SIGTERM,SIG_DFL);
 
     return EXIT_SUCCESS;
+}
+void opc_client::addCustomTypes(){
+    config->customDataTypes=&custom;
 }

@@ -92,7 +92,7 @@ static HMPMeasurements new_HMPMeasurements(bool ch1, bool ch2, bool output,
 
 static HMPMeasurements new_HMPMeasurements(){
     std::string zero="0";
-    HMPMeasurements hmp=new_HMPMeasurements(true,false,false,zero,zero,zero,zero);
+    HMPMeasurements hmp=new_HMPMeasurements(false,false,true,zero,zero,zero,zero);
 return hmp;}
 
 static std::ostream& operator<<(std::ostream& os, const HMPMeasurements& hmp){
