@@ -8,6 +8,7 @@ public:
     hmp_variable(std::string name);
     ~hmp_variable();
     virtual std::string translateName();
+    hmp_customType customType;
 };
 
 #endif // HMP_VARIABLE_H

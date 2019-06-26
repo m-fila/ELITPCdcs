@@ -9,10 +9,10 @@ hmp_variable::~hmp_variable(){
 }
 
 std::string hmp_variable::translateName(){
-int custom_size=HMPType.membersSize;
+int custom_size=customType.Type.membersSize;
 std::ostringstream oss;
 for(int i=0; i!=custom_size;i++){
-        oss<<VariableName+"."+HMP_members[i].memberName<<" ";
+        oss<<VariableName+"."+customType.members[i].memberName<<" ";
     }
 return oss.str();
 }

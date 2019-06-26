@@ -13,7 +13,7 @@ public:
     HMPController(std::string name);
     ~HMPController();
 
-
+    hmp_customType customType;
 
     //HMP specific methods:
     static UA_StatusCode SetOutputCallback(UA_Server *server,
@@ -23,6 +23,7 @@ public:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     void addSetOutputMethod(UA_Server *server);
+
     static UA_StatusCode SetChannelCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
@@ -30,7 +31,7 @@ public:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     void addSetChannelMethod(UA_Server *server);
-    void addCustomDataType(UA_Server *server, UA_ServerConfig *config);
+
 private:
     HMPMeasurements getMeasurements();
     HMPMeasurements getSettings();

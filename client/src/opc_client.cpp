@@ -10,7 +10,6 @@ opc_client::opc_client()
     UA_ClientConfig_setDefault(config);
     config->stateCallback=stateCallback;
     context=this;
-    addCustomTypes();
 }
 
 opc_client::~opc_client(){
@@ -80,6 +79,6 @@ int opc_client::run(){
 
     return EXIT_SUCCESS;
 }
-void opc_client::addCustomTypes(){
-    config->customDataTypes=&custom;
+void opc_client::addCustomTypes(UA_DataTypeArray *custom){
+    config->customDataTypes=custom;
 }

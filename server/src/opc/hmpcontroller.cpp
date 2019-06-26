@@ -3,7 +3,7 @@
 #include <cstring>
 
 HMPController::HMPController(std::string name): opc_template_controller<HMPMeasurements,HMP2020>(name){
-    VariableType=HMPType;
+    VariableType=customType.Type;
 }
 
 HMPController::~HMPController(){
@@ -26,7 +26,7 @@ HMPMeasurements HMPController::getMeasurements(){
         ch2 = (response=="1") ? true : false;
         response = device->getOutputGen();
         output = (response=="1") ? true : false;
-        return new_HMPMeasurements(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
+        return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
 }
 
 HMPMeasurements HMPController::getSettings(){
@@ -44,7 +44,7 @@ HMPMeasurements HMPController::getSettings(){
         ch2 = (response=="1") ? true : false;
         response = device->getOutputGen();
         output = (response=="1") ? true : false;
-        return new_HMPMeasurements(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
+        return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
 }
 
 UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,
@@ -147,40 +147,7 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
     UA_QualifiedName_deleteMembers(&MethodQName);
 }
 
-void HMPController::addCustomDataType(UA_Server *server, UA_ServerConfig *config) {
-        int custom_size=HMPType.membersSize;
-        UA_DataType *types = static_cast<UA_DataType*> (UA_malloc(sizeof(UA_DataType)));
-        UA_DataTypeMember *members = static_cast<UA_DataTypeMember*>(UA_malloc(sizeof(UA_DataTypeMember) * custom_size));
 
-        for(int i=0; i!=custom_size;i++){
-            members[i] = HMP_members[i];
-        }
-        types[0] = HMPType;
-        types[0].members = members;
-        UA_DataTypeArray customDataTypes = {config->customDataTypes, 1, types};
-        config->customDataTypes = &customDataTypes;
-
-
-        char* language=const_cast<char*>("en-Us");
-        char* hmpname=const_cast<char*>("HMPMeasurements");
-        UA_VariableTypeAttributes dattr = UA_VariableTypeAttributes_default;
-        dattr.description = UA_LOCALIZEDTEXT(language, hmpname);
-        dattr.displayName = UA_LOCALIZEDTEXT(language, hmpname);
-        dattr.dataType = HMPType.typeId;
-        dattr.valueRank = UA_VALUERANK_SCALAR;
-        HMPMeasurements hmp=new_HMPMeasurements();
-        UA_Variant_setScalar(&dattr.value, &hmp, &HMPType);
-        UA_QualifiedName TypeQName=UA_QUALIFIEDNAME_ALLOC(1, "HMPMeasurements");
-        UA_Server_addVariableTypeNode(server, HMPType.typeId,
-                                      UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                      UA_NODEID_NUMERIC(0, UA_NS0ID_HASSUBTYPE),
-                                      TypeQName,
-                                      UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE),
-                                      dattr, nullptr, nullptr);
-        UA_QualifiedName_deleteMembers(&TypeQName);
-        UA_free(types);
-        UA_free(members);
-    }
 
 
 

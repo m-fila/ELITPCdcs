@@ -23,6 +23,10 @@ opc_server::~opc_server(){
     UA_Server_delete(server);
 }
 
+void opc_server::addCustomTypes(UA_DataTypeArray *custom){
+    config->customDataTypes=custom;
+}
+
 void opc_server::Scan(UA_Server* server, void *data){
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "YO!");}
 

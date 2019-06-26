@@ -11,7 +11,7 @@ opc_monitor::opc_monitor(std::string name): opc_object(name),
 opc_monitor::~opc_monitor(){
         UA_NodeId_deleteMembers(&ObjectNodeId);
 }
-
+/*
 void opc_monitor::addObject(UA_Server *server){
     UA_ObjectAttributes oAttr = UA_ObjectAttributes_default;
     UA_QualifiedName NodeQName=UA_QUALIFIEDNAME_ALLOC(1,ObjectName.c_str());
@@ -23,7 +23,7 @@ void opc_monitor::addObject(UA_Server *server){
                               oAttr, this, nullptr);
     UA_ObjectAttributes_deleteMembers(&oAttr);
     UA_QualifiedName_deleteMembers(&NodeQName);
-}
+}*/
 /*
 void opc_monitor::addCustomTypeVariable(UA_Server *server, std::string VariableName){
 

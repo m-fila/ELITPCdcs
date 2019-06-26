@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
     HMPController controller("HMP2");
     opc_state state;
     state.init(server.server);
-//    state.addObject(server.server);
-//    state.addStateVariable(server.server);
-    controller.addCustomDataType(server.server,server.config);
+    UA_DataTypeArray hmpcustom=controller.customType.DataTypeArray(nullptr); //{nullptr,1,types};
+    server.addCustomTypes(&hmpcustom);
+    controller.customType.addCustomVariableTypeNode(server.server);
     controller.addObject(server.server);
     controller.addMeasurementsVariable(server.server);
     controller.addConfigurationVariable(server.server);

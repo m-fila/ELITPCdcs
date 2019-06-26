@@ -13,6 +13,7 @@ public:
     UA_Server* server;
     UA_ServerConfig * config;
     int run();
+    void addCustomTypes(UA_DataTypeArray *custom);
 
 
 private:    

@@ -27,7 +27,7 @@ public:
     void addVariable(abstract_variable *variable);
     void go();
 
-    void addCustomTypes();
+    void addCustomTypes(UA_DataTypeArray *custom);
     void addTimedCallback();
     int run();
 private:
@@ -39,8 +39,7 @@ private:
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c. Shutting down may take a few seconds");
         running = false;
     }
-    UA_DataType types[1]={HMPType};
-    UA_DataTypeArray custom={nullptr,1,types};
+
 };
 
 #endif // OPC_CLIENT_H
