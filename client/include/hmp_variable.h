@@ -5,10 +5,10 @@
 class hmp_variable : public template_variable<HMPMeasurements>
 {
 public:
-    hmp_variable(std::string name);
+    hmp_variable(std::string ObjectName,std::string VariableName);
     ~hmp_variable();
-    virtual std::string translateName();
     hmp_customType customType;
+    virtual std::string translateKeys();
 };
 
 #endif // HMP_VARIABLE_H

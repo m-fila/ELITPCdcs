@@ -17,6 +17,8 @@ opc_client::~opc_client(){
 }
 void opc_client::addVariable(abstract_variable *variable){
     variables.push_back(variable);
+    Database.createTable(variable->FullName,variable->translateKeys());
+    std::cout<<variable->translateKeys()<<std::endl;
 }
 /*
 void opc_client::go(){
@@ -34,17 +36,20 @@ void opc_client::go(){
 */
 void opc_client::addSubscription(){
     UA_CreateSubscriptionRequest request = UA_CreateSubscriptionRequest_default();
-    UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,nullptr, nullptr, nullptr);
+    UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,&Database, nullptr, nullptr);
     if(response.responseHeader.serviceResult == UA_STATUSCODE_GOOD){
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsciption");
+        for(auto &i : variables) {
+            i->addMonitoredItem(client, response);
+        //    std::cout<<i->translateName()<<std::endl;
+            std::cout<<i->translateValue()<<std::endl;
+        }
     }
     else{
 
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"unable to create subsciption");
     }
-    for(auto &i : variables) {
-        i->addMonitoredItem(client, response);
-    }
+
 
 }
 

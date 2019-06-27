@@ -9,6 +9,7 @@
 #include <memory>
 #include "abstract_variable.h"
 #include "hmp_variable.h"
+#include "database.h"
 class opc_client //singleton
 {
 public:
@@ -20,6 +21,7 @@ public:
     UA_Client *client;
     UA_ClientConfig *config;
     static opc_client* context;
+    database Database;
 
 
     void addSubscription();

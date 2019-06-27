@@ -131,7 +131,7 @@ struct hmp_customType{
 };
 
 static std::ostream& operator<<(std::ostream& os, const HMPMeasurements& hmp){
-os<<hmp.CH1<<" "<<hmp.CH2<<" "<<hmp.Output<<" "<<hmp.CH1_voltage<<" "<<hmp.CH1_voltage<<" "<<hmp.CH2_voltage<<" "<<hmp.CH2_current;
+os<<hmp.CH1<<", "<<hmp.CH2<<", "<<hmp.Output<<", "<<hmp.CH1_voltage<<", "<<hmp.CH1_voltage<<", "<<hmp.CH2_voltage<<", "<<hmp.CH2_current;
 return os;
 }
 

@@ -35,13 +35,13 @@ protected:
     virtual void disconnect() = 0;
 };
 
-template<class R>
+template<class T>
 class AbstractDeviceController : public DeviceController
 {
 public: //all was private, made public for tests;
 
-    AbstractDeviceController() {device.reset(new R);}
-    std::unique_ptr<R> device;
+    AbstractDeviceController() {device.reset(new T);}
+    std::unique_ptr<T> device;
 
     //default connect and disconnect implementations
     void disconnect() {device->resetConnectionStream();}
