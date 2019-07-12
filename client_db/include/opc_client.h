@@ -27,7 +27,7 @@ public:
     void addSubscription();
 
     void addVariable(abstract_variable *variable);
-    void go();
+ //   void go();
 
     void addCustomTypes(UA_DataTypeArray *custom);
     void addTimedCallback();

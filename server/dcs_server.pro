@@ -10,12 +10,12 @@ INCLUDEPATH +=/user/local/include -I.
 
 SOURCES += main.cpp \
     src/hw/HMP2020.cpp \
+    src/hw/DT1415ET.cpp \
+    src/hw/TPG362.cpp \
     src/utl/ConnectionStream.cpp \
     src/utl/TCPConnector.cpp \
     src/utl/TCPStream.cpp \
     src/utl/GenericDevice.cpp \
-    src/hw/DT1415ET.cpp \
-    src/hw/TPG362.cpp \
     src/DeviceController.cpp \
     src/opc/hmpcontroller.cpp \
     src/opc/opc_monitor.cpp \
@@ -28,12 +28,12 @@ SOURCES += main.cpp \
 HEADERS  +=  \
     include/ConnectionParameters.h \
     include/hw/HMP2020.h \
+    include/hw/DT1415ET.h \
+    include/hw/TPG362.h \
     include/utl/TCPStream.h \
     include/utl/TCPConnector.h \
     include/utl/ConnectionStream.h \
     include/utl/GenericDevice.h \
-    include/hw/DT1415ET.h \
-    include/hw/TPG362.h \
     include/DeviceController.h \
     include/opc/hmpcontroller.h \
     ../common/HMPDataType.h \

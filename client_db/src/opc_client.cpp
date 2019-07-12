@@ -18,22 +18,9 @@ opc_client::~opc_client(){
 void opc_client::addVariable(abstract_variable *variable){
     variables.push_back(variable);
     Database.createTable(variable->FullName,variable->translateKeys());
-    std::cout<<variable->translateKeys()<<std::endl;
+   // std::cout<<variable->translateKeys()<<std::endl;
 }
-/*
-void opc_client::go(){
-    std::unique_ptr<hmp_variable> a (new hmp_variable("HMP2.Measurements"));
-    a->data=new_HMPMeasurements();
- //   std::unique_ptr<state_variable> b (new state_variable("MachineState.State"));
-    variables.push_back(std::move(a));
-//    variables.push_back(std::move(b));
 
- //   for(auto &i : variables) {
- //       std::cout<<i->translateName()<<std::endl;
- //       std::cout<<i->translateName()<<std::endl;
-//    }
-}
-*/
 void opc_client::addSubscription(){
     UA_CreateSubscriptionRequest request = UA_CreateSubscriptionRequest_default();
     UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,&Database, nullptr, nullptr);
@@ -42,7 +29,7 @@ void opc_client::addSubscription(){
         for(auto &i : variables) {
             i->addMonitoredItem(client, response);
         //    std::cout<<i->translateName()<<std::endl;
-            std::cout<<i->translateValue()<<std::endl;
+        //    std::cout<<i->translateValue()<<std::endl;
         }
     }
     else{
