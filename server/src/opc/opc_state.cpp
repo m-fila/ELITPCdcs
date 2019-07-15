@@ -31,7 +31,7 @@ UA_StatusCode opc_state::SetStateCallback(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetState was called");
     opc_state* AssociatedObj=static_cast<opc_state*>(methodContext);
 
     MachineState state = *(MachineState*)input->data;

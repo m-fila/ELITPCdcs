@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "opc_client.h"
+#include "state.h"
 namespace Ui {
 class MainWindow;
 }
@@ -24,6 +25,7 @@ private:
 
     Ui::MainWindow *ui;
     opc_client *client;
+    stateMachine* statemachine;
     void connectSignals();
 
 };

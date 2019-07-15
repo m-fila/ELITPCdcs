@@ -6,7 +6,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    client=new opc_client;
+    client=new opc_client();
+    statemachine=new stateMachine();
+    statemachine->client=client->client;
+   // client->start();
     connectSignals();
 }
 
@@ -16,5 +19,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::connectSignals(){
-    connect(ui->StartLVpsu,SIGNAL(pressed()),client,SLOT(run()));
+    connect(ui->stateBox,SIGNAL(currentIndexChanged(int)),statemachine,SLOT(requestChange(int)));
+    connect(client,SIGNAL(subCreated(UA_CreateSubscriptionResponse)),statemachine,SLOT(addMonitoredItem(UA_CreateSubscriptionResponse)));
+    connect(statemachine,SIGNAL(stateChanged(int)),ui->stateBox,SLOT(setCurrentIndex(int)));
 }

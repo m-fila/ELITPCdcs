@@ -1,0 +1,47 @@
+#include "include/opc_client.h"
+opc_client* opc_client::context=nullptr;
+opc_client::opc_client()
+{
+    client = UA_Client_new();
+    config= UA_Client_getConfig(client);
+    UA_ClientConfig_setDefault(config);
+    config->stateCallback=stateCallback;
+    client_clock=new QTimer;
+    client_clock->start(100);
+    context=this;
+    connectSignals();
+
+}
+opc_client::~opc_client(){
+    UA_Client_delete(client);
+}
+
+void opc_client::iterate(){
+    UA_StatusCode retval = UA_Client_connect(client, "opc.tcp://localhost:6666");
+    if(retval==UA_STATUSCODE_GOOD){
+    UA_Client_run_iterate(client, 10);
+    }
+}
+void opc_client::connectSignals(){
+    connect(client_clock,SIGNAL(timeout()),this,SLOT(iterate()));
+}
+
+void opc_client::stateCallback (UA_Client *client, UA_ClientState clientState){
+    if(clientState==UA_CLIENTSTATE_SESSION) {
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
+        context->addSubscription();
+    }
+}
+
+void opc_client::addSubscription(){
+    UA_CreateSubscriptionRequest request = UA_CreateSubscriptionRequest_default();
+    UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,nullptr, nullptr, nullptr);
+    if(response.responseHeader.serviceResult == UA_STATUSCODE_GOOD){
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsciption");
+        emit subCreated(response);
+    }
+    else
+    {
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"failed to create sub");
+    }
+}
