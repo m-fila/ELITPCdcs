@@ -22,13 +22,15 @@ private slots:
     void startHVPSU(){}
     void startPM1(){}
     void startPM2(){}
-private:
 
+private:
     Ui::MainWindow *ui;
     opc_client *client;
     stateMachine* statemachine;
     LVpsuWidget *lvPSU;
     void connectSignals();
+protected:
+    void closeEvent(QCloseEvent* e);
 
 };
 

@@ -40,3 +40,12 @@ void MainWindow::connectSignals(){
             ,lvPSU->LVController,SLOT(addMonitoredItem(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
 
 }
+
+void MainWindow::closeEvent(QCloseEvent* e)
+{
+    lvPSU->close();
+    //hvPSU->close();
+    //pm1->close();
+    //pm2->close();
+    QWidget::closeEvent(e);
+}

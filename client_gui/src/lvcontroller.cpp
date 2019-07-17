@@ -22,24 +22,25 @@ void lv_controller::addMonitoredItem(UA_Client *Client, UA_ClientConfig *Config,
 
 void lv_controller::StatusChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                             UA_UInt32 monId, void *monContext, UA_DataValue *value){
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"Status Changed");
+    bool isConnected=*static_cast<bool*>(value->value.data);
+    lv_controller* context=static_cast<lv_controller*>(monContext);
+    emit context->statusChanged(isConnected);
 }
 
 void lv_controller::callConnect(std::string IPAddress, int port){
     UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("ConnectDevice"));
-    UA_Variant input;
-    UA_Variant_init(&input);
+    UA_Variant input[2];
+    UA_Variant_init(input);
     UA_String address=UA_String_fromChars(IPAddress.c_str());
-//    UA_Variant_setScalarCopy(&input[0], &address, &UA_TYPES[UA_TYPES_STRING]);
-//    UA_Variant_setScalarCopy(&input[1], &port, &UA_TYPES[UA_TYPES_INT32]);
+    UA_Variant_setScalarCopy(&input[0], &address, &UA_TYPES[UA_TYPES_STRING]);
+    UA_Variant_setScalarCopy(&input[1], &port, &UA_TYPES[UA_TYPES_INT32]);
     UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                MethodNodeId, 2, &input, nullptr,nullptr);
-   std::cout<<UA_StatusCode_name(retval)<<std::endl;
-    UA_Variant_clear(&input);
+                                MethodNodeId, 2, input, nullptr,nullptr);
+    UA_Variant_clear(input);
 }
 void lv_controller::callDisconnect(){
     UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("DisconnectDevice"));
     UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
                                 MethodNodeId, 0, nullptr, nullptr,nullptr);
-    std::cout<<UA_StatusCode_name(retval)<<std::endl;
+    //std::cout<<UA_StatusCode_name(retval)<<std::endl;
 }

@@ -51,6 +51,7 @@ LVpsuWidget::~LVpsuWidget()
 void LVpsuWidget::connectSignals(){
         connect(ui->disconnect, SIGNAL(clicked(bool)), LVController, SLOT(callDisconnect()));
         connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
+        connect(LVController,SIGNAL(statusChanged(bool)),this,SLOT(updateStatus(bool)));
 }
 
 /*
@@ -90,15 +91,7 @@ void LVpsuWidget::onDisconnect()
     ui->outputOFF->setEnabled(false);
 }
 
-void LVpsuWidget::closeEvent(QCloseEvent* e)
-{
-    LVpsuControllerPtr->deviceDisconnect();
-    //save settings
-    QSettings().setValue("LVpsuIP",ui->connectionIP->text());
-    QSettings().setValue("LVpsuPort",ui->connectionPort->text());
 
-    QWidget::closeEvent(e);
-}
 
 void LVpsuWidget::updateStatus(QString info)
 {
@@ -136,6 +129,39 @@ void LVpsuWidget::updateMeasurements(HMPseriesMeasurements hmpMeasurements)
     ui->outputOFF->setEnabled(hmpMeasurements.Output);
 }
 */
+void LVpsuWidget::updateStatus(bool isConnected){
+    if(isConnected){
+        ui->connect->setEnabled(false);
+        ui->disconnect->setEnabled(true);
+        ui->connectionStatus->setText("CONNECTED");
+        QPalette palette = ui->connectionStatus->palette();
+        palette.setColor(QPalette::WindowText, Qt::darkGreen);
+        ui->connectionStatus->setPalette(palette);
+        ui->connectionIP->setEnabled(false);
+        ui->connectionPort->setEnabled(false);
+    }
+    else{
+        ui->connect->setEnabled(true);
+        ui->disconnect->setEnabled(false);
+        ui->connectionStatus->setText("DISCONNECTED");
+        ui->statusLabel->setText("...");
+        QPalette palette = ui->connectionStatus->palette();
+        palette.setColor(QPalette::WindowText, Qt::red);
+        ui->connectionStatus->setPalette(palette);
+
+        ui->connectionIP->setEnabled(true);
+        ui->connectionPort->setEnabled(true);
+
+        ui->CH1on->setEnabled(false);
+        ui->CH1off->setEnabled(false);
+        ui->CH2on->setEnabled(false);
+        ui->CH2off->setEnabled(false);
+        ui->outputON->setEnabled(false);
+        ui->outputOFF->setEnabled(false);
+    }
+
+}
+
 void LVpsuWidget::deviceConnect()
 {
 //    TCPConnectionParameters cp;
@@ -144,3 +170,12 @@ void LVpsuWidget::deviceConnect()
     LVController->callConnect(IPaddress,port);
 }
 
+void LVpsuWidget::closeEvent(QCloseEvent* e)
+{
+    //LVpsuControllerPtr->deviceDisconnect();
+    //save settings
+    QSettings().setValue("LVpsuIP",ui->connectionIP->text());
+    QSettings().setValue("LVpsuPort",ui->connectionPort->text());
+
+    QWidget::closeEvent(e);
+}

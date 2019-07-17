@@ -22,9 +22,11 @@ public:
 private:
     Ui::LVpsuWidget *ui;
     void connectSignals();
-
+protected:
+    void closeEvent(QCloseEvent* e);
 public slots:
     void deviceConnect();
+    void updateStatus(bool isConnected);
 /*
 public slots:
     void deviceConnect();
@@ -35,7 +37,6 @@ public slots:
     void updateMeasurements(HMPseriesMeasurements hmpMeasurements); // measured voltage and current measured values
 
 protected:
-    void closeEvent(QCloseEvent* e);
 
     std::unique_ptr<LVpsuController> LVpsuControllerPtr;
 */

@@ -18,7 +18,7 @@ public slots:
                           UA_CreateSubscriptionResponse response);
     void callDisconnect();
 signals:
-
+    void statusChanged(bool);
 };
 
 #endif // LV_CONTROLLER_H
