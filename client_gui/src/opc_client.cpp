@@ -38,7 +38,7 @@ void opc_client::addSubscription(){
     UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,nullptr, nullptr, nullptr);
     if(response.responseHeader.serviceResult == UA_STATUSCODE_GOOD){
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsciption");
-        emit subCreated(response);
+        emit subCreated(client, config, response);
     }
     else
     {

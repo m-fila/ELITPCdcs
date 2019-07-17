@@ -17,10 +17,17 @@ INCLUDEPATH +=I/user/local/include -I.
 SOURCES += main.cpp\
         src/mainwindow.cpp \
         src/opc_client.cpp \
-        src/state.cpp
+        src/state.cpp \
+    src/lvpsuwidget.cpp \
+    src/opcQObject.cpp \
+    src/lvcontroller.cpp
 
 HEADERS  += include/mainwindow.h \
     include/opc_client.h \
-    include/state.h
+    include/state.h \
+    include/lvpsuwidget.h \
+    include/opcQObject.h \
+    include/lvcontroller.h
 
-FORMS    += forms/mainwindow.ui
+FORMS    += forms/mainwindow.ui \
+    forms/lvpsuwidget.ui

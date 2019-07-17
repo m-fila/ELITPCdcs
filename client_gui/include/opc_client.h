@@ -26,7 +26,7 @@ private:
     void addSubscription();
 
 signals:
-    void subCreated(UA_CreateSubscriptionResponse response);
+    void subCreated(UA_Client *client, UA_ClientConfig *config ,UA_CreateSubscriptionResponse response);
 public slots:
     void iterate();
 };
