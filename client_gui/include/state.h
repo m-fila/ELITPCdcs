@@ -10,13 +10,13 @@ public:
     ~stateMachine();
     enum state {empty,filling,ready};
 private:
-    UA_NodeId VariableNodeId;
+    std::string VariableName;
     UA_NodeId MethodNodeId;
-    static void valueChanged_callback(UA_Client *client, UA_UInt32 subId, void *subContext,
+    static void StateChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                       UA_UInt32 monId, void *monContext, UA_DataValue *value);
 public slots:
-    void requestChange(int index);
-    void addMonitoredItem(UA_Client *client, UA_ClientConfig *config,
+    void changeState(int index);
+    void opcInit(UA_Client *client, UA_ClientConfig *config,
                           UA_CreateSubscriptionResponse response);
 signals:
     void stateChanged(int index);

@@ -9,7 +9,7 @@
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/client_subscriptions.h>
 #include <iostream>
-
+#include "../common/HMPDataType.h"
 class opc_client: public QObject//QThread
 {
     Q_OBJECT
@@ -24,7 +24,10 @@ private:
     void connectSignals();
     static void stateCallback (UA_Client *client, UA_ClientState clientState);
     void addSubscription();
-
+//custom Types:
+   hmp_customType hmpcustomType;
+   UA_DataTypeArray HMPArray=hmpcustomType.DataTypeArray(nullptr);
+   void addCustomTypes(UA_DataTypeArray *custom);
 signals:
     void subCreated(UA_Client *client, UA_ClientConfig *config ,UA_CreateSubscriptionResponse response);
 public slots:

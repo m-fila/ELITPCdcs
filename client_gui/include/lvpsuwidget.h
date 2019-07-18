@@ -2,10 +2,6 @@
 #define LVPSUWIDGET_H
 
 #include <QWidget>
-//#include <open62541/client_subscriptions.h>
-//#include <open62541/client_highlevel.h>
-//#include <open62541/plugin/log_stdout.h>
-//#include <string>
 #include "lvcontroller.h"
 namespace Ui {
 class LVpsuWidget;
@@ -22,26 +18,21 @@ public:
 private:
     Ui::LVpsuWidget *ui;
     void connectSignals();
+    HMPMeasurements deviceSettings;
+    bool connectionState;
 protected:
     void closeEvent(QCloseEvent* e);
 public slots:
     void deviceConnect();
+    void setCH1ON();
+    void setCH1OFF();
+    void setCH2ON();
+    void setCH2OFF();
+    void setOutputON();
+    void setOutputOFF();
     void updateStatus(bool isConnected);
-/*
-public slots:
-    void deviceConnect();
-      void onConnect();
-    void onDisconnect();
-    void updateStatus(QString info);
-    void updateSettings(HMPseriesSettings hmpSettings); // update set values usually at start end not so frequently as measured values
-    void updateMeasurements(HMPseriesMeasurements hmpMeasurements); // measured voltage and current measured values
-
-protected:
-
-    std::unique_ptr<LVpsuController> LVpsuControllerPtr;
-*/
-
-
+    void updateMeasuremnts(HMPMeasurements measurements);
+    void updateConfiguration(HMPMeasurements configuration);
 };
 
 #endif // LVPSUWIDGET_H

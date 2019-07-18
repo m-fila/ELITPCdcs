@@ -27,7 +27,8 @@ HEADERS  += include/mainwindow.h \
     include/state.h \
     include/lvpsuwidget.h \
     include/opcQObject.h \
-    include/lvcontroller.h
+    include/lvcontroller.h \
+    ../common/HMPDataType.h
 
 FORMS    += forms/mainwindow.ui \
     forms/lvpsuwidget.ui

@@ -9,6 +9,10 @@ opc_client::opc_client()
     client_clock=new QTimer;
     client_clock->start(100);
     context=this;
+
+   // hmp_customType hmp_customType;
+    //UA_DataTypeArray* hmpCustom=
+    addCustomTypes(&HMPArray);
     connectSignals();
 
 }
@@ -44,4 +48,8 @@ void opc_client::addSubscription(){
     {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"failed to create sub");
     }
+}
+
+void opc_client::addCustomTypes(UA_DataTypeArray *custom){
+    config->customDataTypes=custom;
 }

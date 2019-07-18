@@ -29,15 +29,17 @@ void MainWindow::startLVPSU(){
 }
 
 void MainWindow::connectSignals(){
+    //start LV
     connect(ui->StartLVpsu, SIGNAL(pressed()), this, SLOT(startLVPSU()));
-
-    connect(ui->stateBox,SIGNAL(currentIndexChanged(int)),statemachine,SLOT(requestChange(int)));
     connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
-            ,statemachine,SLOT(addMonitoredItem(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
+            ,lvPSU->LVController,SLOT(opcInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
+    //StateMachine
+    connect(ui->stateBox,SIGNAL(currentIndexChanged(int)),statemachine,SLOT(changeState(int)));
+    connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
+            ,statemachine,SLOT(opcInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
     connect(statemachine,SIGNAL(stateChanged(int)),ui->stateBox,SLOT(setCurrentIndex(int)));
 
-    connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
-            ,lvPSU->LVController,SLOT(addMonitoredItem(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
+
 
 }
 
