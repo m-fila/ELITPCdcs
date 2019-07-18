@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "lvcontroller.h"
+
 namespace Ui {
 class LVpsuWidget;
 }
@@ -24,15 +25,16 @@ protected:
     void closeEvent(QCloseEvent* e);
 public slots:
     void deviceConnect();
+    void deviceDisconnect();
     void setCH1ON();
     void setCH1OFF();
     void setCH2ON();
     void setCH2OFF();
     void setOutputON();
     void setOutputOFF();
-    void updateStatus(bool isConnected);
-    void updateMeasuremnts(HMPMeasurements measurements);
-    void updateConfiguration(HMPMeasurements configuration);
+    void updateStatus(void* data);
+    void updateMeasuremnts(void* data);
+    void updateConfiguration(void* data);
 };
 
 #endif // LVPSUWIDGET_H

@@ -23,11 +23,11 @@ LVpsuWidget::~LVpsuWidget()
 }
 
 void LVpsuWidget::connectSignals(){
-    connect(ui->disconnect, SIGNAL(clicked(bool)), LVController, SLOT(callDisconnect()));
+    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
     connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-    connect(LVController,SIGNAL(statusChanged(bool)),this,SLOT(updateStatus(bool)));
-    connect(LVController,SIGNAL(measurementsChanged(HMPMeasurements)),this,SLOT(updateMeasuremnts(HMPMeasurements)));
-    connect(LVController,SIGNAL(configurationChanged(HMPMeasurements)),this,SLOT(updateConfiguration(HMPMeasurements)));
+    connect(LVController,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
+    connect(LVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasuremnts(void*)));
+    connect(LVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
 
     connect(ui->CH1on,SIGNAL(clicked(bool)),this, SLOT(setCH1ON()));
     connect(ui->CH2on,SIGNAL(clicked(bool)),this, SLOT(setCH2ON()));
@@ -38,7 +38,8 @@ void LVpsuWidget::connectSignals(){
 }
 
 
-void LVpsuWidget::updateStatus(bool isConnected){
+void LVpsuWidget::updateStatus(void* data){
+    bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
         ui->connect->setEnabled(false);
@@ -78,10 +79,11 @@ void LVpsuWidget::updateStatus(bool isConnected){
 
 }
 
-void LVpsuWidget::updateMeasuremnts(HMPMeasurements measurements){
+void LVpsuWidget::updateMeasuremnts(void* data){
+    HMPMeasurements measurements=*static_cast<HMPMeasurements*>(data);
     ui->CH1voltage->display(measurements.CH1_voltage);
     ui->CH1current->display(measurements.CH1_current);
-    ui->CH1on->setEnabled(!measurements.CH1 &&connectionState);
+    ui->CH1on->setEnabled((!measurements.CH1) &&connectionState);
     ui->CH1off->setEnabled(measurements.CH1 &&connectionState);
     ui->CH2voltage->display(measurements.CH2_voltage);
     ui->CH2current->display(measurements.CH2_current);
@@ -94,7 +96,8 @@ void LVpsuWidget::updateMeasuremnts(HMPMeasurements measurements){
     deviceSettings.CH2=measurements.CH2;
     deviceSettings.Output=measurements.Output;
 }
-void LVpsuWidget::updateConfiguration(HMPMeasurements configuration){
+void LVpsuWidget::updateConfiguration(void* data){
+    HMPMeasurements configuration=*static_cast<HMPMeasurements*>(data);
     ui->CH1volatgeSet->display(configuration.CH1_voltage);
     ui->CH1currentSet->display(configuration.CH1_current);
   //  ui->CH1on->setEnabled(!configuration.CH1);
@@ -113,6 +116,9 @@ void LVpsuWidget::deviceConnect()
     std::string IPaddress = ui->connectionIP->text().toStdString();
     int port = ui->connectionPort->text().toInt();
     LVController->callConnect(IPaddress,port);
+}
+void LVpsuWidget::deviceDisconnect(){
+    LVController->callDisconnect();
 }
 
 void LVpsuWidget::setCH1ON(){
