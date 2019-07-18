@@ -109,7 +109,7 @@ UA_StatusCode opc_monitor::DisconnectDeviceCallback(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Disconnect was called");
+   // UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Disconnect was called");
     opc_monitor* Monitor=static_cast<opc_monitor*>(methodContext);
     Monitor->disconnectDevice();
     return UA_STATUSCODE_GOOD;
@@ -140,11 +140,9 @@ UA_StatusCode opc_monitor::ConnectDeviceCallback(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Connect was called");
+   // UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Connect was called");
 
     opc_monitor* Monitor=static_cast<opc_monitor*>(methodContext);
-    // std::string NodeName=reinterpret_cast<char*>(objectId->identifier.string.data);
-    // opc_monitor* Monitor=NodeMap::Nodes[NodeName];
     UA_Int32 port = *(UA_Int32*)input[1].data;
     UA_String host = *(UA_String*)input[0].data;
     std::string address(reinterpret_cast<char*>(host.data));

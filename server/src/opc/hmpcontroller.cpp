@@ -53,14 +53,14 @@ UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+//    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
     HMPController* Monitor=static_cast<HMPController*>(methodContext);
     if(Monitor->isConnected()){
         UA_Boolean state = *(UA_Boolean*)input->data;
         Monitor->device->setOutputGen(state);
     }
     else {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, comand not send");
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetOutput not send");
     }
 
     return UA_STATUSCODE_GOOD;
@@ -100,7 +100,7 @@ UA_StatusCode HMPController::SetChannelCallback(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
     HMPController* Monitor=static_cast<HMPController*>(methodContext);
     if(Monitor->isConnected()){
         UA_Int16 channel = *(UA_Int16*)input[0].data;
@@ -108,7 +108,7 @@ UA_StatusCode HMPController::SetChannelCallback(UA_Server *server,
         Monitor->device->setOutputSel(channel,state);
     }
     else {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, comand not send");
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetChannel not send");
     }
     return UA_STATUSCODE_GOOD;
 }
