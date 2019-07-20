@@ -7,7 +7,7 @@
 #include "opc_controller.h"
 #include "../../../common/HMPDataType.h"
 
-class HMPController :public opc_template_controller<HMPMeasurements,HMP2020>
+class HMPController :public opc_template_controller<HMPMeasurements,HMPMeasurements,HMP2020>
 {
 public:
     HMPController(std::string name);

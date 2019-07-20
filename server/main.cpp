@@ -35,10 +35,6 @@ int main(int argc, char *argv[])
     controller.addMeasurementsVariable(server.server);
     controller.addConfigurationVariable(server.server);
     controller.addStatusVariable(server.server);
-
-  //  controller.connect(&parameters);
-//    controller.updateStatus(server.server);
-
  //   controller.addMonitoredItem(server.server, controller.MeasurementsVariableName);
     controller.addValueCallback(server.server,controller.MeasurementsVariableName ,controller.MeasurementsReadCallback);
     controller.addValueCallback(server.server,controller.ConfigurationVariableName ,controller.ConfigurationReadCallback);

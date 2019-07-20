@@ -1,7 +1,7 @@
-template <class T,class D>
-void opc_template_controller<T,D>::updateMeasurements(UA_Server *server){
+template <class M,class C,class D>
+void opc_template_controller<M,C,D>::updateMeasurements(UA_Server *server){
     if(isConnected()){
-        T now =getMeasurements();
+        M now =getMeasurements();
         UA_Variant value;
         UA_Variant_setScalar(&value, &now, &VariableType);
         UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, MeasurementsVariableName.c_str());
@@ -14,10 +14,10 @@ void opc_template_controller<T,D>::updateMeasurements(UA_Server *server){
     }
 }
 
-template <class T,class D>
-void opc_template_controller<T,D>::updateConfiguration(UA_Server *server){
+template <class M,class C,class D>
+void opc_template_controller<M,C,D>::updateConfiguration(UA_Server *server){
     if(isConnected()){
-        T now =getSettings();
+        C now =getSettings();
         UA_Variant value;
         UA_Variant_setScalar(&value, &now, &VariableType);
         UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, ConfigurationVariableName.c_str());
@@ -31,8 +31,8 @@ void opc_template_controller<T,D>::updateConfiguration(UA_Server *server){
 }
 
 
-template <class T,class D>
-void opc_template_controller<T,D>::updateStatus(UA_Server *server){
+template <class M,class C,class D>
+void opc_template_controller<M,C,D>::updateStatus(UA_Server *server){
 
         UA_Boolean now =isConnected();
         UA_Variant value;
@@ -41,11 +41,4 @@ void opc_template_controller<T,D>::updateStatus(UA_Server *server){
         UA_Server_writeValue(server, NodeId, value);
         UA_NodeId_deleteMembers(&NodeId);
   //      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Status updated");
-}
-
-
-
-template <class T,class D>
-bool opc_template_controller<T,D>::isConnected(){
-    return AbstractDeviceController<D>::device->isConnected();
 }
