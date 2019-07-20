@@ -1,11 +1,11 @@
-#include "include/tpgcontroller.h"
+#include "include/hvcontroller.h"
 #include <iostream>
-tpg_controller::tpg_controller(std::string OName, QObject *parent):
+hv_controller::hv_controller(std::string OName, QObject *parent):
     opc_controller(OName, parent)
 {
 }
 /*
-void lv_controller::callSetOutput(bool state){
+void hv_controller::callSetOutput(bool state){
        UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
        UA_Variant input;
        UA_Variant_init(&input);
@@ -15,7 +15,7 @@ void lv_controller::callSetOutput(bool state){
        UA_Variant_clear(&input);
 }
 
-void lv_controller::callSetChannel(int nr, bool state){
+void hv_controller::callSetChannel(int nr, bool state){
     UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetChannel"));
     UA_Variant input[2];
     UA_Variant_init(input);

@@ -1,5 +1,5 @@
-#ifndef TPG362WIDGET_H
-#define TPG362WIDGET_H
+#ifndef TPGWIDGET_H
+#define TPGWIDGET_H
 
 #include <QWidget>
 #include <QLabel>
@@ -10,16 +10,16 @@
 #include <QGroupBox>
 #include <QFrame>
 #include <memory>
-#include "TPG362Controller.h"
+#include "tpgcontroller.h"
 
-class TPG362widget : public QWidget
+class TPGWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit TPG362widget(QWidget *parent = 0);
-    TPG362widget(const char *name);
-    ~TPG362widget();
+    explicit TPGWidget(QWidget *parent = 0);
+    TPGWidget(const char *name);
+    ~TPGWidget();
 
 public slots:
     void deviceConnect();
@@ -32,7 +32,7 @@ protected:
 
 private:
     const char *instanceName;
-    std::unique_ptr<TPG362Controller> TPG362ControllerPtr;
+    std::unique_ptr<tpg_controller> tpg_controllerPtr;
 
     //create layout procedures and variables
     QVBoxLayout *mainLayout;
@@ -50,4 +50,4 @@ private:
     void connectSignals();
 };
 
-#endif // TPG362WIDGET_H
+#endif // TPGWIDGET_H

@@ -1,60 +1,62 @@
-#include "TPG362widget.h"
+#include "include/tpgwidget.h"
 #include <string>
 #include <QSettings>
 
-TPG362widget::TPG362widget(QWidget *parent) : QWidget(parent)
+TPGWidget::TPGWidget(QWidget *parent) : QWidget(parent)
 {
     createLayout();
-
-    TPG362Controller *controller = new TPG362Controller();
-    TPG362ControllerPtr.reset(controller);
-
+    tpg_controller *controller = new tpg_controller("");
+    tpg_controllerPtr.reset(controller);
     connectSignals();
+
 }
 
-TPG362widget::TPG362widget(const char *name) : TPG362widget()
-{
+TPGWidget::TPGWidget(const char *name) : QWidget()
+{   createLayout();
     instanceName = name;
+    tpg_controller *controller = new tpg_controller(instanceName);
+    tpg_controllerPtr.reset(controller);
+    connectSignals();
 
-    string IP(instanceName);
+    std::string IP(instanceName);
     IP.append("/IP");
-    string Port(instanceName);
+    std::string Port(instanceName);
     Port.append("/Port");
     connectionIP->setText(QSettings().value(IP.c_str()).toString());
     connectionPort->setText(QSettings().value(Port.c_str()).toString());
 }
 
-TPG362widget::~TPG362widget()
+TPGWidget::~TPGWidget()
 {
     //delete ui;
 }
 
-void TPG362widget::deviceConnect()
+void TPGWidget::deviceConnect()
 {
 
 }
 
-void TPG362widget::onConnect()
+void TPGWidget::onConnect()
 {
 
 }
 
-void TPG362widget::onDisconnect()
+void TPGWidget::onDisconnect()
 {
 
 }
 
-void TPG362widget::updateStatus(QString info)
+void TPGWidget::updateStatus(QString info)
 {
 
 }
 
-void TPG362widget::closeEvent(QCloseEvent* e)
+void TPGWidget::closeEvent(QCloseEvent* e)
 {
-    TPG362ControllerPtr->deviceDisconnect();
-    string IP(instanceName);
+    //tpg_controllerPtr->deviceDisconnect();
+    std::string IP(instanceName);
     IP.append("/IP");
-    string Port(instanceName);
+    std::string Port(instanceName);
     Port.append("/Port");
     //save settings
     QSettings().setValue(IP.c_str(),connectionIP->text());
@@ -63,7 +65,7 @@ void TPG362widget::closeEvent(QCloseEvent* e)
     QWidget::closeEvent(e);
 }
 
-void TPG362widget::createLayout()
+void TPGWidget::createLayout()
 {
     //create main layout with base size
     mainLayout = new QVBoxLayout();
@@ -83,7 +85,7 @@ void TPG362widget::createLayout()
     setLayout(mainLayout);
 }
 
-void TPG362widget::drawLine()
+void TPGWidget::drawLine()
 {
     QFrame *line = new QFrame();
     line->setFrameShape(QFrame::HLine);
@@ -91,7 +93,7 @@ void TPG362widget::drawLine()
     mainLayout->addWidget(line);
 }
 
-void TPG362widget::createConnectionSection()
+void TPGWidget::createConnectionSection()
 {
     //Connection status
     QLabel *connectionStatusLabel = new QLabel("Connection status: ");
@@ -135,7 +137,7 @@ void TPG362widget::createConnectionSection()
     mainLayout->addLayout(hb2);
 }
 
-void TPG362widget::connectSignals()
+void TPGWidget::connectSignals()
 {
 
 }

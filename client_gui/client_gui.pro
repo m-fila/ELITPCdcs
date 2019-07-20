@@ -21,7 +21,11 @@ SOURCES += main.cpp\
     src/lvpsuwidget.cpp \
     src/opcQObject.cpp \
     src/lvcontroller.cpp \
-    src/opc_controller.cpp
+    src/opc_controller.cpp \
+    src/tpgwidget.cpp \
+    src/tpgcontroller.cpp \
+    src/hvpsuwidget.cpp \
+    src/hvcontroller.cpp
 
 HEADERS  += include/mainwindow.h \
     include/opc_client.h \
@@ -30,7 +34,14 @@ HEADERS  += include/mainwindow.h \
     include/opcQObject.h \
     include/lvcontroller.h \
     ../common/HMPDataType.h \
-    include/opc_controller.h
+    include/opc_controller.h \
+    include/tpgwidget.h \
+    include/tpgcontroller.h \
+    include/hvpsuwidget.h \
+    include/hvcontroller.h
 
 FORMS    += forms/mainwindow.ui \
-    forms/lvpsuwidget.ui
+    forms/lvpsuwidget.ui \
+    forms/hvpsuwidget.ui
+
+RESOURCES += resources.qrc
