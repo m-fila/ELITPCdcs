@@ -75,6 +75,11 @@ void LVpsuWidget::updateStatus(void* data){
         ui->CH2off->setEnabled(false);
         ui->outputON->setEnabled(false);
         ui->outputOFF->setEnabled(false);
+
+        ui->CH1voltage->display(0);
+        ui->CH1current->display(0);
+        ui->CH2voltage->display(0);
+        ui->CH2current->display(0);
     }
 
 }
