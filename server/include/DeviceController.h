@@ -40,7 +40,7 @@ class AbstractDeviceController : public DeviceController
 {
 public: //all was private, made public for tests;
 
-    AbstractDeviceController() {device.reset(new T);}
+    AbstractDeviceController() {device.reset(new T); device->resetConnectionStream();}
     std::unique_ptr<T> device;
 
     //default connect and disconnect implementations

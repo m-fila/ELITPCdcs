@@ -15,14 +15,14 @@ public:
     bool isConnected() {return connected;}
     void sendCommand(string command);
     string sendWithResponse(string command);
-    bool connected;
+
 
 protected:
     GenericDevice(ConnectionType allowed, ConnectionType active): connectionTypeAllowed(allowed), activeConnectionType(active) {}
     ConnectionType connectionTypeAllowed;
     ConnectionType activeConnectionType;
     ConnectionStreamPtr connectionStream;
-
+    bool connected;
 };
 
 #endif // GENERICDEVICE_H

@@ -47,5 +47,5 @@ void opc_template_controller<T,D>::updateStatus(UA_Server *server){
 
 template <class T,class D>
 bool opc_template_controller<T,D>::isConnected(){
-    return AbstractDeviceController<D>::device->connected;
+    return AbstractDeviceController<D>::device->isConnected();
 }
