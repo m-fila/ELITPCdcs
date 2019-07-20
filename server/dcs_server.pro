@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     src/hw/HMP2020.cpp \
     src/hw/DT1415ET.cpp \
     src/hw/TPG362.cpp \
+    src/opc/dtcontroller.cpp \
     src/utl/ConnectionStream.cpp \
     src/utl/TCPConnector.cpp \
     src/utl/TCPStream.cpp \
@@ -26,10 +27,13 @@ SOURCES += main.cpp \
 
 
 HEADERS  +=  \
+    ../common/DTcDataType.h \
+    ../common/DTmDataType.h \
     include/ConnectionParameters.h \
     include/hw/HMP2020.h \
     include/hw/DT1415ET.h \
     include/hw/TPG362.h \
+    include/opc/dtcontroller.h \
     include/utl/TCPStream.h \
     include/utl/TCPConnector.h \
     include/utl/ConnectionStream.h \

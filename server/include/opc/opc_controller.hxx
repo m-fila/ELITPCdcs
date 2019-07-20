@@ -3,7 +3,7 @@ void opc_template_controller<M,C,D>::updateMeasurements(UA_Server *server){
     if(isConnected()){
         M now =getMeasurements();
         UA_Variant value;
-        UA_Variant_setScalar(&value, &now, &VariableType);
+        UA_Variant_setScalar(&value, &now, &VariableTypeM);
         UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, MeasurementsVariableName.c_str());
         UA_Server_writeValue(server, NodeId, value);
         UA_NodeId_deleteMembers(&NodeId);
@@ -19,7 +19,7 @@ void opc_template_controller<M,C,D>::updateConfiguration(UA_Server *server){
     if(isConnected()){
         C now =getSettings();
         UA_Variant value;
-        UA_Variant_setScalar(&value, &now, &VariableType);
+        UA_Variant_setScalar(&value, &now, &VariableTypeC);
         UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, ConfigurationVariableName.c_str());
         UA_Server_writeValue(server, NodeId, value);
         UA_NodeId_deleteMembers(&NodeId);

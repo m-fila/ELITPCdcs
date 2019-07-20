@@ -28,6 +28,8 @@ SOURCES += main.cpp\
     src/hvcontroller.cpp
 
 HEADERS  += include/mainwindow.h \
+    ../common/DTcDataType.h \
+    ../common/DTmDataType.h \
     include/opc_client.h \
     include/state.h \
     include/lvpsuwidget.h \

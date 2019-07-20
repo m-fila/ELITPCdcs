@@ -18,6 +18,7 @@ opc_client::opc_client()
 }
 opc_client::~opc_client(){
     UA_Client_delete(client);
+    delete client_clock;
 }
 
 void opc_client::iterate(){

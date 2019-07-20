@@ -17,17 +17,12 @@ public:
     const std::string ConfigurationVariableName;
     const std::string StatusVariableName;
 
-    UA_DataType VariableType;
+    UA_DataType VariableTypeM;
+    UA_DataType VariableTypeC;
 
-  //  void addObject(UA_Server *server);
-    void addMeasurementsVariable(UA_Server *server){addVariable(server,MeasurementsVariableName,VariableType,VariableType.typeId);}
-    void addConfigurationVariable(UA_Server *server){addVariable(server,ConfigurationVariableName,VariableType,VariableType.typeId);}
-    void addStatusVariable(UA_Server *server){addVariable(server,StatusVariableName,UA_TYPES[UA_TYPES_BOOLEAN],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE) );}
-//    void addMeasurementsVariable(UA_Server *server){addCustomTypeVariable(server,MeasurementsVariableName);}
-//    void addConfigurationVariable(UA_Server *server){addCustomTypeVariable(server,ConfigurationVariableName);}
-
-//    void addCustomTypeVariable(UA_Server *server,std::string VariableName);
-
+    void addMeasurementsVariable(UA_Server *server);
+    void addConfigurationVariable(UA_Server *server);
+    void addStatusVariable(UA_Server *server);
 
     virtual void disconnectDevice()=0;
     virtual void connectDevice(TCPConnectionParameters* parameters)=0;

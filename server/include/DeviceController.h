@@ -36,12 +36,11 @@ protected:
 };
 
 template<class T>
-class AbstractDeviceController : public DeviceController
+class AbstractDeviceController
 {
-public: //all was private, made public for tests;
+public:
 
     AbstractDeviceController() {device.reset(new T); device->resetConnectionStream();}
-    std::unique_ptr<T> device;
 
     //default connect and disconnect implementations
     void disconnect() {device->resetConnectionStream();}
@@ -52,6 +51,8 @@ public: //all was private, made public for tests;
         std::cout << cp->IPaddress  << ":" << cp->port << std::endl;
         device->setConnectionStream(TCPConnector::connect(cp->IPaddress.c_str(), cp->port));
     }
+protected:
+        std::unique_ptr<T> device;
 };
 
 #endif // DEVICECONTROLLER_H
