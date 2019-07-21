@@ -20,7 +20,7 @@ public:
 
     UA_Client *client;
     UA_ClientConfig *config;
-    static opc_client* context;
+//    static opc_client* context;
     database Database;
 
 
@@ -30,12 +30,12 @@ public:
  //   void go();
 
     void addCustomTypes(UA_DataTypeArray *custom);
-    void addTimedCallback();
+ //   void addTimedCallback();
     int run();
 private:
     std::vector<abstract_variable*> variables;
     static void stateCallback (UA_Client *client, UA_ClientState clientState);
-    static void DatabaseTimedCallback(UA_Client *client, void *context);
+//    static void DatabaseTimedCallback(UA_Client *client, void *context);
     static UA_Boolean running;
     static void stopHandler(int sig) {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c. Shutting down may take a few seconds");

@@ -1,14 +1,15 @@
 #include "include/opc_client.h"
-opc_client* opc_client::context=nullptr;
+//opc_client* opc_client::context=nullptr;
 opc_client::opc_client()
 {
     client = UA_Client_new();
     config= UA_Client_getConfig(client);
     UA_ClientConfig_setDefault(config);
     config->stateCallback=stateCallback;
+    config->clientContext=this;
     client_clock=new QTimer;
     client_clock->start(100);
-    context=this;
+   // context=this;
 
    // hmp_customType hmp_customType;
     //UA_DataTypeArray* hmpCustom=
@@ -33,6 +34,7 @@ void opc_client::connectSignals(){
 
 void opc_client::stateCallback (UA_Client *client, UA_ClientState clientState){
     if(clientState==UA_CLIENTSTATE_SESSION) {
+        opc_client* context=static_cast<opc_client*>(UA_Client_getConfig(client)->clientContext);
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
         context->addSubscription();
     }

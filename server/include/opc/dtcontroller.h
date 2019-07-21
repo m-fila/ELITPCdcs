@@ -1,19 +1,19 @@
 #ifndef DTCONTROLLER_H
 #define DTCONTROLLER_H
 
-#include <open62541/plugin/log_stdout.h>
-#include <open62541/server.h>
+//#include <open62541/plugin/log_stdout.h>
+//#include <open62541/server.h>
 #include "../DeviceController.h"
 #include "../hw/DT1415ET.h"
 #include "opc_controller.h"
 #include "../../../common/DTmDataType.h"
 #include "../../../common/DTcDataType.h"
 
-class HMPController :public opc_template_controller<DTMeasurements,DTConfiguration,DT1415ET>
+class DTController :public opc_template_controller<DTMeasurements,DTConfiguration,DT1415ET>
 {
 public:
-    HMPController(std::string name);
-    ~HMPController();
+    DTController(std::string name);
+    ~DTController();
 
     dtm_customType customTypeM;
     dtc_customType customTypeC;

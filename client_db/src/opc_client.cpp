@@ -1,6 +1,6 @@
 #include "../include/opc_client.h"
 
-opc_client* opc_client::context=nullptr;
+//opc_client* opc_client::context=nullptr;
 UA_Boolean opc_client::running = false;
 
 opc_client::opc_client()
@@ -9,7 +9,8 @@ opc_client::opc_client()
     config= UA_Client_getConfig(client);
     UA_ClientConfig_setDefault(config);
     config->stateCallback=stateCallback;
-    context=this;
+    config->clientContext=this;
+    //context=this;
 }
 
 opc_client::~opc_client(){
@@ -42,6 +43,7 @@ void opc_client::addSubscription(){
 
 void opc_client::stateCallback(UA_Client *client, UA_ClientState clientState){
     if(clientState==UA_CLIENTSTATE_SESSION) {
+        opc_client* context=static_cast<opc_client*>(UA_Client_getConfig(client)->clientContext);
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
         context->addSubscription();
      }

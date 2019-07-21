@@ -5,11 +5,12 @@
 //#include <sstream>
 //#include <iostream>
 //#include <time.h>
-#include <open62541/plugin/log_stdout.h>
-#include <open62541/server.h>
-#include <open62541/server_config_default.h>
+//#include <open62541/plugin/log_stdout.h>
+//#include <open62541/server.h>
+//#include <open62541/server_config_default.h>
 #include "include/opc/opc_server.h"
 #include "include/opc/hmpcontroller.h"
+#include "include/opc/dtcontroller.h"
 #include "include/opc/opc_state.h"
 
 
@@ -17,14 +18,14 @@ int main(int argc, char *argv[])
 {
     opc_server server;
 
-
+/*
     string ipaddress="192.168.168.20";
     int port=5025;
 
     TCPConnectionParameters parameters;
     parameters.IPaddress=ipaddress;
     parameters.port=port;
-
+*/
     HMPController controller("HMP2");
     opc_state state;
     state.init(server.server);
@@ -45,9 +46,18 @@ int main(int argc, char *argv[])
     controller.addSetChannelMethod(server.server);
 
 
-
+    DTController dtcontroller("HV1");
+    dtcontroller.addObject(server.server);
+    dtcontroller.customTypeM.addCustomVariableTypeNode(server.server);
+    dtcontroller.customTypeC.addCustomVariableTypeNode(server.server);
+    dtcontroller.addMeasurementsVariable(server.server);
+    dtcontroller.addConfigurationVariable(server.server);
+    dtcontroller.addStatusVariable(server.server);
+    dtcontroller.addValueCallback(server.server,dtcontroller.MeasurementsVariableName ,dtcontroller.MeasurementsReadCallback);
+    dtcontroller.addValueCallback(server.server,dtcontroller.ConfigurationVariableName ,dtcontroller.ConfigurationReadCallback);
+    dtcontroller.addValueCallback(server.server,dtcontroller.StatusVariableName ,dtcontroller.StatusReadCallback);
+    dtcontroller.addDisconnectDeviceMethod(server.server);
+    dtcontroller.addConnectDeviceMethod(server.server);
     server.run();
-
-
 return 0;
 }

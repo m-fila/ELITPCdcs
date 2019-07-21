@@ -19,7 +19,7 @@ public:
     UA_Client *client;
     UA_ClientConfig *config;
 private:
-    static opc_client* context;
+   // static opc_client* context;
     QTimer* client_clock;
     void connectSignals();
     static void stateCallback (UA_Client *client, UA_ClientState clientState);

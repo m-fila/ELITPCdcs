@@ -1,5 +1,4 @@
 #include "../../include/opc/hmpcontroller.h"
-//#include "nodemap.h"
 #include <cstring>
 
 HMPController::HMPController(std::string name): opc_template_controller<HMPMeasurements,HMPMeasurements,HMP2020>(name){
