@@ -38,6 +38,9 @@ void opc_client::stateCallback (UA_Client *client, UA_ClientState clientState){
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
         context->addSubscription();
     }
+//    if(clientState==UA_CLIENTSTATE_DISCONNECTED){
+//        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A connection with the server is closed");
+ //   }
 }
 
 void opc_client::addSubscription(){

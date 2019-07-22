@@ -13,14 +13,18 @@ protected:
     const std::string StatusVariableName;
     const std::string MeasurementsVariableName;
     const std::string ConfigurationVariableName;
-
+    UA_NodeId StatusNodeId;
+    UA_NodeId MeasurementsNodeId;
+    UA_NodeId ConfigurationNodeId;
+    UA_NodeId connectNodeId;
+    UA_NodeId disconnectNodeId;
     static void StatusChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                       UA_UInt32 monId, void *monContext, UA_DataValue *value);
     static void MeasurementsChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                       UA_UInt32 monId, void *monContext, UA_DataValue *value);
     static void ConfigurationChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                       UA_UInt32 monId, void *monContext, UA_DataValue *value);
-
+    virtual void browseIds();
 public slots:
     void opcInit(UA_Client *client, UA_ClientConfig *config,
                          UA_CreateSubscriptionResponse response);

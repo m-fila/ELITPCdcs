@@ -20,6 +20,9 @@ protected:
     void addMonitoredItem(std::string VariableName,UA_CreateSubscriptionResponse response,
                           void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId, void *subContext,
                                                   UA_UInt32 monId, void *monContext, UA_DataValue *value));
+    void addMonitoredItem(UA_NodeId VariableId,UA_CreateSubscriptionResponse response,
+                          void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId, void *subContext,
+                                                  UA_UInt32 monId, void *monContext, UA_DataValue *value));
 signals:
 
 public slots:

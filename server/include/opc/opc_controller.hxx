@@ -4,9 +4,9 @@ void opc_template_controller<M,C,D>::updateMeasurements(UA_Server *server){
         M now =getMeasurements();
         UA_Variant value;
         UA_Variant_setScalar(&value, &now, &VariableTypeM);
-        UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, MeasurementsVariableName.c_str());
-        UA_Server_writeValue(server, NodeId, value);
-        UA_NodeId_deleteMembers(&NodeId);
+      //  UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, MeasurementsVariableName.c_str());
+        UA_Server_writeValue(server, MeasurementsId, value);
+      //  UA_NodeId_deleteMembers(&NodeId);
  //       UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Measurements updated");
     }
     else{
@@ -20,9 +20,9 @@ void opc_template_controller<M,C,D>::updateConfiguration(UA_Server *server){
         C now =getSettings();
         UA_Variant value;
         UA_Variant_setScalar(&value, &now, &VariableTypeC);
-        UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, ConfigurationVariableName.c_str());
-        UA_Server_writeValue(server, NodeId, value);
-        UA_NodeId_deleteMembers(&NodeId);
+  //      UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, ConfigurationVariableName.c_str());
+        UA_Server_writeValue(server, ConfigurationId, value);
+   //     UA_NodeId_deleteMembers(&NodeId);
   //      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Configuration updated");
     }
     else{
@@ -37,8 +37,8 @@ void opc_template_controller<M,C,D>::updateStatus(UA_Server *server){
         UA_Boolean now =isConnected();
         UA_Variant value;
         UA_Variant_setScalar(&value, &now, &UA_TYPES[UA_TYPES_BOOLEAN]);
-        UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, StatusVariableName.c_str());
-        UA_Server_writeValue(server, NodeId, value);
-        UA_NodeId_deleteMembers(&NodeId);
+    //    UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, StatusVariableName.c_str());
+        UA_Server_writeValue(server, StatusId, value);
+    //    UA_NodeId_deleteMembers(&NodeId);
   //      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Status updated");
 }

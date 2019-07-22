@@ -80,9 +80,9 @@ void HMPController::addSetOutputMethod(UA_Server *server) {
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setoutput");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
-    UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetOutput");
+  //  UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetOutput");
     UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setoutput");
-    UA_Server_addMethodNode(server, MethodNodeId,
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
                             ObjectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             MethodQName,
@@ -90,7 +90,7 @@ void HMPController::addSetOutputMethod(UA_Server *server) {
                             1,&inputArgument, 0, nullptr,this, nullptr);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArgument);
-    UA_NodeId_deleteMembers(&MethodNodeId);
+ //   UA_NodeId_deleteMembers(&MethodNodeId);
     UA_QualifiedName_deleteMembers(&MethodQName);
 }
 
@@ -132,9 +132,9 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setchannel");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
-    UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetChannel");
+ //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetChannel");
     UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setchannel");
-    UA_Server_addMethodNode(server, MethodNodeId,
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
                             ObjectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             MethodQName,
@@ -143,7 +143,7 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArguments[0]);
     UA_Argument_deleteMembers(&inputArguments[1]);
-    UA_NodeId_deleteMembers(&MethodNodeId);
+  //  UA_NodeId_deleteMembers(&MethodNodeId);
     UA_QualifiedName_deleteMembers(&MethodQName);
 }
 

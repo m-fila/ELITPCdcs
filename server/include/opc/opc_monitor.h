@@ -16,6 +16,9 @@ public:
     const std::string MeasurementsVariableName;
     const std::string ConfigurationVariableName;
     const std::string StatusVariableName;
+    UA_NodeId MeasurementsId;
+    UA_NodeId ConfigurationId;
+    UA_NodeId StatusId;
 
     UA_DataType VariableTypeM;
     UA_DataType VariableTypeC;
@@ -27,10 +30,11 @@ public:
     virtual void disconnectDevice()=0;
     virtual void connectDevice(TCPConnectionParameters* parameters)=0;
         //updating via value callback:
-    void addValueCallback(UA_Server *server,std::string VariableName,  void (*ReadCallback)(UA_Server *server, const UA_NodeId *sessionId,
-                                                                                      void *sessionContext, const UA_NodeId *nodeid,
-                                                                                      void *nodeContext, const UA_NumericRange *range,
-                                                                   const UA_DataValue *value));
+    void addValueCallback(UA_Server *server,UA_NodeId
+                          NVariableId,  void (*ReadCallback)(UA_Server *server, const UA_NodeId *sessionId,
+                                                             void *sessionContext, const UA_NodeId *nodeid,
+                                                             void *nodeContext, const UA_NumericRange *range,
+                                                             const UA_DataValue *value));
     static void MeasurementsReadCallback(UA_Server *server,
                        const UA_NodeId *sessionId, void *sessionContext,
                        const UA_NodeId *nodeid, void *nodeContext,
@@ -55,7 +59,7 @@ public:
 
         // self monitoring via MonitoredItem:
         //     (alternative to monitoring by TimedCallback defined in opc_server)
-     void addMonitoredItem(UA_Server *server,std::string VariableName, UA_Double sampling=500.0);
+     void addMonitoredItem(UA_Server *server,UA_NodeId VariableId, UA_Double sampling=500.0);
 
 
 private:

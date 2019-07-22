@@ -37,9 +37,9 @@ int main(int argc, char *argv[])
     controller.addConfigurationVariable(server.server);
     controller.addStatusVariable(server.server);
  //   controller.addMonitoredItem(server.server, controller.MeasurementsVariableName);
-    controller.addValueCallback(server.server,controller.MeasurementsVariableName ,controller.MeasurementsReadCallback);
-    controller.addValueCallback(server.server,controller.ConfigurationVariableName ,controller.ConfigurationReadCallback);
-    controller.addValueCallback(server.server,controller.StatusVariableName ,controller.StatusReadCallback);
+    controller.addValueCallback(server.server,controller.MeasurementsId ,controller.MeasurementsReadCallback);
+    controller.addValueCallback(server.server,controller.ConfigurationId ,controller.ConfigurationReadCallback);
+    controller.addValueCallback(server.server,controller.StatusId ,controller.StatusReadCallback);
     controller.addDisconnectDeviceMethod(server.server);
     controller.addConnectDeviceMethod(server.server);
     controller.addSetOutputMethod(server.server);
@@ -53,9 +53,9 @@ int main(int argc, char *argv[])
     dtcontroller.addMeasurementsVariable(server.server);
     dtcontroller.addConfigurationVariable(server.server);
     dtcontroller.addStatusVariable(server.server);
-    dtcontroller.addValueCallback(server.server,dtcontroller.MeasurementsVariableName ,dtcontroller.MeasurementsReadCallback);
-    dtcontroller.addValueCallback(server.server,dtcontroller.ConfigurationVariableName ,dtcontroller.ConfigurationReadCallback);
-    dtcontroller.addValueCallback(server.server,dtcontroller.StatusVariableName ,dtcontroller.StatusReadCallback);
+    dtcontroller.addValueCallback(server.server,dtcontroller.MeasurementsId ,dtcontroller.MeasurementsReadCallback);
+    dtcontroller.addValueCallback(server.server,dtcontroller.ConfigurationId,dtcontroller.ConfigurationReadCallback);
+    dtcontroller.addValueCallback(server.server,dtcontroller.StatusId ,dtcontroller.StatusReadCallback);
     dtcontroller.addDisconnectDeviceMethod(server.server);
     dtcontroller.addConnectDeviceMethod(server.server);
     server.run();

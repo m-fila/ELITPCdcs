@@ -20,6 +20,7 @@ public:
     void init(UA_Server *server);
 
 private:
+
     static UA_StatusCode SetStateCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
