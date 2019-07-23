@@ -17,17 +17,8 @@ public:
 
     dtm_customType customTypeM;
     dtc_customType customTypeC;
-/*
-    //HMP specific methods:
-    static UA_StatusCode SetOutputCallback(UA_Server *server,
-                             const UA_NodeId *sessionId, void *sessionHandle,
-                             const UA_NodeId *methodId, void *methodContext,
-                             const UA_NodeId *objectId, void *objectContext,
-                             size_t inputSize, const UA_Variant *input,
-                             size_t outputSize, UA_Variant *output);
-    void addSetOutputMethod(UA_Server *server);
-*/
-    /*
+
+    //DT specific methods:
     static UA_StatusCode SetChannelCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
@@ -35,7 +26,15 @@ public:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     void addSetChannelMethod(UA_Server *server);
-*/
+
+    static UA_StatusCode SetVoltageCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
+    void addSetVoltageMethod(UA_Server *server);
+
 private:
     DTMeasurements getMeasurements();
     DTConfiguration getSettings();

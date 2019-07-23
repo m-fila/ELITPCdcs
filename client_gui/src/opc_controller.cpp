@@ -49,6 +49,7 @@ void opc_controller::opcInit(UA_Client *Client, UA_ClientConfig *Config, UA_Crea
 
 void opc_controller::StatusChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                             UA_UInt32 monId, void *monContext, UA_DataValue *value){
+
     void* data=value->value.data;
     opc_controller* context=static_cast<opc_controller*>(monContext);
     emit context->statusChanged(data);
@@ -67,6 +68,7 @@ void opc_controller::ConfigurationChangedCallback(UA_Client *client, UA_UInt32 s
     void* data=value->value.data;
     opc_controller* context=static_cast<opc_controller*>(monContext);
     emit context->configurationChanged(data);
+
 }
 
 void opc_controller::callConnect(std::string IPAddress, int port){

@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
     dtcontroller.addValueCallback(server.server,dtcontroller.StatusId ,dtcontroller.StatusReadCallback);
     dtcontroller.addDisconnectDeviceMethod(server.server);
     dtcontroller.addConnectDeviceMethod(server.server);
+    dtcontroller.addSetChannelMethod(server.server);
+    dtcontroller.addSetVoltageMethod(server.server);
     server.run();
 return 0;
 }

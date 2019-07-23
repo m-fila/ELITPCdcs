@@ -8,9 +8,9 @@
 #include <QRadioButton>
 #include <QLabel>
 #include <memory>
-//#include "HVpsuController.h"
+#include "include/hvcontroller.h"
 //#include "DT1415Containers.h"
-//#include "kled.h"
+#include "kled.h"
 
 
 namespace Ui {
@@ -24,12 +24,15 @@ class HVpsuWidget : public QWidget
 public:
     explicit HVpsuWidget(QWidget *parent = 0);
     ~HVpsuWidget();
-
+    hv_controller *HVController;
 public slots:
     void deviceConnect();
-    void onConnect();
-    void onDisconnect();
-    void updateStatus(QString info);
+    void deviceDisconnect();
+//    void onConnect();
+//    void onDisconnect();
+    void updateStatus(void *data);
+    void updateMeasurements(void *data);
+    void updateConfiguration(void *data);
 
 //    void updateMeasurements(DT1415Measurements measurements);
 //    void updateChannelStatus(DT1415ChannelStatus channelStatus);
@@ -38,7 +41,7 @@ public slots:
     void offPressed();
     void setVPressed();
     void changeNamePressed();
-
+    void updateChannelStatus(QString info);
 protected:
     void closeEvent(QCloseEvent* e);
 
@@ -50,7 +53,7 @@ private:
     //create layout procedures and variables
     QGroupBox *allTabCHx[9];
     QLCDNumber *allTabCHvoltage[9];
-//    KLed *allTabLed[9];
+    KLed *allTabLed[9];
     QPushButton *allTabKill[9];
     QRadioButton *allTabOn[9];
     QRadioButton *allTabOff[9];
@@ -66,6 +69,7 @@ private:
 
     bool isRemotePrevious;
     bool initialUpdate;
+    bool connectionState;
 
     void loadConfig();
     void saveConfig();
@@ -74,6 +78,7 @@ private:
     void createAllChannelsTab();
     void createChannelTabs();
     void drawLine(QLayout *layout);
+    void connectSignals();
 };
 
 #endif // HVPSUWIDGET_H

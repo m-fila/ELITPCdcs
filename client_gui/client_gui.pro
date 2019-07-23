@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     src/tpgwidget.cpp \
     src/tpgcontroller.cpp \
     src/hvpsuwidget.cpp \
-    src/hvcontroller.cpp
+    src/hvcontroller.cpp \
+    src/kled.cpp
 
 HEADERS  += include/mainwindow.h \
     ../common/DTcDataType.h \
@@ -40,7 +41,8 @@ HEADERS  += include/mainwindow.h \
     include/tpgwidget.h \
     include/tpgcontroller.h \
     include/hvpsuwidget.h \
-    include/hvcontroller.h
+    include/hvcontroller.h \
+    include/kled.h
 
 FORMS    += forms/mainwindow.ui \
     forms/lvpsuwidget.ui \

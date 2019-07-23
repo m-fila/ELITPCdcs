@@ -10,6 +10,8 @@
 #include <open62541/client_subscriptions.h>
 #include <iostream>
 #include "../common/HMPDataType.h"
+#include "../common/DTmDataType.h"
+#include "../common/DTcDataType.h"
 class opc_client: public QObject//QThread
 {
     Q_OBJECT
@@ -25,8 +27,12 @@ private:
     static void stateCallback (UA_Client *client, UA_ClientState clientState);
     void addSubscription();
 //custom Types:
+   dtm_customType dtmcustomType;
+   UA_DataTypeArray DTMArray=dtmcustomType.DataTypeArray(nullptr);
+   dtc_customType dtccustomType;
+   UA_DataTypeArray DTCArray=dtccustomType.DataTypeArray(&DTMArray);
    hmp_customType hmpcustomType;
-   UA_DataTypeArray HMPArray=hmpcustomType.DataTypeArray(nullptr);
+   UA_DataTypeArray HMPArray=hmpcustomType.DataTypeArray(&DTCArray);
    void addCustomTypes(UA_DataTypeArray *custom);
 signals:
     void subCreated(UA_Client *client, UA_ClientConfig *config ,UA_CreateSubscriptionResponse response);

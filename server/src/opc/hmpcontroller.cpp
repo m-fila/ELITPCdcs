@@ -148,6 +148,3 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
 }
 
 
-
-
-

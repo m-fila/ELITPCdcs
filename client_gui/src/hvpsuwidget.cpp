@@ -19,102 +19,65 @@ HVpsuWidget::HVpsuWidget(QWidget *parent) :
 
     ui->connectionIP->setText(QSettings().value("HVpsu/IP").toString());
     ui->connectionPort->setText(QSettings().value("HVpsu/Port").toString());
-
-//    HVpsuController *controller = new HVpsuController();//
-//    HVpsuControllerPtr.reset(controller);
-    connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-//    connect(ui->disconnect, SIGNAL(clicked(bool)), controller, SLOT(deviceDisconnect()));
-//    connect(controller, SIGNAL(connected()), this, SLOT(onConnect()));
-//    connect(controller, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
- //   connect(controller, SIGNAL(statusChanged(QString)), this, SLOT(updateStatus(QString)));
-
-//    qRegisterMetaType<DT1415Measurements>();
-//    connect(controller, SIGNAL(measurementsReadFromDevice(DT1415Measurements)),
-//            this, SLOT(updateMeasurements(DT1415Measurements)));
-
-//    qRegisterMetaType<DT1415ChannelStatus>();
-//    connect(controller, SIGNAL(channelStatusReadFromDevice(DT1415ChannelStatus)),
- //           this, SLOT(updateChannelStatus(DT1415ChannelStatus)));
-
-
+    HVController=new hv_controller("HV1");
+    connectSignals();
 }
 
 HVpsuWidget::~HVpsuWidget()
 {
-//    HVpsuControllerPtr->wait();
-//    HVpsuControllerPtr.reset();
     delete ui;
+    delete HVController;
+
 }
 
-void HVpsuWidget::onConnect()
-{
-    ui->connect->setEnabled(false);
-    ui->disconnect->setEnabled(true);
-    ui->connectionStatus->setText("CONNECTED");
-    QPalette palette = ui->connectionStatus->palette();
-    palette.setColor(QPalette::WindowText, Qt::darkGreen);
-    ui->connectionStatus->setPalette(palette);
-
-    ui->connectionIP->setEnabled(false);
-    ui->connectionPort->setEnabled(false);
-
-    initialUpdate = true;
-//    HVpsuControllerPtr->start();
+void HVpsuWidget::connectSignals(){
+    connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
+    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
+    connect(HVController,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
+    connect(HVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
+    connect(HVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
 }
 
-void HVpsuWidget::onDisconnect()
-{
-    ui->connect->setEnabled(true);
-    ui->disconnect->setEnabled(false);
-    ui->connectionStatus->setText("DISCONNECTED");
-    QPalette palette = ui->connectionStatus->palette();
-    palette.setColor(QPalette::WindowText, Qt::red);
-    ui->connectionStatus->setPalette(palette);
 
-    ui->statusLabel->setText("...");
+void HVpsuWidget::updateStatus(void *data){
+    bool isConnected=*static_cast<bool*>(data);
+    connectionState=isConnected;
+    if(isConnected){
+        ui->connect->setEnabled(false);
+        ui->disconnect->setEnabled(true);
+        ui->connectionStatus->setText("CONNECTED");
+        QPalette palette = ui->connectionStatus->palette();
+        palette.setColor(QPalette::WindowText, Qt::darkGreen);
+        ui->connectionStatus->setPalette(palette);
+        ui->connectionIP->setEnabled(false);
+        ui->connectionPort->setEnabled(false);
 
-    ui->connectionIP->setEnabled(true);
-    ui->connectionPort->setEnabled(true);
+    }
+    else{
+        ui->connect->setEnabled(true);
+        ui->disconnect->setEnabled(false);
+        ui->connectionStatus->setText("DISCONNECTED");
+        ui->statusLabel->setText("...");
+        QPalette palette = ui->connectionStatus->palette();
+        palette.setColor(QPalette::WindowText, Qt::red);
+        ui->connectionStatus->setPalette(palette);
+        ui->connectionIP->setEnabled(true);
+        ui->connectionPort->setEnabled(true);
 
-    int i;
-    for(i=0; i<9; i++)
-    {
-        allTabOn[i]->setEnabled(false);
-        allTabOff[i]->setEnabled(false);
-        allTabKill[i]->setEnabled(false);
-        allTabSetV[i]->setEnabled(false);
+        for(int i=0; i<9; i++){
+            allTabOn[i]->setEnabled(false);
+            allTabOff[i]->setEnabled(false);
+            allTabKill[i]->setEnabled(false);
+            allTabSetV[i]->setEnabled(false);
+        }
     }
 }
 
-void HVpsuWidget::closeEvent(QCloseEvent* e)
-{
- //   HVpsuControllerPtr->deviceDisconnect();
-    //save settings
-    QSettings().setValue("HVpsu/IP",ui->connectionIP->text());
-    QSettings().setValue("HVpsu/Port",ui->connectionPort->text());
-    saveConfig();
 
-    QWidget::closeEvent(e);
-}
-
-void HVpsuWidget::updateStatus(QString info)
-{
-    ui->statusLabel->setText(info);
-}
-
-void HVpsuWidget::deviceConnect()
-{
-//   TCPConnectionParameters cp;
-//   cp.IPaddress = ui->connectionIP->text().toStdString();
-//   cp.port = ui->connectionPort->text().toInt();
-//   HVpsuControllerPtr->deviceConnect(&cp);
-}
-/*
-void HVpsuWidget::updateMeasurements(DT1415Measurements measurements)
-{
-    int i;
+void HVpsuWidget::updateMeasurements(void *data){
+    DTMeasurements measurements=*static_cast<DTMeasurements*>(data);
     QString val;
-    for(i=0; i<8; i++)
+    for(int i=0; i<8; i++)
     {
         val.sprintf("%.1lf", measurements.voltage[i]);
         allTabCHvoltage[i]->display(val);
@@ -122,26 +85,26 @@ void HVpsuWidget::updateMeasurements(DT1415Measurements measurements)
         val.sprintf("%.3lf", measurements.current[i]);
         allTabImon[i]->setText(val);
     }
-    val.sprintf("%.1lf", measurements.totalVolatge);
+    val.sprintf("%.1lf", measurements.totalVoltage);
     allTabCHvoltage[8]->display(val);
 }
-
-void HVpsuWidget::updateChannelStatus(DT1415ChannelStatus channelStatus)
-{
-    int i;
+void HVpsuWidget::updateConfiguration(void *data){
+    DTConfiguration channelStatus=*static_cast<DTConfiguration*>(data);
     bool ON, enabled;
+    enabled=false;
     QString val;
-    for(i=0; i<8; i++)
-    {
-        enabled = channelStatus.isRemote & !(bool)(channelStatus.status[i] & DT1415ETchannelStatus::ISDIS);
+    for(int i=0; i<8; i++)
+   {    DT1415ETchannelStatus chanStat=static_cast<DT1415ETchannelStatus>(channelStatus.status[i]);
+        enabled = channelStatus.isRemote & !(bool)(chanStat & DT1415ETchannelStatus::ISDIS);
         allTabOn[i]->setEnabled(enabled);
-        allTabOff[i]->setEnabled(enabled);
+         allTabOff[i]->setEnabled(enabled);
         //allTabKill[i]->setEnabled(enabled);
         allTabSetV[i]->setEnabled(enabled);
 
-        ON = (bool)(channelStatus.status[i] & DT1415ETchannelStatus::ON);
+       ON = (bool)(chanStat & DT1415ETchannelStatus::ON);
         allTabLed[i]->setState((KLed::State)(ON));
         if(!isRemotePrevious | initialUpdate) //update ON/OFF only when remote is disabled or connection is established
+
         {
             allTabOn[i]->setChecked(ON);
             allTabOff[i]->setChecked(!ON);
@@ -154,7 +117,7 @@ void HVpsuWidget::updateChannelStatus(DT1415ChannelStatus channelStatus)
         }
 
     }
-    val.sprintf("%6.1lf", channelStatus.voltageSetTotal);
+    val.sprintf("%6.1lf", channelStatus.totalVoltageSet);
     allTabVset[8]->setText(val);
     allTabOn[8]->setEnabled(channelStatus.isRemote);
     allTabOff[8]->setEnabled(channelStatus.isRemote);
@@ -162,15 +125,41 @@ void HVpsuWidget::updateChannelStatus(DT1415ChannelStatus channelStatus)
 
     isRemotePrevious = channelStatus.isRemote;
 }
-*/
+
+void HVpsuWidget::closeEvent(QCloseEvent* e)
+{
+    QSettings().setValue("HVpsu/IP",ui->connectionIP->text());
+    QSettings().setValue("HVpsu/Port",ui->connectionPort->text());
+    saveConfig();
+
+    QWidget::closeEvent(e);
+}
+
+void HVpsuWidget::updateChannelStatus(QString info)
+{
+    ui->statusLabel->setText(info);
+}
+
+void HVpsuWidget::deviceConnect()
+{
+    std::string IPaddress = ui->connectionIP->text().toStdString();
+    int port = ui->connectionPort->text().toInt();
+    HVController->callConnect(IPaddress,port);
+}
+
+void HVpsuWidget::deviceDisconnect(){
+    HVController->callDisconnect();
+}
+
+
 void HVpsuWidget::onPressed()
 {
     QObject* obj = sender();
     int i;
     for(i=0; i<9; i++)
     {
- //       if(allTabOn[i] == obj)
- //           HVpsuControllerPtr->setON(i);
+        if(allTabOn[i] == obj)
+            HVController->callSetChannel(i,true);
             //std::cout << "ON number: " << i << std::endl;
     }
 }
@@ -178,11 +167,10 @@ void HVpsuWidget::onPressed()
 void HVpsuWidget::offPressed()
 {
     QObject* obj = sender();
-    int i;
-    for(i=0; i<9; i++)
+    for(int i=0; i<9; i++)
     {
-//        if(allTabOff[i] == obj)
-//            HVpsuControllerPtr->setOFF(i);
+        if(allTabOff[i] == obj)
+            HVController->callSetChannel(i,false);
             //std::cout << "ON number: " << i << std::endl;
     }
 }
@@ -191,8 +179,7 @@ void HVpsuWidget::setVPressed()
 {
     QObject* obj = sender();
     bool ok;
-    int i;
-    for(i=0; i<8; i++)
+    for(int i=0; i<8; i++)
     {
         if(allTabSetV[i] == obj)
         {
@@ -210,7 +197,7 @@ void HVpsuWidget::setVPressed()
                 val.sprintf("%6.1lf", d);
                 allTabVset[i]->setText(val);
                 //TODO: check VtotalMax (software treshold). if sum > thr, drop input and show message or set max mallowed and show message?
- //               HVpsuControllerPtr->setVSET(i, d);
+                HVController->callSetVoltage(i, d);
             }
         }
     }
@@ -305,12 +292,12 @@ void HVpsuWidget::createAllChannelsTab()
         QHBoxLayout *hbox = new QHBoxLayout();
         //add customized controls to GroupBox layout
         //begin LED
-//        allTabLed[i] = new KLed();
-//        allTabLed[i]->setFixedSize(20,20);
-//        allTabLed[i]->off();
-//        allTabLed[i]->setColor(Qt::red);
+        allTabLed[i] = new KLed();
+        allTabLed[i]->setFixedSize(20,20);
+        allTabLed[i]->off();
+        allTabLed[i]->setColor(Qt::red);
 
-//        hbox->addWidget(allTabLed[i]);
+        hbox->addWidget(allTabLed[i]);
         //end LED
 
         //Begin enable

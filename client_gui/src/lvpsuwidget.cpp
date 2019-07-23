@@ -23,10 +23,10 @@ LVpsuWidget::~LVpsuWidget()
 }
 
 void LVpsuWidget::connectSignals(){
-    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
     connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
+    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
     connect(LVController,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
-    connect(LVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasuremnts(void*)));
+    connect(LVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(LVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
 
     connect(ui->CH1on,SIGNAL(clicked(bool)),this, SLOT(setCH1ON()));
@@ -84,7 +84,7 @@ void LVpsuWidget::updateStatus(void* data){
 
 }
 
-void LVpsuWidget::updateMeasuremnts(void* data){
+void LVpsuWidget::updateMeasurements(void* data){
     HMPMeasurements measurements=*static_cast<HMPMeasurements*>(data);
     ui->CH1voltage->display(measurements.CH1_voltage);
     ui->CH1current->display(measurements.CH1_current);

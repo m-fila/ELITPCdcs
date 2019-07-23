@@ -5,7 +5,7 @@ lv_controller::lv_controller(std::string OName, QObject *parent):
 {
 }
 void lv_controller::callSetOutput(bool state){
-       UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
+    //   UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
        UA_Variant input;
        UA_Variant_init(&input);
        UA_Variant_setScalarCopy(&input, &state, &UA_TYPES[UA_TYPES_BOOLEAN]);
@@ -15,7 +15,7 @@ void lv_controller::callSetOutput(bool state){
 }
 
 void lv_controller::callSetChannel(int nr, bool state){
-    UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetChannel"));
+  //  UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetChannel"));
     UA_Variant input[2];
     UA_Variant_init(input);
     UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);

@@ -66,3 +66,117 @@ DTConfiguration DTController::getSettings(){
     dtc.totalVoltageSet= total;
     return dtc;
 }
+
+UA_StatusCode DTController::SetChannelCallback(UA_Server *server,
+                                         const UA_NodeId *sessionId, void *sessionHandle,
+                                         const UA_NodeId *methodId, void *methodContext,
+                                         const UA_NodeId *objectId, void *objectContext,
+                                         size_t inputSize, const UA_Variant *input,
+                                         size_t outputSize, UA_Variant *output){
+    DTController* Monitor=static_cast<DTController*>(methodContext);
+    if(Monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Boolean state = *(UA_Boolean*)input[1].data;
+        DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
+        if(state)
+            Monitor->device->setON(CH);
+        else
+            Monitor->device->setOFF(CH);
+
+    }
+    else {
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetChannel not send");
+    }
+    return UA_STATUSCODE_GOOD;
+
+}
+
+void DTController::addSetChannelMethod(UA_Server* server){
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "ON/OFF");
+    inputArguments[1].name = UA_String_fromChars("State");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel ON/OFF");
+    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setchannel");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+ //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetChannel");
+    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setchannel");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            ObjectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            MethodQName,
+                            methodAttr, &SetChannelCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+  //  UA_NodeId_deleteMembers(&MethodNodeId);
+    UA_QualifiedName_deleteMembers(&MethodQName);
+}
+
+
+UA_StatusCode DTController::SetVoltageCallback(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    DTController* Monitor=static_cast<DTController*>(methodContext);
+    if(Monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Double voltage = *(UA_Double*)input[1].data;
+        DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
+        Monitor->device->setVoltageSet(CH,voltage);
+    }
+    else {
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetChannel not send");
+    }
+    return UA_STATUSCODE_GOOD;
+}
+void DTController::addSetVoltageMethod(UA_Server *server) {
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Voltage");
+    inputArguments[1].name = UA_String_fromChars("Voltage");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's voltage");
+    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setvoltage");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+ //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetVoltage");
+    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setvoltage");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            ObjectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            MethodQName,
+                            methodAttr, &SetChannelCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+  //  UA_NodeId_deleteMembers(&MethodNodeId);
+    UA_QualifiedName_deleteMembers(&MethodQName);
+}

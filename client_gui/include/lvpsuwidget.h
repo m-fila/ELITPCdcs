@@ -33,7 +33,7 @@ public slots:
     void setOutputON();
     void setOutputOFF();
     void updateStatus(void* data);
-    void updateMeasuremnts(void* data);
+    void updateMeasurements(void* data);
     void updateConfiguration(void* data);
 };
 

@@ -74,6 +74,8 @@ void MainWindow::connectSignals(){
     connect(ui->StartPM2, SIGNAL(pressed()), this, SLOT(startPM2()));
     //start HV
     connect(ui->StartHVpsu, SIGNAL(pressed()), this, SLOT(startHVPSU()));
+    connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
+            ,hvPSU->HVController,SLOT(opcInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
 
 }
 
