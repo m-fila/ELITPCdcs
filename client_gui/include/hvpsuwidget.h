@@ -7,9 +7,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
-#include <memory>
 #include "include/hvcontroller.h"
-//#include "DT1415Containers.h"
 #include "kled.h"
 
 
@@ -28,26 +26,23 @@ public:
 public slots:
     void deviceConnect();
     void deviceDisconnect();
-//    void onConnect();
-//    void onDisconnect();
+
     void updateStatus(void *data);
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
 
-//    void updateMeasurements(DT1415Measurements measurements);
-//    void updateChannelStatus(DT1415ChannelStatus channelStatus);
+
 
     void onPressed();
     void offPressed();
     void setVPressed();
     void changeNamePressed();
-    void updateChannelStatus(QString info);
+    void updateStatusLabel(QString info);
 protected:
     void closeEvent(QCloseEvent* e);
 
 private:
     Ui::HVpsuWidget *ui;
-//    std::unique_ptr<HVpsuController> HVpsuControllerPtr;
     QString CHxCustomName[9];
 
     //create layout procedures and variables

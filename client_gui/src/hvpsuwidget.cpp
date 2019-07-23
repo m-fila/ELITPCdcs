@@ -135,7 +135,7 @@ void HVpsuWidget::closeEvent(QCloseEvent* e)
     QWidget::closeEvent(e);
 }
 
-void HVpsuWidget::updateChannelStatus(QString info)
+void HVpsuWidget::updateStatusLabel(QString info)
 {
     ui->statusLabel->setText(info);
 }

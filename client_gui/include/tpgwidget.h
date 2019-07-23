@@ -23,25 +23,29 @@ public:
 
 public slots:
     void deviceConnect();
-    void onConnect();
-    void onDisconnect();
-    void updateStatus(QString info);
+    void deviceDisconnect();
+
+    void updateStatus(void *data);
+    void updateMeasurements(void *data);
+    void updateConfiguration(void *data);
+
+    void updateStatusLabel(QString info);
 
 protected:
     void closeEvent(QCloseEvent* e);
 
 private:
     const char *instanceName;
-    std::unique_ptr<tpg_controller> tpg_controllerPtr;
-
+    tpg_controller *controller;
+    bool connectionState;
     //create layout procedures and variables
     QVBoxLayout *mainLayout;
     QLabel *statusLabel;
     QLabel *connectionStatus;
     QLineEdit *connectionIP;
     QLineEdit *connectionPort;
-    QPushButton *connect;
-    QPushButton *disconnect;
+    QPushButton *connectButton;
+    QPushButton *disconnectButton;
 
     void createLayout();
     void drawLine();

@@ -8,7 +8,7 @@ opc_client::opc_client()
     config->stateCallback=stateCallback;
     config->clientContext=this;
     client_clock=new QTimer;
-    client_clock->start(100);
+    client_clock->start(10);
    // context=this;
 
    // hmp_customType hmp_customType;
@@ -25,7 +25,7 @@ opc_client::~opc_client(){
 void opc_client::iterate(){
     UA_StatusCode retval = UA_Client_connect(client, "opc.tcp://localhost:6666");
     if(retval==UA_STATUSCODE_GOOD){
-    UA_Client_run_iterate(client, 10);
+    UA_Client_run_iterate(client, 1);
     }
 }
 void opc_client::connectSignals(){
@@ -47,7 +47,7 @@ void opc_client::addSubscription(){
     UA_CreateSubscriptionRequest request = UA_CreateSubscriptionRequest_default();
     UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,nullptr, nullptr, nullptr);
     if(response.responseHeader.serviceResult == UA_STATUSCODE_GOOD){
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsciption");
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsrciption");
         emit subCreated(client, config, response);
     }
     else
