@@ -41,7 +41,7 @@ template_variable<T>::template_variable(std::string OName, std::string VName): a
 
 template <class T>
 template_variable<T>::~template_variable(){
-    UA_NodeId_deleteMembers(&VariableId);
+ //   UA_NodeId_deleteMembers(&VariableNodeId);
 }
 
 typedef template_variable<bool> status_variable;

@@ -1,7 +1,7 @@
 #include "../../include/opc/opc_state.h"
 #include <iostream>
-opc_state::opc_state(): opc_object("MachineState"),state(0){
-    VariableName=ObjectName+".State";
+opc_state::opc_state(): opc_object("MachineState"),state(MachineState::Idle){
+    VariableName="State";
 }
 
 
@@ -11,17 +11,17 @@ opc_state::~opc_state(){
 
 void opc_state::init(UA_Server *server){
     addObject(server);
-    addVariable(server,VariableName.c_str(),UA_TYPES[UA_TYPES_INT32],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE));
-    setState(server,MachineState::Idle);
+    VariableNodeId=addVariable2(server,VariableName,UA_TYPES[UA_TYPES_INT32],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE));
+    setState(server,state);
     addSetStateMethod(server);
 }
 
-void opc_state::setState(UA_Server *server, MachineState state){
+void opc_state::setState(UA_Server *server, MachineState State){
     UA_Variant value;
-    UA_Variant_setScalar(&value, &state, &UA_TYPES[UA_TYPES_INT32]);
-    UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
-    UA_Server_writeValue(server, NodeId, value);
-    UA_NodeId_deleteMembers(&NodeId);
+    UA_Variant_setScalar(&value, &State, &UA_TYPES[UA_TYPES_INT32]);
+ //   UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
+    UA_Server_writeValue(server, VariableNodeId, value);
+ //   UA_NodeId_deleteMembers(&NodeId);
 }
 
 
@@ -56,9 +56,9 @@ void opc_state::addSetStateMethod(UA_Server *server) {
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setstate");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
-    UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetState");
+ //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetState");
     UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setstate");
-    UA_Server_addMethodNode(server, MethodNodeId,
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
                             ObjectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             MethodQName,
@@ -66,7 +66,7 @@ void opc_state::addSetStateMethod(UA_Server *server) {
                             1,&inputArgument, 0, nullptr,this, nullptr);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArgument);
-    UA_NodeId_deleteMembers(&MethodNodeId);
+ //   UA_NodeId_deleteMembers(&MethodNodeId);
     UA_QualifiedName_deleteMembers(&MethodQName);
 }
 

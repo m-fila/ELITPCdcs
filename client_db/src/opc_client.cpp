@@ -19,7 +19,6 @@ opc_client::~opc_client(){
 void opc_client::addVariable(abstract_variable *variable){
     variables.push_back(variable);
     Database.createTable(variable->FullName,variable->translateKeys());
-   // std::cout<<variable->translateKeys()<<std::endl;
 }
 
 void opc_client::addSubscription(){
@@ -28,7 +27,9 @@ void opc_client::addSubscription(){
     if(response.responseHeader.serviceResult == UA_STATUSCODE_GOOD){
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsciption");
         for(auto &i : variables) {
+            i->init(client);
             i->addMonitoredItem(client, response);
+
         //    std::cout<<i->translateName()<<std::endl;
         //    std::cout<<i->translateValue()<<std::endl;
         }

@@ -47,10 +47,11 @@ void opc_monitor::StatusReadCallback(UA_Server *server,
 
 
 
-void opc_monitor::addValueCallback(UA_Server *server,UA_NodeId VariableId,  void (*ReadCallback)(UA_Server *server, const UA_NodeId *sessionId,
-                                                                                               void *sessionContext, const UA_NodeId *nodeid,
-                                                                                               void *nodeContext, const UA_NumericRange *range,
-                                                                            const UA_DataValue *value)) {
+void opc_monitor::addValueCallback(UA_Server *server,UA_NodeId VariableId,
+                                   void (*ReadCallback)(UA_Server *server, const UA_NodeId *sessionId,
+                                                         void *sessionContext, const UA_NodeId *nodeid,
+                                                         void *nodeContext, const UA_NumericRange *range,
+                                                         const UA_DataValue *value)) {
        // UA_NodeId currentNodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
         UA_ValueCallback callback;
         callback.onRead = ReadCallback;

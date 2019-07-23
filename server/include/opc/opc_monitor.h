@@ -26,15 +26,13 @@ public:
     void addMeasurementsVariable(UA_Server *server);
     void addConfigurationVariable(UA_Server *server);
     void addStatusVariable(UA_Server *server);
-
-    virtual void disconnectDevice()=0;
-    virtual void connectDevice(TCPConnectionParameters* parameters)=0;
-        //updating via value callback:
-    void addValueCallback(UA_Server *server,UA_NodeId
-                          NVariableId,  void (*ReadCallback)(UA_Server *server, const UA_NodeId *sessionId,
-                                                             void *sessionContext, const UA_NodeId *nodeid,
-                                                             void *nodeContext, const UA_NumericRange *range,
-                                                             const UA_DataValue *value));
+    void addDisconnectDeviceMethod(UA_Server *server);
+    void addConnectDeviceMethod(UA_Server *server);
+    void addValueCallback(UA_Server *server,UA_NodeId VariableId,
+                          void (*ReadCallback)(UA_Server *server, const UA_NodeId *sessionId,
+                                                void *sessionContext, const UA_NodeId *nodeid,
+                                                void *nodeContext, const UA_NumericRange *range,
+                                                const UA_DataValue *value));
     static void MeasurementsReadCallback(UA_Server *server,
                        const UA_NodeId *sessionId, void *sessionContext,
                        const UA_NodeId *nodeid, void *nodeContext,
@@ -48,20 +46,15 @@ public:
                        const UA_NodeId *nodeid, void *nodeContext,
                        const UA_NumericRange *range, const UA_DataValue *data);
 
+
+
+    void addMonitoredItem(UA_Server *server,UA_NodeId VariableId, UA_Double sampling=500.0);
+protected:
     virtual void updateMeasurements(UA_Server *server)=0;
     virtual void updateConfiguration(UA_Server *server)=0;
     virtual void updateStatus(UA_Server *server)=0;
-     //generic device methods:
-     void addDisconnectDeviceMethod(UA_Server *server);
-     void addConnectDeviceMethod(UA_Server *server);
-
-
-
-        // self monitoring via MonitoredItem:
-        //     (alternative to monitoring by TimedCallback defined in opc_server)
-     void addMonitoredItem(UA_Server *server,UA_NodeId VariableId, UA_Double sampling=500.0);
-
-
+    virtual void disconnectDevice()=0;
+    virtual void connectDevice(TCPConnectionParameters* parameters)=0;
 private:
      static void dataChangeNotificationCallback(UA_Server *server, UA_UInt32 monitoredItemId,
                                    void *monitoredItemContext, const UA_NodeId *nodeId,

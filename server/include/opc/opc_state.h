@@ -16,7 +16,7 @@ public:
 
     opc_state();
     ~opc_state();
-    int state;
+    MachineState state;
     void init(UA_Server *server);
 
 private:
@@ -27,9 +27,10 @@ private:
                              const UA_NodeId *objectId, void *objectContext,
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
-    void setState(UA_Server *server, MachineState state);
+    void setState(UA_Server *server, MachineState State);
     void addSetStateMethod(UA_Server *server);
     std::string VariableName;
+    UA_NodeId VariableNodeId;
 };
 
 #endif // OPC_STATE_H

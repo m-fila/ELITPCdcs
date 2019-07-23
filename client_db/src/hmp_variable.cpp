@@ -5,7 +5,7 @@ hmp_variable::hmp_variable(std::string OName,std::string VName): template_variab
 }
 
 hmp_variable::~hmp_variable(){
-    UA_NodeId_deleteMembers(&VariableId);
+ //   UA_NodeId_deleteMembers(&VariableNodeId);
 }
 
 std::string hmp_variable::translateKeys(){

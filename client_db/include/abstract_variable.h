@@ -14,9 +14,8 @@ public:
     const std::string ObjectName;
     const std::string VariableName;
     const std::string FullName;
-
-//    const std::string FullName;
-    UA_NodeId VariableId;
+    UA_NodeId VariableNodeId;
+    void init(UA_Client *client);
     virtual std::string translateValue()=0;
     virtual std::string translateKeys()=0;
     virtual void addMonitoredItem(UA_Client *client,UA_CreateSubscriptionResponse response);
