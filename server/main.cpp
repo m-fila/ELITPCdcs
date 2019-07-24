@@ -1,65 +1,38 @@
-//#include "include/utl/TCPConnector.h"
-//#include "include/hw/HMP2020.h"
-//#include "include/DeviceController.h"
-//#include "include/ConnectionParameters.h"
-//#include <sstream>
-//#include <iostream>
-//#include <time.h>
-//#include <open62541/plugin/log_stdout.h>
-//#include <open62541/server.h>
-//#include <open62541/server_config_default.h>
 #include "include/opc/opc_server.h"
+#include "include/opc/opc_state.h"
 #include "include/opc/hmpcontroller.h"
 #include "include/opc/dtcontroller.h"
-#include "include/opc/opc_state.h"
-
+#include "../common/loader.h"
 
 int main(int argc, char *argv[])
 {
     opc_server server;
 
-/*
-    string ipaddress="192.168.168.20";
-    int port=5025;
-
-    TCPConnectionParameters parameters;
-    parameters.IPaddress=ipaddress;
-    parameters.port=port;
-*/
-    HMPController controller("HMP2");
     opc_state state;
     state.init(server.server);
-    UA_DataTypeArray hmpcustom=controller.customType.DataTypeArray(nullptr); //{nullptr,1,types};
-    server.addCustomTypes(&hmpcustom);
-    controller.customType.addCustomVariableTypeNode(server.server);
-    controller.addObject(server.server);
-    controller.addMeasurementsVariable(server.server);
-    controller.addConfigurationVariable(server.server);
-    controller.addStatusVariable(server.server);
- //   controller.addMonitoredItem(server.server, controller.MeasurementsVariableName);
-    controller.addValueCallback(server.server,controller.MeasurementsId ,controller.MeasurementsReadCallback);
-    controller.addValueCallback(server.server,controller.ConfigurationId ,controller.ConfigurationReadCallback);
-    controller.addValueCallback(server.server,controller.StatusId ,controller.StatusReadCallback);
-    controller.addDisconnectDeviceMethod(server.server);
-    controller.addConnectDeviceMethod(server.server);
-    controller.addSetOutputMethod(server.server);
-    controller.addSetChannelMethod(server.server);
+  //  UA_DataTypeArray hmpcustom=controller.customType.DataTypeArray(nullptr); //{nullptr,1,types};
+//    server.addCustomTypes(&hmpcustom);
 
 
-    DTController dtcontroller("HV1");
-    dtcontroller.addObject(server.server);
-    dtcontroller.customTypeM.addCustomVariableTypeNode(server.server);
-    dtcontroller.customTypeC.addCustomVariableTypeNode(server.server);
-    dtcontroller.addMeasurementsVariable(server.server);
-    dtcontroller.addConfigurationVariable(server.server);
-    dtcontroller.addStatusVariable(server.server);
-    dtcontroller.addValueCallback(server.server,dtcontroller.MeasurementsId ,dtcontroller.MeasurementsReadCallback);
-    dtcontroller.addValueCallback(server.server,dtcontroller.ConfigurationId,dtcontroller.ConfigurationReadCallback);
-    dtcontroller.addValueCallback(server.server,dtcontroller.StatusId ,dtcontroller.StatusReadCallback);
-    dtcontroller.addDisconnectDeviceMethod(server.server);
-    dtcontroller.addConnectDeviceMethod(server.server);
-    dtcontroller.addSetChannelMethod(server.server);
-    dtcontroller.addSetVoltageMethod(server.server);
+    std::vector<opc_monitor*> controllers;
+    for (auto L : loader::parse("../dcs_master/dcs.config")) {
+        opc_monitor* controller;
+        if(L.device=="HMP2020"){
+           controller=new HMPController(L.Id);
+        }
+        else if(L.device=="DT1415ET"){
+          controller=new DTController(L.Id);
+        }
+        else{
+           std::cout<<"CONFIG: Unknown device "<<L.device<<std::endl;
+           continue;
+        }
+        controllers.push_back(controller);
+        controller->init(server.server);
+    }
     server.run();
+
+    for (auto i : controllers)
+        delete i;
 return 0;
 }

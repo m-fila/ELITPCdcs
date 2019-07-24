@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     src/opc/opc_monitor.cpp \
     src/opc/opc_state.cpp \
     src/opc/opc_object.cpp \
-    src/opc/opc_server.cpp
+    src/opc/opc_server.cpp \
+    ../common/loader.cpp
 
 
 
@@ -46,6 +47,7 @@ HEADERS  +=  \
     include/opc/opc_controller.hxx \
     include/opc/opc_state.h \
     include/opc/opc_object.h \
-    include/opc/opc_server.h
+    include/opc/opc_server.h \
+    ../common/loader.h
 
 

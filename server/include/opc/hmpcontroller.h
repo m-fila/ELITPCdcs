@@ -31,7 +31,7 @@ public:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     void addSetChannelMethod(UA_Server *server);
-
+    void init(UA_Server *server);
 private:
     HMPMeasurements getMeasurements();
     HMPMeasurements getSettings();

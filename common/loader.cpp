@@ -19,7 +19,6 @@ std::vector<loader> loader::parse(const char *filename){
                 loader L;
                 iss>>L;
                 loaders.push_back(L);
-                std::cout<<L.device<<","<<L.address<<","<<L.Id<<","<<L.port<<std::endl;
             }
         }
     config.close();

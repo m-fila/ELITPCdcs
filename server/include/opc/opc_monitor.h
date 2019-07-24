@@ -23,6 +23,7 @@ public:
     UA_DataType VariableTypeM;
     UA_DataType VariableTypeC;
 
+    virtual void init(UA_Server *server)=0;
     void addMeasurementsVariable(UA_Server *server);
     void addConfigurationVariable(UA_Server *server);
     void addStatusVariable(UA_Server *server);

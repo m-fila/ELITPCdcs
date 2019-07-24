@@ -4,13 +4,14 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QComboBox>
+#include <QFormLayout>
 #include "opc_client.h"
 #include "state.h"
 #include "lvpsuwidget.h"
 #include "hvpsuwidget.h"
 #include "tpgwidget.h"
 #include "../common/loader.h"
-#include <QFormLayout>
+
 namespace Ui {
 class MainWindow;
 }

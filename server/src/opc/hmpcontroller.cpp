@@ -10,6 +10,20 @@ HMPController::~HMPController(){
     UA_NodeId_deleteMembers(&ObjectNodeId);
 }
 
+void HMPController::init(UA_Server *server){
+    addObject(server);
+    customType.addCustomVariableTypeNode(server);
+    addMeasurementsVariable(server);
+    addConfigurationVariable(server);
+    addStatusVariable(server);
+    addValueCallback(server,MeasurementsId ,MeasurementsReadCallback);
+    addValueCallback(server,ConfigurationId ,ConfigurationReadCallback);
+    addValueCallback(server,StatusId ,StatusReadCallback);
+    addDisconnectDeviceMethod(server);
+    addConnectDeviceMethod(server);
+    addSetOutputMethod(server);
+    addSetChannelMethod(server);
+}
 
 HMPMeasurements HMPController::getMeasurements(){
         string response,ch1_v,ch2_v,ch1_c,ch2_c;
