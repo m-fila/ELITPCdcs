@@ -1,18 +1,18 @@
 #include "include/tpgwidget.h"
 #include <string>
 #include <QSettings>
-
-TPGWidget::TPGWidget(QWidget *parent) : QWidget(parent)
+/*
+TPGWidget::TPGWidget(QWidget *parent) : AbstractWidget(parent)
 {
     createLayout();
     controller = new tpg_controller("");
     connectSignals();
 
 }
-
-TPGWidget::TPGWidget(const char *name) : QWidget()
+*/
+TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
 {   createLayout();
-    instanceName = name;
+//    instanceName = name;
     controller = new tpg_controller(instanceName);
     connectSignals();
 
@@ -38,6 +38,9 @@ void TPGWidget::connectSignals()
     connect(controller,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(controller,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
 
+}
+void TPGWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
+     controller->opcInit(client,config,resp);
 }
 
 void TPGWidget::deviceConnect()

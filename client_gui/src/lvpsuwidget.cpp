@@ -4,15 +4,13 @@
 #include <iostream>
 #include <QSettings>
 
-LVpsuWidget::LVpsuWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::LVpsuWidget)
+LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent), ui(new Ui::LVpsuWidget)
 {
     ui->setupUi(this);
 
     ui->connectionIP->setText(QSettings().value("LVpsuIP").toString());
     ui->connectionPort->setText(QSettings().value("LVpsuPort").toString());
-    LVController=new lv_controller("HMP2");
+    LVController=new lv_controller(instanceName);
     connectSignals();
 }
 
@@ -35,6 +33,10 @@ void LVpsuWidget::connectSignals(){
     connect(ui->CH2off,SIGNAL(clicked(bool)),this, SLOT(setCH2OFF()));
     connect(ui->outputON,SIGNAL(clicked(bool)),this, SLOT(setOutputON()));
     connect(ui->outputOFF,SIGNAL(clicked(bool)),this, SLOT(setOutputOFF()));
+}
+
+void LVpsuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
+     LVController->opcInit(client,config,resp);
 }
 
 

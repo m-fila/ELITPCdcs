@@ -1,13 +1,13 @@
 #ifndef HVPSUWIDGET_H
 #define HVPSUWIDGET_H
 
-#include <QWidget>
+#include "abstractwidget.h"
 #include <QGroupBox>
 #include <QLCDNumber>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
-#include "include/hvcontroller.h"
+#include "hvcontroller.h"
 #include "kled.h"
 
 
@@ -15,12 +15,12 @@ namespace Ui {
 class HVpsuWidget;
 }
 
-class HVpsuWidget : public QWidget
+class HVpsuWidget : public AbstractWidget
 {
     Q_OBJECT
 
 public:
-    explicit HVpsuWidget(QWidget *parent = 0);
+    explicit HVpsuWidget(std::string name, QWidget *parent = 0);
     ~HVpsuWidget();
     hv_controller *HVController;
 public slots:
@@ -30,7 +30,7 @@ public slots:
     void updateStatus(void *data);
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
-
+    void controllerInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse);
 
 
     void onPressed();

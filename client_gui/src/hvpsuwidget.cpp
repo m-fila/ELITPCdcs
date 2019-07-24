@@ -7,9 +7,7 @@
 #include <QInputDialog>
 #include <QGridLayout>
 
-HVpsuWidget::HVpsuWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::HVpsuWidget)
+HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent), ui(new Ui::HVpsuWidget)
 {
     ui->setupUi(this);
     loadConfig();   //need to be called first because create functions use some settings!
@@ -19,7 +17,7 @@ HVpsuWidget::HVpsuWidget(QWidget *parent) :
 
     ui->connectionIP->setText(QSettings().value("HVpsu/IP").toString());
     ui->connectionPort->setText(QSettings().value("HVpsu/Port").toString());
-    HVController=new hv_controller("HV1");
+    HVController=new hv_controller(instanceName);
     connectSignals();
 }
 
@@ -37,7 +35,9 @@ void HVpsuWidget::connectSignals(){
     connect(HVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(HVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
 }
-
+void HVpsuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
+     HVController->opcInit(client,config,resp);
+}
 
 void HVpsuWidget::updateStatus(void *data){
     bool isConnected=*static_cast<bool*>(data);

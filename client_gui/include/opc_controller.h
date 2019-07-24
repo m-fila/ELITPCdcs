@@ -7,6 +7,8 @@ class opc_controller: public opcQObject
     Q_OBJECT
 public:
     opc_controller(std::string OName,QObject *parent=0);
+    void opcInit(UA_Client *client, UA_ClientConfig *config,
+                         UA_CreateSubscriptionResponse response);
     void callConnect(std::string IPAddress,int port);
     void callDisconnect();
 protected:
@@ -26,8 +28,7 @@ protected:
                                       UA_UInt32 monId, void *monContext, UA_DataValue *value);
     virtual void browseIds();
 public slots:
-    void opcInit(UA_Client *client, UA_ClientConfig *config,
-                         UA_CreateSubscriptionResponse response);
+
 signals:
     void statusChanged(void*);
     void measurementsChanged(void*);

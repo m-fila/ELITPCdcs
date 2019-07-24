@@ -2,11 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPushButton>
+#include <QComboBox>
 #include "opc_client.h"
 #include "state.h"
 #include "lvpsuwidget.h"
 #include "hvpsuwidget.h"
 #include "tpgwidget.h"
+#include "../common/loader.h"
+#include <QFormLayout>
 namespace Ui {
 class MainWindow;
 }
@@ -22,24 +26,17 @@ public:
 protected:
     void closeEvent(QCloseEvent* e);
 
-private slots:
-    void startLVPSU();
-    void startHVPSU();
-    void startPM1();
-    void startPM2();
-
 private:
     Ui::MainWindow *ui;
     opc_client *client;
     stateMachine* statemachine;
-    LVpsuWidget *lvPSU;
-    HVpsuWidget *hvPSU;
-    TPGWidget *pm1;
-    TPGWidget *pm2;
-
+    std::vector<QPushButton*> startButtons;
+    std::vector<AbstractWidget*> deviceWidgets;
+    QComboBox *stateBox;
+    QSpacerItem *spacer;
+    QFormLayout *stateLayout;
+    void loadConfigFile();
     void connectSignals();
-
-
+    void buildStateBox();
 };
-
 #endif // MAINWINDOW_H
