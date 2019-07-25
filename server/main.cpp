@@ -10,8 +10,15 @@ int main(int argc, char *argv[])
 
     opc_state state;
     state.init(server.server);
-  //  UA_DataTypeArray hmpcustom=controller.customType.DataTypeArray(nullptr); //{nullptr,1,types};
-//    server.addCustomTypes(&hmpcustom);
+
+    hmp_customType hmp;
+    dtm_customType dtm;
+    dtc_customType dtc;
+
+    UA_DataTypeArray dtmcustom=dtm.DataTypeArray(nullptr);
+    UA_DataTypeArray dtccustom=dtc.DataTypeArray(&dtmcustom);
+    UA_DataTypeArray hmpcustom=hmp.DataTypeArray(&dtccustom);//{nullptr,1,types};
+    server.addCustomTypes(&dtccustom);
 
 
     std::vector<opc_monitor*> controllers;

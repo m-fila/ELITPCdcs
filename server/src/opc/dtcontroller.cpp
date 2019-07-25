@@ -189,7 +189,7 @@ void DTController::addSetVoltageMethod(UA_Server *server) {
                             ObjectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             MethodQName,
-                            methodAttr, &SetChannelCallback,
+                            methodAttr, &SetVoltageCallback,
                             2,inputArguments, 0, nullptr,this, nullptr);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArguments[0]);

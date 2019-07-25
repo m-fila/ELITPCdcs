@@ -27,6 +27,9 @@ public:
     string getIdentifier();
     string getVoltageSet(CHANNEL channel);
     string getVoltage(CHANNEL channel);
+    string getVoltageMax(CHANNEL channel);
+    string getRampUp(CHANNEL channel);
+    string getRampDown(CHANNEL channel);
     string getStatus(CHANNEL channel);
     string getCurrent(CHANNEL channel);
     string getCurrentSet(CHANNEL channel);
@@ -34,7 +37,9 @@ public:
     void setON(CHANNEL channel);
     void setOFF(CHANNEL channel);
     void setVoltageSet(CHANNEL channel, double value);
-    void setVoltageMax(CHANNEL channel, string value);
+    void setVoltageMax(CHANNEL channel, double value);
+    void setRampUp(CHANNEL channel,double value);
+    void setRampDown(CHANNEL,double value);
 
 private:
     const std::map<CMD,string> CommandsMap = {{CMD::MON, "MON"},{CMD::SET,"SET"}};
