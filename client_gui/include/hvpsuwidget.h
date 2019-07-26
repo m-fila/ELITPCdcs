@@ -61,6 +61,13 @@ private:
     QWidget *tabCHx[9];
     QLabel *tabCHxCustomName[9];
     QPushButton *tabCHxChangeName[9];
+    QLabel *tabCHxSTATUS[8];
+    QPushButton *tabCHxSetVMAX[8];
+    QLabel *tabCHxVMAX[8];
+    QPushButton *tabCHxSetRUP[8];
+    QLabel *tabCHxRUP[8];
+    QPushButton *tabCHxSetRDWN[8];
+    QLabel *tabCHxRDWN[8];
 
     bool isRemotePrevious;
     bool initialUpdate;

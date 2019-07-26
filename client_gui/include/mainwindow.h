@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QComboBox>
-#include <QFormLayout>
 #include "opc_client.h"
 #include "state.h"
 #include "lvpsuwidget.h"
@@ -34,8 +33,6 @@ private:
     std::vector<QPushButton*> startButtons;
     std::vector<AbstractWidget*> deviceWidgets;
     QComboBox *stateBox;
-    QSpacerItem *spacer;
-    QFormLayout *stateLayout;
     void loadConfigFile();
     void connectSignals();
     void buildStateBox();

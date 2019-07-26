@@ -34,6 +34,27 @@ public:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     void addSetVoltageMethod(UA_Server *server);
+    static UA_StatusCode SetVoltageMaxCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
+    void addSetVoltageMaxMethod(UA_Server *server);
+    static UA_StatusCode SetRampUpCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
+    void addSetRampUpMethod(UA_Server *server);
+    static UA_StatusCode SetRampDownCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
+    void addSetRampDownMethod(UA_Server *server);
     void init(UA_Server *server);
 private:
     DTMeasurements getMeasurements();

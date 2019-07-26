@@ -430,7 +430,6 @@ void HVpsuWidget::createChannelTabs()
         QHBoxLayout *qhbCustomName = new QHBoxLayout();
         tabCHxCustomName[i] = new QLabel("");
         qhbCustomName->addWidget(tabCHxCustomName[i]);
-
         qhbCustomName->addStretch();
 
         tabCHxChangeName[i] = new QPushButton("Change name");
@@ -442,7 +441,13 @@ void HVpsuWidget::createChannelTabs()
 
         //create channel status box
         QGroupBox *channelStatusBox = new QGroupBox("Channel status");
+        QHBoxLayout *qhbStatus = new QHBoxLayout();
+        tabCHxSTATUS[i]=new QLabel(".");
+        qhbStatus->addWidget(tabCHxSTATUS[i]);
+        qhbStatus->addStretch();
+        channelStatusBox->setLayout(qhbStatus);
         qvb->addWidget(channelStatusBox);
+
 
         //create all measurements box
         QGroupBox *channelMeasurementsBox = new QGroupBox("Channel measurements");
@@ -450,6 +455,88 @@ void HVpsuWidget::createChannelTabs()
 
         //create channel settings box
         QGroupBox *channelSettingsBox = new QGroupBox("Channel settings");
+        QHBoxLayout *qhbSettings = new QHBoxLayout();
+      //  tabSTATUSx[i]=new QLabel(".");
+      //  qhbSettings->addWidget(tabSTATUSx[i]);
+       //qhbSettings->addStretch();
+        channelSettingsBox->setLayout(qhbSettings);
+        // begin VMAX
+        QLabel *VMAXLabel;
+        VMAXLabel = new QLabel("VMAX [V]:");
+        qhbSettings->addWidget(VMAXLabel);
+        tabCHxVMAX[i] = new QLabel("");
+        tabCHxVMAX[i]->setFixedWidth(40);
+        QFont fontMAX = tabCHxVMAX[i]->font();
+        //font.setPointSize(72);
+        fontMAX.setBold(true);
+        tabCHxVMAX[i]->setFont(fontMAX);
+        tabCHxVMAX[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        QString valMAX;
+        valMAX.sprintf("%6.1lf", 0.0);
+        allTabVset[i]->setText(valMAX);
+        qhbSettings->addWidget(tabCHxVMAX[i]);
+        //end VMAX
+        //begin setVMAX
+        tabCHxSetVMAX[i] = new QPushButton("Set VMAX");
+        tabCHxSetVMAX[i]->setFixedWidth(70);
+        tabCHxSetVMAX[i]->setEnabled(false);
+        if(i!=8)
+        qhbSettings->addWidget(tabCHxSetVMAX[i]);
+      //connect(allTabSetV[i], SIGNAL(pressed()), this, SLOT(setVPressed()));
+        //end setVMAX
+        qhbSettings->addStretch();
+        // begin RUP
+        QLabel *RUPLabel;
+        RUPLabel = new QLabel("Ramp Up [V/s]:");
+        qhbSettings->addWidget(RUPLabel);
+        tabCHxRUP[i] = new QLabel("");
+        tabCHxRUP[i]->setFixedWidth(40);
+        QFont fontRUP = tabCHxRUP[i]->font();
+        //font.setPointSize(72);
+        fontMAX.setBold(true);
+        tabCHxRUP[i]->setFont(fontRUP);
+        tabCHxRUP[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        QString valRUP;
+        valRUP.sprintf("%6.1lf", 0.0);
+        allTabVset[i]->setText(valRUP);
+        qhbSettings->addWidget(tabCHxRUP[i]);
+        //end RUP
+        //begin setRUP
+        tabCHxSetRUP[i] = new QPushButton("Set RUP");
+        tabCHxSetRUP[i]->setFixedWidth(70);
+        tabCHxSetRUP[i]->setEnabled(false);
+        if(i!=8)
+        qhbSettings->addWidget(tabCHxSetRUP[i]);
+       //connect(allTabSetV[i], SIGNAL(pressed()), this, SLOT(setVPressed()));
+        //end setRUP
+        qhbSettings->addStretch();
+        // begin RDWN
+        QLabel *RDWNLabel;
+        RDWNLabel = new QLabel("Ramp Down [V/s]:");
+        qhbSettings->addWidget(RDWNLabel);
+        tabCHxRDWN[i] = new QLabel("");
+        tabCHxRDWN[i]->setFixedWidth(40);
+        QFont fontRDWN = tabCHxRDWN[i]->font();
+        //font.setPointSize(72);
+        fontMAX.setBold(true);
+        tabCHxRDWN[i]->setFont(fontRDWN);
+        tabCHxRDWN[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        QString valRDWN;
+        valRDWN.sprintf("%6.1lf", 0.0);
+        allTabVset[i]->setText(valRDWN);
+        qhbSettings->addWidget(tabCHxRDWN[i]);
+        //end RDWN
+        //begin setRDWN
+        tabCHxSetRDWN[i] = new QPushButton("Set RDWN");
+        tabCHxSetRDWN[i]->setFixedWidth(70);
+        tabCHxSetRDWN[i]->setEnabled(false);
+        qhbSettings->addWidget(tabCHxSetRDWN[i]);
+      //connect(allTabSetV[i], SIGNAL(pressed()), this, SLOT(setVPressed()));
+
+        //end setRDWN
+
+
+
         qvb->addWidget(channelSettingsBox);
 
         qvb->addStretch();

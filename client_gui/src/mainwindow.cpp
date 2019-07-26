@@ -1,6 +1,6 @@
 #include "include/mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QFormLayout>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -29,9 +29,9 @@ void MainWindow::buildStateBox(){
     stateBox->addItem("Empty");
     stateBox->addItem("Filing");
     stateBox->addItem("Ready");
-    stateLayout=new QFormLayout();
+    QFormLayout *stateLayout=new QFormLayout();
     stateLayout->addRow("state:",stateBox);
-    spacer=new QSpacerItem(20,40,QSizePolicy::Fixed,QSizePolicy::Expanding);
+    QSpacerItem *spacer=new QSpacerItem(20,40,QSizePolicy::Fixed,QSizePolicy::Expanding);
     ui->verticalLayout->addSpacerItem(spacer);
     ui->verticalLayout->addLayout(stateLayout);
 }
