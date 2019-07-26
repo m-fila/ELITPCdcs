@@ -104,6 +104,23 @@ string DT1415ET::getVoltageSet(CHANNEL channel)
     return extractCommandValue(resp);
 }
 
+string DT1415ET::getVoltageMax(CHANNEL channel)
+{
+    string resp = sendDT1415ETcommand(CMD::MON, channel, "VMAX", "");
+    return extractCommandValue(resp);
+}
+
+string DT1415ET::getRampUp(CHANNEL channel)
+{
+    string resp = sendDT1415ETcommand(CMD::MON, channel, "RUP", "");
+    return extractCommandValue(resp);
+}
+string DT1415ET::getRampDown(CHANNEL channel)
+{
+    string resp = sendDT1415ETcommand(CMD::MON, channel, "RDW", "");
+    return extractCommandValue(resp);
+}
+
 string DT1415ET::getVoltage(CHANNEL channel)
 {
     string resp = sendDT1415ETcommand(CMD::MON, channel, "VMON", "");
@@ -112,7 +129,7 @@ string DT1415ET::getVoltage(CHANNEL channel)
 
 string DT1415ET::getStatus(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "STAT", "");
+    string resp = sendDT1415ETcommand(CMD::MON, channel, "STATUS", "");
     return extractCommandValue(resp);
 }
 
@@ -152,7 +169,34 @@ void DT1415ET::setVoltageSet(CHANNEL channel, double value)
     }
 }
 
-void DT1415ET::setVoltageMax(CHANNEL channel, string value)
+void DT1415ET::setVoltageMax(CHANNEL channel, double value)
 {
+    if(isRemote())
+    {
+        std::ostringstream sb;
+        sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
+        //std::cout << sb.str() << std::endl;
+        sendDT1415ETcommand(CMD::SET, channel, "SVMAX", sb.str());
+    }
+}
 
+void DT1415ET::setRampUp(CHANNEL channel, double value)
+{
+    if(isRemote())
+    {
+        std::ostringstream sb;
+        sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
+        //std::cout << sb.str() << std::endl;
+        sendDT1415ETcommand(CMD::SET, channel, "RUP", sb.str());
+    }
+}
+void DT1415ET::setRampDown(CHANNEL channel, double value)
+{
+    if(isRemote())
+    {
+        std::ostringstream sb;
+        sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
+        //std::cout << sb.str() << std::endl;
+        sendDT1415ETcommand(CMD::SET, channel, "RDW", sb.str());
+    }
 }

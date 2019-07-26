@@ -2,11 +2,31 @@
 #include <sstream>
 DTController::DTController(std::string name): opc_template_controller<DTMeasurements,DTConfiguration,DT1415ET>(name){
     VariableTypeM=customTypeM.Type;
-    VariableTypeC=customTypeC.Type;
+    VariableTypeC=customTypeC.Type;    
 }
 
 DTController::~DTController(){
     UA_NodeId_deleteMembers(&ObjectNodeId);
+}
+
+
+void DTController::init(UA_Server* server){
+    addObject(server);
+    customTypeM.addCustomVariableTypeNode(server);
+    customTypeC.addCustomVariableTypeNode(server);
+    addMeasurementsVariable(server);
+    addConfigurationVariable(server);
+    addStatusVariable(server);
+    addValueCallback(server,MeasurementsId ,MeasurementsReadCallback);
+    addValueCallback(server,ConfigurationId,ConfigurationReadCallback);
+    addValueCallback(server,StatusId ,StatusReadCallback);
+    addDisconnectDeviceMethod(server);
+    addConnectDeviceMethod(server);
+    addSetChannelMethod(server);
+    addSetVoltageMethod(server);
+    addSetVoltageMaxMethod(server);
+    addSetRampUpMethod(server);
+    addSetRampDownMethod(server);
 }
 
 DTMeasurements DTController::getMeasurements(){
@@ -142,7 +162,7 @@ UA_StatusCode DTController::SetVoltageCallback(UA_Server *server,
         Monitor->device->setVoltageSet(CH,voltage);
     }
     else {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetChannel not send");
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetVoltage not send");
     }
     return UA_STATUSCODE_GOOD;
 }
@@ -172,7 +192,168 @@ void DTController::addSetVoltageMethod(UA_Server *server) {
                             ObjectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             MethodQName,
-                            methodAttr, &SetChannelCallback,
+                            methodAttr, &SetVoltageCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+  //  UA_NodeId_deleteMembers(&MethodNodeId);
+    UA_QualifiedName_deleteMembers(&MethodQName);
+}
+
+UA_StatusCode DTController::SetVoltageMaxCallback(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    DTController* Monitor=static_cast<DTController*>(methodContext);
+    if(Monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Double voltage = *(UA_Double*)input[1].data;
+        DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
+        Monitor->device->setVoltageMax(CH,voltage);
+    }
+    else {
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetVoltageMax not send");
+    }
+    return UA_STATUSCODE_GOOD;
+}
+void DTController::addSetVoltageMaxMethod(UA_Server *server) {
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Voltage");
+    inputArguments[1].name = UA_String_fromChars("Voltage");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's voltage max");
+    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setvoltagemax");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+ //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetVoltage");
+    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setvoltagemax");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            ObjectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            MethodQName,
+                            methodAttr, &SetVoltageMaxCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+  //  UA_NodeId_deleteMembers(&MethodNodeId);
+    UA_QualifiedName_deleteMembers(&MethodQName);
+}
+
+UA_StatusCode DTController::SetRampUpCallback(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    DTController* Monitor=static_cast<DTController*>(methodContext);
+    if(Monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Double voltage = *(UA_Double*)input[1].data;
+        DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
+        Monitor->device->setRampUp(CH,voltage);
+    }
+    else {
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetRampUp not send");
+    }
+    return UA_STATUSCODE_GOOD;
+}
+void DTController::addSetRampUpMethod(UA_Server *server) {
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "V/s");
+    inputArguments[1].name = UA_String_fromChars("Ramp up");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's ramp up");
+    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setrampup");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+ //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetVoltage");
+    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setrampup");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            ObjectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            MethodQName,
+                            methodAttr, &SetRampUpCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+  //  UA_NodeId_deleteMembers(&MethodNodeId);
+    UA_QualifiedName_deleteMembers(&MethodQName);
+}
+UA_StatusCode DTController::SetRampDownCallback(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    DTController* Monitor=static_cast<DTController*>(methodContext);
+    if(Monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Double voltage = *(UA_Double*)input[1].data;
+        DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
+        Monitor->device->setRampDown(CH,voltage);
+    }
+    else {
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetRampDown not send");
+    }
+    return UA_STATUSCODE_GOOD;
+}
+void DTController::addSetRampDownMethod(UA_Server *server) {
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "V/s");
+    inputArguments[1].name = UA_String_fromChars("Ramp down");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's ramp down");
+    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setrampdown");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+ //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetVoltage");
+    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setrampdown");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            ObjectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            MethodQName,
+                            methodAttr, &SetRampDownCallback,
                             2,inputArguments, 0, nullptr,this, nullptr);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArguments[0]);
