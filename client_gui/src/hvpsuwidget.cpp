@@ -20,6 +20,12 @@ HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name
     HVController=new hv_controller(instanceName);
     connectSignals();
 }
+HVpsuWidget::HVpsuWidget(std::string name, std::string address, std::string port, QWidget *parent): HVpsuWidget(name,parent){
+    if(address.size()!=0 && port.size()!=0){
+        ui->connectionIP->setText(QString::fromStdString(address));
+        ui->connectionPort->setText(QString::fromStdString(port));
+    }
+}
 
 HVpsuWidget::~HVpsuWidget()
 {
@@ -464,7 +470,7 @@ void HVpsuWidget::createChannelTabs()
         QLabel *VMAXLabel;
         VMAXLabel = new QLabel("VMAX [V]:");
         qhbSettings->addWidget(VMAXLabel);
-        tabCHxVMAX[i] = new QLabel("");
+        tabCHxVMAX[i] = new QLabel();
         tabCHxVMAX[i]->setFixedWidth(40);
         QFont fontMAX = tabCHxVMAX[i]->font();
         //font.setPointSize(72);
@@ -473,12 +479,12 @@ void HVpsuWidget::createChannelTabs()
         tabCHxVMAX[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
         QString valMAX;
         valMAX.sprintf("%6.1lf", 0.0);
-        allTabVset[i]->setText(valMAX);
+        tabCHxVMAX[i]->setText(valMAX);
         qhbSettings->addWidget(tabCHxVMAX[i]);
         //end VMAX
         //begin setVMAX
         tabCHxSetVMAX[i] = new QPushButton("Set VMAX");
-        tabCHxSetVMAX[i]->setFixedWidth(70);
+       // tabCHxSetVMAX[i]->setFixedWidth(70);
         tabCHxSetVMAX[i]->setEnabled(false);
         if(i!=8)
         qhbSettings->addWidget(tabCHxSetVMAX[i]);
@@ -493,17 +499,17 @@ void HVpsuWidget::createChannelTabs()
         tabCHxRUP[i]->setFixedWidth(40);
         QFont fontRUP = tabCHxRUP[i]->font();
         //font.setPointSize(72);
-        fontMAX.setBold(true);
+        fontRUP.setBold(true);
         tabCHxRUP[i]->setFont(fontRUP);
         tabCHxRUP[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
         QString valRUP;
         valRUP.sprintf("%6.1lf", 0.0);
-        allTabVset[i]->setText(valRUP);
+        tabCHxRUP[i]->setText(valRUP);
         qhbSettings->addWidget(tabCHxRUP[i]);
         //end RUP
         //begin setRUP
         tabCHxSetRUP[i] = new QPushButton("Set RUP");
-        tabCHxSetRUP[i]->setFixedWidth(70);
+       // tabCHxSetRUP[i]->setFixedWidth(70);
         tabCHxSetRUP[i]->setEnabled(false);
         if(i!=8)
         qhbSettings->addWidget(tabCHxSetRUP[i]);
@@ -518,17 +524,17 @@ void HVpsuWidget::createChannelTabs()
         tabCHxRDWN[i]->setFixedWidth(40);
         QFont fontRDWN = tabCHxRDWN[i]->font();
         //font.setPointSize(72);
-        fontMAX.setBold(true);
+        fontRDWN.setBold(true);
         tabCHxRDWN[i]->setFont(fontRDWN);
         tabCHxRDWN[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
         QString valRDWN;
         valRDWN.sprintf("%6.1lf", 0.0);
-        allTabVset[i]->setText(valRDWN);
+        tabCHxRDWN[i]->setText(valRDWN);
         qhbSettings->addWidget(tabCHxRDWN[i]);
         //end RDWN
         //begin setRDWN
         tabCHxSetRDWN[i] = new QPushButton("Set RDWN");
-        tabCHxSetRDWN[i]->setFixedWidth(70);
+       // tabCHxSetRDWN[i]->setFixedWidth(70);
         tabCHxSetRDWN[i]->setEnabled(false);
         qhbSettings->addWidget(tabCHxSetRDWN[i]);
       //connect(allTabSetV[i], SIGNAL(pressed()), this, SLOT(setVPressed()));

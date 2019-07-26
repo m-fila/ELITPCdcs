@@ -58,14 +58,14 @@ void MainWindow::loadConfigFile(){
 
         AbstractWidget* new_widget;
         if(L.device=="HMP2020"){
-           new_widget=new LVpsuWidget(L.Id);
+           new_widget=new LVpsuWidget(L.Id,L.address,L.port);
 
         }
         else if(L.device=="DT1415ET"){
-          new_widget=new HVpsuWidget(L.Id);
+          new_widget=new HVpsuWidget(L.Id,L.address,L.port);
         }
         else if(L.device=="TPG362"){
-          new_widget=new TPGWidget(L.Id);
+          new_widget=new TPGWidget(L.Id,L.address,L.port);
         }
         else{
            std::cout<<"Unknown device:"<<L.device<<std::endl;

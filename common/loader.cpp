@@ -3,8 +3,8 @@
 std::istream &operator>>(std::istream &input,loader &L){
     std::getline(input,L.device,':');
     std::getline(input>>std::ws,L.Id,' ');
-    std::getline(input,L.address,' ');
-    std::getline(input,L.port);
+    std::getline(input>>std::ws,L.address,' ');
+    std::getline(input>>std::ws,L.port,' ');
     return input;
 }
 

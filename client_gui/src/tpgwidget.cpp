@@ -1,6 +1,7 @@
 #include "include/tpgwidget.h"
 #include <string>
 #include <QSettings>
+#include <iostream>
 /*
 TPGWidget::TPGWidget(QWidget *parent) : AbstractWidget(parent)
 {
@@ -22,6 +23,12 @@ TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,par
     Port.append("/Port");
     connectionIP->setText(QSettings().value(IP.c_str()).toString());
     connectionPort->setText(QSettings().value(Port.c_str()).toString());
+}
+TPGWidget::TPGWidget(std::string name, std::string address, std::string port, QWidget *parent): TPGWidget(name,parent){
+    if(address.size()!=0 && port.size()!=0){
+        connectionIP->setText(QString::fromStdString(address));
+        connectionPort->setText(QString::fromStdString(port));
+    }
 }
 
 TPGWidget::~TPGWidget()

@@ -21,6 +21,7 @@ class HVpsuWidget : public AbstractWidget
 
 public:
     explicit HVpsuWidget(std::string name, QWidget *parent = 0);
+    explicit HVpsuWidget(std::string name, std::string address, std::string port,QWidget* parent=0);
     ~HVpsuWidget();
     hv_controller *HVController;
 public slots:

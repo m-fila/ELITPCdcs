@@ -14,6 +14,7 @@ class LVpsuWidget : public AbstractWidget
 
 public:
     explicit LVpsuWidget(std::string name,QWidget *parent = 0);
+    explicit LVpsuWidget(std::string name, std::string address, std::string port, QWidget* parent=0);
 //    LVpsuWidget(std::string name);
     ~LVpsuWidget();
     lv_controller *LVController;

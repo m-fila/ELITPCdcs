@@ -17,8 +17,8 @@ class TPGWidget : public AbstractWidget
     Q_OBJECT
 
 public:
-    explicit TPGWidget(std::string,QWidget *parent = 0);
-//    TPGWidget(std::string name);
+    explicit TPGWidget(std::string name, QWidget *parent = 0);
+    explicit TPGWidget(std::string name, std::string address, std::string port, QWidget *parent = 0);
     ~TPGWidget();
 
 public slots:

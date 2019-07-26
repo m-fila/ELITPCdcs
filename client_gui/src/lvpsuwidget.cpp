@@ -13,7 +13,12 @@ LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent) : AbstractWidget(nam
     LVController=new lv_controller(instanceName);
     connectSignals();
 }
-
+LVpsuWidget::LVpsuWidget(std::string name, std::string address, std::string port, QWidget *parent): LVpsuWidget(name,parent){
+    if(address.size()!=0 && port.size()!=0){
+        ui->connectionIP->setText(QString::fromStdString(address));
+        ui->connectionPort->setText(QString::fromStdString(port));
+    }
+}
 LVpsuWidget::~LVpsuWidget()
 {
     delete ui;
