@@ -13,8 +13,8 @@ public:
     void setConnectionStream(ConnectionStream* stream);
     void resetConnectionStream();
     bool isConnected() {return connected;}
-    void sendCommand(string command);
-    string sendWithResponse(string command);
+    void sendCommand(std::string command);
+    std::string sendWithResponse(std::string command);
 
 
 protected:

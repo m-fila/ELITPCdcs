@@ -22,7 +22,7 @@ void GenericDevice::resetConnectionStream()
     connected = false;
 }
 
-void GenericDevice::sendCommand(string command)
+void GenericDevice::sendCommand(std::string command)
 {
     if(isConnected())
     {
@@ -30,7 +30,7 @@ void GenericDevice::sendCommand(string command)
     }
 }
 
-string GenericDevice::sendWithResponse(string command)
+std::string GenericDevice::sendWithResponse(std::string command)
 {
     if(isConnected())
     {
