@@ -1,11 +1,9 @@
 #include "../../include/opc/opc_monitor.h"
 #include <iostream>
 opc_monitor::opc_monitor(std::string name): opc_object(name),
-//    ObjectName(name),
     MeasurementsVariableName("Measurements"),
     ConfigurationVariableName("Configuration"),
-    StatusVariableName("Status")
-{//ObjectNodeId=UA_NODEID_STRING_ALLOC(1,name.c_str());
+    StatusVariableName("Status"){
 }
 
 opc_monitor::~opc_monitor(){
@@ -15,9 +13,11 @@ opc_monitor::~opc_monitor(){
 void opc_monitor::addMeasurementsVariable(UA_Server *server){
     MeasurementsId= addVariable2(server,"Measurements",VariableTypeM,VariableTypeM.typeId);
 }
+
 void opc_monitor::addConfigurationVariable(UA_Server *server){
     ConfigurationId=addVariable2(server,"Configuration",VariableTypeC,VariableTypeC.typeId);
 }
+
 void opc_monitor::addStatusVariable(UA_Server *server){
     StatusId=addVariable2(server,"Status",UA_TYPES[UA_TYPES_BOOLEAN],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE) );
 }
@@ -28,21 +28,23 @@ void opc_monitor::MeasurementsReadCallback(UA_Server *server,
                    const UA_NodeId *nodeid, void *nodeContext,
                    const UA_NumericRange *range, const UA_DataValue *data){
         opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
-        Monitor->updateMeasurements(server);
+        Monitor->updateMeasurementsVariable(server);
         }
+
 void opc_monitor::ConfigurationReadCallback(UA_Server *server,
                    const UA_NodeId *sessionId, void *sessionContext,
                    const UA_NodeId *nodeid, void *nodeContext,
                    const UA_NumericRange *range, const UA_DataValue *data){
         opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
-        Monitor->updateConfiguration(server);
+        Monitor->updateConfigurationVariable(server);
         }
+
 void opc_monitor::StatusReadCallback(UA_Server *server,
                    const UA_NodeId *sessionId, void *sessionContext,
                    const UA_NodeId *nodeid, void *nodeContext,
                    const UA_NumericRange *range, const UA_DataValue *data){
         opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
-        Monitor->updateStatus(server);
+        Monitor->updateStatusVariable(server);
         }
 
 

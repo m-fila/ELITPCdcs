@@ -1,44 +1,63 @@
 template <class M,class C,class D>
-void opc_template_controller<M,C,D>::updateMeasurements(UA_Server *server){
+void opc_template_controller<M,C,D>::updateMeasurementsVariable(UA_Server *server){
+
+ //   if(isConnected()){
+ //       M now =getMeasurements();
+        UA_Variant value;
+ //       UA_Variant_setScalar(&value, &now, &VariableTypeM);
+        std::lock_guard<std::mutex> lock(mMutex);
+        UA_Variant_setScalar(&value, &measurements, &VariableTypeM);
+        UA_Server_writeValue(server, MeasurementsId, value);
+
+  //  }
+
+}
+
+template <class M,class C,class D>
+void opc_template_controller<M,C,D>::updateConfigurationVariable(UA_Server *server){
+
+   // if(isConnected()){
+  //      C now =getSettings();
+        UA_Variant value;
+  //      UA_Variant_setScalar(&value, &now, &VariableTypeC);
+        std::lock_guard<std::mutex> lock(cMutex);
+        UA_Variant_setScalar(&value, &configuration, &VariableTypeC);
+        UA_Server_writeValue(server, ConfigurationId, value);
+
+ //   }
+
+}
+
+
+template <class M,class C,class D>
+void opc_template_controller<M,C,D>::updateStatusVariable(UA_Server *server){
+    std::lock_guard<std::mutex> lock(deviceMutex);
+    UA_Boolean now =isConnected();
+    UA_Variant value;
+    UA_Variant_setScalar(&value, &now, &UA_TYPES[UA_TYPES_BOOLEAN]);
+    UA_Server_writeValue(server, StatusId, value);
+}
+
+
+
+//?????????????????????????????????????????????????????????????????????????????
+
+template <class M,class C,class D>
+void opc_template_controller<M,C,D>::updateMeasurements(){
     if(isConnected()){
         M now =getMeasurements();
-        UA_Variant value;
-        UA_Variant_setScalar(&value, &now, &VariableTypeM);
-      //  UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, MeasurementsVariableName.c_str());
-        UA_Server_writeValue(server, MeasurementsId, value);
-      //  UA_NodeId_deleteMembers(&NodeId);
- //       UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Measurements updated");
-    }
-    else{
- //       UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Updating measurements failed, physical device disconnected");
+        std::lock_guard<std::mutex> lock(mMutex);
+        measurements=now;
     }
 }
 
 template <class M,class C,class D>
-void opc_template_controller<M,C,D>::updateConfiguration(UA_Server *server){
+void opc_template_controller<M,C,D>::updateConfiguration(){
     if(isConnected()){
         C now =getSettings();
-        UA_Variant value;
-        UA_Variant_setScalar(&value, &now, &VariableTypeC);
-  //      UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, ConfigurationVariableName.c_str());
-        UA_Server_writeValue(server, ConfigurationId, value);
-   //     UA_NodeId_deleteMembers(&NodeId);
-  //      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Configuration updated");
+        std::lock_guard<std::mutex> lock(cMutex);
+        configuration=now;
+
     }
-    else{
-  //      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Updating configuration failed, physical device disconnected");
-    }
-}
 
-
-template <class M,class C,class D>
-void opc_template_controller<M,C,D>::updateStatus(UA_Server *server){
-
-        UA_Boolean now =isConnected();
-        UA_Variant value;
-        UA_Variant_setScalar(&value, &now, &UA_TYPES[UA_TYPES_BOOLEAN]);
-    //    UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, StatusVariableName.c_str());
-        UA_Server_writeValue(server, StatusId, value);
-    //    UA_NodeId_deleteMembers(&NodeId);
-  //      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Status updated");
 }

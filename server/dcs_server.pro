@@ -5,7 +5,7 @@ QMAKE_CXXFLAGS += -Wall -Wno-unused
 QMAKE_CXXFLAGS += -std=c++11 -ggdb3
 CONFIG -= app_bundle
 CONFIG -= qt
-LIBS += -L/usr/local/lib/ -lopen62541
+LIBS += -L/usr/local/lib/ -lopen62541 -lpthread
 INCLUDEPATH +=/user/local/include -I.
 
 SOURCES += main.cpp \

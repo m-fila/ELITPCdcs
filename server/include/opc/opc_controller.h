@@ -14,16 +14,18 @@ public:
 private:
     virtual M getMeasurements()=0;
     virtual C getSettings()=0;
-    void disconnectDevice(){AbstractDeviceController<D>::disconnect();}
-    void connectDevice(TCPConnectionParameters *parameters){AbstractDeviceController<D>::connect(parameters);}
+    void disconnectDevice() override {AbstractDeviceController<D>::disconnect();}
+    void connectDevice(TCPConnectionParameters *parameters) override {AbstractDeviceController<D>::connect(parameters);}
 
 protected:
     bool isConnected(){return AbstractDeviceController<D>::device->isConnected();}
-    void updateMeasurements(UA_Server *server);
-    void updateConfiguration(UA_Server *server);
-    void updateStatus(UA_Server *server);
+    void updateMeasurementsVariable(UA_Server *server) override;
+    void updateConfiguration() override;
+    void updateMeasurements() override;
+    void updateConfigurationVariable(UA_Server *server) override;
+    void updateStatusVariable(UA_Server *server) override;
     M measurements;
-    C config;
+    C configuration;
 };
 #include "opc_controller.hxx"
 #endif // OPC_TEMPLATE_CONTROLLER_H

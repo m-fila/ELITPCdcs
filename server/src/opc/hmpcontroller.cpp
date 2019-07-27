@@ -26,6 +26,7 @@ void HMPController::init(UA_Server *server){
 }
 
 HMPMeasurements HMPController::getMeasurements(){
+        std::lock_guard<std::mutex> lock(deviceMutex);
         string response,ch1_v,ch2_v,ch1_c,ch2_c;
         bool ch1,ch2,output;
         device->setActiveChannel(1);
@@ -44,6 +45,7 @@ HMPMeasurements HMPController::getMeasurements(){
 }
 
 HMPMeasurements HMPController::getSettings(){
+        std::lock_guard<std::mutex> lock(deviceMutex);
         string response,ch1_v,ch2_v,ch1_c,ch2_c;
         bool ch1,ch2,output;
         device->setActiveChannel(1);
@@ -71,6 +73,7 @@ UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,
     HMPController* Monitor=static_cast<HMPController*>(methodContext);
     if(Monitor->isConnected()){
         UA_Boolean state = *(UA_Boolean*)input->data;
+        std::lock_guard<std::mutex> lock(Monitor->deviceMutex);
         Monitor->device->setOutputGen(state);
     }
     else {
@@ -119,6 +122,7 @@ UA_StatusCode HMPController::SetChannelCallback(UA_Server *server,
     if(Monitor->isConnected()){
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Boolean state = *(UA_Boolean*)input[1].data;
+        std::lock_guard<std::mutex> lock(Monitor->deviceMutex);
         Monitor->device->setOutputSel(channel,state);
     }
     else {

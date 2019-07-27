@@ -19,8 +19,8 @@ public:
     void addSetOutputMethod(UA_Server *server);
 
 private:
-    HMPMeasurements getMeasurements();
-    HMPMeasurements getSettings();
+    HMPMeasurements getMeasurements() final;
+    HMPMeasurements getSettings() final;
 
     static UA_StatusCode SetChannelCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,

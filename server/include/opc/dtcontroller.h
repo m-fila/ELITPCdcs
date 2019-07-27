@@ -25,8 +25,8 @@ public:
     void addSetRampDownMethod(UA_Server *server);
 
 private:
-    DTMeasurements getMeasurements();
-    DTConfiguration getSettings();
+    DTMeasurements getMeasurements() final;
+    DTConfiguration getSettings() final;
 
     static UA_StatusCode SetRampDownCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
