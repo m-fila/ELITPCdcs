@@ -6,9 +6,9 @@ HMPController::HMPController(std::string name): opc_template_controller<HMPMeasu
     VariableTypeC=customType.Type;
 }
 
-HMPController::~HMPController(){
-    UA_NodeId_deleteMembers(&ObjectNodeId);
-}
+//HMPController::~HMPController(){
+//    UA_NodeId_deleteMembers(&ObjectNodeId);
+//}
 
 void HMPController::init(UA_Server *server){
     addObject(server);

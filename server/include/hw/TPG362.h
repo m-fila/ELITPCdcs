@@ -1,7 +1,7 @@
 #ifndef TPG362_H
 #define TPG362_H
 
-#include "include/utl/GenericDevice.h"
+#include "../utl/GenericDevice.h"
 
 class TPG362 : public GenericDevice
 {

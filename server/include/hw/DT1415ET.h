@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include "include/utl/GenericDevice.h"
+#include "../utl/GenericDevice.h"
 
 enum class DT1415ETchannelStatus;
 

@@ -1,13 +1,13 @@
-#include "include/opc/dtcontroller.h"
+#include "../../include/opc/dtcontroller.h"
 #include <sstream>
 DTController::DTController(std::string name): opc_template_controller<DTMeasurements,DTConfiguration,DT1415ET>(name){
     VariableTypeM=customTypeM.Type;
     VariableTypeC=customTypeC.Type;    
 }
 
-DTController::~DTController(){
-    UA_NodeId_deleteMembers(&ObjectNodeId);
-}
+//DTController::~DTController(){
+//    UA_NodeId_deleteMembers(&ObjectNodeId);
+//}
 
 
 void DTController::init(UA_Server* server){

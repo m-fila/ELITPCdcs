@@ -1,4 +1,4 @@
-#include "include/DeviceController.h"
+#include "../include/DeviceController.h"
 #include <iostream>
 #include <stdexcept>
 DeviceController::DeviceController() : stopLoop(true), connectionStatus(false)
