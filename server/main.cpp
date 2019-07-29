@@ -44,7 +44,9 @@ int main(int argc, char *argv[])
         i->spawn_thread();
     }
     server.run();
+
     for (auto i : controllers){
+
         i->join_thread();
         delete i;
     }

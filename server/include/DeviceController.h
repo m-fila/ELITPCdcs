@@ -3,7 +3,7 @@
 
 //#include <QThread>
 //#include <memory>
-#include "utl/TCPStream.h"
+//#include "utl/TCPStream.h"
 #include "ConnectionParameters.h"
 #include "utl/TCPConnector.h"
 #include <iostream>

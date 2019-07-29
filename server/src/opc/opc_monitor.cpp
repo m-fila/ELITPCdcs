@@ -1,9 +1,11 @@
 #include "../../include/opc/opc_monitor.h"
 #include <iostream>
-opc_monitor::opc_monitor(std::string name): opc_object(name),
+opc_monitor::opc_monitor(std::string name): opc_object(name), thread_running(false),
     MeasurementsVariableName("Measurements"),
     ConfigurationVariableName("Configuration"),
-    StatusVariableName("Status"){
+
+    StatusVariableName("Status")
+    {
 }
 
 opc_monitor::~opc_monitor(){
@@ -54,12 +56,10 @@ void opc_monitor::addValueCallback(UA_Server *server,UA_NodeId VariableId,
                                                          void *sessionContext, const UA_NodeId *nodeid,
                                                          void *nodeContext, const UA_NumericRange *range,
                                                          const UA_DataValue *value)) {
-       // UA_NodeId currentNodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
         UA_ValueCallback callback;
         callback.onRead = ReadCallback;
         callback.onWrite= nullptr;
         UA_Server_setVariableNode_valueCallback(server, VariableId, callback);
-    //    UA_NodeId_deleteMembers(&currentNodeId);
         }
 
 UA_StatusCode opc_monitor::DisconnectDeviceCallback(UA_Server *server,
@@ -68,7 +68,6 @@ UA_StatusCode opc_monitor::DisconnectDeviceCallback(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-   // UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Disconnect was called");
     opc_monitor* Monitor=static_cast<opc_monitor*>(methodContext);
     Monitor->disconnectDevice();
     return UA_STATUSCODE_GOOD;
@@ -80,7 +79,6 @@ void opc_monitor::addDisconnectDeviceMethod(UA_Server *server) {
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","disconnect");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
- //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"DisconnectDevice");
     UA_QualifiedName MethodQName=UA_QUALIFIEDNAME_ALLOC(1,"disconnect");
     UA_Server_addMethodNode(server, UA_NODEID_NULL,
                             ObjectNodeId,
@@ -88,7 +86,6 @@ void opc_monitor::addDisconnectDeviceMethod(UA_Server *server) {
                             MethodQName,
                             methodAttr, &DisconnectDeviceCallback,
                             0, nullptr, 0, nullptr, this, nullptr);
-  //  UA_NodeId_deleteMembers(&MethodNodeId);
     UA_QualifiedName_deleteMembers(&MethodQName);
     UA_MethodAttributes_deleteMembers(&methodAttr);
 }
@@ -99,7 +96,6 @@ UA_StatusCode opc_monitor::ConnectDeviceCallback(UA_Server *server,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-   // UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Connect was called");
 
     opc_monitor* Monitor=static_cast<opc_monitor*>(methodContext);
     UA_Int32 port = *(UA_Int32*)input[1].data;
@@ -133,7 +129,7 @@ void opc_monitor::addConnectDeviceMethod(UA_Server *server) {
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","connect");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
- //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"ConnectDevice");
+
     UA_QualifiedName MethodQName=UA_QUALIFIEDNAME_ALLOC(1,"connect");
     UA_Server_addMethodNode(server, UA_NODEID_NULL,
                             ObjectNodeId,
@@ -141,7 +137,6 @@ void opc_monitor::addConnectDeviceMethod(UA_Server *server) {
                             MethodQName,
                             methodAttr, &ConnectDeviceCallback,
                             2,inputArguments, 0, nullptr,this, nullptr);
-  //  UA_NodeId_deleteMembers(&MethodNodeId);
     UA_QualifiedName_deleteMembers(&MethodQName);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArguments[0]);
@@ -149,11 +144,11 @@ void opc_monitor::addConnectDeviceMethod(UA_Server *server) {
 }
 
 
-
+/*
 void opc_monitor::addMonitoredItem(UA_Server *server,UA_NodeId VariableId,UA_Double sampling) {
   //  UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
     UA_MonitoredItemCreateRequest monRequest = UA_MonitoredItemCreateRequest_default(VariableId);
-    monRequest.requestedParameters.samplingInterval = sampling; /* 100 ms interval */
+    monRequest.requestedParameters.samplingInterval = sampling; // 100 ms interval
     UA_Server_createDataChangeMonitoredItem(server, UA_TIMESTAMPSTORETURN_SOURCE,
                                             monRequest, nullptr, dataChangeNotificationCallback);
   //  UA_NodeId_deleteMembers(&NodeId);
@@ -165,4 +160,13 @@ void opc_monitor::dataChangeNotificationCallback(UA_Server *server, UA_UInt32 mo
                               void *nodeContext, UA_UInt32 attributeId,
                               const UA_DataValue *value) {
    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Received Notification");
+}
+*/
+void opc_monitor::spawn_thread(){
+    thread_running=true;
+    device_thread=std::thread([this]{run_thread();});
+}
+void opc_monitor::join_thread(){
+    thread_running=false;
+    device_thread.join();
 }

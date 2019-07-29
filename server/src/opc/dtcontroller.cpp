@@ -32,7 +32,7 @@ void DTController::init(UA_Server* server){
 DTMeasurements DTController::getMeasurements(){
     DTMeasurements dtm;
     //voltages
-    std::string response = device->getVoltage(DT1415ET::CHANNEL::ALL);
+    std::string response = device.getVoltage(DT1415ET::CHANNEL::ALL);
     std::istringstream iss(response);
     std::string val;
     int i;
@@ -46,7 +46,7 @@ DTMeasurements DTController::getMeasurements(){
     }
     dtm.totalVoltage = total;
     //currents
-    response = device->getCurrent(DT1415ET::CHANNEL::ALL);
+    response = device.getCurrent(DT1415ET::CHANNEL::ALL);
     std::istringstream iss2(response);
     for(i=0; i<8; i++)
     {
@@ -60,9 +60,9 @@ DTMeasurements DTController::getMeasurements(){
 
 DTConfiguration DTController::getSettings(){
     DTConfiguration dtc;
-    dtc.isRemote = device->isRemote();
+    dtc.isRemote = device.isRemote();
     //device status
-    std::string response = device->getStatus(DT1415ET::CHANNEL::ALL);
+    std::string response = device.getStatus(DT1415ET::CHANNEL::ALL);
     std::istringstream iss(response);
     std::string val;
     int i;
@@ -74,7 +74,7 @@ DTConfiguration DTController::getSettings(){
     }
     //voltage set
     float total = 0;
-    response = device->getVoltageSet(DT1415ET::CHANNEL::ALL);
+    response = device.getVoltageSet(DT1415ET::CHANNEL::ALL);
     std::istringstream iss2(response);
     for(i=0; i<8; i++)
     {
@@ -98,10 +98,16 @@ UA_StatusCode DTController::SetChannelCallback(UA_Server *server,
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Boolean state = *(UA_Boolean*)input[1].data;
         DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
-        if(state)
-            Monitor->device->setON(CH);
-        else
-            Monitor->device->setOFF(CH);
+        if(state){
+           // Monitor->device.setON(CH);
+            DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setON, _1,CH);
+            Monitor->buffer.push(command);
+        }
+        else{
+            //Monitor->device.setOFF(CH);
+            DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setON, _1,CH);
+            Monitor->buffer.push(command);
+        }
 
     }
     else {
@@ -159,7 +165,9 @@ UA_StatusCode DTController::SetVoltageCallback(UA_Server *server,
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Double voltage = *(UA_Double*)input[1].data;
         DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
-        Monitor->device->setVoltageSet(CH,voltage);
+        DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setVoltageSet, _1,CH,voltage);
+        Monitor->buffer.push(command);
+       // Monitor->device.setVoltageSet(CH,voltage);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetVoltage not send");
@@ -213,7 +221,9 @@ UA_StatusCode DTController::SetVoltageMaxCallback(UA_Server *server,
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Double voltage = *(UA_Double*)input[1].data;
         DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
-        Monitor->device->setVoltageMax(CH,voltage);
+        //Monitor->device.setVoltageMax(CH,voltage);
+        DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setVoltageMax, _1,CH,voltage);
+        Monitor->buffer.push(command);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetVoltageMax not send");
@@ -267,7 +277,9 @@ UA_StatusCode DTController::SetRampUpCallback(UA_Server *server,
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Double voltage = *(UA_Double*)input[1].data;
         DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
-        Monitor->device->setRampUp(CH,voltage);
+       // Monitor->device.setRampUp(CH,voltage);
+        DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setRampDown, _1,CH,voltage);
+        Monitor->buffer.push(command);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetRampUp not send");
@@ -320,7 +332,9 @@ UA_StatusCode DTController::SetRampDownCallback(UA_Server *server,
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Double voltage = *(UA_Double*)input[1].data;
         DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
-        Monitor->device->setRampDown(CH,voltage);
+        //Monitor->device.setRampDown(CH,voltage);
+        DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setRampDown, _1,CH,voltage);
+        Monitor->buffer.push(command);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetRampDown not send");

@@ -2,30 +2,56 @@
 #define OPC_TEMPLATE_CONTROLLER_H
 #include <open62541/server.h>
 #include "opc_monitor.h"
-#include "../DeviceController.h"
+
+
+#include "../ConnectionParameters.h"
+#include "../utl/TCPConnector.h"
+#include "devicebuffer.h"
+#include <functional>
+template <class D>
+using DeviceCommand = std::function<void(D&)>;
+
+using std::placeholders::_1;
 
 template <class M,class C,class D>
-class opc_template_controller :public opc_monitor, public AbstractDeviceController<D>
+class opc_template_controller :public opc_monitor
 {
+
 public:
-    opc_template_controller(std::string name) : opc_monitor(name){}
+    opc_template_controller(std::string name) : opc_monitor(name){
+        disconnectDevice();
+    }
+
 //    virtual ~opc_template_controller(){}
 
 private:
     virtual M getMeasurements()=0;
     virtual C getSettings()=0;
-    void disconnectDevice() override {AbstractDeviceController<D>::disconnect();}
-    void connectDevice(TCPConnectionParameters *parameters) override {AbstractDeviceController<D>::connect(parameters);}
-
-protected:
-    bool isConnected(){return AbstractDeviceController<D>::device->isConnected();}
+    void disconnectDevice() override;
+    void connectDevice(TCPConnectionParameters *cp) override;
     void updateMeasurementsVariable(UA_Server *server) override;
-    void updateConfiguration() override;
-    void updateMeasurements() override;
     void updateConfigurationVariable(UA_Server *server) override;
     void updateStatusVariable(UA_Server *server) override;
+    void update_configuration();
+    void update_measurements();
+    void update_status();
+
+    std::mutex mMutex;
+    std::mutex cMutex;
+    std::mutex sMutex;
     M measurements;
     C configuration;
+    bool status;
+
+
+protected:
+    bool isConnected(){return device.isConnected();}
+
+    D device;
+    DeviceBuffer<DeviceCommand<D>> buffer;
+
+
+    void run_thread() override;
 };
 #include "opc_controller.hxx"
 #endif // OPC_TEMPLATE_CONTROLLER_H

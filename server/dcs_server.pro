@@ -48,6 +48,7 @@ HEADERS  +=  \
     include/opc/opc_state.h \
     include/opc/opc_object.h \
     include/opc/opc_server.h \
-    ../common/loader.h
+    ../common/loader.h \
+    include/opc/devicebuffer.h
 
 
