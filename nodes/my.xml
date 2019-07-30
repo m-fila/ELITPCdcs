@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-->A more complete example can be found in tools/test/nodeset_compiler<-->
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://elitpc/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <NamespaceUris>
+        <Uri>http://elitpc.org/</Uri>
+    </NamespaceUris>
+
+    <Aliases>
+        <Alias Alias="Boolean">i=1</Alias>
+        <Alias Alias="Int32">i=6</Alias>
+        <Alias Alias="UInt32">i=7</Alias>
+        <Alias Alias="Double">i=11</Alias>
+        <Alias Alias="Organizes">i=35</Alias>
+        <Alias Alias="HasModellingRule">i=37</Alias>
+        <Alias Alias="HasEncoding">i=38</Alias>
+        <Alias Alias="HasTypeDefinition">i=40</Alias>
+        <Alias Alias="HasSubtype">i=45</Alias>
+        <Alias Alias="HasComponent">i=47</Alias>
+        <Alias Alias="IdType">i=256</Alias>
+        <Alias Alias="Argument">i=296</Alias>
+        <Alias Alias="Point3D">ns=1;i=3002</Alias>
+        <Alias Alias="Point">ns=1;i=10001</Alias>
+        <Alias Alias="HMPm">ns=1;i=20201</Alias>
+        <Alias Alias="HMPc">ns=1;i=20211</Alias>
+        <Alias Alias="DT1415m">ns=1;i=14151</Alias>
+        <Alias Alias="DT1415c">ns=1;i=14155</Alias>
+        <Alias Alias="DT1415x">ns=1;i=14161</Alias>
+    </Aliases>
+
+    <Extensions>
+        <Extension>
+            <ua:ModelInfo Tool="UaModeler" Hash="NY/CbF6sk/OjLXFpjvfTAA==" Version="1.6.2"/>
+        </Extension>
+    </Extensions>
+
+<!--ValueRank>
+    OPC UA spec part 3, NodeClass Variable
+    -3: Scalar or 1-dim
+    -2: Any, value can be a scalar or an array with any number of dimensions
+    -1: scalar
+     0: value is array with one or more dimensions
+     1: array with one dimension
+     n>1: array with with the specified numbers of dimensions
+    <-->
+    <UADataType NodeId="ns=1;i=14151" BrowseName="1:DT1415m">
+        <DisplayName>DT1415m</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:DT1415m">
+            <Field DataType="Double" Name="totalVoltage"/>
+            <Field DataType="Int32" Name="voltageSize"/>
+            <Field DataType="Double" ValueRank="1" Name="voltage"/>
+            <Field DataType="Int32" Name="currentSize"/>
+            <Field DataType="Double" ValueRank="1" Name="current"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=14153" BrowseName="1:DT1415m" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>DT1415m</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415m</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14154" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14151</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=14153</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable DataType="DT1415m" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=14152" BrowseName="1:DT1415m" AccessLevel="3">
+        <DisplayName>DT1415m</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
+        </References>
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId>
+                    <uax:Identifier>ns=1;i=14151</uax:Identifier>
+                </uax:TypeId>
+                <uax:Body>
+                    <DT1415m xmlns="http://elitpc.org/Types.xsd">
+                        <totalVoltage>8</totalVoltage>
+                        <voltageSize>2</voltageSize>
+                        <voltage>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </voltage>
+	     	        <currentSize>2</currentSize>
+                        <current>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </current>
+                    </DT1415m>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+
+    <UADataType NodeId="ns=1;i=14155" BrowseName="1:DT1415c">
+        <DisplayName>DT1415c</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:DT1415c">
+            <Field DataType="Boolean" Name="isRemote"/>
+            <Field DataType="Double" Name="totalVoltageSet"/>
+            <Field DataType="Int32" Name="voltageSetSize"/>
+            <Field DataType="Double" ValueRank="1" Name="voltageSet"/>
+            <Field DataType="Int32" Name="statusSize"/>
+            <Field DataType="Int32" ValueRank="1" Name="status"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=14157" BrowseName="1:DT1415c" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>DT1415c</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415c</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14158" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14155</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=14157</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable DataType="DT1415c" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=14156" BrowseName="1:DT1415c" AccessLevel="3">
+        <DisplayName>DT1415c</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
+        </References>
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId>
+                    <uax:Identifier>ns=1;i=14155</uax:Identifier>
+                </uax:TypeId>
+                <uax:Body>
+                    <DT1415c xmlns="http://elitpc.org/Types.xsd">
+                        <isRemote>true</isRemote>
+                        <totalVoltageSet>8</totalVoltageSet>
+                        <voltageSetSize>2</voltageSetSize>
+                        <voltageSet>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </voltageSet>
+	     	        <statusSize>2</statusSize>
+                        <status>                 
+                            <Int32>0</Int32>
+                            <Int32>1</Int32>
+                        </status>
+                    </DT1415c>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+
+    <UADataType NodeId="ns=1;i=14161" BrowseName="1:DT1415x">
+        <DisplayName>DT1415x</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:DT1415x">
+            <Field DataType="Int32" Name="voltageMaxSize"/>
+            <Field DataType="Double" ValueRank="1" Name="voltageMax"/>
+            <Field DataType="Int32" Name="rupSize"/>
+            <Field DataType="Double" ValueRank="1" Name="rup"/>
+            <Field DataType="Int32" Name="rdownSize"/>
+            <Field DataType="Double" ValueRank="1" Name="rdown"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=14163" BrowseName="1:DT1415x" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>DT1415m</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415x</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14164" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14161</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=14163</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable DataType="DT1415x" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=14162" BrowseName="1:DT1415x" AccessLevel="3">
+        <DisplayName>DT1415x</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
+        </References>
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId>
+                    <uax:Identifier>ns=1;i=14161</uax:Identifier>
+                </uax:TypeId>
+                <uax:Body>
+                    <DT1415x xmlns="http://elitpc.org/Types.xsd">
+                        <voltageMaxSize>2</voltageMaxSize>
+                        <voltageMax>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </voltageMax>
+	     	        <rupSize>2</rupSize>
+                        <rup>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </rup>
+	     	        <rdownSize>2</rdownSize>
+                        <rdown>                 
+                            <Double>656.65</Double>
+                            <Double>12.12</Double>
+                        </rdown>
+                    </DT1415x>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+
+
+    <UADataType NodeId="ns=1;i=20201" BrowseName="1:HMPm">
+        <DisplayName>HMPm</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:HMPm">
+            <Field DataType="Boolean" Name="output"/>
+            <Field DataType="Int32" Name="chSize"/>
+            <Field DataType="Boolean" ValueRank="1" Name="ch"/>
+            <Field DataType="Int32" Name="voltageSize"/>
+            <Field DataType="Double" ValueRank="1" Name="voltage"/>
+            <Field DataType="Int32" Name="currentSize"/>
+            <Field DataType="Double" ValueRank="1" Name="current"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=20203" BrowseName="1:HMPm" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>HMPm</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">HMPm</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=20204" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=20201</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=20203</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable DataType="HMPm" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=20202" BrowseName="1:HMPm" AccessLevel="3">
+        <DisplayName>HMPm</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
+        </References>
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId>
+                    <uax:Identifier>ns=1;i=20201</uax:Identifier>
+                </uax:TypeId>
+                <uax:Body>
+                    <HMPm xmlns="http://elitpc.org/Types.xsd">
+                        <output>true</output>
+                        <chSize>2</chSize>
+                        <ch>                 
+                            <Boolean>false</Boolean>
+                            <Boolean>true</Boolean>
+                        </ch>
+		        <voltageSize>2</voltageSize>
+                        <voltage>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </voltage>
+	     	        <currentSize>2</currentSize>
+                        <current>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </current>
+                    </HMPm>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+
+
+
+    
+    <UADataType NodeId="ns=1;i=20211" BrowseName="1:HMPc">
+        <DisplayName>HMPc</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:HMPc">
+            <Field DataType="Int32" Name="voltageSetSize"/>
+            <Field DataType="Double" ValueRank="1" Name="voltageSet"/>
+            <Field DataType="Int32" Name="currentSetSize"/>
+            <Field DataType="Double" ValueRank="1" Name="currentSet"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=20213" BrowseName="1:HMPc" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>HMPc</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">HMPc</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=20214" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=20211</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=20213</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable DataType="HMPc" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=20212" BrowseName="1:HMPc" AccessLevel="3">
+        <DisplayName>HMPc</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
+        </References>
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId>
+                    <uax:Identifier>ns=1;i=20211</uax:Identifier>
+                </uax:TypeId>
+                <uax:Body>
+                    <HMPc xmlns="http://elitpc.org/Types.xsd">
+                        <voltageSetSize>2</voltageSetSize>
+                        <voltageSet>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </voltageSet>
+	     	        <currentSetSize>2</currentSetSize>
+                        <currentSet>                 
+                            <Double>12.1</Double>
+                            <Double>4.1</Double>
+                        </currentSet>
+                    </HMPc>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+
+
+
+    <UADataType NodeId="ns=1;i=10001" BrowseName="1:Point">
+        <DisplayName>Point</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:Point">
+            <Field DataType="Double" Name="x"/>
+            <Field DataType="Double" Name="y"/>
+            <Field DataType="Boolean" Name="z"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=12213" BrowseName="1:Point" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>Point</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">Point</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=5002" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=10001</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=12213</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable DataType="Point" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=10002" BrowseName="1:Point_scalar_init" AccessLevel="3">
+        <DisplayName>Point_scalar_init</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
+        </References>
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId>
+                    <uax:Identifier>ns=1;i=10001</uax:Identifier>
+                </uax:TypeId>
+                <uax:Body>
+                    <Point xmlns="http://elitpc.org/Types.xsd">
+                        <x>1</x>
+                        <y>7</y>
+                        <z>true</z>
+                    </Point>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+
+
+    <UADataType NodeId="ns=1;i=3003" BrowseName="1:PointWithArray">
+        <DisplayName>PointWithArray</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:PointWithArray">
+            <Field DataType="Double" Name="x"/>
+            <Field DataType="Double" Name="y"/>
+            <Field DataType="Double" Name="z"/>
+            <Field DataType="Int32" Name="array1Size"/>
+            <Field DataType="Double" ValueRank="1" Name="array1"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=12215" BrowseName="1:PointWithArray" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>PointWithArray</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PointWithArray</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=5004" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3003</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=12215</Reference>
+        </References>
+    </UAObject>    
+
+
+    <UAVariable DataType="ns=1;i=3003" NodeId="ns=1;i=6008" BrowseName="1:PointWithArray_scalar" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>PointWithArray_scalar</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId>
+                    <uax:Identifier>ns=1;i=3003</uax:Identifier>
+                </uax:TypeId>
+                <uax:Body>
+                    <PointWithArray xmlns="http://elitpc.org/Types.xsd">
+                        <x>1.1</x>
+                        <y>2.2</y>
+                        <z>3.3</z>
+                        <array1Size>2</array1Size>
+                        <array1>                        
+                            <Double>11.1</Double>
+                            <Double>12.1</Double>
+                        </array1>
+                    </PointWithArray>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+
+
+
+
+    <UADataType NodeId="ns=1;i=3004" BrowseName="1:PointWithPointArray">
+        <DisplayName>PointWithPointArray</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:PointWithPointArray">
+            <Field DataType="Double" Name="x"/>
+            <Field DataType="Double" Name="y"/>
+            <Field DataType="Double" Name="z"/>
+            <Field DataType="Int32" Name="array1Size"/>
+            <Field DataType="Double" ValueRank="1" Name="array1"/>
+        </Definition>
+    </UADataType>
+
+
+
+    <UADataType NodeId="ns=1;i=10008" BrowseName="1:NestedPoint">
+        <DisplayName>NestedPoint</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:Point">
+            <Field DataType="Double" Name="x"/>
+            <Field DataType="Double" Name="y"/>
+            <Field DataType="Double" Name="z"/>
+            <Field DataType="ns=1;i=10001" Name="Point1"/>
+        </Definition>
+    </UADataType>
+
+
+    <UAVariable NodeId="ns=1;i=12214" BrowseName="1:NestedPoint" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>NestedPoint</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">NestedPoint</String>
+        </Value>
+    </UAVariable>
+
+     <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=5003" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=10008</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=12214</Reference>
+        </References>
+    </UAObject>
+
+
+
+
+
+    <UAObject NodeId="ns=1;i=5001" BrowseName="1:NotBuiltinTypes">
+        <DisplayName>NotBuiltinTypes</DisplayName>
+        <References>            
+            <Reference ReferenceType="HasTypeDefinition">i=61</Reference>
+            <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference>
+        </References>
+    </UAObject>   
+
+
+
+    <UAVariable DataType="Point" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=10004" ArrayDimensions="4" BrowseName="1:Point_1dim_init" AccessLevel="3">
+        <DisplayName>Point_1dim_init</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=0</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <Point xmlns="http://elitpc.org/Types.xsd">
+                            <x>1</x>
+                            <y>2</y>
+                            <z>false</z>
+                        </Point>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=0</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <Point xmlns="http://elitpc.org/Types.xsd">
+                            <x>3</x>
+                            <y>4</y>
+                            <z>true</z>
+                        </Point>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=0</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <Point xmlns="http://elitpc.org/Types.xsd">
+                            <x>5</x>
+                            <y>6</y>
+                            <z>true</z>
+                        </Point>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=0</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <Point xmlns="http://elitpc.org/Types.xsd">
+                            <x>7</x>
+                            <y>8</y>
+                            <z>false</z>
+                        </Point>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+
+    <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.Testnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
+        <DisplayName>Opc.Ua.Testnodeset</DisplayName>
+        <References>
+            <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
+        </References>
+        <Value>
+        <!-- This is the Base64 Encoded content of testtypes.bsd -->
+        <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
+PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9Imh0dHA6Ly95b3Vyb3JnYW5pc2F0aW9uLm9yZy90ZXN0LyIKICBEZWZhdWx0Qnl0ZU9yZGVyPSJMaXR0bGVFbmRpYW4iCiAgVGFyZ2V0TmFtZXNwYWNlPSJodHRwOi8veW91cm9yZ2FuaXNhdGlvbi5vcmcvdGVzdC8iCj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkhNUG0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJvdXRwdXQiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2hTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2giIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9ImNoU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iSE1QYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2V0U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTZXRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkRUMTQxNW0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0b3RhbFZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTVjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iaXNSZW1vdGUiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idG90YWxWb2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXNTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InN0YXR1c1NpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iRFQxNDE1eCIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VNYXhTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlTWF4U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJ1cCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJydXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93blNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93biIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJyZG93blNpemUiIC8+CgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKCgoKCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJQb2ludCIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9IngiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ5IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ieiIgVHlwZU5hbWU9Im9wYzpCb29sZWFuIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9Ik5lc3RlZFBvaW50IiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0ieCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InkiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJwb2ludDEiIFR5cGVOYW1lPSJ0bnM6UG9pbnQiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iUG9pbnRXaXRoQXJyYXkiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ4IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ieSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InoiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJhcnJheTFTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iYXJyYXkxIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImFycmF5MVNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+Cgo8L29wYzpUeXBlRGljdGlvbmFyeT4=
+	</ByteString>
+        </Value>
+    </UAVariable>    
+
+ 
+    
+</UANodeSet>
+

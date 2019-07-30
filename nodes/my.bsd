@@ -1,0 +1,79 @@
+<opc:TypeDictionary
+  xmlns:opc="http://opcfoundation.org/BinarySchema/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ua="http://opcfoundation.org/UA/"
+  xmlns:tns="http://yourorganisation.org/test/"
+  DefaultByteOrder="LittleEndian"
+  TargetNamespace="http://yourorganisation.org/test/"
+>
+  <opc:Import Namespace="http://opcfoundation.org/UA/" Location="Opc.Ua.BinarySchema.bsd"/>
+
+  <opc:StructuredType Name="HMPm" BaseType="ua:ExtensionObject">
+    <opc:Field Name="output" TypeName="opc:Boolean" />
+    <opc:Field Name="chSize" TypeName="opc:UInt32" />
+    <opc:Field Name="ch" TypeName="opc:Boolean" LengthField="chSize" />
+    <opc:Field Name="voltageSize" TypeName="opc:UInt32" />
+    <opc:Field Name="voltage" TypeName="opc:Double" LengthField="voltageSize" />
+    <opc:Field Name="currentSize" TypeName="opc:UInt32" />
+    <opc:Field Name="current" TypeName="opc:Double" LengthField="currentSize" />
+  </opc:StructuredType>
+
+  <opc:StructuredType Name="HMPc" BaseType="ua:ExtensionObject">
+    <opc:Field Name="voltageSetSize" TypeName="opc:UInt32" />
+    <opc:Field Name="voltageSet" TypeName="opc:Double" LengthField="voltageSetSize" />
+    <opc:Field Name="currentSetSize" TypeName="opc:UInt32" />
+    <opc:Field Name="currentSet" TypeName="opc:Double" LengthField="currentSetSize" />
+  </opc:StructuredType>
+
+  <opc:StructuredType Name="DT1415m" BaseType="ua:ExtensionObject">
+    <opc:Field Name="totalVoltage" TypeName="opc:Double" />
+    <opc:Field Name="voltageSize" TypeName="opc:UInt32" />
+    <opc:Field Name="voltage" TypeName="opc:Double" LengthField="voltageSize" />
+    <opc:Field Name="currentSize" TypeName="opc:UInt32" />
+    <opc:Field Name="current" TypeName="opc:Double" LengthField="currentSize" />
+  </opc:StructuredType>
+
+  <opc:StructuredType Name="DT1415c" BaseType="ua:ExtensionObject">
+    <opc:Field Name="isRemote" TypeName="opc:Boolean" />
+    <opc:Field Name="totalVoltageSet" TypeName="opc:Double" />
+    <opc:Field Name="voltageSetSize" TypeName="opc:UInt32" />
+    <opc:Field Name="voltageSet" TypeName="opc:Double" LengthField="voltageSetSize" />
+    <opc:Field Name="statusSize" TypeName="opc:UInt32" />
+    <opc:Field Name="status" TypeName="opc:UInt32" LengthField="statusSize" />
+  </opc:StructuredType>
+
+  <opc:StructuredType Name="DT1415x" BaseType="ua:ExtensionObject">
+    <opc:Field Name="voltageMaxSize" TypeName="opc:UInt32" />
+    <opc:Field Name="voltageMax" TypeName="opc:Double" LengthField="voltageMaxSize" />
+    <opc:Field Name="rupSize" TypeName="opc:UInt32" />
+    <opc:Field Name="rup" TypeName="opc:Double" LengthField="rupSize" />
+    <opc:Field Name="rdownSize" TypeName="opc:UInt32" />
+    <opc:Field Name="rdown" TypeName="opc:Double" LengthField="rdownSize" />
+
+  </opc:StructuredType>
+
+
+
+
+
+  <opc:StructuredType Name="Point" BaseType="ua:ExtensionObject">
+    <opc:Field Name="x" TypeName="opc:Double" />
+    <opc:Field Name="y" TypeName="opc:Double" />
+    <opc:Field Name="z" TypeName="opc:Boolean" />
+  </opc:StructuredType>
+
+  <opc:StructuredType Name="NestedPoint" BaseType="ua:ExtensionObject">
+    <opc:Field Name="x" TypeName="opc:Double" />
+    <opc:Field Name="y" TypeName="opc:Double" />
+    <opc:Field Name="point1" TypeName="tns:Point" />
+  </opc:StructuredType>
+
+  <opc:StructuredType Name="PointWithArray" BaseType="ua:ExtensionObject">
+    <opc:Field Name="x" TypeName="opc:Double" />
+    <opc:Field Name="y" TypeName="opc:Double" />
+    <opc:Field Name="z" TypeName="opc:Double" />
+    <opc:Field Name="array1Size" TypeName="opc:UInt32" />
+    <opc:Field Name="array1" TypeName="opc:Double" LengthField="array1Size" />
+  </opc:StructuredType>
+
+</opc:TypeDictionary>
