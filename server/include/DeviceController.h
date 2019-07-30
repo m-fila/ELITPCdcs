@@ -2,12 +2,11 @@
 #define DEVICECONTROLLER_H
 
 //#include <QThread>
-#include <memory>
-#include "include/utl/TCPStream.h"
-#include "include/ConnectionParameters.h"
-#include "include/utl/TCPConnector.h"
+//#include <memory>
+//#include "utl/TCPStream.h"
+#include "ConnectionParameters.h"
+#include "utl/TCPConnector.h"
 #include <iostream>
-
 class DeviceController //: public QThread
 {
 //    Q_OBJECT
@@ -38,8 +37,8 @@ protected:
 template<class T>
 class AbstractDeviceController
 {
-public:
 
+protected:
     AbstractDeviceController() {device.reset(new T); device->resetConnectionStream();}
 
     //default connect and disconnect implementations
@@ -51,7 +50,7 @@ public:
         std::cout << cp->IPaddress  << ":" << cp->port << std::endl;
         device->setConnectionStream(TCPConnector::connect(cp->IPaddress.c_str(), cp->port));
     }
-protected:
+
         std::unique_ptr<T> device;
 };
 

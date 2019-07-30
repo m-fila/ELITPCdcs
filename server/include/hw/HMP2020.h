@@ -1,7 +1,7 @@
 #ifndef HMP2020_H
 #define HMP2020_H
 
-#include "include/utl/GenericDevice.h"
+#include "../utl/GenericDevice.h"
 
 class HMP2020 : public GenericDevice
 {
@@ -10,14 +10,14 @@ public:
     virtual ~HMP2020();
 
     //device specific commands
-    string getIdentifier();
+    std::string getIdentifier();
     void setActiveChannel(int channel);
-    string getVoltageSet();
-    string getCurrentSet();
-    string getOutputSel();
-    string getOutputGen();
-    string getVoltage();
-    string getCurrent();
+    std::string getVoltageSet();
+    std::string getCurrentSet();
+    std::string getOutputSel();
+    std::string getOutputGen();
+    std::string getVoltage();
+    std::string getCurrent();
     void setOutputSel(int channel, bool state);
     void setOutputGen(bool state);
 };

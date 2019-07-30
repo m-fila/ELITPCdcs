@@ -5,24 +5,16 @@
 #include <open62541/client_subscriptions.h>
 #include "../ConnectionParameters.h"
 #include "opc_object.h"
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <chrono>
+
 class opc_monitor: public opc_object
 {
 public:
-
     opc_monitor(std::string name);
-    ~opc_monitor();
-
-
-    const std::string MeasurementsVariableName;
-    const std::string ConfigurationVariableName;
-    const std::string StatusVariableName;
-    UA_NodeId MeasurementsId;
-    UA_NodeId ConfigurationId;
-    UA_NodeId StatusId;
-
-    UA_DataType VariableTypeM;
-    UA_DataType VariableTypeC;
-
+    virtual ~opc_monitor();
     virtual void init(UA_Server *server)=0;
     void addMeasurementsVariable(UA_Server *server);
     void addConfigurationVariable(UA_Server *server);
@@ -34,6 +26,22 @@ public:
                                                 void *sessionContext, const UA_NodeId *nodeid,
                                                 void *nodeContext, const UA_NumericRange *range,
                                                 const UA_DataValue *value));
+//    void addMonitoredItem(UA_Server *server,UA_NodeId VariableId, UA_Double sampling=500.0);
+
+    void spawn_thread();
+    void join_thread();
+
+
+protected:
+    virtual void run_thread()=0;
+
+    virtual void updateMeasurementsVariable(UA_Server *server)=0;
+    virtual void updateConfigurationVariable(UA_Server *server)=0;
+    virtual void updateStatusVariable(UA_Server *server)=0;
+
+    virtual void disconnectDevice()=0;
+    virtual void connectDevice(TCPConnectionParameters* parameters)=0;
+
     static void MeasurementsReadCallback(UA_Server *server,
                        const UA_NodeId *sessionId, void *sessionContext,
                        const UA_NodeId *nodeid, void *nodeContext,
@@ -47,34 +55,39 @@ public:
                        const UA_NodeId *nodeid, void *nodeContext,
                        const UA_NumericRange *range, const UA_DataValue *data);
 
+    bool thread_running;
+    UA_NodeId MeasurementsId;
+    UA_NodeId ConfigurationId;
+    UA_NodeId StatusId;
+    UA_DataType VariableTypeM;
+    UA_DataType VariableTypeC;
 
-
-    void addMonitoredItem(UA_Server *server,UA_NodeId VariableId, UA_Double sampling=500.0);
-protected:
-    virtual void updateMeasurements(UA_Server *server)=0;
-    virtual void updateConfiguration(UA_Server *server)=0;
-    virtual void updateStatus(UA_Server *server)=0;
-    virtual void disconnectDevice()=0;
-    virtual void connectDevice(TCPConnectionParameters* parameters)=0;
 private:
-     static void dataChangeNotificationCallback(UA_Server *server, UA_UInt32 monitoredItemId,
+ /*   static void dataChangeNotificationCallback(UA_Server *server, UA_UInt32 monitoredItemId,
                                    void *monitoredItemContext, const UA_NodeId *nodeId,
                                    void *nodeContext, UA_UInt32 attributeId,
                                    const UA_DataValue *value);
-
-     static UA_StatusCode DisconnectDeviceCallback(UA_Server *server,
+*/
+    static UA_StatusCode DisconnectDeviceCallback(UA_Server *server,
                               const UA_NodeId *sessionId, void *sessionHandle,
                               const UA_NodeId *methodId, void *methodContext,
                               const UA_NodeId *objectId, void *objectContext,
                               size_t inputSize, const UA_Variant *input,
                               size_t outputSize, UA_Variant *output);
 
-     static UA_StatusCode ConnectDeviceCallback(UA_Server *server,
+    static UA_StatusCode ConnectDeviceCallback(UA_Server *server,
                               const UA_NodeId *sessionId, void *sessionHandle,
                               const UA_NodeId *methodId, void *methodContext,
                               const UA_NodeId *objectId, void *objectContext,
                               size_t inputSize, const UA_Variant *input,
                               size_t outputSize, UA_Variant *output);
+
+     const std::string MeasurementsVariableName;
+     const std::string ConfigurationVariableName;
+     const std::string StatusVariableName;
+
+     std::thread device_thread;
+
 };
 
 #endif // OPC_MONITOR_H

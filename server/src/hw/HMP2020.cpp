@@ -11,7 +11,7 @@ HMP2020::~HMP2020()
 
 }
 
-string HMP2020::getIdentifier()
+std::string HMP2020::getIdentifier()
 {
     return sendWithResponse("*IDN?\n");
 }
@@ -23,32 +23,32 @@ void HMP2020::setActiveChannel(int channel)
     sendCommand(cb.str());
 }
 
-string HMP2020::getVoltageSet()
+std::string HMP2020::getVoltageSet()
 {
     return sendWithResponse("VOLT?\n");
 }
 
-string HMP2020::getCurrentSet()
+std::string HMP2020::getCurrentSet()
 {
     return sendWithResponse("CURR?\n");
 }
 
-string HMP2020::getOutputSel()
+std::string HMP2020::getOutputSel()
 {
     return sendWithResponse("OUTP:SEL?\n");
 }
 
-string HMP2020::getOutputGen()
+std::string HMP2020::getOutputGen()
 {
     return sendWithResponse("OUTP:GEN?\n");
 }
 
-string HMP2020::getVoltage()
+std::string HMP2020::getVoltage()
 {
     return sendWithResponse("MEAS:VOLT?\n");
 }
 
-string HMP2020::getCurrent()
+std::string HMP2020::getCurrent()
 {
     return sendWithResponse("MEAS:CURR?\n");
 }

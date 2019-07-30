@@ -11,18 +11,16 @@ class HMPController :public opc_template_controller<HMPMeasurements,HMPMeasureme
 {
 public:
     HMPController(std::string name);
-    ~HMPController();
-
+//    ~HMPController();
     hmp_customType customType;
+    void init(UA_Server *server);
 
-    //HMP specific methods:
-    static UA_StatusCode SetOutputCallback(UA_Server *server,
-                             const UA_NodeId *sessionId, void *sessionHandle,
-                             const UA_NodeId *methodId, void *methodContext,
-                             const UA_NodeId *objectId, void *objectContext,
-                             size_t inputSize, const UA_Variant *input,
-                             size_t outputSize, UA_Variant *output);
+    void addSetChannelMethod(UA_Server *server);
     void addSetOutputMethod(UA_Server *server);
+
+private:
+    HMPMeasurements getMeasurements() final;
+    HMPMeasurements getSettings() final;
 
     static UA_StatusCode SetChannelCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
@@ -30,11 +28,12 @@ public:
                              const UA_NodeId *objectId, void *objectContext,
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
-    void addSetChannelMethod(UA_Server *server);
-    void init(UA_Server *server);
-private:
-    HMPMeasurements getMeasurements();
-    HMPMeasurements getSettings();
+    static UA_StatusCode SetOutputCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
 
 };
 

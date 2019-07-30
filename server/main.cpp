@@ -3,7 +3,7 @@
 #include "include/opc/hmpcontroller.h"
 #include "include/opc/dtcontroller.h"
 #include "../common/loader.h"
-
+#include <thread>
 int main(int argc, char *argv[])
 {
     opc_server server;
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     UA_DataTypeArray dtmcustom=dtm.DataTypeArray(nullptr);
     UA_DataTypeArray dtccustom=dtc.DataTypeArray(&dtmcustom);
     UA_DataTypeArray hmpcustom=hmp.DataTypeArray(&dtccustom);//{nullptr,1,types};
-    server.addCustomTypes(&dtccustom);
+    server.addCustomTypes(&hmpcustom);
 
 
     std::vector<opc_monitor*> controllers;
@@ -37,9 +37,18 @@ int main(int argc, char *argv[])
         controllers.push_back(controller);
         controller->init(server.server);
     }
+
+       // std::thread tt([](){ std::cout<<"Thread!"<<std::endl; });
+       // std::thread thread_object( [i] { i->update(); } );
+    for (auto i : controllers){
+        i->spawn_thread();
+    }
     server.run();
 
-    for (auto i : controllers)
+    for (auto i : controllers){
+
+        i->join_thread();
         delete i;
+    }
 return 0;
 }

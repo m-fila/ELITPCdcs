@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include "include/utl/GenericDevice.h"
+#include "../utl/GenericDevice.h"
 
 enum class DT1415ETchannelStatus;
 
@@ -17,22 +17,22 @@ public:
 public:
     DT1415ET();
     virtual ~DT1415ET();
-    string sendDT1415ETcommand(CMD command, CHANNEL channel, string function, string value);
+    std::string sendDT1415ETcommand(CMD command, CHANNEL channel, std::string function, std::string value);
 
-    string getModuleName();
-    string getFirmwareVersion();
-    string getSerialNumber();
-    string getControlMode();
+    std::string getModuleName();
+    std::string getFirmwareVersion();
+    std::string getSerialNumber();
+    std::string getControlMode();
     bool isRemote();
-    string getIdentifier();
-    string getVoltageSet(CHANNEL channel);
-    string getVoltage(CHANNEL channel);
-    string getVoltageMax(CHANNEL channel);
-    string getRampUp(CHANNEL channel);
-    string getRampDown(CHANNEL channel);
-    string getStatus(CHANNEL channel);
-    string getCurrent(CHANNEL channel);
-    string getCurrentSet(CHANNEL channel);
+    std::string getIdentifier();
+    std::string getVoltageSet(CHANNEL channel);
+    std::string getVoltage(CHANNEL channel);
+    std::string getVoltageMax(CHANNEL channel);
+    std::string getRampUp(CHANNEL channel);
+    std::string getRampDown(CHANNEL channel);
+    std::string getStatus(CHANNEL channel);
+    std::string getCurrent(CHANNEL channel);
+    std::string getCurrentSet(CHANNEL channel);
 
     void setON(CHANNEL channel);
     void setOFF(CHANNEL channel);
@@ -42,14 +42,14 @@ public:
     void setRampDown(CHANNEL,double value);
 
 private:
-    const std::map<CMD,string> CommandsMap = {{CMD::MON, "MON"},{CMD::SET,"SET"}};
-    const std::map<STATUS,string> StatusMap = {{STATUS::CMDOK, "#CMD:OK"},{STATUS::CMDERR,"#CMD:ERR"},
+    const std::map<CMD,std::string> CommandsMap = {{CMD::MON, "MON"},{CMD::SET,"SET"}};
+    const std::map<STATUS,std::string> StatusMap = {{STATUS::CMDOK, "#CMD:OK"},{STATUS::CMDERR,"#CMD:ERR"},
                                                {STATUS::CHERR, "#CH:ERR"},{STATUS::PARERR,"#PAR:ERR"},
                                                {STATUS::VALERR, "#VAL:ERR"},{STATUS::LOCERR,"#LOC:ERR"},
                                                {STATUS::UNKNOWN, "UNKNOWN"}};
 
-    string extractCommandStatus(string command);
-    string extractCommandValue(string command);
+    std::string extractCommandStatus(std::string command);
+    std::string extractCommandValue(std::string command);
 };
 
 

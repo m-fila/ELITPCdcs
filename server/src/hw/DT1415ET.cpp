@@ -14,7 +14,7 @@ DT1415ET::~DT1415ET()
 
 }
 
-string DT1415ET::sendDT1415ETcommand(CMD command, CHANNEL channel, string function, string value)
+std::string DT1415ET::sendDT1415ETcommand(CMD command, CHANNEL channel, std::string function,std::string value)
 {
     std::stringstream cb;
     //CMD value SET OR mon
@@ -27,7 +27,7 @@ string DT1415ET::sendDT1415ETcommand(CMD command, CHANNEL channel, string functi
     // command parameter (function)
     cb << ",PAR:" << function;
 
-    //add value if string "value" not empty
+    //add value if std::string "value" not empty
     if(!value.empty())
         cb << ",VAL:" << value;
 
@@ -38,57 +38,57 @@ string DT1415ET::sendDT1415ETcommand(CMD command, CHANNEL channel, string functi
     return sendWithResponse(cb.str());
 }
 
-string DT1415ET::extractCommandStatus(string command)
+std::string DT1415ET::extractCommandStatus(std::string command)
 {
     return "OK";
 }
 
-string DT1415ET::extractCommandValue(string command)
+std::string DT1415ET::extractCommandValue(std::string command)
 {
     //TODO: extract command status, if error throw exception, if no, extract value
     command.erase(command.length()-1);
     std::size_t pos = command.find("VAL:");
-    string ret = command;
-    if(pos!=string::npos)
+    std::string ret = command;
+    if(pos!=std::string::npos)
         ret = command.substr(pos+4);
 
     return ret;
 }
 
-string DT1415ET::getModuleName()
+std::string DT1415ET::getModuleName()
 {
-    string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDNAME", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDNAME", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getFirmwareVersion()
+std::string DT1415ET::getFirmwareVersion()
 {
-    string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDFREL", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDFREL", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getSerialNumber()
+std::string DT1415ET::getSerialNumber()
 {
-    string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDSNUM", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDSNUM", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getControlMode()
+std::string DT1415ET::getControlMode()
 {
-    string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDCTR", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDCTR", "");
     return extractCommandValue(resp);
 }
 
 bool DT1415ET::isRemote()
 {
-    string mode = getControlMode();
+    std::string mode = getControlMode();
     if(!mode.compare("REMOTE"))
         return true;
     else
         return false;
 }
 
-string DT1415ET::getIdentifier()
+std::string DT1415ET::getIdentifier()
 {
     std::stringstream cb;
     cb << "Module name: " << getModuleName() << " | ";
@@ -98,50 +98,50 @@ string DT1415ET::getIdentifier()
     return cb.str();
 }
 
-string DT1415ET::getVoltageSet(CHANNEL channel)
+std::string DT1415ET::getVoltageSet(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "VSET", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "VSET", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getVoltageMax(CHANNEL channel)
+std::string DT1415ET::getVoltageMax(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "VMAX", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "VMAX", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getRampUp(CHANNEL channel)
+std::string DT1415ET::getRampUp(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "RUP", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "RUP", "");
     return extractCommandValue(resp);
 }
-string DT1415ET::getRampDown(CHANNEL channel)
+std::string DT1415ET::getRampDown(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "RDW", "");
-    return extractCommandValue(resp);
-}
-
-string DT1415ET::getVoltage(CHANNEL channel)
-{
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "VMON", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "RDW", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getStatus(CHANNEL channel)
+std::string DT1415ET::getVoltage(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "STATUS", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "VMON", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getCurrent(CHANNEL channel)
+std::string DT1415ET::getStatus(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "IMON", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "STATUS", "");
     return extractCommandValue(resp);
 }
 
-string DT1415ET::getCurrentSet(CHANNEL channel)
+std::string DT1415ET::getCurrent(CHANNEL channel)
 {
-    string resp = sendDT1415ETcommand(CMD::MON, channel, "ISET", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "IMON", "");
+    return extractCommandValue(resp);
+}
+
+std::string DT1415ET::getCurrentSet(CHANNEL channel)
+{
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "ISET", "");
     return extractCommandValue(resp);
 }
 

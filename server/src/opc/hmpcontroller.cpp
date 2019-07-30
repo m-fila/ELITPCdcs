@@ -6,9 +6,9 @@ HMPController::HMPController(std::string name): opc_template_controller<HMPMeasu
     VariableTypeC=customType.Type;
 }
 
-HMPController::~HMPController(){
-    UA_NodeId_deleteMembers(&ObjectNodeId);
-}
+//HMPController::~HMPController(){
+//    UA_NodeId_deleteMembers(&ObjectNodeId);
+//}
 
 void HMPController::init(UA_Server *server){
     addObject(server);
@@ -26,37 +26,39 @@ void HMPController::init(UA_Server *server){
 }
 
 HMPMeasurements HMPController::getMeasurements(){
+      //  std::lock_guard<std::mutex> lock(deviceMutex);
         string response,ch1_v,ch2_v,ch1_c,ch2_c;
         bool ch1,ch2,output;
-        device->setActiveChannel(1);
-        ch1_v = device->getVoltage();
-        ch1_c = device->getCurrent();
-        response = device->getOutputSel();
+        device.setActiveChannel(1);
+        ch1_v = device.getVoltage();
+        ch1_c = device.getCurrent();
+        response = device.getOutputSel();
         ch1 = (response=="1") ? true : false;
-        device->setActiveChannel(2);
-        ch2_v = device->getVoltage();
-        ch2_c = device->getCurrent();
-        response = device->getOutputSel();
+        device.setActiveChannel(2);
+        ch2_v = device.getVoltage();
+        ch2_c = device.getCurrent();
+        response = device.getOutputSel();
         ch2 = (response=="1") ? true : false;
-        response = device->getOutputGen();
+        response = device.getOutputGen();
         output = (response=="1") ? true : false;
         return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
 }
 
 HMPMeasurements HMPController::getSettings(){
+     //   std::lock_guard<std::mutex> lock(deviceMutex);
         string response,ch1_v,ch2_v,ch1_c,ch2_c;
         bool ch1,ch2,output;
-        device->setActiveChannel(1);
-        ch1_v = device->getVoltageSet();
-        ch1_c = device->getCurrentSet();
-        response = device->getOutputSel();
+        device.setActiveChannel(1);
+        ch1_v = device.getVoltageSet();
+        ch1_c = device.getCurrentSet();
+        response = device.getOutputSel();
         ch1 = (response=="1") ? true : false;
-        device->setActiveChannel(2);
-        ch2_v = device->getVoltageSet();
-        ch2_c = device->getCurrentSet();
-        response = device->getOutputSel();
+        device.setActiveChannel(2);
+        ch2_v = device.getVoltageSet();
+        ch2_c = device.getCurrentSet();
+        response = device.getOutputSel();
         ch2 = (response=="1") ? true : false;
-        response = device->getOutputGen();
+        response = device.getOutputGen();
         output = (response=="1") ? true : false;
         return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
 }
@@ -71,7 +73,10 @@ UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,
     HMPController* Monitor=static_cast<HMPController*>(methodContext);
     if(Monitor->isConnected()){
         UA_Boolean state = *(UA_Boolean*)input->data;
-        Monitor->device->setOutputGen(state);
+    //    std::lock_guard<std::mutex> lock(Monitor->deviceMutex);
+        DeviceCommand<HMP2020> command=std::bind(&HMP2020::setOutputGen, _1,state);
+        Monitor->buffer.push(command);
+       // Monitor->device.setOutputGen(state);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetOutput not send");
@@ -119,7 +124,10 @@ UA_StatusCode HMPController::SetChannelCallback(UA_Server *server,
     if(Monitor->isConnected()){
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Boolean state = *(UA_Boolean*)input[1].data;
-        Monitor->device->setOutputSel(channel,state);
+      //  std::lock_guard<std::mutex> lock(Monitor->deviceMutex);
+        DeviceCommand<HMP2020> command=std::bind(&HMP2020::setOutputSel, _1,channel,state);
+        Monitor->buffer.push(command);
+        //Monitor->device.setOutputSel(channel,state);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetChannel not send");

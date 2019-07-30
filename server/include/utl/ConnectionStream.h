@@ -5,8 +5,6 @@
 #include <memory>
 #include <string>
 
-using namespace std;
-
 class ConnectionStream
 {
 public:
@@ -14,10 +12,10 @@ public:
     virtual ~ConnectionStream();
 
     virtual ssize_t send(char* buffer, size_t len);
-    virtual ssize_t send(string s);
+    virtual ssize_t send(std::string s);
     virtual ssize_t receive(char* buffer, size_t len);
-    virtual string receive();
-    virtual string sendWithResponse(string s);
+    virtual std::string receive();
+    virtual std::string sendWithResponse(std::string s);
 
 protected:
     ConnectionStream(int sd) : m_sd(sd) {}
