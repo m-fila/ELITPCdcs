@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 2.6)
+project (ELITPC_DCS)
+ 
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
+option(BUILD_SERVER "builds server" ON)
+option(BUILD_DB "builds database client" ON)
+option(BUILD_GUI "build operational client with gui" ON) 
+if(BUILD_SERVER) 
+	add_subdirectory(server)
+endif(BUILD_SERVER)
+if(BUILD_DB)
+add_subdirectory(client_db)
+endif(BUILD_DB)
+if(BUILD_GUI)
+add_subdirectory(client_gui)
+endif(BUILD_GUI)
+
