@@ -8,14 +8,14 @@
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 
-#include "open62541/namespace_testnodeset_generated.h"
-#include "open62541/types_testnodeset_generated_handling.h"
+#include "open62541/namespace_dcsnodeset_generated.h"
+#include "open62541/types_dcsnodeset_generated_handling.h"
 #include <signal.h>
 #include <stdlib.h>
 
 UA_Boolean running = true;
 
-UA_DataTypeArray customTypesArray = { NULL, UA_TYPES_TESTNODESET_COUNT, UA_TYPES_TESTNODESET};
+UA_DataTypeArray customTypesArray = { NULL, UA_TYPES_DCSNODESET_COUNT, UA_TYPES_DCSNODESET};
 
 UA_HMPm get_hmpm(){
         UA_HMPm hmpm;
@@ -53,14 +53,14 @@ int main(int argc, char **argv)
 
     UA_StatusCode retval;
     /* create nodes from nodeset */
-    if(namespace_testnodeset_generated(server) != UA_STATUSCODE_GOOD) {
+    if(namespace_dcsnodeset_generated(server) != UA_STATUSCODE_GOOD) {
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
                      "Could not add the example nodeset. "
                      "Check previous output for any error.");
         retval = UA_STATUSCODE_BADUNEXPECTEDERROR;
     } else {
         UA_Variant out;
-        UA_Variant_init(&out);
+/*        UA_Variant_init(&out);
         UA_Server_readValue(server, UA_NODEID_NUMERIC(2, 10002), &out);
         UA_Point *p = (UA_Point *)out.data;
         printf("point 2d x: %f \n", p->x);
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
         retval=UA_Server_addVariableNode(server, myIntegerNodeId, parentNodeId,
                               parentReferenceNodeId, myIntegerName,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE), attr, NULL, NULL);
-
+*/
    if(retval==UA_STATUSCODE_GOOD){
    printf("good");
    }
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
         UA_Variant vhmp;
         UA_Variant_init(&vhmp);
         UA_HMPm hmpm=get_hmpm();
-        UA_Variant_setScalar(&vhmp, &hmpm, &UA_TYPES_TESTNODESET[UA_TYPES_TESTNODESET_HMPM]);
+        UA_Variant_setScalar(&vhmp, &hmpm, &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
 
         UA_Server_writeValue(server, hmpmId, vhmp);
 

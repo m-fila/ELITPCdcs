@@ -15,16 +15,21 @@ opc_server::opc_server()
     UA_ServerConfig_setMinimal(config, 6666, nullptr);
     const UA_String hostname= UA_STRING(const_cast<char*>("127.0.0.1"));
     UA_ServerConfig_setCustomHostname(config,hostname);
-
+    addNamespace();
     //UA_Server_addRepeatedCallback(server, Scan, nullptr, 100, NULL);
 
 }
 opc_server::~opc_server(){
     UA_Server_delete(server);
+
 }
 
 void opc_server::addCustomTypes(UA_DataTypeArray *custom){
     config->customDataTypes=custom;
+}
+void opc_server::addNamespace(){
+    namespace_dcsnodeset_generated(server);
+    addCustomTypes(&customDataTypesArray);
 }
 
 void opc_server::Scan(UA_Server* server, void *data){

@@ -8,15 +8,15 @@
 
 
 //#include "open62541/namespace_testnodeset_generated.h"
-#include "open62541/types_testnodeset_generated.h"
-#include "open62541/types_testnodeset_generated_handling.h"
+#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_dcsnodeset_generated_handling.h"
 
 int main(void) {
     /* Make your custom datatype known to the stack */
 
     /* Attention! Here the custom datatypes are allocated on the stack. So they
      * cannot be accessed from parallel (worker) threads. */
-UA_DataTypeArray customTypesArray = { NULL, UA_TYPES_TESTNODESET_COUNT, UA_TYPES_TESTNODESET};
+UA_DataTypeArray customTypesArray = { NULL, UA_TYPES_DCSNODESET_COUNT, UA_TYPES_DCSNODESET};
 
 
     UA_Client *client = UA_Client_new();
@@ -39,7 +39,7 @@ UA_DataTypeArray customTypesArray = { NULL, UA_TYPES_TESTNODESET_COUNT, UA_TYPES
     retval = UA_Client_readValueAttribute(client, nodeId, &value);
             
     if(retval == UA_STATUSCODE_GOOD) {
-        UA_HMPC *p = (UA_HMPC *)value.data;
+        UA_HMPm *p = (UA_HMPm *)value.data;
         printf("Point =%d %d %d %f, %f, %f \n", p->ch[0], p->ch[1], p->output, p->voltage[0],p->voltage[1],p->current[1]);
     }
 

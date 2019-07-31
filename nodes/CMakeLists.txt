@@ -30,9 +30,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         set(UA_NODESET_DIR ${open62541_NODESET_DIR})
     endif()
 
-    function(assign_source_group)
+#    function(assign_source_group)
         # define empty function. We don't need it in standalone
-    endfunction(assign_source_group)
+#    endfunction(assign_source_group)
 
     include_directories(${PROJECT_BINARY_DIR}/src_generated)
 endif()
@@ -44,12 +44,12 @@ include_directories(${CMAKE_CURRENT_LIST_DIR})
 macro(add_example EXAMPLE_NAME EXAMPLE_SOURCE)
   add_executable(${EXAMPLE_NAME} ${STATIC_OBJECTS} ${EXAMPLE_SOURCE} ${ARGN})
   target_link_libraries(${EXAMPLE_NAME} open62541::open62541)
-  assign_source_group(${EXAMPLE_SOURCE})
-  set_target_properties(${EXAMPLE_NAME} PROPERTIES FOLDER "open62541/examples")
-  set_target_properties(${EXAMPLE_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-  if(UA_COMPILE_AS_CXX)
-      set_source_files_properties(${EXAMPLE_SOURCE} PROPERTIES LANGUAGE CXX)
-  endif()
+#  assign_source_group(${EXAMPLE_SOURCE})
+#  set_target_properties(${EXAMPLE_NAME} PROPERTIES FOLDER "open62541/examples")
+#  set_target_properties(${EXAMPLE_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+#  if(UA_COMPILE_AS_CXX)
+#      set_source_files_properties(${EXAMPLE_SOURCE} PROPERTIES LANGUAGE CXX)
+#  endif()
 endmacro()
 
 set(FILE_CSV_DIRPREFIX ${PROJECT_SOURCE_DIR})
@@ -58,22 +58,27 @@ set(FILE_NS_DIRPREFIX ${PROJECT_SOURCE_DIR})
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # needed or cmake doesn't recognize dependencies of generated files
-    set(PROJECT_BINARY_DIR ${CMAKE_BINARY_DIR})
+#    set(PROJECT_BINARY_DIR ${CMAKE_BINARY_DIR})
 endif()
 
 
 #if(UA_NAMESPACE_ZERO STREQUAL "FULL")
     ua_generate_nodeset_and_datatypes(
-        NAME "testnodeset"
-        FILE_CSV "${FILE_CSV_DIRPREFIX}/my.csv"
-        FILE_BSD "${FILE_BSD_DIRPREFIX}/my.bsd"
+        NAME "dcsnodeset"
+        FILE_CSV "${FILE_CSV_DIRPREFIX}/nodeset.csv"
+        FILE_BSD "${FILE_BSD_DIRPREFIX}/nodeset.bsd"
         NAMESPACE_IDX 2
-        FILE_NS "${FILE_NS_DIRPREFIX}/my.xml"
+        FILE_NS "${FILE_NS_DIRPREFIX}/nodeset.xml"
         INTERNAL
     )
     add_example(server_testnodeset server_testnodeset.c
-                ${UA_NODESET_TESTNODESET_SOURCES}
-                ${UA_TYPES_TESTNODESET_SOURCES})
-    add_dependencies(server_testnodeset open62541-generator-ns-testnodeset)
+                ${UA_NODESET_DCSNODESET_SOURCES}
+                ${UA_TYPES_DCSNODESET_SOURCES})
+
+    add_example(client_testnodeset client_types_custom.c
+                ${UA_TYPES_DCSNODESET_SOURCES})
+    add_dependencies(client_testnodeset open62541-generator-ns-dcsnodeset)
+    add_dependencies(server_testnodeset open62541-generator-ns-dcsnodeset)
+
 #endif()
 
