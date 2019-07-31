@@ -81,55 +81,59 @@ void HVpsuWidget::updateStatus(void *data){
 
 
 void HVpsuWidget::updateMeasurements(void *data){
-    DTMeasurements measurements=*static_cast<DTMeasurements*>(data);
-    QString val;
-    for(int i=0; i<8; i++)
-    {
-        val.sprintf("%.1lf", measurements.voltage[i]);
-        allTabCHvoltage[i]->display(val);
+    UA_DT1415m measurements=*static_cast<UA_DT1415m*>(data);
+    if(measurements.voltageSize){
+        QString val;
+        for(int i=0; i<8; i++)
+        {
+            val.sprintf("%.1lf", measurements.voltage[i]);
+            allTabCHvoltage[i]->display(val);
 
-        val.sprintf("%.3lf", measurements.current[i]);
-        allTabImon[i]->setText(val);
+            val.sprintf("%.3lf", measurements.current[i]);
+            allTabImon[i]->setText(val);
+        }
+        val.sprintf("%.1lf", measurements.totalVoltage);
+        allTabCHvoltage[8]->display(val);
     }
-    val.sprintf("%.1lf", measurements.totalVoltage);
-    allTabCHvoltage[8]->display(val);
 }
 void HVpsuWidget::updateConfiguration(void *data){
-    DTConfiguration channelStatus=*static_cast<DTConfiguration*>(data);
-    bool ON, enabled;
-    enabled=false;
-    QString val;
-    for(int i=0; i<8; i++)
-   {    DT1415ETchannelStatus chanStat=static_cast<DT1415ETchannelStatus>(channelStatus.status[i]);
-        enabled = channelStatus.isRemote & !(bool)(chanStat & DT1415ETchannelStatus::ISDIS);
-        allTabOn[i]->setEnabled(enabled);
-         allTabOff[i]->setEnabled(enabled);
-        //allTabKill[i]->setEnabled(enabled);
-        allTabSetV[i]->setEnabled(enabled);
+    UA_DT1415c channelStatus=*static_cast<UA_DT1415c*>(data);
+    if(channelStatus.statusSize){
+        bool ON, enabled;
+        enabled=false;
+        QString val;
+        for(int i=0; i<8; i++)
+       {    DT1415ETchannelStatus chanStat=static_cast<DT1415ETchannelStatus>(channelStatus.status[i]);
+            enabled = channelStatus.isRemote & !(bool)(chanStat & DT1415ETchannelStatus::ISDIS);
+            allTabOn[i]->setEnabled(enabled);
+             allTabOff[i]->setEnabled(enabled);
+            //allTabKill[i]->setEnabled(enabled);
+            allTabSetV[i]->setEnabled(enabled);
 
-       ON = (bool)(chanStat & DT1415ETchannelStatus::ON);
-        allTabLed[i]->setState((KLed::State)(ON));
-        if(!isRemotePrevious | initialUpdate) //update ON/OFF only when remote is disabled or connection is established
+           ON = (bool)(chanStat & DT1415ETchannelStatus::ON);
+            allTabLed[i]->setState((KLed::State)(ON));
+            if(!isRemotePrevious | initialUpdate) //update ON/OFF only when remote is disabled or connection is established
 
-        {
-            allTabOn[i]->setChecked(ON);
-            allTabOff[i]->setChecked(!ON);
+            {
+                allTabOn[i]->setChecked(ON);
+                allTabOff[i]->setChecked(!ON);
 
-            val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
-            allTabVset[i]->setText(val);
+                val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
+                allTabVset[i]->setText(val);
 
-            if(i==7)    //when initial update be sure to update all channels (Q: do second for ?)
-                initialUpdate = false;
+                if(i==7)    //when initial update be sure to update all channels (Q: do second for ?)
+                    initialUpdate = false;
+            }
+
         }
+        val.sprintf("%6.1lf", channelStatus.totalVoltageSet);
+        allTabVset[8]->setText(val);
+        allTabOn[8]->setEnabled(channelStatus.isRemote);
+        allTabOff[8]->setEnabled(channelStatus.isRemote);
+        //allTabKill[8]->setEnabled(channelStatus.isRemote);
 
+        isRemotePrevious = channelStatus.isRemote;
     }
-    val.sprintf("%6.1lf", channelStatus.totalVoltageSet);
-    allTabVset[8]->setText(val);
-    allTabOn[8]->setEnabled(channelStatus.isRemote);
-    allTabOff[8]->setEnabled(channelStatus.isRemote);
-    //allTabKill[8]->setEnabled(channelStatus.isRemote);
-
-    isRemotePrevious = channelStatus.isRemote;
 }
 
 void HVpsuWidget::closeEvent(QCloseEvent* e)
@@ -166,7 +170,7 @@ void HVpsuWidget::onPressed()
     {
         if(allTabOn[i] == obj)
             HVController->callSetChannel(i,true);
-            //std::cout << "ON number: " << i << std::endl;
+            std::cout << "ON number: " << i << std::endl;
     }
 }
 

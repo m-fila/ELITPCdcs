@@ -1,8 +1,8 @@
 #include "../../include/opc/dtcontroller.h"
 #include <sstream>
-DTController::DTController(std::string name): opc_template_controller<DTMeasurements,DTConfiguration,DT1415ET>(name){
-    VariableTypeM=customTypeM.Type;
-    VariableTypeC=customTypeC.Type;    
+DTController::DTController(std::string name): opc_template_controller<UA_DT1415m,UA_DT1415c,DT1415ET>(name){
+    VariableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M];
+    VariableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C];
 }
 
 //DTController::~DTController(){
@@ -12,10 +12,10 @@ DTController::DTController(std::string name): opc_template_controller<DTMeasurem
 
 void DTController::init(UA_Server* server){
     addObject(server);
-    customTypeM.addCustomVariableTypeNode(server);
-    customTypeC.addCustomVariableTypeNode(server);
-    addMeasurementsVariable(server);
-    addConfigurationVariable(server);
+//    addMeasurementsVariable(server);
+//    addConfigurationVariable(server);
+    addVariable3(server,&MeasurementsId,"Measurements",UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M]);
+    addVariable3(server,&ConfigurationId,"Configuration",UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C]);
     addStatusVariable(server);
     addValueCallback(server,MeasurementsId ,MeasurementsReadCallback);
     addValueCallback(server,ConfigurationId,ConfigurationReadCallback);
@@ -29,61 +29,71 @@ void DTController::init(UA_Server* server){
     addSetRampDownMethod(server);
 }
 
-DTMeasurements DTController::getMeasurements(){
-    DTMeasurements dtm;
+UA_DT1415m DTController::getMeasurements(){
+    UA_DT1415m dtm;
+    UA_DT1415m_init(&dtm);
+    int size=8;
+    dtm.voltageSize=size;
+    dtm.currentSize=size;
+    dtm.voltage=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    dtm.current=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     //voltages
     std::string response = device.getVoltage(DT1415ET::CHANNEL::ALL);
     std::istringstream iss(response);
     std::string val;
     int i;
     float total = 0;
-    for(i=0; i<8; i++)
+    for(i=0; i<size; ++i)
     {
         std::getline(iss, val, ';');
-        dtm.voltage[i] = std::stof(val.c_str());
+        dtm.voltage[i] = std::stod(val.c_str());
         total += dtm.voltage[i];
-        //std::cout << voltageMeasurements.voltage[i] << std::endl;
     }
     dtm.totalVoltage = total;
     //currents
     response = device.getCurrent(DT1415ET::CHANNEL::ALL);
     std::istringstream iss2(response);
-    for(i=0; i<8; i++)
+    for(i=0; i<size; i++)
     {
         std::getline(iss2, val, ';');
-        dtm.current[i] = std::stof(val.c_str());
-        //std::cout << measurements.current[i] << std::endl;
+        dtm.current[i] = std::stod(val.c_str());
     }
 
     return dtm;
 }
 
-DTConfiguration DTController::getSettings(){
-    DTConfiguration dtc;
+UA_DT1415c DTController::getSettings(){
+    UA_DT1415c dtc;
+    UA_DT1415c_init(&dtc);
+    int size=8;
+    dtc.voltageSetSize=size;
+    dtc.statusSize=size;
+    dtc.voltageSet=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    dtc.status=static_cast<UA_UInt32*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_UINT32]));
     dtc.isRemote = device.isRemote();
     //device status
     std::string response = device.getStatus(DT1415ET::CHANNEL::ALL);
     std::istringstream iss(response);
     std::string val;
     int i;
-    for(i=0; i<8; i++)
+    for(i=0; i<size; ++i)
     {
         std::getline(iss, val, ';');
         dtc.status[i] = std::stoi(val.c_str());
-        //std::cout << val << std::endl;
     }
     //voltage set
     float total = 0;
     response = device.getVoltageSet(DT1415ET::CHANNEL::ALL);
     std::istringstream iss2(response);
-    for(i=0; i<8; i++)
+    for(i=0; i<size; i++)
     {
         std::getline(iss2, val, ';');
-        //std::cout << val << std::endl;
-        dtc.voltageSet[i] = std::stof(val.c_str());
+        dtc.voltageSet[i] = std::stod(val.c_str());
         total += dtc.voltageSet[i];
     }
+
     dtc.totalVoltageSet= total;
+    //std::cout<<dtc.totalVoltageSet;
     return dtc;
 }
 
@@ -105,7 +115,7 @@ UA_StatusCode DTController::SetChannelCallback(UA_Server *server,
         }
         else{
             //Monitor->device.setOFF(CH);
-            DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setON, _1,CH);
+            DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setOFF, _1,CH);
             Monitor->buffer.push(command);
         }
 

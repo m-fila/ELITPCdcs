@@ -1,9 +1,9 @@
 #include "../../include/opc/hmpcontroller.h"
 #include <cstring>
 
-HMPController::HMPController(std::string name): opc_template_controller<HMPMeasurements,HMPMeasurements,HMP2020>(name){
-    VariableTypeM=customType.Type;
-    VariableTypeC=customType.Type;
+HMPController::HMPController(std::string name): opc_template_controller<UA_HMPm,UA_HMPc,HMP2020>(name){
+   VariableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM];
+   VariableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC];
 }
 
 //HMPController::~HMPController(){
@@ -12,9 +12,11 @@ HMPController::HMPController(std::string name): opc_template_controller<HMPMeasu
 
 void HMPController::init(UA_Server *server){
     addObject(server);
-    customType.addCustomVariableTypeNode(server);
-    addMeasurementsVariable(server);
-    addConfigurationVariable(server);
+    //customType.addCustomVariableTypeNode(server);
+    //addMeasurementsVariable(server);
+    //addConfigurationVariable(server);
+    addVariable3(server,&MeasurementsId,"Measurements",UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
+    addVariable3(server,&ConfigurationId,"Configuration",UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC]);
     addStatusVariable(server);
     addValueCallback(server,MeasurementsId ,MeasurementsReadCallback);
     addValueCallback(server,ConfigurationId ,ConfigurationReadCallback);
@@ -24,7 +26,7 @@ void HMPController::init(UA_Server *server){
     addSetOutputMethod(server);
     addSetChannelMethod(server);
 }
-
+/*
 HMPMeasurements HMPController::getMeasurements(){
       //  std::lock_guard<std::mutex> lock(deviceMutex);
         string response,ch1_v,ch2_v,ch1_c,ch2_c;
@@ -42,8 +44,32 @@ HMPMeasurements HMPController::getMeasurements(){
         response = device.getOutputGen();
         output = (response=="1") ? true : false;
         return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
+}*/
+UA_HMPm HMPController::getMeasurements(){
+    std::string response;
+    int size=2;
+    UA_HMPm hmp;
+    UA_HMPm_init(&hmp);
+    response = device.getOutputGen();
+    hmp.output = (response=="1") ? true : false;
+    hmp.chSize=size;
+    hmp.currentSize=size;
+    hmp.voltageSize=size;
+    hmp.ch=static_cast<UA_Boolean*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_BOOLEAN]));
+    hmp.current=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    hmp.voltage=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    for(int i=0; i!=size;++i){
+        device.setActiveChannel(i+1);
+        response = device.getOutputSel();
+        hmp.ch[i]=(response=="1") ? true : false;
+        hmp.current[i]=std::stod(device.getCurrent());
+        hmp.voltage[i]=std::stod(device.getVoltage());
+    }
+    return hmp;
 }
 
+
+/*
 HMPMeasurements HMPController::getSettings(){
      //   std::lock_guard<std::mutex> lock(deviceMutex);
         string response,ch1_v,ch2_v,ch1_c,ch2_c;
@@ -61,6 +87,22 @@ HMPMeasurements HMPController::getSettings(){
         response = device.getOutputGen();
         output = (response=="1") ? true : false;
         return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
+}*/
+
+UA_HMPc HMPController::getSettings(){
+    int size=2;
+    UA_HMPc hmp;
+    UA_HMPc_init(&hmp);
+    hmp.currentSetSize=size;
+    hmp.voltageSetSize=size;
+    hmp.currentSet=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    hmp.voltageSet=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    for(int i=0; i!=size;i++){
+        device.setActiveChannel(i+1);
+        hmp.currentSet[i]=std::stod(device.getCurrentSet());
+        hmp.voltageSet[i]=std::stod(device.getVoltageSet());
+    }
+    return hmp;
 }
 
 UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,

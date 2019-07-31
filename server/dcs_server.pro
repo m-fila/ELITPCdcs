@@ -49,6 +49,7 @@ HEADERS  +=  \
     include/opc/opc_object.h \
     include/opc/opc_server.h \
     ../common/loader.h \
-    include/opc/devicebuffer.h
+    include/opc/devicebuffer.h \
+    ../nodes/build/src_generated/open62541/types_dcsnodeset_generated.h
 
 

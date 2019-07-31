@@ -92,35 +92,32 @@ void LVpsuWidget::updateStatus(void* data){
 }
 
 void LVpsuWidget::updateMeasurements(void* data){
-    HMPMeasurements measurements=*static_cast<HMPMeasurements*>(data);
-    ui->CH1voltage->display(measurements.CH1_voltage);
-    ui->CH1current->display(measurements.CH1_current);
-    ui->CH1on->setEnabled((!measurements.CH1) &&connectionState);
-    ui->CH1off->setEnabled(measurements.CH1 &&connectionState);
-    ui->CH2voltage->display(measurements.CH2_voltage);
-    ui->CH2current->display(measurements.CH2_current);
-    ui->CH2on->setEnabled(!measurements.CH2 &&connectionState);
-    ui->CH2off->setEnabled(measurements.CH2&&connectionState);
+    UA_HMPm measurements=*static_cast<UA_HMPm*>(data);
+    if(measurements.voltageSize){
+        ui->CH1voltage->display(measurements.voltage[0]);
+        ui->CH1current->display(measurements.current[0]);
+        ui->CH1on->setEnabled(!measurements.ch[0] && connectionState);
+        ui->CH1off->setEnabled(measurements.ch[0] && connectionState);
+        ui->CH2voltage->display(measurements.voltage[1]);
+        ui->CH2current->display(measurements.current[1]);
+        ui->CH2on->setEnabled(!measurements.ch[1] && connectionState);
+        ui->CH2off->setEnabled(measurements.ch[1] && connectionState);
 
-    ui->outputON->setEnabled(!measurements.Output&&connectionState);
-    ui->outputOFF->setEnabled(measurements.Output&&connectionState);
-    deviceSettings.CH1=measurements.CH1;
-    deviceSettings.CH2=measurements.CH2;
-    deviceSettings.Output=measurements.Output;
+        ui->outputON->setEnabled(!measurements.output && connectionState);
+        ui->outputOFF->setEnabled(measurements.output && connectionState);
+        deviceSettings.CH1=measurements.ch[0];
+        deviceSettings.CH2=measurements.ch[1];
+        deviceSettings.Output=measurements.output;
+    }
 }
 void LVpsuWidget::updateConfiguration(void* data){
-    HMPMeasurements configuration=*static_cast<HMPMeasurements*>(data);
-    ui->CH1volatgeSet->display(configuration.CH1_voltage);
-    ui->CH1currentSet->display(configuration.CH1_current);
-  //  ui->CH1on->setEnabled(!configuration.CH1);
-  //  ui->CH1off->setEnabled(configuration.CH1);
-    ui->CH2voltageSet->display(configuration.CH2_voltage);
-    ui->CH2currentSet->display(configuration.CH2_current);
-  //  ui->CH2on->setEnabled(!configuration.CH2);
-  //  ui->CH2off->setEnabled(configuration.CH2);
-
-  //  ui->outputON->setEnabled(!configuration.Output);
-  //  ui->outputOFF->setEnabled(configuration.Output);
+    UA_HMPc configuration=*static_cast<UA_HMPc*>(data);
+    if(configuration.voltageSetSize){
+        ui->CH1volatgeSet->display(configuration.voltageSet[0]);
+        ui->CH1currentSet->display(configuration.currentSet[0]);
+        ui->CH2voltageSet->display(configuration.voltageSet[1]);
+        ui->CH2currentSet->display(configuration.voltageSet[1]);
+    }
 }
 
 void LVpsuWidget::deviceConnect()
@@ -155,8 +152,6 @@ void LVpsuWidget::setOutputOFF(){
 
 void LVpsuWidget::closeEvent(QCloseEvent* e)
 {
-    //LVpsuControllerPtr->deviceDisconnect();
-    //save settings
     QSettings().setValue("LVpsuIP",ui->connectionIP->text());
     QSettings().setValue("LVpsuPort",ui->connectionPort->text());
 

@@ -1,5 +1,6 @@
 #include "include/opc_client.h"
 //opc_client* opc_client::context=nullptr;
+
 opc_client::opc_client()
 {
     client = UA_Client_new();
@@ -13,7 +14,7 @@ opc_client::opc_client()
 
    // hmp_customType hmp_customType;
     //UA_DataTypeArray* hmpCustom=
-    addCustomTypes(&HMPArray);
+    addCustomTypes(&customDataTypesArray);
     connectSignals();
 
 }

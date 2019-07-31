@@ -10,7 +10,7 @@
 #include "hvcontroller.h"
 #include "kled.h"
 
-
+#include "open62541/types_dcsnodeset_generated.h"
 namespace Ui {
 class HVpsuWidget;
 }

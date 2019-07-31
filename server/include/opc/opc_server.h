@@ -5,7 +5,7 @@
 #include <open62541/server_config_default.h>
 #include <signal.h>
 #include "open62541/namespace_dcsnodeset_generated.h"
-#include "open62541/types_dcsnodeset_generated_handling.h"
+
 
 class opc_server
 {
