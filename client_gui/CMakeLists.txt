@@ -8,7 +8,7 @@ include_directories(${PROJECT_SOURCE_DIR}/../common)
 include_directories (${PROJECT_BINARY_DIR})
 #set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Examples are built standalone. Find installed open62541
@@ -51,14 +51,14 @@ file(GLOB COMMON_SOURCES ../common/*.cpp)
 file(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB FORMS ${PROJECT_SOURCE_DIR}/forms/*.ui)
 file(GLOB HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB RES ${PROJECT_SOURCE_DIR}/*.qrc)
 qt5_wrap_cpp(H_MOC ${HEADERS})
 qt5_wrap_ui(UI_MOC ${FORMS})
 add_library(CLIENT_LIB  ${SOURCES} ${H_MOC} ${UI_MOC})
 target_link_libraries(CLIENT_LIB Qt5::Widgets)
 add_executable(client_gui ${PROJECT_SOURCE_DIR}/main.cpp
 ${UA_NODESET_DCSNODESET_SOURCES} ${UA_TYPES_DCSNODESET_SOURCES}
- ${SOURCES} ${COMMON_SOURCES}
-resources.qrc
+ ${SOURCES} ${COMMON_SOURCES} ${RES}
 )
 target_link_libraries(client_gui  CLIENT_LIB open62541::open62541)
 add_dependencies(client_gui open62541-generator-ns-dcsnodeset)
