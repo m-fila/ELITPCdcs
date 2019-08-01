@@ -197,6 +197,6 @@ void DT1415ET::setRampDown(CHANNEL channel, double value)
         std::ostringstream sb;
         sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
         //std::cout << sb.str() << std::endl;
-        sendDT1415ETcommand(CMD::SET, channel, "RDW", sb.str());
+        sendDT1415ETcommand(CMD::SET, channel, "RDWN", sb.str());
     }
 }

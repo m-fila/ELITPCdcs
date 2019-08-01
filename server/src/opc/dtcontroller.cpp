@@ -288,7 +288,7 @@ UA_StatusCode DTController::SetRampUpCallback(UA_Server *server,
         UA_Double voltage = *(UA_Double*)input[1].data;
         DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
        // Monitor->device.setRampUp(CH,voltage);
-        DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setRampDown, _1,CH,voltage);
+        DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setRampUp, _1,CH,voltage);
         Monitor->buffer.push(command);
     }
     else {
