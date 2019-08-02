@@ -3,12 +3,15 @@
 #include <iostream>
 opc_controller::opc_controller(std::string OName, QObject *parent):
     opcQObject(OName, parent),
-    StatusVariableName("Status"),
-    MeasurementsVariableName("Measurements"),
-    ConfigurationVariableName("Configuration")
+    statusVariableName("Status"),
+    measurementsVariableName("Measurements"),
+    configurationVariableName("Configuration"),
+    connectBrowseName("connect"),
+    disconnectBrowseName("disconnect")
 {
 }
 
+/*
 void opc_controller::browseIds(){
     std::string connectBrowseName="connect";
     std::string disconnectBrowseName="disconnect";
@@ -37,19 +40,18 @@ void opc_controller::browseIds(){
             }
     }
 }
-
+*/
 void opc_controller::opcInit(UA_Client *Client, UA_ClientConfig *Config, UA_CreateSubscriptionResponse response){
     client=Client;
     config=Config;
     browseIds();
-    addMonitoredItem(StatusNodeId,response,StatusChangedCallback);
-    addMonitoredItem(MeasurementsNodeId,response,MeasurementsChangedCallback);
-    addMonitoredItem(ConfigurationNodeId,response,ConfigurationChangedCallback);
+    addMonitoredItem(browsedIds[statusVariableName],response,StatusChangedCallback);
+    addMonitoredItem(browsedIds[measurementsVariableName],response,MeasurementsChangedCallback);
+    addMonitoredItem(browsedIds[configurationVariableName],response,ConfigurationChangedCallback);
 }
 
 void opc_controller::StatusChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                             UA_UInt32 monId, void *monContext, UA_DataValue *value){
-
     void* data=value->value.data;
     opc_controller* context=static_cast<opc_controller*>(monContext);
     emit context->statusChanged(data);
@@ -72,19 +74,17 @@ void opc_controller::ConfigurationChangedCallback(UA_Client *client, UA_UInt32 s
 }
 
 void opc_controller::callConnect(std::string IPAddress, int port){
-    UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("ConnectDevice"));
     UA_Variant input[2];
     UA_Variant_init(input);
     UA_String address=UA_String_fromChars(IPAddress.c_str());
     UA_Variant_setScalarCopy(&input[0], &address, &UA_TYPES[UA_TYPES_STRING]);
     UA_Variant_setScalarCopy(&input[1], &port, &UA_TYPES[UA_TYPES_INT32]);
     UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                connectNodeId, 2, input, nullptr,nullptr);
+                                browsedIds[connectBrowseName], 2, input, nullptr,nullptr);
     UA_Variant_clear(input);
 }
 void opc_controller::callDisconnect(){
-    UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("DisconnectDevice"));
     UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                disconnectNodeId, 0, nullptr, nullptr,nullptr);
+                                browsedIds[disconnectBrowseName], 0, nullptr, nullptr,nullptr);
 }
 

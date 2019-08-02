@@ -8,14 +8,11 @@ opc_client::opc_client()
     UA_ClientConfig_setDefault(config);
     config->stateCallback=stateCallback;
     config->clientContext=this;
+    addCustomTypes(&customDataTypesArray);
     client_clock=new QTimer;
     client_clock->start(10);
-   // context=this;
-
-   // hmp_customType hmp_customType;
-    //UA_DataTypeArray* hmpCustom=
-    addCustomTypes(&customDataTypesArray);
     connectSignals();
+
 
 }
 opc_client::~opc_client(){
@@ -44,8 +41,9 @@ void opc_client::stateCallback (UA_Client *client, UA_ClientState clientState){
  //   }
 }
 
-void opc_client::addSubscription(){
+void opc_client::addSubscription(UA_Double interval){
     UA_CreateSubscriptionRequest request = UA_CreateSubscriptionRequest_default();
+    request.requestedPublishingInterval=interval;
     UA_CreateSubscriptionResponse response = UA_Client_Subscriptions_create(client, request,nullptr, nullptr, nullptr);
     if(response.responseHeader.serviceResult == UA_STATUSCODE_GOOD){
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created subsrciption");

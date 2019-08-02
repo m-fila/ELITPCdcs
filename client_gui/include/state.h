@@ -10,10 +10,9 @@ public:
     ~stateMachine();
     enum state {empty,filling,ready};
 private:
-    std::string VariableName;
-    UA_NodeId VariableNodeId;
-    UA_NodeId MethodNodeId;
-    void browseIds();
+    const std::string variableName;
+    const std::string methodBrowseName;
+//    void browseIds();
     static void StateChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
                                       UA_UInt32 monId, void *monContext, UA_DataValue *value);
 public slots:
