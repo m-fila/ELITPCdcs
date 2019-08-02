@@ -39,14 +39,12 @@ private:
     std::mutex mMutex;
     std::mutex cMutex;
     std::mutex sMutex;
-    M measurements;
-    C configuration;
-    bool status;
-
 
 protected:
     bool isConnected(){return device.isConnected();}
-
+    M measurements;
+    C configuration;
+    bool status;
     D device;
     DeviceBuffer<DeviceCommand<D>> buffer;
 

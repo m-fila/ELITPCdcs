@@ -4,6 +4,8 @@
 HMPController::HMPController(std::string name): opc_template_controller<UA_HMPm,UA_HMPc,HMP2020>(name){
    VariableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM];
    VariableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC];
+   UA_HMPm_init(&measurements);
+   UA_HMPc_init(&configuration);
 }
 
 //HMPController::~HMPController(){

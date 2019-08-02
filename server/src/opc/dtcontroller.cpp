@@ -3,6 +3,8 @@
 DTController::DTController(std::string name): opc_template_controller<UA_DT1415m,UA_DT1415c,DT1415ET>(name){
     VariableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M];
     VariableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C];
+    UA_DT1415m_init(&measurements);
+    UA_DT1415c_init(&configuration);
 }
 
 //DTController::~DTController(){
