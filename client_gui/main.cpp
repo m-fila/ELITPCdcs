@@ -15,7 +15,5 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("ELITPCdcs client");
     MainWindow w;
     w.show();
-  //   signal(SIGINT,SIG_DFL);
-  //   signal(SIGTERM,SIG_DFL);
     return a.exec();
 }
