@@ -64,19 +64,31 @@ void HVpsuWidget::updateStatus(void *data){
             //allTabKill[i]->setEnabled(enabled[i]);
             allTabSetV[i]->setEnabled(enabled[i]);
             allTabLed[i]->setState((KLed::State)(ON[i]));
+            allTabVset[i]->setEnabled(true);
+            allTabImon[i]->setEnabled(true);
+
             tabCHxSetRUP[i]->setEnabled(enabled[i]);
             tabCHxSetRDWN[i]->setEnabled(enabled[i]);
             tabCHxSTATUS[i]->setEnabled(true);
             tabCHxRUP[i]->setEnabled(true);
             tabCHxRDWN[i]->setEnabled(true);
             tabCHxVMAX[i]->setEnabled(true);
-            allTabVset[i]->setEnabled(true);
-            allTabImon[i]->setEnabled(true);
-            allOn->setEnabled(isRemote);
-            allOff->setEnabled(isRemote);
+
+            tabCHxOn[i]->setEnabled(enabled[i]);
+            tabCHxOff[i]->setEnabled(enabled[i]);
+            tabCHxOn[i]->setChecked(ON[i]);
+            tabCHxOff[i]->setChecked(!ON[i]);
+            //tabCHxKill[i]->setEnabled(enabled[i]);
+            tabCHxSetV[i]->setEnabled(enabled[i]);
+            tabCHxLed[i]->setState((KLed::State)(ON[i]));
+            tabCHxVset[i]->setEnabled(true);
+            tabCHxImon[i]->setEnabled(true);
+
         }
         allTabLed[8]->setState((KLed::State)(true));
         allTabVset[8]->setEnabled(true);
+        allOn->setEnabled(isRemote);
+        allOff->setEnabled(isRemote);
     }
     else{
         ui->connect->setEnabled(true);
@@ -94,20 +106,30 @@ void HVpsuWidget::updateStatus(void *data){
             allTabOff[i]->setEnabled(false);
             allTabKill[i]->setEnabled(false);
             allTabSetV[i]->setEnabled(false);
+            allTabLed[i]->setState(static_cast<KLed::State>(false));
+            allTabVset[i]->setEnabled(false);
+            allTabImon[i]->setEnabled(false);
+
             tabCHxSetRUP[i]->setEnabled(false);
             tabCHxSetRDWN[i]->setEnabled(false);
-            allTabLed[i]->setState(static_cast<KLed::State>(false));
             tabCHxSTATUS[i]->setEnabled(false);
             tabCHxRUP[i]->setEnabled(false);
             tabCHxRDWN[i]->setEnabled(false);
             tabCHxVMAX[i]->setEnabled(false);
-            allTabVset[i]->setEnabled(false);
-            allTabImon[i]->setEnabled(false);
-            allOn->setEnabled(false);
-            allOff->setEnabled(false);
+
+            tabCHxOn[i]->setEnabled(false);
+            tabCHxOff[i]->setEnabled(false);
+            tabCHxKill[i]->setEnabled(false);
+            tabCHxSetV[i]->setEnabled(false);
+            tabCHxLed[i]->setState(static_cast<KLed::State>(false));
+            tabCHxVset[i]->setEnabled(false);
+            tabCHxImon[i]->setEnabled(false);
+
         }
         allTabLed[8]->setState(static_cast<KLed::State>(false));
         allTabVset[8]->setEnabled(false);
+        allOn->setEnabled(false);
+        allOff->setEnabled(false);
     }
 }
 
@@ -120,9 +142,10 @@ void HVpsuWidget::updateMeasurements(void *data){
         {
             val.sprintf("%.1lf", measurements.voltage[i]);
             allTabCHvoltage[i]->display(val);
-
+            tabCHxvoltage[i]->display(val);
             val.sprintf("%.3lf", measurements.current[i]);
             allTabImon[i]->setText(val);
+            tabCHxImon[i]->setText(val);
         }
         val.sprintf("%.1lf", measurements.totalVoltage);
         allTabCHvoltage[8]->display(val);
@@ -136,25 +159,34 @@ void HVpsuWidget::updateConfiguration(void *data){
         for(int i=0; i<8; ++i){
             DT1415ETchannelStatus chanStat=static_cast<DT1415ETchannelStatus>(channelStatus.status[i]);
             enabled[i] = channelStatus.isRemote && !static_cast<bool>(chanStat & DT1415ETchannelStatus::ISDIS);
-            val=QString::fromStdString(status_translate(chanStat));
-            //val.sprintf("%u",channelStatus.status[i]);
-            tabCHxSTATUS[i]->setText(val);
+            ON[i] = static_cast<bool>(chanStat & DT1415ETchannelStatus::ON);
+            tabCHxLed[i]->setState( static_cast<KLed::State>(ON[i] && connectionState ));
             allTabOn[i]->setEnabled(enabled[i] && connectionState);
             allTabOff[i]->setEnabled(enabled[i] && connectionState);
             //allTabKill[i]->setEnabled(enabled[i] && connectionState);
             allTabSetV[i]->setEnabled(enabled[i] && connectionState);
-            tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
-            tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
-            ON[i] = static_cast<bool>(chanStat & DT1415ETchannelStatus::ON);
             allTabLed[i]->setState( static_cast<KLed::State>(ON[i] && connectionState ));
             allTabOn[i]->setChecked(ON[i] && connectionState);
             allTabOff[i]->setChecked((!ON[i]) && connectionState);
+
+            val=QString::fromStdString(status_translate(chanStat));
+            tabCHxSTATUS[i]->setText(val);
+            tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
+
+            tabCHxOn[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxOff[i]->setEnabled(enabled[i] && connectionState);
+            //tabCHxKill[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxSetV[i]->setEnabled(enabled[i] && connectionState);
+
+            tabCHxOn[i]->setChecked(ON[i] && connectionState);
+            tabCHxOff[i]->setChecked((!ON[i]) && connectionState);
+
             val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
-            val.sprintf("%6.1lf", channelStatus.totalVoltageSet);
-
-        //isRemotePrevious = channelStatus.isRemote;
+            tabCHxVset[i]->setText(val);
         }
+        val.sprintf("%6.1lf", channelStatus.totalVoltageSet);
         allTabVset[8]->setText(val);
         allOn->setEnabled(channelStatus.isRemote && connectionState);
         allOff->setEnabled(channelStatus.isRemote && connectionState);
@@ -228,7 +260,7 @@ void HVpsuWidget::setVPressed()
     bool ok;
     for(int i=0; i<8; i++)
     {
-        if(allTabSetV[i] == obj)
+        if((allTabSetV[i] == obj) || (tabCHxSetV[i] == obj))
         {
             QString label;
             if(CHxCustomName[i].isEmpty())
@@ -242,7 +274,7 @@ void HVpsuWidget::setVPressed()
             {
                 QString val;
                 val.sprintf("%6.1lf", d);
-                allTabVset[i]->setText(val);
+               // allTabVset[i]->setText(val);
                 //TODO: check VtotalMax (software treshold). if sum > thr, drop input and show message or set max mallowed and show message?
                 HVController->callSetVoltage(i, d);
             }
@@ -593,7 +625,93 @@ void HVpsuWidget::createChannelTabs()
 
         //create all measurements box
         QGroupBox *channelMeasurementsBox = new QGroupBox("Channel measurements");
+        QHBoxLayout *qhbMeasurements=new QHBoxLayout();
+        //begin led
+        tabCHxLed[i] = new KLed();
+        tabCHxLed[i]->setFixedSize(20,20);
+        tabCHxLed[i]->off();
+        tabCHxLed[i]->setColor(Qt::red);
+        qhbMeasurements->addWidget(tabCHxLed[i]);
+        //end led
+        // begin buttons
+        tabCHxOn[i] = new QRadioButton("ON");
+        tabCHxOff[i] = new QRadioButton("OFF");
+        tabCHxOn[i]->setLayoutDirection(Qt::RightToLeft);
+        tabCHxOff[i]->setChecked(true);
+        tabCHxOn[i]->setChecked(false);
+        tabCHxOn[i]->setEnabled(false);
+        tabCHxOff[i]->setEnabled(false);
+        connect(tabCHxOn[i], SIGNAL(pressed()), this, SLOT(onPressed()));
+        connect(tabCHxOff[i], SIGNAL(pressed()), this, SLOT(offPressed()));
+        qhbMeasurements->addWidget(tabCHxOn[i]);
+        qhbMeasurements->addWidget(tabCHxOff[i]);
+        //end buttons
+        //begin voltages
+        tabCHxvoltage[i] = new QLCDNumber();
+        tabCHxvoltage[i]->setDigitCount(6);
+        tabCHxvoltage[i]->setSegmentStyle(QLCDNumber::Flat);
+        tabCHxvoltage[i]->setMinimumSize(QSize(110,36));
+        QPalette palette = tabCHxvoltage[i]->palette();
+        palette.setColor(QPalette::WindowText, Qt::darkGreen);
+        tabCHxvoltage[i]->setPalette(palette);
+        tabCHxvoltage[i]->display(0.00);
+        qhbMeasurements->addWidget(tabCHxvoltage[i]);
+        //end measured voltages
+        qhbMeasurements->addSpacing(20);
+        //begin Vset
+        QLabel *VsetLabel;
+        VsetLabel = new QLabel("VSET [V]:");
+        qhbMeasurements->addWidget(VsetLabel);
+        tabCHxVset[i] = new QLabel("");
+        tabCHxVset[i]->setFixedWidth(40);
+        QFont font = tabCHxVset[i]->font();
+        //font.setPointSize(72);
+        font.setBold(true);
+        tabCHxVset[i]->setFont(font);
+        tabCHxVset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        QString val;
+        val.sprintf("%6.1lf", 0.0);
+        tabCHxVset[i]->setText(val);
+        qhbMeasurements->addWidget(tabCHxVset[i]);
+        // end VSet
+        tabCHxSetV[i] = new QPushButton("Set V");
+        tabCHxSetV[i]->setFixedWidth(40);
+        tabCHxSetV[i]->setEnabled(false);
+        qhbMeasurements->addWidget(tabCHxSetV[i]);
+        connect(tabCHxSetV[i], SIGNAL(pressed()), this, SLOT(setVPressed()));
+        //end setV
+        qhbMeasurements->addSpacing(20);
+        //begin IMON and ISET
+        QGridLayout *Igrid = new QGridLayout();
+        QLabel *ImonLabel = new QLabel("IMON [uA]: ");
+        Igrid->addWidget(ImonLabel, 0, 0, 1, 1);
+        tabCHxImon[i] = new QLabel("");
+        tabCHxImon[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        val.sprintf("%7.3lf", 0.0);
+        tabCHxImon[i]->setText(val);
+        Igrid->addWidget(tabCHxImon[i], 0, 1, 1, 1);
+        /*QLabel *IsetLabel = new QLabel("ISET [uA]: ");
+        Igrid->addWidget(IsetLabel, 1, 0, 1, 1);
+        tabCHxIset[i] = new QLabel("");
+        tabCHxIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        val.sprintf("%7.3lf", 0.0);
+        tabCHxIset[i]->setText(val);
+        Igrid->addWidget(tabCHxIset[i], 1, 1, 1, 1);*/
+        qhbMeasurements->addLayout(Igrid);
+        //end IMON and ISET
+        qhbMeasurements->addStretch();
+        //begin kill button
+        tabCHxKill[i] = new QPushButton("KILL");
+        tabCHxKill[i]->setFixedWidth(40);
+        //palette = tabCHxKill[i]->palette();
+        //palette.setColor(QPalette::ButtonText, Qt::red);
+        tabCHxKill[i]->setPalette(palette);
+        tabCHxKill[i]->setEnabled(false);
+        qhbMeasurements->addWidget(tabCHxKill[i]);
+        //end kill
+        channelMeasurementsBox->setLayout(qhbMeasurements);
         qvb->addWidget(channelMeasurementsBox);
+
 
         //create channel settings box
         QGroupBox *channelSettingsBox = new QGroupBox("Channel settings");

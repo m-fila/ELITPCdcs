@@ -55,12 +55,12 @@ private:
     QLCDNumber *allTabCHvoltage[9];
     KLed *allTabLed[9];
     QPushButton *allTabKill[9];
-    QRadioButton *allTabOn[8];
-    QRadioButton *allTabOff[8];
     QLabel *allTabVset[9];
     QPushButton *allTabSetV[9];
     QLabel *allTabImon[9];
     QLabel *allTabIset[9];
+    QRadioButton *allTabOn[8];
+    QRadioButton *allTabOff[8];
     QPushButton *allOn;
     QPushButton *allOff;
     //tab CH x containers;
@@ -74,6 +74,16 @@ private:
     QLabel *tabCHxRUP[8];
     QPushButton *tabCHxSetRDWN[8];
     QLabel *tabCHxRDWN[8];
+    //tab CH x measurements panel
+    QLCDNumber *tabCHxvoltage[8];
+    KLed *tabCHxLed[8];
+    QPushButton *tabCHxKill[8];
+    QRadioButton *tabCHxOn[8];
+    QRadioButton *tabCHxOff[8];
+    QLabel *tabCHxVset[8];
+    QPushButton *tabCHxSetV[8];
+    QLabel *tabCHxImon[8];
+
 
     bool isRemote;
   //  bool initialUpdate;
