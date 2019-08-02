@@ -8,16 +8,14 @@
 #include "opc_controller.h"
 #include "../../../common/DTmDataType.h"
 #include "../../../common/DTcDataType.h"
-
-class DTController :public opc_template_controller<DTMeasurements,DTConfiguration,DT1415ET>
+#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_dcsnodeset_generated_handling.h"
+class DTController :public opc_template_controller<UA_DT1415m,UA_DT1415c,DT1415ET>
 {
 public:
     DTController(std::string name);
 //    ~DTController();
     void init(UA_Server *server);
-    dtm_customType customTypeM;
-    dtc_customType customTypeC;
-
     void addSetChannelMethod(UA_Server *server);
     void addSetVoltageMethod(UA_Server *server);
     void addSetVoltageMaxMethod(UA_Server *server);
@@ -25,8 +23,8 @@ public:
     void addSetRampDownMethod(UA_Server *server);
 
 private:
-    DTMeasurements getMeasurements() final;
-    DTConfiguration getSettings() final;
+    UA_DT1415m getMeasurements() final;
+    UA_DT1415c getSettings() final;
 
     static UA_StatusCode SetRampDownCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,

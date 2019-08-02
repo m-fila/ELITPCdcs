@@ -11,7 +11,7 @@ opc_state::~opc_state(){
 
 void opc_state::init(UA_Server *server){
     addObject(server);
-    VariableNodeId=addVariable2(server,VariableName,UA_TYPES[UA_TYPES_INT32],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE));
+    addVariable3(server,&VariableNodeId,VariableName,UA_TYPES[UA_TYPES_INT32]);
     setState(server,state);
     addSetStateMethod(server);
 }

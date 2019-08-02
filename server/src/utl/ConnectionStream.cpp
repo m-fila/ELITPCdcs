@@ -44,5 +44,8 @@ std::string ConnectionStream::receive()
 std::string ConnectionStream::sendWithResponse(std::string s)
 {
     send(s);
+//    std::string r=receive();
+//    std::cout<<s<<std::endl;
+ //   std::cout<<r<<std::endl;
     return receive();
 }

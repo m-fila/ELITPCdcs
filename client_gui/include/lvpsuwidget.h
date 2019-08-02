@@ -3,6 +3,13 @@
 
 #include "abstractwidget.h"
 #include "lvcontroller.h"
+#include "open62541/types_dcsnodeset_generated.h"
+
+struct deviceOutputs{
+    bool CH1;
+    bool CH2;
+    bool Output;
+};
 
 namespace Ui {
 class LVpsuWidget;
@@ -21,7 +28,7 @@ public:
 private:
     Ui::LVpsuWidget *ui;
     void connectSignals();
-    HMPMeasurements deviceSettings;
+    deviceOutputs deviceSettings;
     bool connectionState;
 protected:
     void closeEvent(QCloseEvent* e);

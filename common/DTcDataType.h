@@ -4,6 +4,7 @@
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 #include <ostream>
+#include <map>
 typedef struct{
     UA_Boolean isRemote;
     UA_Float totalVoltageSet;
@@ -114,7 +115,7 @@ static std::ostream& operator<<(std::ostream& os, const DTConfiguration& dtconf)
 }
 
 enum class DT1415ETchannelStatus
-{
+{   OFF = 0,
     ON = (1 << 0),
     RUP = (1 << 1),
     RDW = (1 << 2),
@@ -132,6 +133,7 @@ enum class DT1415ETchannelStatus
     LOCK = (1 << 14),
     UNKNOWN = (1 << 31)
 };
+
 
 constexpr DT1415ETchannelStatus operator |(DT1415ETchannelStatus a, DT1415ETchannelStatus b)
 {

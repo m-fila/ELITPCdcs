@@ -5,16 +5,7 @@ hv_controller::hv_controller(std::string OName, QObject *parent):
 {
 }
 
-void hv_controller::callSetVoltage(int nr,double voltage){
-    //   UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
-       UA_Variant input[2];
-       UA_Variant_init(input);
-       UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
-       UA_Variant_setScalarCopy(&input[1], &voltage, &UA_TYPES[UA_TYPES_DOUBLE]);
-       UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                   setVoltageNodeId, 2, input, nullptr,nullptr);
-       UA_Variant_clear(input);
-}
+
 
 void hv_controller::callSetChannel(int nr, bool state){
   //  UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetChannel"));
@@ -27,11 +18,58 @@ void hv_controller::callSetChannel(int nr, bool state){
     UA_Variant_clear(input);
 }
 
+void hv_controller::callSetVoltage(int nr,double voltage){
+    //   UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
+       UA_Variant input[2];
+       UA_Variant_init(input);
+       UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
+       UA_Variant_setScalarCopy(&input[1], &voltage, &UA_TYPES[UA_TYPES_DOUBLE]);
+       UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
+                                   setVoltageNodeId, 2, input, nullptr,nullptr);
+       UA_Variant_clear(input);
+}
+
+void hv_controller::callSetVoltageMax(int nr,double voltage){
+    //   UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
+       UA_Variant input[2];
+       UA_Variant_init(input);
+       UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
+       UA_Variant_setScalarCopy(&input[1], &voltage, &UA_TYPES[UA_TYPES_DOUBLE]);
+       UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
+                                   setVoltageMaxNodeId, 2, input, nullptr,nullptr);
+       UA_Variant_clear(input);
+}
+
+void hv_controller::callSetRampUp(int nr,double rup){
+    //   UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
+       UA_Variant input[2];
+       UA_Variant_init(input);
+       UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
+       UA_Variant_setScalarCopy(&input[1], &rup, &UA_TYPES[UA_TYPES_DOUBLE]);
+       UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
+                                   setRampUpNodeId, 2, input, nullptr,nullptr);
+       UA_Variant_clear(input);
+}
+
+void hv_controller::callSetRampDown(int nr,double rdwn){
+    //   UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
+       UA_Variant input[2];
+       UA_Variant_init(input);
+       UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
+       UA_Variant_setScalarCopy(&input[1], &rdwn, &UA_TYPES[UA_TYPES_DOUBLE]);
+       UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
+                                   setRampDownNodeId, 2, input, nullptr,nullptr);
+       UA_Variant_clear(input);
+}
+
 void hv_controller::browseIds(){
     std::string connectBrowseName="connect";
     std::string disconnectBrowseName="disconnect";
     std::string setChannelBrowseName="setchannel";
     std::string setVoltageBrowseName="setvoltage";
+    std::string setVoltageMaxBrowseName="setvoltagemax";
+    std::string setRampUpBrowseName="setrampup";
+    std::string setRampDownBrowseName="setrampdown";
     UA_BrowseRequest bReq;
     UA_BrowseRequest_init(&bReq);
     bReq.requestedMaxReferencesPerNode = 0;
@@ -58,6 +96,12 @@ void hv_controller::browseIds(){
                     setChannelNodeId=ref.nodeId.nodeId;
                 if(!str.compare(setVoltageBrowseName))
                     setVoltageNodeId=ref.nodeId.nodeId;
+                if(!str.compare(setVoltageMaxBrowseName))
+                    setVoltageMaxNodeId=ref.nodeId.nodeId;
+                if(!str.compare(setRampUpBrowseName))
+                    setRampUpNodeId=ref.nodeId.nodeId;
+                if(!str.compare(setRampDownBrowseName))
+                    setRampDownNodeId=ref.nodeId.nodeId;
             }
     }
 }

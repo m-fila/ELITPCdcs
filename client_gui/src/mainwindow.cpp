@@ -54,7 +54,7 @@ void MainWindow::closeEvent(QCloseEvent* e)
 void MainWindow::loadConfigFile(){
 
 
-    for (auto L : loader::parse("../dcs_master/dcs.config")) {
+    for (auto L : loader::parse("../../dcs.config")) {
 
         AbstractWidget* new_widget;
         if(L.device=="HMP2020"){
