@@ -1,53 +1,32 @@
-#include "../../include/opc/hmpcontroller.h"
+#include "../../include/opc/hmp2020controller.h"
 #include <cstring>
 
-HMPController::HMPController(std::string name): opc_template_controller<UA_HMPm,UA_HMPc,HMP2020>(name){
-   VariableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM];
-   VariableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC];
+HMP2020Controller::HMP2020Controller(std::string name): OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>(name){
+   variableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM];
+   variableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC];
    UA_HMPm_init(&measurements);
    UA_HMPc_init(&configuration);
 }
 
-//HMPController::~HMPController(){
+//HMP2020Controller~HMP2020Controller(){
 //    UA_NodeId_deleteMembers(&ObjectNodeId);
 //}
 
-void HMPController::init(UA_Server *server){
+void HMP2020Controller::init(UA_Server *server){
     addObject(server);
     //customType.addCustomVariableTypeNode(server);
     //addMeasurementsVariable(server);
     //addConfigurationVariable(server);
-    addVariable3(server,&MeasurementsId,"Measurements",UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
-    addVariable3(server,&ConfigurationId,"Configuration",UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC]);
+    addMeasurementsVariable(server);
+    addConfigurationVariable(server);
     addStatusVariable(server);
-    addValueCallback(server,MeasurementsId ,MeasurementsReadCallback);
-    addValueCallback(server,ConfigurationId ,ConfigurationReadCallback);
-    addValueCallback(server,StatusId ,StatusReadCallback);
     addDisconnectDeviceMethod(server);
     addConnectDeviceMethod(server);
     addSetOutputMethod(server);
     addSetChannelMethod(server);
 }
-/*
-HMPMeasurements HMPController::getMeasurements(){
-      //  std::lock_guard<std::mutex> lock(deviceMutex);
-        string response,ch1_v,ch2_v,ch1_c,ch2_c;
-        bool ch1,ch2,output;
-        device.setActiveChannel(1);
-        ch1_v = device.getVoltage();
-        ch1_c = device.getCurrent();
-        response = device.getOutputSel();
-        ch1 = (response=="1") ? true : false;
-        device.setActiveChannel(2);
-        ch2_v = device.getVoltage();
-        ch2_c = device.getCurrent();
-        response = device.getOutputSel();
-        ch2 = (response=="1") ? true : false;
-        response = device.getOutputGen();
-        output = (response=="1") ? true : false;
-        return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
-}*/
-UA_HMPm HMPController::getMeasurements(){
+
+UA_HMPm HMP2020Controller::getMeasurements(){
     std::string response;
     int size=2;
     UA_HMPm hmp;
@@ -71,27 +50,9 @@ UA_HMPm HMPController::getMeasurements(){
 }
 
 
-/*
-HMPMeasurements HMPController::getSettings(){
-     //   std::lock_guard<std::mutex> lock(deviceMutex);
-        string response,ch1_v,ch2_v,ch1_c,ch2_c;
-        bool ch1,ch2,output;
-        device.setActiveChannel(1);
-        ch1_v = device.getVoltageSet();
-        ch1_c = device.getCurrentSet();
-        response = device.getOutputSel();
-        ch1 = (response=="1") ? true : false;
-        device.setActiveChannel(2);
-        ch2_v = device.getVoltageSet();
-        ch2_c = device.getCurrentSet();
-        response = device.getOutputSel();
-        ch2 = (response=="1") ? true : false;
-        response = device.getOutputGen();
-        output = (response=="1") ? true : false;
-        return customType.get(ch1,ch2,output,ch1_v,ch2_v,ch1_c,ch2_c);
-}*/
 
-UA_HMPc HMPController::getSettings(){
+
+UA_HMPc HMP2020Controller::getSettings(){
     int size=2;
     UA_HMPc hmp;
     UA_HMPc_init(&hmp);
@@ -107,20 +68,20 @@ UA_HMPc HMPController::getSettings(){
     return hmp;
 }
 
-UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,
+UA_StatusCode HMP2020Controller::setOutputCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
 //    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
-    HMPController* Monitor=static_cast<HMPController*>(methodContext);
-    if(Monitor->isConnected()){
+    HMP2020Controller* monitor=static_cast<HMP2020Controller*>(methodContext);
+    if(monitor->isConnected()){
         UA_Boolean state = *(UA_Boolean*)input->data;
     //    std::lock_guard<std::mutex> lock(Monitor->deviceMutex);
         DeviceCommand<HMP2020> command=std::bind(&HMP2020::setOutputGen, _1,state);
-        Monitor->buffer.push(command);
-       // Monitor->device.setOutputGen(state);
+        monitor->buffer.push(command);
+       // monitor->device.setOutputGen(state);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetOutput not send");
@@ -128,7 +89,7 @@ UA_StatusCode HMPController::SetOutputCallback(UA_Server *server,
 
     return UA_STATUSCODE_GOOD;
 }
-void HMPController::addSetOutputMethod(UA_Server *server) {
+void HMP2020Controller::addSetOutputMethod(UA_Server *server) {
 
     UA_Argument inputArgument;
     UA_Argument_init(&inputArgument);
@@ -143,42 +104,40 @@ void HMPController::addSetOutputMethod(UA_Server *server) {
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setoutput");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
-  //  UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetOutput");
-    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setoutput");
+    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setoutput");
     UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            ObjectNodeId,
+                            objectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            MethodQName,
-                            methodAttr, &SetOutputCallback,
+                            methodQName,
+                            methodAttr, &setOutputCallback,
                             1,&inputArgument, 0, nullptr,this, nullptr);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArgument);
- //   UA_NodeId_deleteMembers(&MethodNodeId);
-    UA_QualifiedName_deleteMembers(&MethodQName);
+    UA_QualifiedName_deleteMembers(&methodQName);
 }
 
-UA_StatusCode HMPController::SetChannelCallback(UA_Server *server,
+UA_StatusCode HMP2020Controller::setChannelCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
  //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
-    HMPController* Monitor=static_cast<HMPController*>(methodContext);
-    if(Monitor->isConnected()){
+    HMP2020Controller* monitor=static_cast<HMP2020Controller*>(methodContext);
+    if(monitor->isConnected()){
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Boolean state = *(UA_Boolean*)input[1].data;
-      //  std::lock_guard<std::mutex> lock(Monitor->deviceMutex);
+      //  std::lock_guard<std::mutex> lock(monitor->deviceMutex);
         DeviceCommand<HMP2020> command=std::bind(&HMP2020::setOutputSel, _1,channel,state);
-        Monitor->buffer.push(command);
-        //Monitor->device.setOutputSel(channel,state);
+        monitor->buffer.push(command);
+        //monitor->device.setOutputSel(channel,state);
     }
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetChannel not send");
     }
     return UA_STATUSCODE_GOOD;
 }
-void HMPController::addSetChannelMethod(UA_Server *server) {
+void HMP2020Controller::addSetChannelMethod(UA_Server *server) {
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
     inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
@@ -198,19 +157,17 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setchannel");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
- //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetChannel");
-    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setchannel");
+    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setchannel");
     UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            ObjectNodeId,
+                            objectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            MethodQName,
-                            methodAttr, &SetChannelCallback,
+                            methodQName,
+                            methodAttr, &setChannelCallback,
                             2,inputArguments, 0, nullptr,this, nullptr);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArguments[0]);
     UA_Argument_deleteMembers(&inputArguments[1]);
-  //  UA_NodeId_deleteMembers(&MethodNodeId);
-    UA_QualifiedName_deleteMembers(&MethodQName);
+    UA_QualifiedName_deleteMembers(&methodQName);
 }
 
 

@@ -1,115 +1,115 @@
 #include "../../include/opc/opc_monitor.h"
 #include <iostream>
-opc_monitor::opc_monitor(std::string name): opc_object(name), thread_running(false),
-    MeasurementsVariableName("Measurements"),
-    ConfigurationVariableName("Configuration"),
-
-    StatusVariableName("Status")
+OpcMonitor::OpcMonitor(std::string name): OpcObject(name), thread_running(false),
+    measurementsVariableName("Measurements"),
+    configurationVariableName("Configuration"),
+    statusVariableName("Status")
     {
 }
 
-opc_monitor::~opc_monitor(){
-        UA_NodeId_deleteMembers(&ObjectNodeId);
+OpcMonitor::~OpcMonitor(){
+        UA_NodeId_deleteMembers(&objectNodeId);
 }
 
-void opc_monitor::addMeasurementsVariable(UA_Server *server){
-    MeasurementsId= addVariable2(server,"Measurements",VariableTypeM,VariableTypeM.typeId);
+void OpcMonitor::addMeasurementsVariable(UA_Server *server){
+    addVariable3(server,&measurementsId,measurementsVariableName,variableTypeM);
+    addValueCallback(server,measurementsId,measurementsReadCallback);
 }
 
-void opc_monitor::addConfigurationVariable(UA_Server *server){
-    ConfigurationId=addVariable2(server,"Configuration",VariableTypeC,VariableTypeC.typeId);
+void OpcMonitor::addConfigurationVariable(UA_Server *server){
+    addVariable3(server,&configurationId,configurationVariableName,variableTypeC);
+    addValueCallback(server,configurationId ,configurationReadCallback);
 }
 
-void opc_monitor::addStatusVariable(UA_Server *server){
-    StatusId=addVariable2(server,"Status",UA_TYPES[UA_TYPES_BOOLEAN],UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE) );
+void OpcMonitor::addStatusVariable(UA_Server *server){
+    addVariable3(server,&statusId,statusVariableName,UA_TYPES[UA_TYPES_BOOLEAN]);
+    addValueCallback(server,statusId ,statusReadCallback);
 }
 
 
-void opc_monitor::MeasurementsReadCallback(UA_Server *server,
+void OpcMonitor::measurementsReadCallback(UA_Server *server,
                    const UA_NodeId *sessionId, void *sessionContext,
                    const UA_NodeId *nodeid, void *nodeContext,
                    const UA_NumericRange *range, const UA_DataValue *data){
-        opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
-        Monitor->updateMeasurementsVariable(server);
+        OpcMonitor* monitor=static_cast<OpcMonitor*>(nodeContext);
+        monitor->updateMeasurementsVariable(server);
         }
 
-void opc_monitor::ConfigurationReadCallback(UA_Server *server,
+void OpcMonitor::configurationReadCallback(UA_Server *server,
                    const UA_NodeId *sessionId, void *sessionContext,
                    const UA_NodeId *nodeid, void *nodeContext,
                    const UA_NumericRange *range, const UA_DataValue *data){
-        opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
-        Monitor->updateConfigurationVariable(server);
+        OpcMonitor* monitor=static_cast<OpcMonitor*>(nodeContext);
+        monitor->updateConfigurationVariable(server);
         }
 
-void opc_monitor::StatusReadCallback(UA_Server *server,
+void OpcMonitor::statusReadCallback(UA_Server *server,
                    const UA_NodeId *sessionId, void *sessionContext,
                    const UA_NodeId *nodeid, void *nodeContext,
                    const UA_NumericRange *range, const UA_DataValue *data){
-        opc_monitor* Monitor=static_cast<opc_monitor*>(nodeContext);
-        Monitor->updateStatusVariable(server);
+        OpcMonitor* monitor=static_cast<OpcMonitor*>(nodeContext);
+        monitor->updateStatusVariable(server);
         }
 
 
 
-void opc_monitor::addValueCallback(UA_Server *server,UA_NodeId VariableId,
-                                   void (*ReadCallback)(UA_Server *server, const UA_NodeId *sessionId,
+void OpcMonitor::addValueCallback(UA_Server *server,UA_NodeId variableId,
+                                   void (*readCallback)(UA_Server *server, const UA_NodeId *sessionId,
                                                          void *sessionContext, const UA_NodeId *nodeid,
                                                          void *nodeContext, const UA_NumericRange *range,
                                                          const UA_DataValue *value)) {
         UA_ValueCallback callback;
-        callback.onRead = ReadCallback;
+        callback.onRead = readCallback;
         callback.onWrite= nullptr;
-        UA_Server_setVariableNode_valueCallback(server, VariableId, callback);
+        UA_Server_setVariableNode_valueCallback(server, variableId, callback);
         }
 
-UA_StatusCode opc_monitor::DisconnectDeviceCallback(UA_Server *server,
+UA_StatusCode OpcMonitor::disconnectDeviceCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
-    opc_monitor* Monitor=static_cast<opc_monitor*>(methodContext);
-    Monitor->disconnectDevice();
+    OpcMonitor* monitor=static_cast<OpcMonitor*>(methodContext);
+    monitor->disconnectDevice();
     return UA_STATUSCODE_GOOD;
 }
 
-void opc_monitor::addDisconnectDeviceMethod(UA_Server *server) {
+void OpcMonitor::addDisconnectDeviceMethod(UA_Server *server) {
     UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
     methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Disconnect device");
     methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","disconnect");
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
-    UA_QualifiedName MethodQName=UA_QUALIFIEDNAME_ALLOC(1,"disconnect");
+    UA_QualifiedName methodQName=UA_QUALIFIEDNAME_ALLOC(1,"disconnect");
     UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            ObjectNodeId,
+                            objectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            MethodQName,
-                            methodAttr, &DisconnectDeviceCallback,
+                            methodQName,
+                            methodAttr, &disconnectDeviceCallback,
                             0, nullptr, 0, nullptr, this, nullptr);
-    UA_QualifiedName_deleteMembers(&MethodQName);
+    UA_QualifiedName_deleteMembers(&methodQName);
     UA_MethodAttributes_deleteMembers(&methodAttr);
 }
 
-UA_StatusCode opc_monitor::ConnectDeviceCallback(UA_Server *server,
+UA_StatusCode OpcMonitor::connectDeviceCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
 
-    opc_monitor* Monitor=static_cast<opc_monitor*>(methodContext);
+    OpcMonitor* monitor=static_cast<OpcMonitor*>(methodContext);
     UA_Int32 port = *(UA_Int32*)input[1].data;
     UA_String host = *(UA_String*)input[0].data;
     std::string address(reinterpret_cast<char*>(host.data));
-
-
     TCPConnectionParameters parameters;
     parameters.IPaddress=address;
     parameters.port=port;
-    Monitor->connectDevice(&parameters);
+    monitor->connectDevice(&parameters);
     return UA_STATUSCODE_GOOD;
 }
-void opc_monitor::addConnectDeviceMethod(UA_Server *server) {
+void OpcMonitor::addConnectDeviceMethod(UA_Server *server) {
 
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
@@ -130,14 +130,14 @@ void opc_monitor::addConnectDeviceMethod(UA_Server *server) {
     methodAttr.executable = true;
     methodAttr.userExecutable = true;
 
-    UA_QualifiedName MethodQName=UA_QUALIFIEDNAME_ALLOC(1,"connect");
+    UA_QualifiedName methodQName=UA_QUALIFIEDNAME_ALLOC(1,"connect");
     UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            ObjectNodeId,
+                            objectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            MethodQName,
-                            methodAttr, &ConnectDeviceCallback,
+                            methodQName,
+                            methodAttr, &connectDeviceCallback,
                             2,inputArguments, 0, nullptr,this, nullptr);
-    UA_QualifiedName_deleteMembers(&MethodQName);
+    UA_QualifiedName_deleteMembers(&methodQName);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArguments[0]);
     UA_Argument_deleteMembers(&inputArguments[1]);
@@ -145,7 +145,7 @@ void opc_monitor::addConnectDeviceMethod(UA_Server *server) {
 
 
 /*
-void opc_monitor::addMonitoredItem(UA_Server *server,UA_NodeId VariableId,UA_Double sampling) {
+void OpcMonitor::addMonitoredItem(UA_Server *server,UA_NodeId VariableId,UA_Double sampling) {
   //  UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
     UA_MonitoredItemCreateRequest monRequest = UA_MonitoredItemCreateRequest_default(VariableId);
     monRequest.requestedParameters.samplingInterval = sampling; // 100 ms interval
@@ -155,18 +155,18 @@ void opc_monitor::addMonitoredItem(UA_Server *server,UA_NodeId VariableId,UA_Dou
 }
 
 
-void opc_monitor::dataChangeNotificationCallback(UA_Server *server, UA_UInt32 monitoredItemId,
+void OpcMonitor::dataChangeNotificationCallback(UA_Server *server, UA_UInt32 monitoredItemId,
                               void *monitoredItemContext, const UA_NodeId *nodeId,
                               void *nodeContext, UA_UInt32 attributeId,
                               const UA_DataValue *value) {
    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Received Notification");
 }
 */
-void opc_monitor::spawn_thread(){
+void OpcMonitor::spawn_thread(){
     thread_running=true;
     device_thread=std::thread([this]{run_thread();});
 }
-void opc_monitor::join_thread(){
+void OpcMonitor::join_thread(){
     thread_running=false;
     device_thread.join();
 }

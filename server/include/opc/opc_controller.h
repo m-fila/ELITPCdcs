@@ -14,15 +14,15 @@ using DeviceCommand = std::function<void(D&)>;
 using std::placeholders::_1;
 
 template <class M,class C,class D>
-class opc_template_controller :public opc_monitor
+class OpcTemplateController :public OpcMonitor
 {
 
 public:
-    opc_template_controller(std::string name) : opc_monitor(name){
+    OpcTemplateController(std::string name) : OpcMonitor(name){
         disconnectDevice();
     }
 
-//    virtual ~opc_template_controller(){}
+//    virtual ~OpcTemplateController(){}
 
 private:
     virtual M getMeasurements()=0;

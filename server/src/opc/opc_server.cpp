@@ -7,7 +7,7 @@
 
 
 
-opc_server::opc_server()
+OpcServer::OpcServer()
 {
     server=UA_Server_new();
     config=UA_Server_getConfig(server);
@@ -19,25 +19,23 @@ opc_server::opc_server()
     //UA_Server_addRepeatedCallback(server, Scan, nullptr, 100, NULL);
 
 }
-opc_server::~opc_server(){
+OpcServer::~OpcServer(){
     UA_Server_delete(server);
 
 }
 
-void opc_server::addCustomTypes(UA_DataTypeArray *custom){
+void OpcServer::addCustomTypes(UA_DataTypeArray *custom){
     config->customDataTypes=custom;
 }
-void opc_server::addNamespace(){
+void OpcServer::addNamespace(){
     namespace_dcsnodeset_generated(server);
     addCustomTypes(&customDataTypesArray);
 }
 
-void opc_server::Scan(UA_Server* server, void *data){
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "YO!");}
 
-UA_Boolean opc_server::running = false;
+UA_Boolean OpcServer::running = false;
 
-int opc_server::run(){
+int OpcServer::run(){
     signal(SIGINT, stopHandler);
     signal(SIGTERM, stopHandler);
     running=true;

@@ -4,24 +4,22 @@
 #include <open62541/server.h>
 #include <string>
 #include "opc_object.h"
-class opc_state:  opc_object
+class OpcState:  OpcObject
 {
 public:
-
     enum MachineState : UA_Int32 {
         Idle,
         Pumping,
         Redy,
     };
-
-    opc_state();
-    ~opc_state();
+    OpcState();
+    ~OpcState();
     MachineState state;
     void init(UA_Server *server);
 
 private:
 
-    static UA_StatusCode SetStateCallback(UA_Server *server,
+    static UA_StatusCode setStateCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
                              const UA_NodeId *objectId, void *objectContext,
