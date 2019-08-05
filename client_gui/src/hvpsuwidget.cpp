@@ -185,6 +185,10 @@ void HVpsuWidget::updateConfiguration(void *data){
             val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
             tabCHxVset[i]->setText(val);
+            val.sprintf("%3.1lf", channelStatus.rup[i]);
+            tabCHxRUP[i]->setText(val);
+            val.sprintf("%3.1lf", channelStatus.rdown[i]);
+            tabCHxRDWN[i]->setText(val);
         }
         val.sprintf("%6.1lf", channelStatus.totalVoltageSet);
         allTabVset[8]->setText(val);
@@ -227,9 +231,8 @@ void HVpsuWidget::onPressed()
     int i;
     for(i=0; i<8; i++)
     {
-        if(allTabOn[i] == obj)
+        if((allTabOn[i] == obj) || (tabCHxOn[i] == obj))
             HVController->callSetChannel(i,true);
-           // std::cout << "ON number: " << i << std::endl;
     }
 }
 
@@ -238,9 +241,8 @@ void HVpsuWidget::offPressed()
     QObject* obj = sender();
     for(int i=0; i<8; i++)
     {
-        if(allTabOff[i] == obj)
+        if((allTabOff[i] == obj) || (tabCHxOff[i] == obj))
             HVController->callSetChannel(i,false);
-            //std::cout << "ON number: " << i << std::endl;
     }
 }
 

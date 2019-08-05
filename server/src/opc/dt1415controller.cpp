@@ -65,8 +65,14 @@ UA_DT1415c DT1415Controller::getSettings(){
     int size=8;
     dtc.voltageSetSize=size;
     dtc.statusSize=size;
+    dtc.voltageMaxSize=size;
+    dtc.rupSize=size;
+    dtc.rdownSize=size;
     dtc.voltageSet=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     dtc.status=static_cast<UA_UInt32*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_UINT32]));
+    dtc.voltageMax=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    dtc.rdown=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    dtc.rup=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     dtc.isRemote = device.isRemote();
     //device status
     std::string response = device.getStatus(DT1415ET::CHANNEL::ALL);
@@ -87,10 +93,27 @@ UA_DT1415c DT1415Controller::getSettings(){
         std::getline(iss2, val, ';');
         dtc.voltageSet[i] = std::stod(val.c_str());
         total += dtc.voltageSet[i];
+//        dtc.voltageMax[i]=0;
     }
 
     dtc.totalVoltageSet= total;
-    //std::cout<<dtc.totalVoltageSet;
+
+    response = device.getRampUp(DT1415ET::CHANNEL::ALL);
+    std::istringstream iss3(response);
+    for(i=0; i<size; ++i)
+    {
+        std::getline(iss3, val, ';');
+        dtc.rup[i] = std::stoi(val.c_str());
+    }
+
+    response = device.getRampDown(DT1415ET::CHANNEL::ALL);
+    std::istringstream iss4(response);
+    for(i=0; i<size; ++i)
+    {
+        std::getline(iss4, val, ';');
+        dtc.rdown[i] = std::stoi(val.c_str());
+    }
+
     return dtc;
 }
 
