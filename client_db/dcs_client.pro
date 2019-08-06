@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     src/database.cpp \
     src/opc_client.cpp \
     src/abstract_variable.cpp \
-    src/hmp_variable.cpp
+    src/hmp_variable.cpp \
+    src/dt1415_variable.cpp
 
 HEADERS += \
     ../common/HMPDataType.h \
@@ -22,4 +23,5 @@ HEADERS += \
     include/opc_client.h \
     include/abstract_variable.h \
     include/template_variable.h \
-    include/hmp_variable.h
+    include/hmp_variable.h \
+    include/dt1415_variable.h
