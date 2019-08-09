@@ -117,7 +117,7 @@ std::string DT1415ET::getRampUp(CHANNEL channel)
 }
 std::string DT1415ET::getRampDown(CHANNEL channel)
 {
-    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "RDW", "");
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "RDWN", "");
     return extractCommandValue(resp);
 }
 

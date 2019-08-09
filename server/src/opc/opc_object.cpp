@@ -1,17 +1,17 @@
 #include "../../include/opc/opc_object.h"
 
-opc_object::opc_object(std::string name): ObjectName(name){
-    ObjectNodeId=UA_NODEID_STRING_ALLOC(1,name.c_str());
+OpcObject::OpcObject(std::string name): objectName(name){
+    objectNodeId=UA_NODEID_STRING_ALLOC(1,name.c_str());
 }
-opc_object::~opc_object(){
-    UA_NodeId_deleteMembers(&ObjectNodeId);
+OpcObject::~OpcObject(){
+    UA_NodeId_deleteMembers(&objectNodeId);
 }
 
-void opc_object::addObject(UA_Server *server){
+void OpcObject::addObject(UA_Server *server){
     UA_ObjectAttributes oAttr = UA_ObjectAttributes_default;
-    UA_QualifiedName NodeQName=UA_QUALIFIEDNAME_ALLOC(1,ObjectName.c_str());
-    oAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US", ObjectName.c_str());
-    UA_Server_addObjectNode(server, ObjectNodeId,
+    UA_QualifiedName NodeQName=UA_QUALIFIEDNAME_ALLOC(1,objectName.c_str());
+    oAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US", objectName.c_str());
+    UA_Server_addObjectNode(server, objectNodeId,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
                               UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                               NodeQName, UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE),
@@ -20,7 +20,7 @@ void opc_object::addObject(UA_Server *server){
     UA_QualifiedName_deleteMembers(&NodeQName);
 }
 
-void opc_object::addVariable(UA_Server *server,std::string VariableName,UA_DataType VariableType, UA_NodeId TypeNodeId){
+void OpcObject::addVariable(UA_Server *server,std::string VariableName,UA_DataType VariableType, UA_NodeId TypeNodeId){
     UA_VariableAttributes vattr = UA_VariableAttributes_default;
     vattr.description = UA_LOCALIZEDTEXT_ALLOC ("en-Us", VariableName.c_str());
     vattr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-Us", VariableName.c_str());
@@ -29,7 +29,7 @@ void opc_object::addVariable(UA_Server *server,std::string VariableName,UA_DataT
     UA_NodeId VariableNodeId=UA_NODEID_STRING_ALLOC(1,VariableName.c_str());
     UA_QualifiedName VariableQName=UA_QUALIFIEDNAME_ALLOC(1,VariableName.c_str());
     UA_Server_addVariableNode(server, VariableNodeId,
-                              ObjectNodeId,
+                              objectNodeId,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                               VariableQName,
                               TypeNodeId, vattr, this, nullptr);
@@ -38,7 +38,7 @@ void opc_object::addVariable(UA_Server *server,std::string VariableName,UA_DataT
     UA_QualifiedName_deleteMembers(&VariableQName);
 }
 
-UA_NodeId opc_object::addVariable2(UA_Server *server,std::string VariableName,UA_DataType VariableType, UA_NodeId TypeNodeId){
+UA_NodeId OpcObject::addVariable2(UA_Server *server,std::string VariableName,UA_DataType VariableType, UA_NodeId TypeNodeId){
     UA_VariableAttributes vattr = UA_VariableAttributes_default;
     vattr.description = UA_LOCALIZEDTEXT_ALLOC ("en-Us", VariableName.c_str());
     vattr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-Us", VariableName.c_str());
@@ -47,7 +47,7 @@ UA_NodeId opc_object::addVariable2(UA_Server *server,std::string VariableName,UA
     UA_NodeId VariableNodeId;//=UA_NODEID_STRING_ALLOC(1,VariableName.c_str());
     UA_QualifiedName VariableQName=UA_QUALIFIEDNAME_ALLOC(1,VariableName.c_str());
     UA_Server_addVariableNode(server, UA_NODEID_NULL,
-                              ObjectNodeId,
+                              objectNodeId,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                               VariableQName,
                               TypeNodeId, vattr, this, &VariableNodeId);
@@ -57,7 +57,7 @@ UA_NodeId opc_object::addVariable2(UA_Server *server,std::string VariableName,UA
     return VariableNodeId;
 }
 
-void opc_object::addVariable3(UA_Server *server,UA_NodeId *VariableNodeId,std::string VariableName,UA_DataType VariableType){
+void OpcObject::addVariable3(UA_Server *server,UA_NodeId *VariableNodeId,std::string VariableName,UA_DataType VariableType){
     UA_VariableAttributes vattr = UA_VariableAttributes_default;
     vattr.description = UA_LOCALIZEDTEXT_ALLOC ("en-Us", VariableName.c_str());
     vattr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-Us", VariableName.c_str());
@@ -65,7 +65,7 @@ void opc_object::addVariable3(UA_Server *server,UA_NodeId *VariableNodeId,std::s
     vattr.valueRank = UA_VALUERANK_SCALAR;
     UA_QualifiedName VariableQName=UA_QUALIFIEDNAME_ALLOC(1,VariableName.c_str());
     UA_Server_addVariableNode(server, UA_NODEID_NULL,
-                              ObjectNodeId,
+                              objectNodeId,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES),
                               VariableQName,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE), vattr, this, VariableNodeId);

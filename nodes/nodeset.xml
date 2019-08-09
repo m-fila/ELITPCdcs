@@ -23,7 +23,6 @@
         <Alias Alias="HMPc">ns=1;i=20211</Alias>
         <Alias Alias="DT1415m">ns=1;i=14151</Alias>
         <Alias Alias="DT1415c">ns=1;i=14155</Alias>
-        <Alias Alias="DT1415x">ns=1;i=14161</Alias>
     </Aliases>
 
     <Extensions>
@@ -75,35 +74,6 @@
         </References>
     </UAObject>
 
-    <UAVariable DataType="DT1415m" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=14152" BrowseName="1:DT1415m" AccessLevel="3">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
-        </References>
-        <Value>
-            <uax:ExtensionObject>
-                <uax:TypeId>
-                    <uax:Identifier>ns=1;i=14151</uax:Identifier>
-                </uax:TypeId>
-                <uax:Body>
-                    <DT1415m xmlns="http://fuw.edu.pl/dcs/Types.xsd">
-                        <totalVoltage>8</totalVoltage>
-                        <voltageSize>2</voltageSize>
-                        <voltage>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </voltage>
-	     	        <currentSize>2</currentSize>
-                        <current>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </current>
-                    </DT1415m>
-                </uax:Body>
-            </uax:ExtensionObject>
-        </Value>
-    </UAVariable>
 
     <UADataType NodeId="ns=1;i=14155" BrowseName="1:DT1415c">
         <DisplayName>DT1415c</DisplayName>
@@ -117,6 +87,12 @@
             <Field DataType="Double" ValueRank="1" Name="voltageSet"/>
             <Field DataType="Int32" Name="statusSize"/>
             <Field DataType="Int32" ValueRank="1" Name="status"/>
+	    <Field DataType="Int32" Name="voltageMaxSize"/>
+            <Field DataType="Double" ValueRank="1" Name="voltageMax"/>
+	    <Field DataType="Int32" Name="rupSize"/>
+            <Field DataType="Double" ValueRank="1" Name="rup"/>
+	    <Field DataType="Int32" Name="rdownSize"/>
+            <Field DataType="Double" ValueRank="1" Name="rdown"/>	    
         </Definition>
     </UADataType>
 
@@ -140,105 +116,6 @@
         </References>
     </UAObject>
 
-    <UAVariable DataType="DT1415c" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=14156" BrowseName="1:DT1415c" AccessLevel="3">
-        <DisplayName>DT1415c</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
-        </References>
-        <Value>
-            <uax:ExtensionObject>
-                <uax:TypeId>
-                    <uax:Identifier>ns=1;i=14155</uax:Identifier>
-                </uax:TypeId>
-                <uax:Body>
-                    <DT1415c xmlns="http://fuw.edu.pl/dcs/Types.xsd">
-                        <isRemote>true</isRemote>
-                        <totalVoltageSet>8</totalVoltageSet>
-                        <voltageSetSize>2</voltageSetSize>
-                        <voltageSet>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </voltageSet>
-	     	        <statusSize>2</statusSize>
-                        <status>                 
-                            <Int32>0</Int32>
-                            <Int32>1</Int32>
-                        </status>
-                    </DT1415c>
-                </uax:Body>
-            </uax:ExtensionObject>
-        </Value>
-    </UAVariable>
-
-    <UADataType NodeId="ns=1;i=14161" BrowseName="1:DT1415x">
-        <DisplayName>DT1415x</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:DT1415x">
-            <Field DataType="Int32" Name="voltageMaxSize"/>
-            <Field DataType="Double" ValueRank="1" Name="voltageMax"/>
-            <Field DataType="Int32" Name="rupSize"/>
-            <Field DataType="Double" ValueRank="1" Name="rup"/>
-            <Field DataType="Int32" Name="rdownSize"/>
-            <Field DataType="Double" ValueRank="1" Name="rdown"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=14163" BrowseName="1:DT1415x" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415x</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14164" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14161</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=14163</Reference>
-        </References>
-    </UAObject>
-
-    <UAVariable DataType="DT1415x" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=14162" BrowseName="1:DT1415x" AccessLevel="3">
-        <DisplayName>DT1415x</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
-        </References>
-        <Value>
-            <uax:ExtensionObject>
-                <uax:TypeId>
-                    <uax:Identifier>ns=1;i=14161</uax:Identifier>
-                </uax:TypeId>
-                <uax:Body>
-                    <DT1415x xmlns="http://fuw.edu.pl/dcs/Types.xsd">
-                        <voltageMaxSize>2</voltageMaxSize>
-                        <voltageMax>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </voltageMax>
-	     	        <rupSize>2</rupSize>
-                        <rup>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </rup>
-	     	        <rdownSize>2</rdownSize>
-                        <rdown>                 
-                            <Double>656.65</Double>
-                            <Double>12.12</Double>
-                        </rdown>
-                    </DT1415x>
-                </uax:Body>
-            </uax:ExtensionObject>
-        </Value>
-    </UAVariable>
 
 
     <UADataType NodeId="ns=1;i=20201" BrowseName="1:HMPm">
@@ -277,41 +154,6 @@
         </References>
     </UAObject>
 
-    <UAVariable DataType="HMPm" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=20202" BrowseName="1:HMPm" AccessLevel="3">
-        <DisplayName>HMPm</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
-        </References>
-        <Value>
-            <uax:ExtensionObject>
-                <uax:TypeId>
-                    <uax:Identifier>ns=1;i=20201</uax:Identifier>
-                </uax:TypeId>
-                <uax:Body>
-                    <HMPm xmlns="http://fuw.edu.pl/dcs/Types.xsd">
-                        <output>true</output>
-                        <chSize>2</chSize>
-                        <ch>                 
-                            <Boolean>false</Boolean>
-                            <Boolean>true</Boolean>
-                        </ch>
-		        <voltageSize>2</voltageSize>
-                        <voltage>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </voltage>
-	     	        <currentSize>2</currentSize>
-                        <current>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </current>
-                    </HMPm>
-                </uax:Body>
-            </uax:ExtensionObject>
-        </Value>
-    </UAVariable>
-
 
 
     
@@ -348,46 +190,6 @@
         </References>
     </UAObject>
 
-    <UAVariable DataType="HMPc" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=20212" BrowseName="1:HMPc" AccessLevel="3">
-        <DisplayName>HMPc</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>            
-        </References>
-        <Value>
-            <uax:ExtensionObject>
-                <uax:TypeId>
-                    <uax:Identifier>ns=1;i=20211</uax:Identifier>
-                </uax:TypeId>
-                <uax:Body>
-                    <HMPc xmlns="http://fuw.edu.pl/dcs/Types.xsd">
-                        <voltageSetSize>2</voltageSetSize>
-                        <voltageSet>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </voltageSet>
-	     	        <currentSetSize>2</currentSetSize>
-                        <currentSet>                 
-                            <Double>12.1</Double>
-                            <Double>4.1</Double>
-                        </currentSet>
-                    </HMPc>
-                </uax:Body>
-            </uax:ExtensionObject>
-        </Value>
-    </UAVariable>
-
-
-
-    <UAObject NodeId="ns=1;i=5001" BrowseName="1:NotBuiltinTypes">
-        <DisplayName>NotBuiltinTypes</DisplayName>
-        <References>            
-            <Reference ReferenceType="HasTypeDefinition">i=61</Reference>
-            <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference>
-        </References>
-    </UAObject>   
-
-
     <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.Testnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
         <DisplayName>Opc.Ua.Testnodeset</DisplayName>
         <References>
@@ -397,7 +199,7 @@
         <Value>
         <!-- This is the Base64 Encoded content of testtypes.bsd -->
         <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9Imh0dHA6Ly9mdXcuZWR1LnBsL2Rjcy8iCiAgRGVmYXVsdEJ5dGVPcmRlcj0iTGl0dGxlRW5kaWFuIgogIFRhcmdldE5hbWVzcGFjZT0iaHR0cDovL2Z1dy5lZHUucGwvZGNzLyIKPgogIDxvcGM6SW1wb3J0IE5hbWVzcGFjZT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIgTG9jYXRpb249Ik9wYy5VYS5CaW5hcnlTY2hlbWEuYnNkIi8+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iSE1QbSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9Im91dHB1dCIgVHlwZU5hbWU9Im9wYzpCb29sZWFuIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjaFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjaCIgVHlwZU5hbWU9Im9wYzpCb29sZWFuIiBMZW5ndGhGaWVsZD0iY2hTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJITVBjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTZXQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNldFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iRFQxNDE1bSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InRvdGFsVm9sdGFnZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkRUMTQxNWMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJpc1JlbW90ZSIgVHlwZU5hbWU9Im9wYzpCb29sZWFuIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0b3RhbFZvbHRhZ2VTZXQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNldFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InN0YXR1c1NpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXMiIFR5cGVOYW1lPSJvcGM6VUludDMyIiBMZW5ndGhGaWVsZD0ic3RhdHVzU2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTV4IiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlTWF4IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VNYXhTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJydXBTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJ1cFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJkb3duU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJkb3duIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJkb3duU2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCjwvb3BjOlR5cGVEaWN0aW9uYXJ5Pg==
+PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9Imh0dHA6Ly9mdXcuZWR1LnBsL2Rjcy8iCiAgRGVmYXVsdEJ5dGVPcmRlcj0iTGl0dGxlRW5kaWFuIgogIFRhcmdldE5hbWVzcGFjZT0iaHR0cDovL2hlcC5mdXcuZWR1LnBsL2Rjcy8iCj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkhNUG0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJvdXRwdXQiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2hTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2giIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9ImNoU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iSE1QYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2V0U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTZXRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkRUMTQxNW0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0b3RhbFZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTVjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iaXNSZW1vdGUiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idG90YWxWb2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXNTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InN0YXR1c1NpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VNYXhTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlTWF4U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJ1cCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJydXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93blNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93biIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJyZG93blNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgoKPC9vcGM6VHlwZURpY3Rpb25hcnk+
 	</ByteString>
         </Value>
     </UAVariable>    

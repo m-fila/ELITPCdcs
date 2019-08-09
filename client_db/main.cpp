@@ -1,34 +1,34 @@
-
 #include "include/opc_client.h"
 #include <iostream>
 #include "include/hmp_variable.h"
+#include "include/dt1415_variable.h"
+#include "../common/loader.h"
 int main(int argc, char *argv[])
 {
-
     opc_client client;
-
     client.Database.open("test.db");
 
+    for (auto L : loader::parse("../../dcs.config")) {
 
-// create and add variables:
-//template_variable<class T> (StringId of variable on server)
+        if(L.device=="HMP2020"){
+           client.addVariable(new hmp_variable(L.Id,"Measurements"));
+        }
+        else if(L.device=="DT1415ET"){
+            client.addVariable(new dt1415_variable(L.Id,"Measurements"));
+        }
 
-    hmp_variable hmp("HMP2","Measurements");
-    status_variable status("HMP2","Status");
-    state_variable state("MachineState","State");
-
-    // create DataTypeArray for every custom DataType used
-    // each should point to the next in first argument
-    // add only first (pointing to 2nd pointing to 3rd ... pointing to null )
-
-    UA_DataTypeArray hmpcustom=hmp.customType.DataTypeArray(nullptr); //{nullptr,1,types};
-    client.addCustomTypes(&hmpcustom);
-
-
-    client.addVariable(&hmp);
-    client.addVariable(&status);
-    client.addVariable(&state);
+        else{
+           std::cout<<"Unknown device:"<<L.device<<std::endl;
+           continue;
+        }
+        client.addVariable(new status_variable(L.Id,"Status"));
+  //  hmp_variable hmp("HMP2","Measurements");
+  //  status_variable status("HMP2","Status");
+  //  state_variable state("MachineState","State");
+    }
     client.run();
 
     return 0;
 }
+
+

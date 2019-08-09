@@ -8,10 +8,10 @@
 #include "../../../common/HMPDataType.h"
 #include "open62541/types_dcsnodeset_generated.h"
 #include "open62541/types_dcsnodeset_generated_handling.h"
-class HMPController :public opc_template_controller<UA_HMPm,UA_HMPc,HMP2020>
+class HMP2020Controller :public OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>
 {
 public:
-    HMPController(std::string name);
+    HMP2020Controller(std::string name);
 //    ~HMPController();
     void init(UA_Server *server);
 
@@ -22,13 +22,13 @@ private:
     UA_HMPm getMeasurements() final;
     UA_HMPc getSettings() final;
 
-    static UA_StatusCode SetChannelCallback(UA_Server *server,
+    static UA_StatusCode setChannelCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
                              const UA_NodeId *objectId, void *objectContext,
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
-    static UA_StatusCode SetOutputCallback(UA_Server *server,
+    static UA_StatusCode setOutputCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
                              const UA_NodeId *objectId, void *objectContext,

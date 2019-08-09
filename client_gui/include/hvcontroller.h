@@ -14,12 +14,17 @@ public:
     void callSetRampUp(int nr, double rup);
     void callSetRampDown(int nr, double rdwn);
 private:
-    UA_NodeId setChannelNodeId;
-    UA_NodeId setVoltageNodeId;
-    UA_NodeId setVoltageMaxNodeId;
-    UA_NodeId setRampUpNodeId;
-    UA_NodeId setRampDownNodeId;
-    void browseIds();
+    const std::string setChannelBrowseName;
+    const std::string setVoltageBrowseName;
+    const std::string setVoltageMaxBrowseName;
+    const std::string setRampUpBrowseName;
+    const std::string setRampDownBrowseName;
+//    UA_NodeId setChannelNodeId;
+//    UA_NodeId setVoltageNodeId;
+//    UA_NodeId setVoltageMaxNodeId;
+//    UA_NodeId setRampUpNodeId;
+//    UA_NodeId setRampDownNodeId;
+//    void browseIds();
 };
 
 #endif // HV_CONTROLLER_H

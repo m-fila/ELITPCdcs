@@ -26,7 +26,7 @@ private:
     QTimer* client_clock;
     void connectSignals();
     static void stateCallback (UA_Client *client, UA_ClientState clientState);
-    void addSubscription();
+    void addSubscription(UA_Double interval=500);
 //custom Types:
    UA_DataTypeArray customDataTypesArray = { nullptr, UA_TYPES_DCSNODESET_COUNT, UA_TYPES_DCSNODESET};
    void addCustomTypes(UA_DataTypeArray *custom);

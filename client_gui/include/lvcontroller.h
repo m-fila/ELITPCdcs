@@ -11,9 +11,11 @@ public:
     void callSetChannel(int nr, bool state);
     void callSetOutput(bool state);
 private:
-    UA_NodeId setChannelNodeId;
-    UA_NodeId setOutputNodeId;
-    void browseIds();
+//    UA_NodeId setChannelNodeId;
+//    UA_NodeId setOutputNodeId;
+  //  void browseIds();
+    const std::string setChannelBrowseName;
+    const std::string setOutputBrowseName;
 };
 
 #endif // LV_CONTROLLER_H

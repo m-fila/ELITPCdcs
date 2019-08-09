@@ -1,35 +1,28 @@
 #include "include/opc/opc_server.h"
 #include "include/opc/opc_state.h"
-#include "include/opc/hmpcontroller.h"
-#include "include/opc/dtcontroller.h"
+#include "include/opc/hmp2020controller.h"
+#include "include/opc/dt1415controller.h"
 #include "../common/loader.h"
 #include <thread>
 int main(int argc, char *argv[])
 {
-    opc_server server;
+    OpcServer server;
 
-    opc_state state;
+    OpcState state;
     state.init(server.server);
 
-   // hmp_customType hmp;
-   // dtm_customType dtm;
-    //dtc_customType dtc;
-
-   // UA_DataTypeArray dtmcustom=dtm.DataTypeArray(nullptr);
-  //  UA_DataTypeArray dtccustom=dtc.DataTypeArray(&dtmcustom);
-  //  UA_DataTypeArray hmpcustom=hmp.DataTypeArray(&dtccustom);//{nullptr,1,types};
-  //  server.addCustomTypes(&hmpcustom);
 
 
-    std::vector<opc_monitor*> controllers;
+
+    std::vector<OpcMonitor*> controllers;
     for (auto L : loader::parse("../../dcs.config")) {
    //     for (auto L : loader::parse("dcs.config")) {
-        opc_monitor* controller;
+        OpcMonitor* controller;
         if(L.device=="HMP2020"){
-           controller=new HMPController(L.Id);
+           controller=new HMP2020Controller(L.Id);
         }
         else if(L.device=="DT1415ET"){
-          controller=new DTController(L.Id);
+          controller=new DT1415Controller(L.Id);
         }
         else{
            std::cout<<"CONFIG: Unknown device "<<L.device<<std::endl;

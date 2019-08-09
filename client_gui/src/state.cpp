@@ -1,7 +1,10 @@
 #include "include/state.h"
 #include <iostream>
-stateMachine::stateMachine( std::string OName,QObject *parent): opcQObject(OName,parent){
-     VariableName="State";
+stateMachine::stateMachine( std::string OName,QObject *parent): opcQObject(OName,parent),
+    variableName("State"),
+    methodBrowseName("setstate")
+{
+    // VariableName="State";
 //    VariableNodeId=UA_NODEID_STRING_ALLOC(1,VariableName.c_str());
 //    MethodNodeId =UA_NODEID_STRING(1,const_cast<char*>("SetState"));
 }
@@ -17,7 +20,7 @@ void stateMachine::changeState(int index){
     UA_Variant_init(&input);
     UA_Variant_setScalarCopy(&input, &index, &UA_TYPES[UA_TYPES_INT32]);
     UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                MethodNodeId, 1, &input, nullptr,nullptr);
+                                browsedIds[methodBrowseName], 1, &input, nullptr,nullptr);
 //   std::cout<<UA_StatusCode_name(retval)<<std::endl;
     UA_Variant_clear(&input);
 }
@@ -33,11 +36,11 @@ void stateMachine::opcInit(UA_Client *Client, UA_ClientConfig *Config, UA_Create
     client=Client;
     config=Config;
     browseIds();
-    addMonitoredItem(VariableNodeId,response,StateChangedCallback);
+    addMonitoredItem(browsedIds[variableName],response,StateChangedCallback);
 
 }
 
-void stateMachine::browseIds(){
+/*void stateMachine::browseIds(){
     std::string MethodBrowseName="setstate";
 
     UA_BrowseRequest bReq;
@@ -60,3 +63,4 @@ void stateMachine::browseIds(){
     }
 
 }
+*/

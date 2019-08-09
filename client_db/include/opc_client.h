@@ -8,9 +8,10 @@
 #include <iostream>
 #include <memory>
 #include "abstract_variable.h"
-#include "hmp_variable.h"
+//#include "hmp_variable.h"
 #include "database.h"
-class opc_client //singleton
+#include "open62541/types_dcsnodeset_generated.h"
+class opc_client
 {
 public:
     opc_client();
@@ -20,22 +21,16 @@ public:
 
     UA_Client *client;
     UA_ClientConfig *config;
-//    static opc_client* context;
     database Database;
 
-
     void addSubscription();
-
     void addVariable(abstract_variable *variable);
- //   void go();
-
     void addCustomTypes(UA_DataTypeArray *custom);
- //   void addTimedCallback();
     int run();
 private:
+    UA_DataTypeArray customDataTypesArray = { nullptr, UA_TYPES_DCSNODESET_COUNT, UA_TYPES_DCSNODESET};
     std::vector<abstract_variable*> variables;
     static void stateCallback (UA_Client *client, UA_ClientState clientState);
-//    static void DatabaseTimedCallback(UA_Client *client, void *context);
     static UA_Boolean running;
     static void stopHandler(int sig) {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c. Shutting down may take a few seconds");

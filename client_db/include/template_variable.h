@@ -11,7 +11,7 @@ class template_variable: public abstract_variable
 public:
     template_variable(std::string ObjectName, std::string VariableName);
     ~template_variable();
-    T data{};
+    T data;
     virtual std::string translateValue();
     virtual void updateData(UA_DataValue* value);
     virtual std::string translateKeys();

@@ -1,22 +1,22 @@
 #include "../../include/opc/opc_state.h"
 #include <iostream>
-opc_state::opc_state(): opc_object("MachineState"),state(MachineState::Idle){
+OpcState::OpcState(): OpcObject("MachineState"),state(MachineState::Idle){
     VariableName="State";
 }
 
 
-opc_state::~opc_state(){
-    UA_NodeId_deleteMembers(&ObjectNodeId);
+OpcState::~OpcState(){
+    UA_NodeId_deleteMembers(&objectNodeId);
 }
 
-void opc_state::init(UA_Server *server){
+void OpcState::init(UA_Server *server){
     addObject(server);
     addVariable3(server,&VariableNodeId,VariableName,UA_TYPES[UA_TYPES_INT32]);
     setState(server,state);
     addSetStateMethod(server);
 }
 
-void opc_state::setState(UA_Server *server, MachineState State){
+void OpcState::setState(UA_Server *server, MachineState State){
     UA_Variant value;
     UA_Variant_setScalar(&value, &State, &UA_TYPES[UA_TYPES_INT32]);
  //   UA_NodeId NodeId = UA_NODEID_STRING_ALLOC(1, VariableName.c_str());
@@ -25,14 +25,14 @@ void opc_state::setState(UA_Server *server, MachineState State){
 }
 
 
-UA_StatusCode opc_state::SetStateCallback(UA_Server *server,
+UA_StatusCode OpcState::setStateCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
 //    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetState was called");
-    opc_state* AssociatedObj=static_cast<opc_state*>(methodContext);
+    OpcState* AssociatedObj=static_cast<OpcState*>(methodContext);
 
     MachineState state = *(MachineState*)input->data;
     AssociatedObj->setState(server,state);
@@ -41,7 +41,7 @@ UA_StatusCode opc_state::SetStateCallback(UA_Server *server,
 
     return UA_STATUSCODE_GOOD;
 }
-void opc_state::addSetStateMethod(UA_Server *server) {
+void OpcState::addSetStateMethod(UA_Server *server) {
 
     UA_Argument inputArgument;
     UA_Argument_init(&inputArgument);
@@ -59,10 +59,10 @@ void opc_state::addSetStateMethod(UA_Server *server) {
  //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetState");
     UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setstate");
     UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            ObjectNodeId,
+                            objectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             MethodQName,
-                            methodAttr, &SetStateCallback,
+                            methodAttr, &setStateCallback,
                             1,&inputArgument, 0, nullptr,this, nullptr);
     UA_MethodAttributes_deleteMembers(&methodAttr);
     UA_Argument_deleteMembers(&inputArgument);

@@ -40,9 +40,6 @@
     <opc:Field Name="voltageSet" TypeName="opc:Double" LengthField="voltageSetSize" />
     <opc:Field Name="statusSize" TypeName="opc:UInt32" />
     <opc:Field Name="status" TypeName="opc:UInt32" LengthField="statusSize" />
-  </opc:StructuredType>
-
-  <opc:StructuredType Name="DT1415x" BaseType="ua:ExtensionObject">
     <opc:Field Name="voltageMaxSize" TypeName="opc:UInt32" />
     <opc:Field Name="voltageMax" TypeName="opc:Double" LengthField="voltageMaxSize" />
     <opc:Field Name="rupSize" TypeName="opc:UInt32" />
@@ -50,5 +47,6 @@
     <opc:Field Name="rdownSize" TypeName="opc:UInt32" />
     <opc:Field Name="rdown" TypeName="opc:Double" LengthField="rdownSize" />
   </opc:StructuredType>
+
 
 </opc:TypeDictionary>

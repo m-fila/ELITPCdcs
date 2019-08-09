@@ -12,18 +12,18 @@ SOURCES += main.cpp \
     src/hw/HMP2020.cpp \
     src/hw/DT1415ET.cpp \
     src/hw/TPG362.cpp \
-    src/opc/dtcontroller.cpp \
     src/utl/ConnectionStream.cpp \
     src/utl/TCPConnector.cpp \
     src/utl/TCPStream.cpp \
     src/utl/GenericDevice.cpp \
     src/DeviceController.cpp \
-    src/opc/hmpcontroller.cpp \
     src/opc/opc_monitor.cpp \
     src/opc/opc_state.cpp \
     src/opc/opc_object.cpp \
     src/opc/opc_server.cpp \
-    ../common/loader.cpp
+    ../common/loader.cpp \
+    src/opc/dt1415controller.cpp \
+    src/opc/hmp2020controller.cpp
 
 
 
@@ -34,13 +34,11 @@ HEADERS  +=  \
     include/hw/HMP2020.h \
     include/hw/DT1415ET.h \
     include/hw/TPG362.h \
-    include/opc/dtcontroller.h \
     include/utl/TCPStream.h \
     include/utl/TCPConnector.h \
     include/utl/ConnectionStream.h \
     include/utl/GenericDevice.h \
     include/DeviceController.h \
-    include/opc/hmpcontroller.h \
     ../common/HMPDataType.h \
     include/opc/opc_monitor.h \
     include/opc/opc_controller.h \
@@ -50,6 +48,9 @@ HEADERS  +=  \
     include/opc/opc_server.h \
     ../common/loader.h \
     include/opc/devicebuffer.h \
-    ../nodes/build/src_generated/open62541/types_dcsnodeset_generated.h
+    ../nodes/build/src_generated/open62541/types_dcsnodeset_generated.h \
+    include/opc/opc_variable.h \
+    include/opc/hmp2020controller.h \
+    include/opc/dt1415controller.h
 
 

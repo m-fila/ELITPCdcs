@@ -10,7 +10,7 @@ opc_client::opc_client()
     UA_ClientConfig_setDefault(config);
     config->stateCallback=stateCallback;
     config->clientContext=this;
-    //context=this;
+    addCustomTypes(&customDataTypesArray);
 }
 
 opc_client::~opc_client(){
@@ -36,7 +36,7 @@ void opc_client::addSubscription(){
     }
     else{
 
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"unable to create subsciption");
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"unable to create subscription");
     }
 
 

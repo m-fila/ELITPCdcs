@@ -1,7 +1,12 @@
 #include "include/hvcontroller.h"
 #include <iostream>
 hv_controller::hv_controller(std::string OName, QObject *parent):
-    opc_controller(OName, parent)
+    opc_controller(OName, parent),
+    setChannelBrowseName("setchannel"),
+    setVoltageBrowseName("setvoltage"),
+    setVoltageMaxBrowseName("setvoltagemax"),
+    setRampUpBrowseName("setrampup"),
+    setRampDownBrowseName("setrampdown")
 {
 }
 
@@ -14,7 +19,7 @@ void hv_controller::callSetChannel(int nr, bool state){
     UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
     UA_Variant_setScalarCopy(&input[1], &state, &UA_TYPES[UA_TYPES_BOOLEAN]);
     UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                setChannelNodeId, 2, input, nullptr,nullptr);
+                                browsedIds[setChannelBrowseName], 2, input, nullptr,nullptr);
     UA_Variant_clear(input);
 }
 
@@ -25,7 +30,7 @@ void hv_controller::callSetVoltage(int nr,double voltage){
        UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
        UA_Variant_setScalarCopy(&input[1], &voltage, &UA_TYPES[UA_TYPES_DOUBLE]);
        UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                   setVoltageNodeId, 2, input, nullptr,nullptr);
+                                   browsedIds[setVoltageBrowseName], 2, input, nullptr,nullptr);
        UA_Variant_clear(input);
 }
 
@@ -36,7 +41,7 @@ void hv_controller::callSetVoltageMax(int nr,double voltage){
        UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
        UA_Variant_setScalarCopy(&input[1], &voltage, &UA_TYPES[UA_TYPES_DOUBLE]);
        UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                   setVoltageMaxNodeId, 2, input, nullptr,nullptr);
+                                   browsedIds[setVoltageMaxBrowseName], 2, input, nullptr,nullptr);
        UA_Variant_clear(input);
 }
 
@@ -47,7 +52,7 @@ void hv_controller::callSetRampUp(int nr,double rup){
        UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
        UA_Variant_setScalarCopy(&input[1], &rup, &UA_TYPES[UA_TYPES_DOUBLE]);
        UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                   setRampUpNodeId, 2, input, nullptr,nullptr);
+                                   browsedIds[setRampUpBrowseName], 2, input, nullptr,nullptr);
        UA_Variant_clear(input);
 }
 
@@ -58,11 +63,11 @@ void hv_controller::callSetRampDown(int nr,double rdwn){
        UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
        UA_Variant_setScalarCopy(&input[1], &rdwn, &UA_TYPES[UA_TYPES_DOUBLE]);
        UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                   setRampDownNodeId, 2, input, nullptr,nullptr);
+                                   browsedIds[setRampDownBrowseName], 2, input, nullptr,nullptr);
        UA_Variant_clear(input);
 }
 
-void hv_controller::browseIds(){
+/*void hv_controller::browseIds(){
     std::string connectBrowseName="connect";
     std::string disconnectBrowseName="disconnect";
     std::string setChannelBrowseName="setchannel";
@@ -105,3 +110,4 @@ void hv_controller::browseIds(){
             }
     }
 }
+*/
