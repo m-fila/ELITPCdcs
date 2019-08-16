@@ -9,9 +9,6 @@
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/client_subscriptions.h>
 #include <iostream>
-#include "../common/HMPDataType.h"
-#include "../common/DTmDataType.h"
-#include "../common/DTcDataType.h"
 #include "open62541/types_dcsnodeset_generated.h"
 class opc_client: public QObject//QThread
 {

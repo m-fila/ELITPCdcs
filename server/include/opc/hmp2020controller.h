@@ -5,7 +5,7 @@
 #include "../DeviceController.h"
 #include "../hw/HMP2020.h"
 #include "opc_controller.h"
-#include "../../../common/HMPDataType.h"
+
 #include "open62541/types_dcsnodeset_generated.h"
 #include "open62541/types_dcsnodeset_generated_handling.h"
 class HMP2020Controller :public OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>

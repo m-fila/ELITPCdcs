@@ -1,13 +1,9 @@
 #ifndef DTCONTROLLER_H
 #define DTCONTROLLER_H
 
-//#include <open62541/plugin/log_stdout.h>
-//#include <open62541/server.h>
 #include "../DeviceController.h"
 #include "../hw/DT1415ET.h"
 #include "opc_controller.h"
-#include "../../../common/DTmDataType.h"
-#include "../../../common/DTcDataType.h"
 #include "open62541/types_dcsnodeset_generated.h"
 #include "open62541/types_dcsnodeset_generated_handling.h"
 class DT1415Controller :public OpcTemplateController<UA_DT1415m,UA_DT1415c,DT1415ET>

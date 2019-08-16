@@ -46,7 +46,8 @@ HEADERS  += include/mainwindow.h \
     include/hvcontroller.h \
     include/kled.h \
     include/abstractwidget.h \
-    ../common/loader.h
+    ../common/loader.h \
+    ../common/dt1415etchannelstatus.h
 
 FORMS    += forms/mainwindow.ui \
     forms/lvpsuwidget.ui \

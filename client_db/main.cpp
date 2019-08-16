@@ -24,8 +24,9 @@ int main(int argc, char *argv[])
         client.addVariable(new status_variable(L.Id,"Status"));
   //  hmp_variable hmp("HMP2","Measurements");
   //  status_variable status("HMP2","Status");
-  //  state_variable state("MachineState","State");
+    //state_variable state("MachineState","State");
     }
+    client.addVariable(new state_variable("MachineState","State"));
     client.run();
 
     return 0;
