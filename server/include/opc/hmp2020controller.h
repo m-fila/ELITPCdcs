@@ -8,10 +8,10 @@
 
 #include "open62541/types_dcsnodeset_generated.h"
 #include "open62541/types_dcsnodeset_generated_handling.h"
-class HMP2020Controller :public OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>
+class HMPController :public OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>
 {
 public:
-    HMP2020Controller(std::string name);
+    HMPController(std::string name, int size);
 //    ~HMPController();
     void init(UA_Server *server);
 
@@ -19,6 +19,7 @@ public:
     void addSetOutputMethod(UA_Server *server);
 
 private:
+    const int size;
     UA_HMPm getMeasurements() final;
     UA_HMPc getSettings() final;
 
@@ -37,4 +38,14 @@ private:
 
 };
 
+
+class HMP2020Controller: public HMPController {
+public:
+    HMP2020Controller(std::string name) : HMPController(name, 2) {}
+};
+
+class HMP4040Controller: public HMPController {
+public:
+    HMP4040Controller(std::string name) : HMPController(name, 4) {}
+};
 #endif // HMPCONTROLLER_H

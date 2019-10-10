@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     for (auto L : loader::parse("../../dcs.config")) {
 
         if(L.device=="HMP2020"){
-           client.addVariable(new hmp_variable(L.Id,"Measurements"));
+           client.addVariable(new HMP2020Variable(L.Id,"Measurements"));
         }
         else if(L.device=="DT1415ET"){
             client.addVariable(new dt1415_variable(L.Id,"Measurements"));
@@ -22,9 +22,6 @@ int main(int argc, char *argv[])
            continue;
         }
         client.addVariable(new status_variable(L.Id,"Status"));
-  //  hmp_variable hmp("HMP2","Measurements");
-  //  status_variable status("HMP2","Status");
-    //state_variable state("MachineState","State");
     }
     client.addVariable(new state_variable("MachineState","State"));
     client.run();
