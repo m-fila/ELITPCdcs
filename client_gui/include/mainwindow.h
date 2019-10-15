@@ -7,6 +7,7 @@
 #include "opc_client.h"
 #include "state.h"
 #include "lvpsuwidget.h"
+#include "lv4psuwidget.h"
 #include "hvpsuwidget.h"
 #include "tpgwidget.h"
 #include "../common/loader.h"

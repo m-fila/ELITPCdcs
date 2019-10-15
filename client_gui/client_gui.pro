@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     src/hvcontroller.cpp \
     src/kled.cpp \
     src/abstractwidget.cpp\
-    ../common/loader.cpp
+    ../common/loader.cpp \
+    src/lv4psuwidget.cpp
 
 HEADERS  += include/mainwindow.h \
     ../common/DTcDataType.h \
@@ -47,10 +48,12 @@ HEADERS  += include/mainwindow.h \
     include/kled.h \
     include/abstractwidget.h \
     ../common/loader.h \
-    ../common/dt1415etchannelstatus.h
+    ../common/dt1415etchannelstatus.h \
+    include/lv4psuwidget.h
 
 FORMS    += forms/mainwindow.ui \
     forms/lvpsuwidget.ui \
-    forms/hvpsuwidget.ui
+    forms/hvpsuwidget.ui \
+    forms/lv4psuwidget.ui
 
 RESOURCES += resources.qrc

@@ -59,8 +59,10 @@ void MainWindow::loadConfigFile(){
         AbstractWidget* new_widget;
         if(L.device=="HMP2020"){
            new_widget=new LVpsuWidget(L.Id,L.address,L.port);
-
         }
+        else if(L.device=="HMP4040"){
+          new_widget= new LV4psuWidget(L.Id,L.address,L.port);
+       }
         else if(L.device=="DT1415ET"){
           new_widget=new HVpsuWidget(L.Id,L.address,L.port);
         }
