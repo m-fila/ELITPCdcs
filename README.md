@@ -41,7 +41,8 @@ disable building some parts of the project.
 
 At startup server and clients look for dcs.config file with list of
 devices used in experimental setup. So far known devices are:
-* HMP2020 - lv psu
+* HMP2020 - 2 channel lv psu
+* HMP4040 -4 channel lv psu
 * DT1415ET - hv psu
 
 
