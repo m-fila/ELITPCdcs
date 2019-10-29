@@ -18,10 +18,12 @@ mkdir open62541/build && cd open62541/build
 git submodule update --init --recursive
 cmake -UA_ENABLE_METHODCALLS=ON -DUA_ENABLE_SUBSCRIPTIONS=ON
 -DUA_NAMESPACE_ZERO=FULL ..
+make
+sudo make install
 ```
 Furthermore database and GUI clients requires respectively sqlite3 and Qt5 :
 ```
-sudo apt-get install sqlite3
+sudo apt-get install libsqlite3-dev
 sudo apt-get install qt5-default
 ```
 
