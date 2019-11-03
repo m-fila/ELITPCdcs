@@ -3,3 +3,5 @@
 Makefile
 *.autosave
 build/
+.vscode/
+
