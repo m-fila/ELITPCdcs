@@ -1,18 +1,18 @@
 #include "../../include/opc/hmp2020controller.h"
 #include <cstring>
 
-HMP2020Controller::HMP2020Controller(std::string name): OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>(name){
+HMPController::HMPController(std::string name, int size): OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>(name), size(size){
    variableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM];
    variableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC];
    UA_HMPm_init(&measurements);
    UA_HMPc_init(&configuration);
 }
 
-//HMP2020Controller~HMP2020Controller(){
+//HMPController~HMPController(){
 //    UA_NodeId_deleteMembers(&ObjectNodeId);
 //}
 
-void HMP2020Controller::init(UA_Server *server){
+void HMPController::init(UA_Server *server){
     addObject(server);
     //customType.addCustomVariableTypeNode(server);
     //addMeasurementsVariable(server);
@@ -26,9 +26,9 @@ void HMP2020Controller::init(UA_Server *server){
     addSetChannelMethod(server);
 }
 
-UA_HMPm HMP2020Controller::getMeasurements(){
+UA_HMPm HMPController::getMeasurements(){
     std::string response;
-    int size=2;
+//    int size=2;
     UA_HMPm hmp;
     UA_HMPm_init(&hmp);
     response = device.getOutputGen();
@@ -52,8 +52,8 @@ UA_HMPm HMP2020Controller::getMeasurements(){
 
 
 
-UA_HMPc HMP2020Controller::getSettings(){
-    int size=2;
+UA_HMPc HMPController::getSettings(){
+//    int size=2;
     UA_HMPc hmp;
     UA_HMPc_init(&hmp);
     hmp.currentSetSize=size;
@@ -68,14 +68,14 @@ UA_HMPc HMP2020Controller::getSettings(){
     return hmp;
 }
 
-UA_StatusCode HMP2020Controller::setOutputCallback(UA_Server *server,
+UA_StatusCode HMPController::setOutputCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
 //    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
-    HMP2020Controller* monitor=static_cast<HMP2020Controller*>(methodContext);
+    HMPController* monitor=static_cast<HMPController*>(methodContext);
     if(monitor->isConnected()){
         UA_Boolean state = *(UA_Boolean*)input->data;
     //    std::lock_guard<std::mutex> lock(Monitor->deviceMutex);
@@ -89,7 +89,7 @@ UA_StatusCode HMP2020Controller::setOutputCallback(UA_Server *server,
 
     return UA_STATUSCODE_GOOD;
 }
-void HMP2020Controller::addSetOutputMethod(UA_Server *server) {
+void HMPController::addSetOutputMethod(UA_Server *server) {
 
     UA_Argument inputArgument;
     UA_Argument_init(&inputArgument);
@@ -116,14 +116,14 @@ void HMP2020Controller::addSetOutputMethod(UA_Server *server) {
     UA_QualifiedName_deleteMembers(&methodQName);
 }
 
-UA_StatusCode HMP2020Controller::setChannelCallback(UA_Server *server,
+UA_StatusCode HMPController::setChannelCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
                          const UA_NodeId *objectId, void *objectContext,
                          size_t inputSize, const UA_Variant *input,
                          size_t outputSize, UA_Variant *output) {
  //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
-    HMP2020Controller* monitor=static_cast<HMP2020Controller*>(methodContext);
+    HMPController* monitor=static_cast<HMPController*>(methodContext);
     if(monitor->isConnected()){
         UA_Int16 channel = *(UA_Int16*)input[0].data;
         UA_Boolean state = *(UA_Boolean*)input[1].data;
@@ -137,7 +137,7 @@ UA_StatusCode HMP2020Controller::setChannelCallback(UA_Server *server,
     }
     return UA_STATUSCODE_GOOD;
 }
-void HMP2020Controller::addSetChannelMethod(UA_Server *server) {
+void HMPController::addSetChannelMethod(UA_Server *server) {
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
     inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");

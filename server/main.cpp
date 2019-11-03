@@ -21,6 +21,9 @@ int main(int argc, char *argv[])
         if(L.device=="HMP2020"){
            controller=new HMP2020Controller(L.Id);
         }
+        else if(L.device=="HMP4040"){
+          controller=new HMP4040Controller(L.Id);
+        }
         else if(L.device=="DT1415ET"){
           controller=new DT1415Controller(L.Id);
         }

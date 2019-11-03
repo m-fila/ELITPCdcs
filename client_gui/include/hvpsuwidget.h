@@ -1,16 +1,18 @@
 #ifndef HVPSUWIDGET_H
 #define HVPSUWIDGET_H
 
-#include "abstractwidget.h"
 #include <QGroupBox>
 #include <QLCDNumber>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
+#include <map>
+#include "abstractwidget.h"
 #include "hvcontroller.h"
 #include "kled.h"
-#include <map>
+#include "../common/dt1415etchannelstatus.h"
 #include "open62541/types_dcsnodeset_generated.h"
+
 namespace Ui {
 class HVpsuWidget;
 }

@@ -1,5 +1,4 @@
 #include "../include/abstract_variable.h"
-#include "../../common/HMPDataType.h"
 #include <iostream>
 abstract_variable::abstract_variable(std::string ObjectName,std::string VariableName) : ObjectName(ObjectName), VariableName(VariableName), FullName(ObjectName+"."+VariableName)
 {
