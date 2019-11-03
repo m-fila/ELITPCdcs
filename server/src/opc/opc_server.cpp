@@ -4,24 +4,21 @@
 //#include <open62541/server_config_default.h>
 
 
-
-
-
-OpcServer::OpcServer()
+OpcServer::OpcServer(std::string address, std::string port)
 {
     server=UA_Server_new();
     config=UA_Server_getConfig(server);
     //UA_ServerConfig_setDefault(config);
-    UA_ServerConfig_setMinimal(config, 6666, nullptr);
-    const UA_String hostname= UA_STRING(const_cast<char*>("127.0.0.1"));
+    UA_ServerConfig_setMinimal(config, std::stoi(port), nullptr);
+     UA_String hostname= UA_STRING_ALLOC(address.c_str());
     UA_ServerConfig_setCustomHostname(config,hostname);
     addNamespace();
+    UA_String_deleteMembers(&hostname);
     //UA_Server_addRepeatedCallback(server, Scan, nullptr, 100, NULL);
-
 }
+
 OpcServer::~OpcServer(){
     UA_Server_delete(server);
-
 }
 
 void OpcServer::addCustomTypes(UA_DataTypeArray *custom){
@@ -31,7 +28,6 @@ void OpcServer::addNamespace(){
     namespace_dcsnodeset_generated(server);
     addCustomTypes(&customDataTypesArray);
 }
-
 
 UA_Boolean OpcServer::running = false;
 

@@ -1,7 +1,9 @@
 #include "include/opc_client.h"
 //opc_client* opc_client::context=nullptr;
 
-opc_client::opc_client()
+opc_client::opc_client(std::string address, std::string port): 
+address(address), 
+port(port)
 {
     client = UA_Client_new();
     config= UA_Client_getConfig(client);
@@ -12,8 +14,6 @@ opc_client::opc_client()
     client_clock=new QTimer;
     client_clock->start(10);
     connectSignals();
-
-
 }
 opc_client::~opc_client(){
     UA_Client_delete(client);
@@ -21,7 +21,8 @@ opc_client::~opc_client(){
 }
 
 void opc_client::iterate(){
-    UA_StatusCode retval = UA_Client_connect(client, "opc.tcp://localhost:6666");
+    std::string tcp_address="opc.tcp://"+address+":"+port;
+    UA_StatusCode retval = UA_Client_connect(client, tcp_address.c_str());
     if(retval==UA_STATUSCODE_GOOD){
     UA_Client_run_iterate(client, 1);
     }

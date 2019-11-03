@@ -4,13 +4,14 @@
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 #include <signal.h>
+#include <string>
 #include "open62541/namespace_dcsnodeset_generated.h"
 
 
 class OpcServer
 {
 public:
-    OpcServer();
+    OpcServer(std::string address, std::string port);
     ~OpcServer();
     UA_Server* server;
     UA_ServerConfig * config;
@@ -25,7 +26,6 @@ private:
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
         running = false;
     }
-
 };
 
 #endif // OPC_SERVER_H

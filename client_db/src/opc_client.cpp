@@ -3,7 +3,9 @@
 //opc_client* opc_client::context=nullptr;
 UA_Boolean opc_client::running = false;
 
-opc_client::opc_client()
+opc_client::opc_client(std::string address, std::string port):
+address(address),
+port(port)
 {
     client = UA_Client_new();
     config= UA_Client_getConfig(client);
@@ -35,11 +37,8 @@ void opc_client::addSubscription(){
         }
     }
     else{
-
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"unable to create subscription");
     }
-
-
 }
 
 void opc_client::stateCallback(UA_Client *client, UA_ClientState clientState){
@@ -55,8 +54,8 @@ int opc_client::run(){
     signal(SIGTERM, stopHandler);
     running=true;
     while(running) {
-
-            UA_StatusCode retval = UA_Client_connect(client, "opc.tcp://localhost:6666");
+            std::string tpc_address ="opc.tcp://"+address+":"+port;
+            UA_StatusCode retval = UA_Client_connect(client,tpc_address.c_str() );
             if(retval != UA_STATUSCODE_GOOD) {
                 UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
                              "Not connected. Retrying to connect in 1 second");

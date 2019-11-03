@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    MainWindow(Loader &loader, QWidget *parent = 0);
     ~MainWindow();
 
 protected:
@@ -34,7 +34,7 @@ private:
     std::vector<QPushButton*> startButtons;
     std::vector<AbstractWidget*> deviceWidgets;
     QComboBox *stateBox;
-    void loadConfigFile();
+    void loadWidgets(std::vector<Loader_item> items);
     void connectSignals();
     void buildStateBox();
 };

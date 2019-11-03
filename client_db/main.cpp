@@ -5,10 +5,20 @@
 #include "../common/loader.h"
 int main(int argc, char *argv[])
 {
-    opc_client client;
+  Loader loader(argc, argv);
+  if(loader.isOpened()){
+    loader.parse();
+  }
+  else{
+    std::cout<<"Can't open config file"<<std::endl;
+    return 0;
+  }
+
+    opc_client client(loader.getAddress(),loader.getPort());
+    
     client.Database.open("test.db");
 
-    for (auto L : loader::parse("../../dcs.config")) {
+    for (auto L : loader.getItems()) {
 
         if(L.device=="HMP2020"){
            client.addVariable(new HMP2020Variable(L.Id,"Measurements"));

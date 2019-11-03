@@ -14,7 +14,7 @@
 class opc_client
 {
 public:
-    opc_client();
+    opc_client(std::string address,std::string port);
     ~opc_client();
     opc_client(opc_client const&) = delete;
     void operator=(opc_client const&)  = delete;
@@ -28,6 +28,8 @@ public:
     void addCustomTypes(UA_DataTypeArray *custom);
     int run();
 private:
+    std::string address;
+    std::string port;
     UA_DataTypeArray customDataTypesArray = { nullptr, UA_TYPES_DCSNODESET_COUNT, UA_TYPES_DCSNODESET};
     std::vector<abstract_variable*> variables;
     static void stateCallback (UA_Client *client, UA_ClientState clientState);

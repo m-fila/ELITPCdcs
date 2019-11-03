@@ -1,13 +1,13 @@
 #include "include/mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFormLayout>
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(Loader &loader,QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    client=new opc_client();
-    loadConfigFile();
+    client=new opc_client(loader.getAddress(),loader.getPort());
+    loadWidgets(loader.getItems());
     buildStateBox();
     statemachine=new stateMachine("MachineState");
     connectSignals();
@@ -51,10 +51,10 @@ void MainWindow::closeEvent(QCloseEvent* e)
     QWidget::closeEvent(e);
 }
 
-void MainWindow::loadConfigFile(){
+void MainWindow::loadWidgets(std::vector<Loader_item> items){
+    
 
-
-    for (auto L : loader::parse("../../dcs.config")) {
+    for (auto L : items) {
 
         AbstractWidget* new_widget;
         if(L.device=="HMP2020"){
