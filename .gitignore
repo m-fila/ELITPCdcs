@@ -1,7 +1,8 @@
-*.pro.user*
-*~
 Makefile
-*.autosave
 build/
+*~
+*.pro
+*.pro.user
+*.autosave
 .vscode/
-*.code-workspace
+workspace.code-workspace

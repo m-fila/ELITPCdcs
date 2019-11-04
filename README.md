@@ -18,10 +18,12 @@ mkdir open62541/build && cd open62541/build
 git submodule update --init --recursive
 cmake -UA_ENABLE_METHODCALLS=ON -DUA_ENABLE_SUBSCRIPTIONS=ON
 -DUA_NAMESPACE_ZERO=FULL ..
+make
+sudo make install
 ```
 Furthermore database and GUI clients requires respectively sqlite3 and Qt5 :
 ```
-sudo apt-get install sqlite3
+sudo apt-get install libsqlite3-dev
 sudo apt-get install qt5-default
 ```
 
@@ -41,7 +43,8 @@ disable building some parts of the project.
 
 At startup server and clients look for dcs.config file with list of
 devices used in experimental setup. So far known devices are:
-* HMP2020 - lv psu
+* HMP2020 - 2 channel lv psu
+* HMP4040 - 4 channel lv psu
 * DT1415ET - hv psu
 
 
