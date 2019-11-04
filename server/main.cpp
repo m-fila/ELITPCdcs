@@ -2,9 +2,20 @@
 #include "include/opc/opc_state.h"
 #include "include/opc/hmp2020controller.h"
 #include "include/opc/dt1415controller.h"
+#include "include/opc/tpg362controller.h"
 #include "../common/loader.h"
-#include <thread>
+
 int main(int argc, char *argv[]){
+/*
+GenericDevice a;
+a.setConnectionStream(TCPConnector::connect("192.168.168.40",8000));
+//a.sendCommand("AYT\r");
+std::string r=a.sendWithResponse("PRX\r");
+std::cout<<int(r.at(0))<<std::endl;
+const std::string s(1,5);
+std::cout<<a.sendWithResponse(s)<<std::endl;
+return 0;
+*/
   Loader loader(argc, argv);
   if(loader.isOpened()){
     loader.parse();
@@ -29,6 +40,9 @@ int main(int argc, char *argv[]){
     }
     else if(L.device=="DT1415ET"){
       controller=new DT1415Controller(L.Id);
+    }
+      else if(L.device=="TPG362"){
+      controller=new TPG362Controller(L.Id);
     }
     else{
       std::cout<<"CONFIG: Unknown device "<<L.device<<std::endl;

@@ -2,15 +2,7 @@
 #include <string>
 #include <QSettings>
 #include <iostream>
-/*
-TPGWidget::TPGWidget(QWidget *parent) : AbstractWidget(parent)
-{
-    createLayout();
-    controller = new tpg_controller("");
-    connectSignals();
 
-}
-*/
 TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
 {   createLayout();
 //    instanceName = name;
@@ -88,8 +80,17 @@ void TPGWidget::updateStatus(void *data){
     }
 }
 void TPGWidget::updateMeasurements(void *data){
-
+    UA_TPG362m measurements=*static_cast<UA_TPG362m*>(data);
+    if(measurements.statusSize){
+        QString val;
+        for(int i=0;i!=2;++i){
+            mVacuum[i]->display(measurements.vacuum[i]);
+            val=QString::fromStdString(std::to_string(measurements.status[i]));
+            mStatus[i]->setText(val);
+        }
+    }
 }
+
 void TPGWidget::updateConfiguration(void *data){
 
 }
@@ -121,6 +122,9 @@ void TPGWidget::createLayout()
 
     //todo ADD DISPLAY HERE
 
+    createMLayout();
+
+//
     mainLayout->addStretch();
     drawLine();
     statusLabel = new QLabel("...");
@@ -129,6 +133,45 @@ void TPGWidget::createLayout()
     //set main layout at the end
     setLayout(mainLayout);
 }
+void TPGWidget::createMLayout(){
+    mainLayout->addStretch();
+    for(int i=0; i!=2;++i){
+
+        QGroupBox* mBox= new QGroupBox(("CH"+std::to_string(i+1)).c_str());
+        QHBoxLayout* mhLayout= new QHBoxLayout();
+        QVBoxLayout* mvLayout= new QVBoxLayout();
+        mBox->setLayout(mvLayout);
+        mvLayout->addLayout(mhLayout);
+        mVacuum[i]=new QLCDNumber();
+        mVacuum[i]->setSegmentStyle(QLCDNumber::Flat);
+        mVacuum[i]->setMinimumSize(QSize(200,50));
+        QPalette palette = mVacuum[i]->palette();
+        palette.setColor(QPalette::WindowText, Qt::darkGreen);
+        mVacuum[i]->setPalette(palette);
+        mVacuum[i]->display(0.00);
+        mStatusLabel[i]=new QLabel("Status: ");
+        mStatusLabel[i]->setAlignment(Qt::AlignLeft);//|Qt::AlignCenter);
+        mStatus[i]=new QLabel(".");
+        mStatus[i]->setAlignment(Qt::AlignLeft);
+        QFont statusFont=mStatus[i]->font();
+        statusFont.setBold(true);
+        mStatus[i]->setFont(statusFont);
+        QLabel* unit=new QLabel("mbar");
+        unit->setAlignment(Qt::AlignRight);
+        mhLayout->addWidget(mStatusLabel[i]);
+        mhLayout->addWidget(mStatus[i]);
+        mhLayout->addWidget(unit);
+        QHBoxLayout* mhhLayout= new QHBoxLayout();
+        mvLayout->addLayout(mhhLayout);
+       // mhhLayout->addStretch();
+        mhhLayout->addWidget(mVacuum[i]);
+        
+        mainLayout->addWidget(mBox);
+        mainLayout->addStretch();
+    }
+    
+}
+
 
 void TPGWidget::drawLine()
 {

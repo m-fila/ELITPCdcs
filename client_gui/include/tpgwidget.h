@@ -9,9 +9,10 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QFrame>
-//#include <memory>
+#include <QLCDNumber>
+//#include <QTabWidget>
 #include "tpgcontroller.h"
-
+#include "open62541/types_dcsnodeset_generated.h"
 class TPGWidget : public AbstractWidget
 {
     Q_OBJECT
@@ -48,10 +49,14 @@ private:
     QPushButton *connectButton;
     QPushButton *disconnectButton;
 
+  //  QTabWidget* tab;
+    QLCDNumber* mVacuum[2];
+    QLabel* mStatusLabel[2];
+    QLabel* mStatus[2];
     void createLayout();
     void drawLine();
     void createConnectionSection();
-
+    void createMLayout();
     void connectSignals();
 };
 

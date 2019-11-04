@@ -4,4 +4,4 @@ Makefile
 *.autosave
 build/
 .vscode/
-
+*.code-workspace

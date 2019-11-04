@@ -14,7 +14,7 @@ Loader::Loader(int argc, char* argv[]){
     }
     else{
     std::string homedir=getenv("HOME");
-    configPath=homedir+"/.conf/dcs.config";
+    configPath=homedir+"/.config/dcs.config";
     }
     config=std::ifstream(configPath);
 }

@@ -77,6 +77,7 @@ void OpcTemplateController<M,C,D>::run_thread(){
             if(isConnected()){
                   update_configuration();
                   update_measurements();
+                  UA_sleep_ms(1000);
             }
         }
         if(!thread_running){
