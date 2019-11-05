@@ -2,7 +2,8 @@
 #include <string>
 #include <QSettings>
 #include <iostream>
-
+#include <sstream>
+#include<algorithm>
 TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
 {   createLayout();
 //    instanceName = name;
@@ -77,16 +78,29 @@ void TPGWidget::updateStatus(void *data){
         connectionStatus->setPalette(palette);
         connectionIP->setEnabled(true);
         connectionPort->setEnabled(true);
+
+        for(int i=0;i!=2;++i){
+            mVacuum[i]->display(0);
+            mStatus[i]->setText("");
+        }
     }
 }
 void TPGWidget::updateMeasurements(void *data){
     UA_TPG362m measurements=*static_cast<UA_TPG362m*>(data);
     if(measurements.statusSize){
         QString val;
+        std::string s;
         for(int i=0;i!=2;++i){
-            mVacuum[i]->display(measurements.vacuum[i]);
-            val=QString::fromStdString(std::to_string(measurements.status[i]));
+            std::ostringstream os;
+            os<<std::scientific<<std::uppercase<<measurements.vacuum[i];
+            s=os.str();
+            s.insert(s.size()-4," ");
+            s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
+            val=QString::fromStdString(s);
+            mVacuum[i]->display(val);
+            val=QString::fromStdString(status_names.at(measurements.status[i]));
             mStatus[i]->setText(val);
+
         }
     }
 }
@@ -143,6 +157,7 @@ void TPGWidget::createMLayout(){
         mBox->setLayout(mvLayout);
         mvLayout->addLayout(mhLayout);
         mVacuum[i]=new QLCDNumber();
+        mVacuum[i]->setDigitCount(12);
         mVacuum[i]->setSegmentStyle(QLCDNumber::Flat);
         mVacuum[i]->setMinimumSize(QSize(200,50));
         QPalette palette = mVacuum[i]->palette();
@@ -154,7 +169,7 @@ void TPGWidget::createMLayout(){
         mStatus[i]=new QLabel(".");
         mStatus[i]->setAlignment(Qt::AlignLeft);
         QFont statusFont=mStatus[i]->font();
-        statusFont.setBold(true);
+       // statusFont.setBold(true);
         mStatus[i]->setFont(statusFont);
         QLabel* unit=new QLabel("mbar");
         unit->setAlignment(Qt::AlignRight);

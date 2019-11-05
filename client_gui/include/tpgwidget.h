@@ -11,6 +11,7 @@
 #include <QFrame>
 #include <QLCDNumber>
 //#include <QTabWidget>
+#include <vector>
 #include "tpgcontroller.h"
 #include "open62541/types_dcsnodeset_generated.h"
 class TPGWidget : public AbstractWidget
@@ -58,6 +59,10 @@ private:
     void createConnectionSection();
     void createMLayout();
     void connectSignals();
+    const std::vector<std::string> status_names{"Measurement data okay",
+    "Underrange","Overrange","Sensor error","Sensor off","No sensor",
+    "Identification error"};
+
 };
 
 #endif // TPGWIDGET_H
