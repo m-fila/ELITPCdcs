@@ -3,6 +3,7 @@
 #include <QSettings>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include<algorithm>
 TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
 {   createLayout();
@@ -92,7 +93,7 @@ void TPGWidget::updateMeasurements(void *data){
         std::string s;
         for(int i=0;i!=2;++i){
             std::ostringstream os;
-            os<<std::scientific<<std::uppercase<<measurements.vacuum[i];
+            os<<std::scientific<<std::setprecision(5)<<std::uppercase<<measurements.vacuum[i];
             s=os.str();
             s.insert(s.size()-4," ");
             s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
