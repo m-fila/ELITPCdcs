@@ -10,7 +10,7 @@
 #include <QGroupBox>
 #include <QFrame>
 #include <QLCDNumber>
-//#include <QTabWidget>
+#include <QTabWidget>
 #include <vector>
 #include "tpgcontroller.h"
 #include "open62541/types_dcsnodeset_generated.h"
@@ -32,6 +32,7 @@ public slots:
     void updateConfiguration(void *data);
     void controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp);
 
+    void changeNamePressed();
     void updateStatusLabel(QString info);
 
 protected:
@@ -50,15 +51,26 @@ private:
     QPushButton *connectButton;
     QPushButton *disconnectButton;
 
-  //  QTabWidget* tab;
+    QTabWidget* tab;
+    QGroupBox* mBox[2];
     QLCDNumber* mVacuum[2];
     QLabel* mStatusLabel[2];
     QLabel* mStatus[2];
+    QPushButton* cNameButton[2];
+    QLabel*  cNameLabel[2];
+    QString cCustomName[2];
+
     void createLayout();
     void drawLine();
     void createConnectionSection();
-    void createMLayout();
+    void createMTab();
+    void createCTab();
+    void createHTab();
+    void setChannelName(int channelno);
+    void setChannelsNames();
     void connectSignals();
+    void loadConfig();
+    void saveConfig();
     const std::vector<std::string> status_names{"Measurement data okay",
     "Underrange","Overrange","Sensor error","Sensor off","No sensor",
     "Identification error"};

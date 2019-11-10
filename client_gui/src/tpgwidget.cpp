@@ -1,16 +1,19 @@
 #include "include/tpgwidget.h"
 #include <string>
 #include <QSettings>
+#include <QInputDialog>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include<algorithm>
+#include <algorithm>
+
 TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
 {   createLayout();
 //    instanceName = name;
     controller = new tpg_controller(instanceName);
     connectSignals();
-
+    loadConfig();
+    setChannelsNames();
     std::string IP(instanceName);
     IP.append("/IP");
     std::string Port(instanceName);
@@ -123,6 +126,8 @@ void TPGWidget::closeEvent(QCloseEvent* e)
     //save settings
     QSettings().setValue(IP.c_str(),connectionIP->text());
     QSettings().setValue(Port.c_str(),connectionPort->text());
+
+    saveConfig();
     QWidget::closeEvent(e);
 }
 
@@ -133,29 +138,35 @@ void TPGWidget::createLayout()
     resize(400,350);
 
     createConnectionSection();
-    drawLine();
+    //drawLine();
 
     //todo ADD DISPLAY HERE
+    tab=new QTabWidget();
+    mainLayout->addWidget(tab);
 
-    createMLayout();
-
-//
+    createMTab();
+    createHTab();
+    createCTab();
     mainLayout->addStretch();
-    drawLine();
+ //   drawLine();
     statusLabel = new QLabel("...");
     mainLayout->addWidget(statusLabel);
 
     //set main layout at the end
     setLayout(mainLayout);
 }
-void TPGWidget::createMLayout(){
-    mainLayout->addStretch();
+void TPGWidget::createMTab(){
+    QWidget* mWidget=new QWidget();
+    tab->addTab(mWidget,"Measurements");
+    QVBoxLayout *mLayout=new QVBoxLayout();
+    mWidget->setLayout(mLayout);    
+   // mainLayout->addStretch();
     for(int i=0; i!=2;++i){
 
-        QGroupBox* mBox= new QGroupBox(("CH"+std::to_string(i+1)).c_str());
+        mBox[i]= new QGroupBox(("CH"+std::to_string(i+2)).c_str());
         QHBoxLayout* mhLayout= new QHBoxLayout();
         QVBoxLayout* mvLayout= new QVBoxLayout();
-        mBox->setLayout(mvLayout);
+        mBox[i]->setLayout(mvLayout);
         mvLayout->addLayout(mhLayout);
         mVacuum[i]=new QLCDNumber();
         mVacuum[i]->setDigitCount(12);
@@ -182,12 +193,37 @@ void TPGWidget::createMLayout(){
        // mhhLayout->addStretch();
         mhhLayout->addWidget(mVacuum[i]);
         
-        mainLayout->addWidget(mBox);
-        mainLayout->addStretch();
+        mLayout->addWidget(mBox[i]);
+        mLayout->addStretch();
     }
     
 }
+void TPGWidget::createCTab(){
+    QWidget* cWidget=new QWidget();
+    tab->addTab(cWidget,"Configuration");
+    QVBoxLayout *cLayout=new QVBoxLayout();
+    cWidget->setLayout(cLayout); 
+    for(int i=0; i!=2;++i){
+        QGroupBox* cBox= new QGroupBox(("CH "+std::to_string(i+1)).c_str());
+        cLayout->addWidget(cBox);
+        QHBoxLayout* chLayout= new QHBoxLayout();
+        cBox->setLayout(chLayout);
+        QLabel* clabel=new QLabel("Custom name:");
+        cNameLabel[i]=new QLabel("...");
+        cNameButton[i]=new QPushButton("Change name");
+        connect(cNameButton[i], SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+        chLayout->addWidget(clabel);
+        chLayout->addWidget(cNameLabel[i]);
+        chLayout->addWidget(cNameButton[i]);
+    }
 
+}
+void TPGWidget::createHTab(){
+    QWidget* hWidget=new QWidget();
+    tab->addTab(hWidget,"Historical");
+    QVBoxLayout *hLayout=new QVBoxLayout();
+    hWidget->setLayout(hLayout); 
+}
 
 void TPGWidget::drawLine()
 {
@@ -241,4 +277,67 @@ void TPGWidget::createConnectionSection()
     mainLayout->addLayout(hb2);
 }
 
+void TPGWidget::changeNamePressed()
+{
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    for(i=0; i<2; i++)
+    {
+        if(cNameButton[i] == obj)
+        {
+            QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
+                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, cCustomName[i], &ok);
+            if(ok)
+            {
+                cCustomName[i] = newName;
+                setChannelName(i);
+            }
+        }
+    }
+}
 
+void TPGWidget::setChannelName(int channelno)
+{
+    QString title;
+    title = tr("CH %1        ").arg(channelno+1);
+    title.append(cCustomName[channelno]);
+    mBox[channelno]->setTitle(title);
+    //set name on CH x tab (... if empty)
+    if(cCustomName[channelno].isEmpty())
+        cNameLabel[channelno]->setText("...");
+    else
+        cNameLabel[channelno]->setText(cCustomName[channelno]);
+
+}
+
+void TPGWidget::setChannelsNames()
+{
+    int i;
+    for(i=0; i!=2; ++i)
+    {
+        setChannelName(i);
+    }
+}
+
+void TPGWidget::loadConfig()
+{
+    int i;
+    QString configkey;
+    for(i=0; i!=2; ++i)
+    {
+        configkey = tr("TPG362CH%1/CustomName").arg(i);
+        cCustomName[i] = QSettings().value(configkey).toString();
+    }
+}
+
+void TPGWidget::saveConfig()
+{
+    int i;
+    QString configkey;
+    for(i=0; i!=2; ++i)
+    {
+        configkey = tr("TPG362CH%1/CustomName").arg(i);
+        QSettings().setValue(configkey,cCustomName[i]);
+    }
+}
