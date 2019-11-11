@@ -22,7 +22,7 @@
         <string>Connection status:</string>
        </property>
        <property name="buddy">
-        <cstring>group1</cstring>
+        <cstring>groupBox1</cstring>
        </property>
       </widget>
      </item>
@@ -221,7 +221,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="group1">
+        <widget class="QGroupBox" name="groupBox1">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
            <widget class="QLabel" name="label_5">
@@ -574,7 +574,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="group2">
+        <widget class="QGroupBox" name="groupBox2">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
            <widget class="QLabel" name="label_6">
@@ -587,7 +587,7 @@
              <string>CH2</string>
             </property>
             <property name="buddy">
-             <cstring>group2</cstring>
+             <cstring>groupBox2</cstring>
             </property>
            </widget>
           </item>

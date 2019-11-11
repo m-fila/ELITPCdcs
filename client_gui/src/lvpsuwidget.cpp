@@ -3,11 +3,13 @@
 //#include "src/ConnectionParameters.h"
 #include <iostream>
 #include <QSettings>
+#include <QInputDialog>
 
 LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent), ui(new Ui::LVpsuWidget)
 {
     ui->setupUi(this);
-
+    loadConfig();
+    setChannelsNames();
     ui->connectionIP->setText(QSettings().value("LVpsuIP").toString());
     ui->connectionPort->setText(QSettings().value("LVpsuPort").toString());
     LVController=new lv_controller(instanceName);
@@ -38,6 +40,9 @@ void LVpsuWidget::connectSignals(){
     connect(ui->CH2off,SIGNAL(clicked(bool)),this, SLOT(setCH2OFF()));
     connect(ui->outputON,SIGNAL(clicked(bool)),this, SLOT(setOutputON()));
     connect(ui->outputOFF,SIGNAL(clicked(bool)),this, SLOT(setOutputOFF()));
+
+    connect(ui->setName1, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+    connect(ui->setName2, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
 }
 
 void LVpsuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
@@ -63,6 +68,10 @@ void LVpsuWidget::updateStatus(void* data){
         ui->CH2off->setEnabled(deviceSettings.CH2);
         ui->outputON->setEnabled(!deviceSettings.Output);
         ui->outputOFF->setEnabled(deviceSettings.Output);
+        ui->CH1confVSet->setEnabled(true);
+        ui->CH2confVSet->setEnabled(true);
+        ui->CH1confISet->setEnabled(true);
+        ui->CH2confISet->setEnabled(true);
     }
     else{
         ui->connect->setEnabled(true);
@@ -87,6 +96,15 @@ void LVpsuWidget::updateStatus(void* data){
         ui->CH1current->display(0);
         ui->CH2voltage->display(0);
         ui->CH2current->display(0);
+
+        ui->CH1confVSet->setEnabled(false);
+        ui->CH2confVSet->setEnabled(false);
+        ui->CH1confISet->setEnabled(false);
+        ui->CH2confISet->setEnabled(false);
+        ui->CH1confV->display(0);
+        ui->CH1confI->display(0);
+        ui->CH2confV->display(0);
+        ui->CH2confI->display(0);
     }
 
 }
@@ -117,6 +135,10 @@ void LVpsuWidget::updateConfiguration(void* data){
         ui->CH1currentSet->display(configuration.currentSet[0]);
         ui->CH2voltageSet->display(configuration.voltageSet[1]);
         ui->CH2currentSet->display(configuration.currentSet[1]);
+        ui->CH1confV->display(configuration.voltageSet[0]);
+        ui->CH1confI->display(configuration.currentSet[0]);
+        ui->CH2confV->display(configuration.voltageSet[1]);
+        ui->CH2confI->display(configuration.currentSet[1]);
     }
 }
 
@@ -154,6 +176,75 @@ void LVpsuWidget::closeEvent(QCloseEvent* e)
 {
     QSettings().setValue("LVpsuIP",ui->connectionIP->text());
     QSettings().setValue("LVpsuPort",ui->connectionPort->text());
-
+    saveConfig();
     QWidget::closeEvent(e);
+}
+
+void LVpsuWidget::loadConfig(){
+    QString configkey;
+    for(int i=0; i!=2;++i){
+        configkey=tr("LVpsuCH%1/CustomName").arg(i);
+        customName[i]= QSettings().value(configkey).toString();
+    }
+}
+
+void LVpsuWidget::saveConfig(){
+    QString configkey;
+    for(int i=0; i!=2;++i){
+        configkey=tr("LVpsuCH%1/CustomName").arg(i);
+        QSettings().setValue(configkey,customName[i]);
+    }
+}
+
+void LVpsuWidget::setChannelName(int channelno)
+{
+    QString title= tr("CH %1        ").arg(channelno+1);
+
+    title.append(customName[channelno]);
+
+    //set name on ALL Channles Tab
+    
+    QString label;
+    //set name on CH x tab (... if empty)
+    if(customName[channelno].isEmpty())
+        label=QString("...");
+    else
+        label=customName[channelno];
+    switch (channelno)
+    {
+    case 0:
+        ui->groupBox1->setTitle(title);
+        ui->customNameLabel1->setText(label);
+        break;
+    case 1:
+        ui->groupBox2->setTitle(title);
+        ui->customNameLabel2->setText(label);
+        break;  
+    default:
+        break;
+    }
+}
+void LVpsuWidget::setChannelsNames(){
+    for(int i=0; i!=2; ++i)
+    {
+        setChannelName(i);
+    }
+}
+
+void LVpsuWidget::changeNamePressed(){
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    if(ui->setName1==obj){
+        i=0;
+    }
+    else if(ui->setName2==obj){
+        i=1;
+    }
+    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
+                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, customName[i], &ok);
+    if(ok){
+        customName[i] = newName;
+        setChannelName(i);
+    }
 }
