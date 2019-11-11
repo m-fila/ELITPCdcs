@@ -43,6 +43,12 @@ void LVpsuWidget::connectSignals(){
 
     connect(ui->setName1, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
     connect(ui->setName2, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+
+    connect(ui->CH1confVSet, SIGNAL(pressed()), this, SLOT(setVPressed()));
+    connect(ui->CH2confVSet, SIGNAL(pressed()), this, SLOT(setVPressed()));
+    connect(ui->CH1confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
+    connect(ui->CH2confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
+
 }
 
 void LVpsuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
@@ -198,9 +204,9 @@ void LVpsuWidget::saveConfig(){
 
 void LVpsuWidget::setChannelName(int channelno)
 {
-    QString title= tr("CH %1        ").arg(channelno+1);
-
-    title.append(customName[channelno]);
+    //QString title= tr("CH %1        ").arg(channelno+1);
+    //title.append(customName[channelno]);
+    QString title=customName[channelno];
 
     //set name on ALL Channles Tab
     
@@ -246,5 +252,55 @@ void LVpsuWidget::changeNamePressed(){
     if(ok){
         customName[i] = newName;
         setChannelName(i);
+    }
+}
+
+void LVpsuWidget::setVPressed(){
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    if(ui->CH1confVSet==obj){
+        i=0;
+    }
+    else if(ui->CH2confVSet==obj){
+        i=1;
+    }
+    QString label;
+    if(customName[i].isEmpty())
+        label = tr("CH %1  [Volts]:").arg(i+1);
+    else
+        label = tr("CH %1  \"%2\"  [Volts]:").arg(i+1).arg(customName[i]);
+
+    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
+                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, customName[i], &ok);
+    double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i+1),
+                                          label, 6, 0, 1000, 1, &ok);
+    if(ok){
+        LVController->callSetVoltage(i+1,d);
+    }
+}
+
+void LVpsuWidget::setIPressed(){
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    if(ui->CH1confISet==obj){
+        i=0;
+    }
+    else if(ui->CH2confISet==obj){
+        i=1;
+    }
+    QString label;
+    if(customName[i].isEmpty())
+        label = tr("CH %1  [Ampers]:").arg(i+1);
+    else
+        label = tr("CH %1  \"%2\"  [Ampers]:").arg(i+1).arg(customName[i]);
+
+    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
+                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, customName[i], &ok);
+    double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i+1),
+                                          label, 6, 0, 1000, 1, &ok);
+    if(ok){
+        LVController->callSetCurrent(i+1,d);
     }
 }

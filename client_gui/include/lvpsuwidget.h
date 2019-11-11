@@ -55,6 +55,8 @@ public slots:
     void setOutputOFF();
 
     void changeNamePressed();
+    void setVPressed();
+    void setIPressed();
 
 };
 

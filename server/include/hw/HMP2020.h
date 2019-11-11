@@ -20,6 +20,8 @@ public:
     std::string getCurrent();
     void setOutputSel(int channel, bool state);
     void setOutputGen(bool state);
+    void setVoltage(int channe, double v);
+    void setCurrent(int channel, double i);
 };
 
 #endif // HMP2020_H

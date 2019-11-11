@@ -59,9 +59,10 @@ public slots:
     void setCH4OFF();
     void setOutputON();
     void setOutputOFF();
-
+    
     void changeNamePressed();
-
+    void setVPressed();
+    void setIPressed();
 };
 
 #endif // LV4PSUWIDGET_H

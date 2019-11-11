@@ -24,6 +24,8 @@ void HMPController::init(UA_Server *server){
     addConnectDeviceMethod(server);
     addSetOutputMethod(server);
     addSetChannelMethod(server);
+    addSetVoltageMethod(server);
+    addSetCurrentMethod(server);
 }
 
 UA_HMPm HMPController::getMeasurements(){
@@ -86,9 +88,9 @@ UA_StatusCode HMPController::setOutputCallback(UA_Server *server,
     else {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetOutput not send");
     }
-
     return UA_STATUSCODE_GOOD;
 }
+
 void HMPController::addSetOutputMethod(UA_Server *server) {
 
     UA_Argument inputArgument;
@@ -137,6 +139,7 @@ UA_StatusCode HMPController::setChannelCallback(UA_Server *server,
     }
     return UA_STATUSCODE_GOOD;
 }
+
 void HMPController::addSetChannelMethod(UA_Server *server) {
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
@@ -170,4 +173,113 @@ void HMPController::addSetChannelMethod(UA_Server *server) {
     UA_QualifiedName_deleteMembers(&methodQName);
 }
 
+UA_StatusCode HMPController::setVoltageCallback(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    HMPController* monitor=static_cast<HMPController*>(methodContext);
+    if(monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Double voltage = *(UA_Double*)input[1].data;
+      //  std::lock_guard<std::mutex> lock(monitor->deviceMutex);
+        DeviceCommand<HMP2020> command=std::bind(&HMP2020::setVoltage, _1,channel,voltage);
+        monitor->buffer.push(command);
+        //monitor->device.setVoltage(channel,state);
+    }
+    else {
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetVoltage not send");
+    }
+    return UA_STATUSCODE_GOOD;
+}
 
+void HMPController::addSetVoltageMethod(UA_Server *server) {
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Voltage in V");
+    inputArguments[1].name = UA_String_fromChars("Voltage");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets voltage");
+    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setvoltage");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setvoltage");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            objectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            methodQName,
+                            methodAttr, &setVoltageCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+    UA_QualifiedName_deleteMembers(&methodQName);
+}
+
+
+UA_StatusCode HMPController::setCurrentCallback(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    HMPController* monitor=static_cast<HMPController*>(methodContext);
+    if(monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Double current = *(UA_Double*)input[1].data;
+      //  std::lock_guard<std::mutex> lock(monitor->deviceMutex);
+        DeviceCommand<HMP2020> command=std::bind(&HMP2020::setCurrent, _1,channel,current);
+        monitor->buffer.push(command);
+        //monitor->device.setVoltage(current,state);
+    }
+    else {
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetCurrent not send");
+    }
+    return UA_STATUSCODE_GOOD;
+}
+
+void HMPController::addSetCurrentMethod(UA_Server *server) {
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Current in A");
+    inputArguments[1].name = UA_String_fromChars("Current");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets current");
+    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setcurrent");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setcurrent");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            objectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            methodQName,
+                            methodAttr, &setCurrentCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+    UA_QualifiedName_deleteMembers(&methodQName);
+}

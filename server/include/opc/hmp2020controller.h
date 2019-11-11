@@ -17,6 +17,8 @@ public:
 
     void addSetChannelMethod(UA_Server *server);
     void addSetOutputMethod(UA_Server *server);
+    void addSetVoltageMethod(UA_Server *server);
+    void addSetCurrentMethod(UA_Server *server);
 
 private:
     const int size;
@@ -30,6 +32,18 @@ private:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     static UA_StatusCode setOutputCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
+    static UA_StatusCode setVoltageCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
+    static UA_StatusCode setCurrentCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
                              const UA_NodeId *objectId, void *objectContext,
