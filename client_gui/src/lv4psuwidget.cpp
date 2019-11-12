@@ -340,10 +340,10 @@ void LV4psuWidget::setVPressed(){
     else if(ui->CH2confVSet==obj){
         i=1;
     }
-    else if(ui->CH3confISet==obj){
+    else if(ui->CH3confVSet==obj){
         i=2;
     }
-    else if(ui->CH4confISet==obj){
+    else if(ui->CH4confVSet==obj){
         i=3;
     }
     QString label;
@@ -352,7 +352,7 @@ void LV4psuWidget::setVPressed(){
     else
         label = tr("CH %1  \"%2\"  [Volts]:").arg(i+1).arg(customName[i]);
     double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i+1),
-                                          label, 12, 0, 1000, 1, &ok);
+                                          label, 3.6, 0, 1000, 1, &ok);
     if(ok){
         LVController->callSetVoltage(i+1,d);
     }
