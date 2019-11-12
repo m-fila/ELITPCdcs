@@ -46,6 +46,7 @@ devices used in experimental setup. So far known devices are:
 * HMP2020 - 2 channel lv psu
 * HMP4040 - 4 channel lv psu
 * DT1415ET - hv psu
+* TPG362 - vacuum gauge
 
 
 Example line from config file `DEVICETYPE: UNIQUE_ID OPTIONAL_ADDRESS
