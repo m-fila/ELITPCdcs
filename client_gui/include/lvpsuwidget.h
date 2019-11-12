@@ -30,6 +30,12 @@ private:
     void connectSignals();
     deviceOutputs deviceSettings;
     bool connectionState;
+    QString customName[2];
+
+    void loadConfig();
+    void saveConfig();
+    void setChannelsNames();
+    void setChannelName(int channelno);
 protected:
     void closeEvent(QCloseEvent* e);
 public slots:
@@ -47,6 +53,10 @@ public slots:
     void setCH2OFF();
     void setOutputON();
     void setOutputOFF();
+
+    void changeNamePressed();
+    void setVPressed();
+    void setIPressed();
 
 };
 

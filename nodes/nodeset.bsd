@@ -48,5 +48,16 @@
     <opc:Field Name="rdown" TypeName="opc:Double" LengthField="rdownSize" />
   </opc:StructuredType>
 
+  <opc:StructuredType Name="TPG362m" BaseType="ua:ExtensionObject">
+    <opc:Field Name="vacuumSize" TypeName="opc:UInt32" />
+    <opc:Field Name="vacuum" TypeName="opc:Double" LengthField="vacuumSize" />
+    <opc:Field Name="statusSize" TypeName="opc:UInt32" />
+    <opc:Field Name="status" TypeName="opc:UInt32" LengthField="statusSize" />
+  </opc:StructuredType>
 
+    <opc:StructuredType Name="TPG362c" BaseType="ua:ExtensionObject">
+    <opc:Field Name="pressureSize" TypeName="opc:UInt32" />
+    <opc:Field Name="pressure" TypeName="opc:Double" LengthField="pressureSize" />
+  </opc:StructuredType>
+  
 </opc:TypeDictionary>

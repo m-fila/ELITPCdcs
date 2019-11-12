@@ -50,6 +50,7 @@ private:
 
     std::string extractCommandStatus(std::string command);
     std::string extractCommandValue(std::string command);
+    std::string firmwareVersion;
 };
 
 

@@ -32,6 +32,12 @@ private:
     void connectSignals();
     device4Outputs deviceSettings;
     bool connectionState;
+    QString customName[4];
+
+    void loadConfig();
+    void saveConfig();
+    void setChannelsNames();
+    void setChannelName(int channelno);
 protected:
     void closeEvent(QCloseEvent* e);
 public slots:
@@ -53,7 +59,10 @@ public slots:
     void setCH4OFF();
     void setOutputON();
     void setOutputOFF();
-
+    
+    void changeNamePressed();
+    void setVPressed();
+    void setIPressed();
 };
 
 #endif // LV4PSUWIDGET_H

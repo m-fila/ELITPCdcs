@@ -3,11 +3,13 @@
 //#include "src/ConnectionParameters.h"
 #include <iostream>
 #include <QSettings>
+#include <QInputDialog>
 
 LV4psuWidget::LV4psuWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent), ui(new Ui::LV4psuWidget)
 {
     ui->setupUi(this);
-
+    loadConfig();
+    setChannelsNames();
     ui->connectionIP->setText(QSettings().value("LVpsuIP").toString());
     ui->connectionPort->setText(QSettings().value("LVpsuPort").toString());
     LVController=new lv_controller(instanceName);
@@ -42,6 +44,21 @@ void LV4psuWidget::connectSignals(){
     connect(ui->CH4off,SIGNAL(clicked(bool)),this, SLOT(setCH4OFF()));
     connect(ui->outputON,SIGNAL(clicked(bool)),this, SLOT(setOutputON()));
     connect(ui->outputOFF,SIGNAL(clicked(bool)),this, SLOT(setOutputOFF()));
+    
+    connect(ui->setName1, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+    connect(ui->setName2, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+    connect(ui->setName3, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+    connect(ui->setName4, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+
+    connect(ui->CH1confVSet, SIGNAL(pressed()), this, SLOT(setVPressed()));
+    connect(ui->CH2confVSet, SIGNAL(pressed()), this, SLOT(setVPressed()));
+    connect(ui->CH3confVSet, SIGNAL(pressed()), this, SLOT(setVPressed()));
+    connect(ui->CH4confVSet, SIGNAL(pressed()), this, SLOT(setVPressed()));
+    connect(ui->CH1confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
+    connect(ui->CH2confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
+    connect(ui->CH3confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
+    connect(ui->CH4confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
+
 }
 
 void LV4psuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
@@ -72,6 +89,15 @@ void LV4psuWidget::updateStatus(void* data){
 
         ui->outputON->setEnabled(!deviceSettings.Output);
         ui->outputOFF->setEnabled(deviceSettings.Output);
+
+        ui->CH1confVSet->setEnabled(true);
+        ui->CH2confVSet->setEnabled(true);
+        ui->CH3confVSet->setEnabled(true);
+        ui->CH4confVSet->setEnabled(true);
+        ui->CH1confISet->setEnabled(true);
+        ui->CH2confISet->setEnabled(true);
+        ui->CH3confISet->setEnabled(true);
+        ui->CH4confISet->setEnabled(true);
     }
     else{
         ui->connect->setEnabled(true);
@@ -104,6 +130,23 @@ void LV4psuWidget::updateStatus(void* data){
         ui->CH3current->display(0);
         ui->CH4voltage->display(0);
         ui->CH4current->display(0);
+
+        ui->CH1confVSet->setEnabled(false);
+        ui->CH2confVSet->setEnabled(false);
+        ui->CH3confVSet->setEnabled(false);
+        ui->CH4confVSet->setEnabled(false);
+        ui->CH1confISet->setEnabled(false);
+        ui->CH2confISet->setEnabled(false);
+        ui->CH3confISet->setEnabled(false);
+        ui->CH4confISet->setEnabled(false);
+        ui->CH1confV->display(0);
+        ui->CH1confI->display(0);
+        ui->CH2confV->display(0);
+        ui->CH2confI->display(0);
+        ui->CH3confV->display(0);
+        ui->CH3confI->display(0);
+        ui->CH4confV->display(0);
+        ui->CH4confI->display(0);
     }
 
 }
@@ -147,6 +190,14 @@ void LV4psuWidget::updateConfiguration(void* data){
         ui->CH3currentSet->display(configuration.currentSet[2]);
         ui->CH4voltageSet->display(configuration.voltageSet[3]);
         ui->CH4currentSet->display(configuration.currentSet[3]);
+        ui->CH1confV->display(configuration.voltageSet[0]);
+        ui->CH1confI->display(configuration.currentSet[0]);
+        ui->CH2confV->display(configuration.voltageSet[1]);
+        ui->CH2confI->display(configuration.currentSet[1]);
+        ui->CH3confV->display(configuration.voltageSet[2]);
+        ui->CH3confI->display(configuration.currentSet[2]);
+        ui->CH4confV->display(configuration.voltageSet[3]);
+        ui->CH4confI->display(configuration.currentSet[3]);
     }
 }
 
@@ -196,6 +247,141 @@ void LV4psuWidget::closeEvent(QCloseEvent* e)
 {
     QSettings().setValue("LVpsuIP",ui->connectionIP->text());
     QSettings().setValue("LVpsuPort",ui->connectionPort->text());
-
+    saveConfig();
     QWidget::closeEvent(e);
+}
+
+void LV4psuWidget::loadConfig(){
+    QString configkey;
+    for(int i=0; i!=4;++i){
+        configkey=tr("LV4psuCH%1/CustomName").arg(i);
+        customName[i]= QSettings().value(configkey).toString();
+    }
+}
+
+void LV4psuWidget::saveConfig(){
+    QString configkey;
+    for(int i=0; i!=4;++i){
+        configkey=tr("LV4psuCH%1/CustomName").arg(i);
+        QSettings().setValue(configkey,customName[i]);
+    }
+}
+
+void LV4psuWidget::setChannelName(int channelno)
+{
+    //QString title= tr("CH %1        ").arg(channelno+1);
+    //title.append(customName[channelno]);
+    QString title=customName[channelno];
+    //set name on ALL Channles Tab
+    
+    QString label;
+    //set name on CH x tab (... if empty)
+    if(customName[channelno].isEmpty())
+        label=QString("...");
+    else
+        label=customName[channelno];
+    switch (channelno)
+    {
+    case 0:
+        ui->groupBox1->setTitle(title);
+        ui->customNameLabel1->setText(label);
+        break;
+    case 1:
+        ui->groupBox2->setTitle(title);
+        ui->customNameLabel2->setText(label);
+        break;
+    case 2:
+        ui->groupBox3->setTitle(title);
+        ui->customNameLabel3->setText(label);
+        break;
+    case 3:
+        ui->groupBox4->setTitle(title);
+        ui->customNameLabel4->setText(label);
+        break;   
+    default:
+        break;
+    }
+}
+void LV4psuWidget::setChannelsNames(){
+    for(int i=0; i<4; i++){
+        setChannelName(i);
+    }
+}
+void LV4psuWidget::changeNamePressed(){
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    if(ui->setName1==obj){
+        i=0;
+    }
+    else if(ui->setName2==obj){
+        i=1;
+    }
+    else if(ui->setName3==obj){
+        i=2;
+    }
+    else if(ui->setName4==obj){
+        i=3;
+    }
+    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
+                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, customName[i], &ok);
+    if(ok){
+        customName[i] = newName;
+        setChannelName(i);
+    }
+}
+void LV4psuWidget::setVPressed(){
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    if(ui->CH1confVSet==obj){
+        i=0;
+    }
+    else if(ui->CH2confVSet==obj){
+        i=1;
+    }
+    else if(ui->CH3confVSet==obj){
+        i=2;
+    }
+    else if(ui->CH4confVSet==obj){
+        i=3;
+    }
+    QString label;
+    if(customName[i].isEmpty())
+        label = tr("CH %1  [Volts]:").arg(i+1);
+    else
+        label = tr("CH %1  \"%2\"  [Volts]:").arg(i+1).arg(customName[i]);
+    double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i+1),
+                                          label, 3.6, 0, 1000, 1, &ok);
+    if(ok){
+        LVController->callSetVoltage(i+1,d);
+    }
+}
+
+void LV4psuWidget::setIPressed(){
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    if(ui->CH1confISet==obj){
+        i=0;
+    }
+    else if(ui->CH2confISet==obj){
+        i=1;
+    }
+        else if(ui->CH3confISet==obj){
+        i=2;
+    }
+        else if(ui->CH4confISet==obj){
+        i=3;
+    }
+    QString label;
+    if(customName[i].isEmpty())
+        label = tr("CH %1  [Ampers]:").arg(i+1);
+    else
+        label = tr("CH %1  \"%2\"  [Ampers]:").arg(i+1).arg(customName[i]);
+    double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i+1),
+                                          label, 2, 0, 1000, 1, &ok);
+    if(ok){
+        LVController->callSetCurrent(i+1,d);
+    }
 }

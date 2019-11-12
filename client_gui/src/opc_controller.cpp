@@ -1,5 +1,4 @@
 #include "include/opc_controller.h"
-
 #include <iostream>
 opc_controller::opc_controller(std::string OName, QObject *parent):
     opcQObject(OName, parent),

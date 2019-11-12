@@ -67,3 +67,17 @@ void HMP2020::setOutputGen(bool state)
     cb << "OUTP:GEN " << state << "\n";
     sendCommand(cb.str());
 }
+
+void HMP2020::setVoltage(int channel, double v){
+    setActiveChannel(channel);
+    std::stringstream cb;
+    cb << "SOUR:VOLT " << v << "\n";
+    sendCommand(cb.str());
+}
+
+void HMP2020::setCurrent(int channel, double i){
+    setActiveChannel(channel);
+    std::stringstream cb;
+    cb << "SOUR:CURR " << i << "\n";
+    sendCommand(cb.str());
+}
