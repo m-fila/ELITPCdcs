@@ -270,11 +270,8 @@ void LVpsuWidget::setVPressed(){
         label = tr("CH %1  [Volts]:").arg(i+1);
     else
         label = tr("CH %1  \"%2\"  [Volts]:").arg(i+1).arg(customName[i]);
-
-    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
-                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, customName[i], &ok);
     double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i+1),
-                                          label, 6, 0, 1000, 1, &ok);
+                                          label, 12, 0, 1000, 1, &ok);
     if(ok){
         LVController->callSetVoltage(i+1,d);
     }
@@ -295,11 +292,8 @@ void LVpsuWidget::setIPressed(){
         label = tr("CH %1  [Ampers]:").arg(i+1);
     else
         label = tr("CH %1  \"%2\"  [Ampers]:").arg(i+1).arg(customName[i]);
-
-    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
-                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, customName[i], &ok);
     double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i+1),
-                                          label, 6, 0, 1000, 1, &ok);
+                                          label, 2, 0, 1000, 1, &ok);
     if(ok){
         LVController->callSetCurrent(i+1,d);
     }
