@@ -24,7 +24,7 @@ std::string TPG362Variable::translateKeys(){
 
 
 std::ostream& operator<<(std::ostream& os, const UA_TPG362m& data){
-    int size=2;
+    int size=data.statusSize;
     for (int i=0;i<size;++i){
         if(i){
             os<<", ";
