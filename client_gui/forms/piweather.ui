@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LVpsuWidget</class>
- <widget class="QWidget" name="LVpsuWidget">
+ <class>PiWeatherWidget</class>
+ <widget class="QWidget" name="PiWeatherWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
-    <height>538</height>
+    <width>341</width>
+    <height>524</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,13 +152,13 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_13">
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="groupBox1">
          <property name="title">
           <string>Temperatue 1</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <spacer name="horizontalSpacer_2">
+           <spacer name="horizontalSpacer_6">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -252,7 +252,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="groupBox2">
          <property name="title">
           <string>Temperatue 2</string>
          </property>
@@ -352,13 +352,13 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_4">
+        <widget class="QGroupBox" name="groupBox3">
          <property name="title">
           <string>Temperatue 3</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <spacer name="horizontalSpacer_6">
+           <spacer name="horizontalSpacer_7">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -452,13 +452,13 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="groupBox4">
          <property name="title">
           <string>Temperature &amp;&amp; pressure</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <spacer name="horizontalSpacer_7">
+           <spacer name="horizontalSpacer_19">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -594,7 +594,7 @@
              </palette>
             </property>
             <property name="digitCount">
-             <number>6</number>
+             <number>7</number>
             </property>
             <property name="segmentStyle">
              <enum>QLCDNumber::Flat</enum>
@@ -822,7 +822,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_8">
          <property name="title">
-          <string>Tempreature &amp;&amp; pressure</string>
+          <string>Temperature  &amp;&amp; pressure</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>

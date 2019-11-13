@@ -3,6 +3,7 @@
 #include "include/opc/hmp2020controller.h"
 #include "include/opc/dt1415controller.h"
 #include "include/opc/tpg362controller.h"
+#include "include/opc/piweathercontroller.h"
 #include "../common/loader.h"
 
 int main(int argc, char *argv[]){
@@ -41,8 +42,11 @@ return 0;
     else if(L.device=="DT1415ET"){
       controller=new DT1415Controller(L.Id);
     }
-      else if(L.device=="TPG362"){
+    else if(L.device=="TPG362"){
       controller=new TPG362Controller(L.Id);
+    }
+    else if(L.device=="PiWeather"){
+      controller=new PiWeatherController(L.Id);
     }
     else{
       std::cout<<"CONFIG: Unknown device "<<L.device<<std::endl;
