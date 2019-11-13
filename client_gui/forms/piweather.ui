@@ -171,7 +171,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLCDNumber" name="CH1volatgeSet">
+           <widget class="QLCDNumber" name="tempDisplay1">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -224,14 +224,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="label_10">
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>.</string>
+             <string>°C</string>
             </property>
            </widget>
           </item>
@@ -271,7 +271,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLCDNumber" name="CH1volatgeSet_4">
+           <widget class="QLCDNumber" name="tempDisplay2">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -324,14 +324,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="label_9">
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>.</string>
+             <string>°C</string>
             </property>
            </widget>
           </item>
@@ -371,7 +371,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLCDNumber" name="CH1volatgeSet_2">
+           <widget class="QLCDNumber" name="tempDisplay3">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -424,14 +424,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="label_7">
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>.</string>
+             <string>°C</string>
             </property>
            </widget>
           </item>
@@ -454,7 +454,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>Pressure</string>
+          <string>Temperature &amp;&amp; pressure</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
@@ -471,7 +471,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLCDNumber" name="CH1volatgeSet_3">
+           <widget class="QLCDNumber" name="temperatureDisplay">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -527,16 +527,94 @@
            <widget class="QLabel" name="label_5">
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>.</string>
+             <string>°C</string>
             </property>
            </widget>
           </item>
           <item>
            <spacer name="horizontalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLCDNumber" name="pressureDisplay">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="palette">
+             <palette>
+              <active>
+               <colorrole role="WindowText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>0</red>
+                  <green>170</green>
+                  <blue>0</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </active>
+              <inactive>
+               <colorrole role="WindowText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>0</red>
+                  <green>170</green>
+                  <blue>0</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </inactive>
+              <disabled>
+               <colorrole role="WindowText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>159</red>
+                  <green>158</green>
+                  <blue>158</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </disabled>
+             </palette>
+            </property>
+            <property name="digitCount">
+             <number>6</number>
+            </property>
+            <property name="segmentStyle">
+             <enum>QLCDNumber::Flat</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_8">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>hPa</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_18">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -744,7 +822,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_8">
          <property name="title">
-          <string>Pressure</string>
+          <string>Tempreature &amp;&amp; pressure</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>
