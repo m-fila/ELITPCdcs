@@ -3,6 +3,7 @@
 #include "include/hmp_variable.h"
 #include "include/dt1415_variable.h"
 #include "include/tpg362_variable.h"
+#include "include/piweather_variable.h"
 #include "../common/loader.h"
 int main(int argc, char *argv[])
 {
@@ -32,7 +33,9 @@ int main(int argc, char *argv[])
         else if(L.device=="TPG362"){
             client.addVariable(new TPG362Variable(L.Id,"Measurements"));
         }
-
+        else if(L.device=="PiWeather"){
+            client.addVariable(new PiWeatherVariable(L.Id,"Measurements"));
+        }
         else{
            std::cout<<"Unknown device:"<<L.device<<std::endl;
            continue;
