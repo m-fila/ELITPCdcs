@@ -18,8 +18,8 @@ file(GLOB RES ${PROJECT_SOURCE_DIR}/*.qrc)
 qt5_wrap_cpp(H_MOC ${HEADERS})
 qt5_wrap_ui(UI_MOC ${FORMS})
 add_library(CLIENT_TMP  ${SOURCES} ${H_MOC} ${UI_MOC})
-target_link_libraries(CLIENT_TMP Qt5::Widgets)
+target_link_libraries(CLIENT_TMP Qt5::Widgets open62541::open62541)
 
 add_executable(dcsGui ${PROJECT_SOURCE_DIR}/main.cpp
  ${SOURCES} ${COMMON_SOURCES} ${RES})
-target_link_libraries(dcsGui  CLIENT_TMP open62541::open62541 dcsNodes)
+target_link_libraries(dcsGui  CLIENT_TMP dcsNodes)

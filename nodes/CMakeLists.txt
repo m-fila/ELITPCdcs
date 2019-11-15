@@ -21,4 +21,5 @@ set(FILE_NS_DIRPREFIX ${CMAKE_SOURCE_DIR}/nodes)
 	 	INTERNAL
     )
 add_library(dcsNodes ${UA_NODESET_DCSNODESET_SOURCES} ${UA_TYPES_DCSNODESET_SOURCES})
+target_link_libraries(dcsNodes open62541::open62541)
 		
