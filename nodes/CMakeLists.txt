@@ -1,4 +1,3 @@
-
 find_package(open62541 REQUIRED COMPONENTS FullNamespace)
 
 if(NOT UA_TOOLS_DIR)
