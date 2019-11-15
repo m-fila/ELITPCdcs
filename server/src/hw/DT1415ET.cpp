@@ -68,6 +68,12 @@ std::string DT1415ET::getFirmwareVersion()
     return firmwareVersion;
 }
 
+void DT1415ET::setFirmwareVersion()
+{
+    std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDFREL", "");
+    firmwareVersion=extractCommandValue(resp);
+}
+
 std::string DT1415ET::getSerialNumber()
 {
     std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDSNUM", "");

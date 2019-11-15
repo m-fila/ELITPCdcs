@@ -21,7 +21,8 @@ public:
 private:
     UA_DT1415m getMeasurements() final;
     UA_DT1415c getSettings() final;
-
+    void connectDevice(TCPConnectionParameters *cp) override;
+    
     static UA_StatusCode setRampDownCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
