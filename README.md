@@ -16,8 +16,7 @@ build with enabled methodcalls, subscriptions and full namespace 0:
 git clone https://github.com/open62541/open62541
 mkdir open62541/build && cd open62541/build
 git submodule update --init --recursive
-cmake -UA_ENABLE_METHODCALLS=ON -DUA_ENABLE_SUBSCRIPTIONS=ON
--DUA_NAMESPACE_ZERO=FULL ..
+cmake -UA_ENABLE_METHODCALLS=ON -DUA_ENABLE_SUBSCRIPTIONS=ON -DUA_NAMESPACE_ZERO=FULL ..
 make
 sudo make install
 ```
@@ -47,6 +46,7 @@ devices used in experimental setup. So far known devices are:
 * HMP4040 - 4 channel lv psu
 * DT1415ET - hv psu
 * TPG362 - vacuum gauge
+* PiWeather - custom Raspberry Pi powered weather station
 
 
 Example line from config file `DEVICETYPE: UNIQUE_ID OPTIONAL_ADDRESS

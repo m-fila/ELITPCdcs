@@ -6,9 +6,15 @@ void OpcTemplateController<M,C,D>::disconnectDevice(){
 
 template <class M,class C,class D>
 void OpcTemplateController<M,C,D>::connectDevice(TCPConnectionParameters *cp){
+    try{
     TCPStream* stream =TCPConnector::connect(cp->IPaddress.c_str(),cp->port);
     DeviceCommand<D> command=std::bind(&D::setConnectionStream, _1,stream);
     buffer.push(command);
+    }
+    catch(std::runtime_error e){
+        //TODO: return to method or send event informing of connection fail or success 
+        std::cerr<<objectName+" device controller catched: "<<e.what()<<std::endl;
+    }
 }
 
 
@@ -42,18 +48,30 @@ void OpcTemplateController<M,C,D>::updateStatusVariable(UA_Server *server){
 template <class M,class C,class D>
 void OpcTemplateController<M,C,D>::update_measurements(){
     if(isConnected()){
-        M now =getMeasurements();
-        std::lock_guard<std::mutex> lock(mMutex);
-        measurements=now;
+        try{
+            M now =getMeasurements();
+            std::lock_guard<std::mutex> lock(mMutex);
+            measurements=now;
+        }
+        catch(...){
+            std::cerr<<objectName+" device controller encountered error when updating measurements. Disconnecting..."<<std::endl;
+            device.resetConnectionStream();
+        }
     }
 }
 
 template <class M,class C,class D>
 void OpcTemplateController<M,C,D>::update_configuration(){
     if(isConnected()){
-        C now =getSettings();
-        std::lock_guard<std::mutex> lock(cMutex);
-        configuration=now;
+        try{
+            C now =getSettings();
+            std::lock_guard<std::mutex> lock(cMutex);
+            configuration=now;
+        }
+        catch(...){
+            std::cerr<<objectName+" device controller encountered error when updating configuration. Disconnecting..."<<std::endl;
+            device.resetConnectionStream();
+        }
     }
 }
 
@@ -69,7 +87,13 @@ void OpcTemplateController<M,C,D>::run_thread(){
     while(true){
         if(buffer.size()){
             DeviceCommand<D> command=buffer.dequeue();
-            command(device);
+            try{
+                command(device);
+            }
+            catch(runtime_error e ){
+                std::cerr<<objectName+" device controller catched "<<e.what()<<" when running device command"<<std::endl;
+                device.resetConnectionStream();
+            }
         }
         else{
             //std::this_thread::sleep_for(std::chrono::milliseconds(1));
