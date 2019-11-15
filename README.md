@@ -54,6 +54,11 @@ Exampline line conntaining server address `SERVER: dumy ADDRESS PORT`:
 SERVER: serv1 192.168.168.2 6669
 ```
 A path to config file should be given in first argument for server or client application. Otherwise a shared config can be placed at `${HOME}/.config/dcs.config`.
+
+You may consider installing `sqlitebrowser` for reading database files:
+```
+sudo apt-get install sqlitebrowser
+```
 ### Adding new devices
 #### Server
 `main.cpp` create specific device controller if found in config file
