@@ -30,7 +30,8 @@ mkdir build && cd build
 cmake ..
 ```
 
-`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project. In case of custom installation path  line `set(CMAKE_PREFIX_PATH /opt/soft)` in `dcs/CMakeLists.txt` should be edited. Upon sucessful build the resulting binaries `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
+`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project. In case of custom installation path  line `set(CMAKE_PREFIX_PATH /opt/soft)` in `dcs/CMakeLists.txt` should be edited.
+Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
 
 
 ## Monitoring devices
