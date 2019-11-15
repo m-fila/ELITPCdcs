@@ -22,8 +22,10 @@
         <Alias Alias="HMPc">ns=1;i=20211</Alias>
         <Alias Alias="DT1415m">ns=1;i=14151</Alias>
         <Alias Alias="DT1415c">ns=1;i=14155</Alias>
-        <Alias Alias="TPGm">ns=1;i=36201</Alias>
-        <Alias Alias="TPGc">ns=1;i=36211</Alias>
+        <Alias Alias="TPG362m">ns=1;i=36201</Alias>
+        <Alias Alias="TPG362c">ns=1;i=36211</Alias>
+        <Alias Alias="PiWeatherm">ns=1;i=31401</Alias>
+        <Alias Alias="PiWeatherc">ns=1;i=31411</Alias>
     </Aliases>
 
     <Extensions>
@@ -258,6 +260,68 @@
         </References>
     </UAObject>
 
+<UADataType NodeId="ns=1;i=31401" BrowseName="1:PiWeatherm">
+        <DisplayName>PiWeatherm</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:PiWeatherm">
+            <Field DataType="Int32" Name="tempSize"/>
+            <Field DataType="Double" ValueRank="1" Name="temp"/>
+            <Field DataType="Double" Name="temperature"/>
+            <Field DataType="Double"  Name="pressure"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=31403" BrowseName="1:PiWeatherm" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>PiWeatherm</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PiWeatherm</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=31404" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=31401</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=31403</Reference>
+        </References>
+    </UAObject>
+
+ <UADataType NodeId="ns=1;i=31411" BrowseName="1:PiWeatherc">
+        <DisplayName>PiWeatherc</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:PiWeatherc">
+            <Field DataType="Int32" Name="dummy"/>
+        </Definition>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=31413" BrowseName="1:PiWeatherc" ParentNodeId="ns=1;i=7617" DataType="String">
+        <DisplayName>PiWeatherc</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+        </References>
+        <Value>
+            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PiWeatherc</String>
+        </Value>
+    </UAVariable>
+
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=31414" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=31411</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=31413</Reference>
+        </References>
+    </UAObject>
 
     <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.Testnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
         <DisplayName>Opc.Ua.Testnodeset</DisplayName>
@@ -268,7 +332,7 @@
         <Value>
         <!-- This is the Base64 Encoded content of testtypes.bsd -->
         <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9Imh0dHA6Ly9mdXcuZWR1LnBsL2Rjcy8iCiAgRGVmYXVsdEJ5dGVPcmRlcj0iTGl0dGxlRW5kaWFuIgogIFRhcmdldE5hbWVzcGFjZT0iaHR0cDovL2hlcC5mdXcuZWR1LnBsL2Rjcy8iCj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkhNUG0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJvdXRwdXQiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2hTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2giIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9ImNoU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iSE1QYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2V0U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTZXRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkRUMTQxNW0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0b3RhbFZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTVjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iaXNSZW1vdGUiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idG90YWxWb2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXNTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InN0YXR1c1NpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VNYXhTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlTWF4U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJ1cCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJydXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93blNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93biIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJyZG93blNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYybSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZhY3V1bVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2YWN1dW0iIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idmFjdXVtU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InN0YXR1cyIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIExlbmd0aEZpZWxkPSJzdGF0dXNTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICAgIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYyYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InByZXNzdXJlU2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KICAKPC9vcGM6VHlwZURpY3Rpb25hcnk+
+PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9Imh0dHA6Ly9mdXcuZWR1LnBsL2Rjcy8iCiAgRGVmYXVsdEJ5dGVPcmRlcj0iTGl0dGxlRW5kaWFuIgogIFRhcmdldE5hbWVzcGFjZT0iaHR0cDovL2hlcC5mdXcuZWR1LnBsL2Rjcy8iCj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkhNUG0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJvdXRwdXQiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2hTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2giIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9ImNoU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iSE1QYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2V0U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTZXRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkRUMTQxNW0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0b3RhbFZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTVjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iaXNSZW1vdGUiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idG90YWxWb2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXNTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InN0YXR1c1NpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VNYXhTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlTWF4U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJ1cCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJydXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93blNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93biIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJyZG93blNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYybSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZhY3V1bVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2YWN1dW0iIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idmFjdXVtU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InN0YXR1cyIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIExlbmd0aEZpZWxkPSJzdGF0dXNTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICAgIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYyYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InByZXNzdXJlU2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJQaVdlYXRoZXJtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idGVtcFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InRlbXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wZXJhdHVyZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlBpV2VhdGhlcmMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJkdW1teSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+ICAKPC9vcGM6VHlwZURpY3Rpb25hcnk+
 	</ByteString>
         </Value>
     </UAVariable>    

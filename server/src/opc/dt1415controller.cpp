@@ -182,7 +182,6 @@ void DT1415Controller::addSetChannelMethod(UA_Server* server){
     UA_QualifiedName_deleteMembers(&methodQName);
 }
 
-
 UA_StatusCode DT1415Controller::setVoltageCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
@@ -204,6 +203,7 @@ UA_StatusCode DT1415Controller::setVoltageCallback(UA_Server *server,
     }
     return UA_STATUSCODE_GOOD;
 }
+
 void DT1415Controller::addSetVoltageMethod(UA_Server *server) {
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
@@ -260,6 +260,7 @@ UA_StatusCode DT1415Controller::setVoltageMaxCallback(UA_Server *server,
     }
     return UA_STATUSCODE_GOOD;
 }
+
 void DT1415Controller::addSetVoltageMaxMethod(UA_Server *server) {
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
@@ -316,6 +317,7 @@ UA_StatusCode DT1415Controller::setRampUpCallback(UA_Server *server,
     }
     return UA_STATUSCODE_GOOD;
 }
+
 void DT1415Controller::addSetRampUpMethod(UA_Server *server) {
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
@@ -348,6 +350,7 @@ void DT1415Controller::addSetRampUpMethod(UA_Server *server) {
     UA_Argument_deleteMembers(&inputArguments[1]);
     UA_QualifiedName_deleteMembers(&methodQName);
 }
+
 UA_StatusCode DT1415Controller::setRampDownCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
@@ -369,6 +372,7 @@ UA_StatusCode DT1415Controller::setRampDownCallback(UA_Server *server,
     }
     return UA_STATUSCODE_GOOD;
 }
+
 void DT1415Controller::addSetRampDownMethod(UA_Server *server) {
     UA_Argument inputArguments[2];
     UA_Argument_init(&inputArguments[0]);
@@ -400,4 +404,18 @@ void DT1415Controller::addSetRampDownMethod(UA_Server *server) {
     UA_Argument_deleteMembers(&inputArguments[0]);
     UA_Argument_deleteMembers(&inputArguments[1]);
     UA_QualifiedName_deleteMembers(&methodQName);
+}    
+
+void DT1415Controller::connectDevice(TCPConnectionParameters *cp){
+    try{
+    TCPStream* stream =TCPConnector::connect(cp->IPaddress.c_str(),cp->port);
+    DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setConnectionStream, _1,stream);
+    buffer.push(command);
+    command=std::bind(&DT1415ET::setFirmwareVersion, _1);
+    buffer.push(command);
+    }
+    catch(std::runtime_error e){
+        //TODO: return to method or send event informing of connection fail or success 
+        std::cerr<<objectName+" device controller catched on connect: "<<e.what()<<std::endl;
+    }
 }

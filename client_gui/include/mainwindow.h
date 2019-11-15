@@ -9,6 +9,7 @@
 #include "lvpsuwidget.h"
 #include "lv4psuwidget.h"
 #include "hvpsuwidget.h"
+#include "piweatherwidget.h"
 #include "tpgwidget.h"
 #include "../common/loader.h"
 

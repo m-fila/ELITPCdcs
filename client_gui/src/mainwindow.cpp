@@ -69,6 +69,9 @@ void MainWindow::loadWidgets(std::vector<Loader_item> items){
         else if(L.device=="TPG362"){
           new_widget=new TPGWidget(L.Id,L.address,L.port);
         }
+        else if(L.device=="PiWeather"){
+          new_widget=new PiWeatherWidget(L.Id,L.address,L.port);
+        }
         else{
            std::cout<<"Unknown device:"<<L.device<<std::endl;
            continue;

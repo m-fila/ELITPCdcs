@@ -14,20 +14,23 @@ ConnectionStream::~ConnectionStream()
 
 ssize_t ConnectionStream::send(char* buffer, size_t len)
 {
-    //TODO: throw exception when write failed
-    return write(m_sd, buffer, len);
+    ssize_t s=write(m_sd, buffer, len);
+    if(s==-1)
+        throw std::runtime_error("Encountered error when writing to stream");
+    return s;
 }
 
 ssize_t ConnectionStream::send(std::string s)
 {
-    //std::cout << s << std::endl;
     return send((char*)s.c_str(),s.length());
 }
 
 ssize_t ConnectionStream::receive(char* buffer, size_t len)
 {
-    //TODO: throw exception when read failed
-    return read(m_sd, buffer, len);
+    ssize_t s=read(m_sd, buffer, len);
+    if(s==-1)
+        throw std::runtime_error("Encountered error when writing to stream");
+    return s;
 }
 
 std::string ConnectionStream::receive()

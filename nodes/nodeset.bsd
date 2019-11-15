@@ -59,5 +59,15 @@
     <opc:Field Name="pressureSize" TypeName="opc:UInt32" />
     <opc:Field Name="pressure" TypeName="opc:Double" LengthField="pressureSize" />
   </opc:StructuredType>
-  
+
+  <opc:StructuredType Name="PiWeatherm" BaseType="ua:ExtensionObject">
+    <opc:Field Name="tempSize" TypeName="opc:UInt32" />
+    <opc:Field Name="temp" TypeName="opc:Double" LengthField="tempSize" />
+    <opc:Field Name="temperature" TypeName="opc:Double" />
+    <opc:Field Name="pressure" TypeName="opc:Double" />
+  </opc:StructuredType>
+
+    <opc:StructuredType Name="PiWeatherc" BaseType="ua:ExtensionObject">
+    <opc:Field Name="dummy" TypeName="opc:UInt32" />
+  </opc:StructuredType>  
 </opc:TypeDictionary>

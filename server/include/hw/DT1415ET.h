@@ -21,6 +21,7 @@ public:
 
     std::string getModuleName();
     std::string getFirmwareVersion();
+    void setFirmwareVersion();
     std::string getSerialNumber();
     std::string getControlMode();
     bool isRemote();

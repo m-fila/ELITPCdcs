@@ -1,17 +1,21 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project (ELITPC_DCS)
- 
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
-option(BUILD_SERVER "builds server" ON)
-option(BUILD_DB "builds database client" ON)
+set(CMAKE_PREFIX_PATH /opt/soft)
+set (CMAKE_CXX_STANDARD 11)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+
+option(BUILD_SERVER "build server" ON)
+option(BUILD_DB "build database client" ON)
 option(BUILD_GUI "build operational client with gui" ON) 
+
+add_subdirectory(nodes)
+
 if(BUILD_SERVER) 
 	add_subdirectory(server)
 endif(BUILD_SERVER)
 if(BUILD_DB)
-add_subdirectory(client_db)
+	add_subdirectory(client_db)
 endif(BUILD_DB)
 if(BUILD_GUI)
-add_subdirectory(client_gui)
+	add_subdirectory(client_gui)
 endif(BUILD_GUI)
-
