@@ -33,29 +33,29 @@ cmake ..
 ```
 
 `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to
-disable building some parts of the project.
-
-
+disable building some parts of the project. The resulting binaries `dscServer`, `dcsGui` and `dcsDb` should be build in bin directory.
 
 
 ## Monitoring devices
 
 At startup server and clients look for dcs.config file with list of
-devices used in experimental setup. So far known devices are:
+devices used in experimental setup and address of a server. So far known devices are:
 * HMP2020 - 2 channel lv psu
 * HMP4040 - 4 channel lv psu
 * DT1415ET - hv psu
 * TPG362 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
 
-
 Example line from config file `DEVICETYPE: UNIQUE_ID OPTIONAL_ADDRESS
 OPTIONAL_PORT`:
 ```
 HMP2020: HMP2 192.168.168.20 5025
 ```
-
-
+Exampline line conntaining server address `SERVER: dumy ADDRESS PORT`:
+```
+SERVER: serv1 192.168.168.2 6669
+```
+A path to config file should be given in first argument for server or client application. Otherwise a shared config can be placed at `${HOME}/.config/dcs.config`.
 ### Adding new devices
 #### Server
 `main.cpp` create specific device controller if found in config file
