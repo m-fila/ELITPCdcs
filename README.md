@@ -15,7 +15,7 @@ build with enabled methodcalls, subscriptions (enabled by default) and full name
 git clone https://github.com/open62541/open62541
 mkdir open62541/build && cd open62541/build
 git submodule update --init --recursive
-cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft ..
+cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/open62541 ..
 make
 sudo make install
 ```
@@ -30,11 +30,15 @@ mkdir build && cd build
 cmake ..
 ```
 
-`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project. In case of custom installation path  line `set(CMAKE_PREFIX_PATH /opt/soft)` in `dcs/CMakeLists.txt` should be edited.
+`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project. In case of custom installation path  line `set(CMAKE_PREFIX_PATH /opt/soft/open62541)` in `dcs/CMakeLists.txt` should be edited.
+
+## Usage
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
+* dcsServer - provides OPC server and device controllers. Should be run on a computer with access to devices.
+* dcsGui - GUI client. Provides graphic interface for utilies exposed to user by server such as monitoring and manipulating devices.
+* dcsDb - data logger client . Connects to server and loggs states and measurements into local SQLite database.
 
-
-## Monitoring devices
+### Config file
 
 At startup server and clients look for dcs.config file with list of
 devices used in experimental setup and address of a server. So far known devices are:
@@ -59,7 +63,7 @@ You may consider installing `sqlitebrowser` for reading database files:
 ```
 sudo apt-get install sqlitebrowser
 ```
-### Adding new devices
+### Adding new device types
 #### Server
 `main.cpp` create specific device controller if found in config file
 `hw/*` hardware communication with device
