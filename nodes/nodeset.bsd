@@ -38,6 +38,8 @@
     <opc:Field Name="totalVoltageSet" TypeName="opc:Double" />
     <opc:Field Name="voltageSetSize" TypeName="opc:UInt32" />
     <opc:Field Name="voltageSet" TypeName="opc:Double" LengthField="voltageSetSize" />
+    <opc:Field Name="currentSetSize" TypeName="opc:UInt32" />
+    <opc:Field Name="currentSet" TypeName="opc:Double" LengthField="currentSetSize" />
     <opc:Field Name="statusSize" TypeName="opc:UInt32" />
     <opc:Field Name="status" TypeName="opc:UInt32" LengthField="statusSize" />
     <opc:Field Name="voltageMaxSize" TypeName="opc:UInt32" />

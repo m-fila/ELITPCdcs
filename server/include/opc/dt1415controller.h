@@ -14,6 +14,7 @@ public:
     void init(UA_Server *server);
     void addSetChannelMethod(UA_Server *server);
     void addSetVoltageMethod(UA_Server *server);
+    void addSetCurrentMethod(UA_Server *server);
     void addSetVoltageMaxMethod(UA_Server *server);
     void addSetRampUpMethod(UA_Server *server);
     void addSetRampDownMethod(UA_Server *server);
@@ -42,6 +43,12 @@ private:
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output);
     static UA_StatusCode setVoltageCallback(UA_Server *server,
+                             const UA_NodeId *sessionId, void *sessionHandle,
+                             const UA_NodeId *methodId, void *methodContext,
+                             const UA_NodeId *objectId, void *objectContext,
+                             size_t inputSize, const UA_Variant *input,
+                             size_t outputSize, UA_Variant *output);
+    static UA_StatusCode setCurrentCallback(UA_Server *server,
                              const UA_NodeId *sessionId, void *sessionHandle,
                              const UA_NodeId *methodId, void *methodContext,
                              const UA_NodeId *objectId, void *objectContext,

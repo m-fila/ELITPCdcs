@@ -111,6 +111,12 @@ std::string DT1415ET::getVoltageSet(CHANNEL channel)
     return extractCommandValue(resp);
 }
 
+std::string DT1415ET::getCurrentSet(CHANNEL channel)
+{
+    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "ISET", "");
+    return extractCommandValue(resp);
+}
+
 std::string DT1415ET::getVoltageMax(CHANNEL channel)
 {
     std::string resp;
@@ -159,11 +165,6 @@ std::string DT1415ET::getCurrent(CHANNEL channel)
     return extractCommandValue(resp);
 }
 
-std::string DT1415ET::getCurrentSet(CHANNEL channel)
-{
-    std::string resp = sendDT1415ETcommand(CMD::MON, channel, "ISET", "");
-    return extractCommandValue(resp);
-}
 
 // set functions
 void DT1415ET::setON(CHANNEL channel)
@@ -186,6 +187,17 @@ void DT1415ET::setVoltageSet(CHANNEL channel, double value)
         sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
         //std::cout << sb.str() << std::endl;
         sendDT1415ETcommand(CMD::SET, channel, "VSET", sb.str());
+    }
+}
+
+void DT1415ET::setCurrentSet(CHANNEL channel, double value)
+{
+    if(isRemote())
+    {
+        std::ostringstream sb;
+        sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
+        //std::cout << sb.str() << std::endl;
+        sendDT1415ETcommand(CMD::SET, channel, "ISET", sb.str());
     }
 }
 

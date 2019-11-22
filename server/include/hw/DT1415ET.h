@@ -26,7 +26,7 @@ public:
     std::string getControlMode();
     bool isRemote();
     std::string getIdentifier();
-    std::string getVoltageSet(CHANNEL channel);
+    std::string getVoltageSet(CHANNEL channel);  
     std::string getVoltage(CHANNEL channel);
     std::string getVoltageMax(CHANNEL channel);
     std::string getRampUp(CHANNEL channel);
@@ -38,6 +38,7 @@ public:
     void setON(CHANNEL channel);
     void setOFF(CHANNEL channel);
     void setVoltageSet(CHANNEL channel, double value);
+    void setCurrentSet(CHANNEL channel, double value);
     void setVoltageMax(CHANNEL channel, double value);
     void setRampUp(CHANNEL channel,double value);
     void setRampDown(CHANNEL,double value);
