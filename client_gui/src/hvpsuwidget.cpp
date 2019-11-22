@@ -6,7 +6,7 @@
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QGridLayout>
-
+#include "dialogs.h"
 HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent), ui(new Ui::HVpsuWidget)
 {
     ui->setupUi(this);
@@ -316,8 +316,14 @@ void HVpsuWidget::setVMAXPressed()
             {
                 QString val;
                 val.sprintf("%6.1lf", d);
-                tabCHxVMAX[i]->setText(val);
-                HVController->callSetVoltageMax(i, d);
+                QString info;
+                info.sprintf("Changing CH %i Vmax to %.1lf V.\nConfirm?",i,d);
+                ConfirmDialog c(info,this);
+                if(c.exec()){
+                    tabCHxVMAX[i]->setText(val);
+                    HVController->callSetVoltageMax(i, d);
+                }
+                
             }
         }
     }
@@ -344,8 +350,13 @@ void HVpsuWidget::setCurrentPressed()
             {
                 QString val;
                 val.sprintf("%6.1lf", d);
-                tabCHxIset[i]->setText(val);
-                HVController->callSetCurrent(i, d);
+                QString info;
+                info.sprintf("Changing CH %i Iset to %.1lf A.\nConfirm?",i,d);
+                ConfirmDialog c(info,this);
+                if(c.exec()){
+                    tabCHxIset[i]->setText(val);
+                    HVController->callSetCurrent(i, d);
+                }
             }
         }
     }
