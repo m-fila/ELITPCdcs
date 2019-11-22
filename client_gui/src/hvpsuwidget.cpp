@@ -69,10 +69,13 @@ void HVpsuWidget::updateStatus(void *data){
 
             tabCHxSetRUP[i]->setEnabled(enabled[i]);
             tabCHxSetRDWN[i]->setEnabled(enabled[i]);
+            tabCHxSetVMAX[i]->setEnabled(enabled[i]);
+            tabCHxSetIset[i]->setEnabled(enabled[i]);
             tabCHxSTATUS[i]->setEnabled(true);
             tabCHxRUP[i]->setEnabled(true);
             tabCHxRDWN[i]->setEnabled(true);
             tabCHxVMAX[i]->setEnabled(true);
+            tabCHxIset[i]->setEnabled(true);
 
             tabCHxOn[i]->setEnabled(enabled[i]);
             tabCHxOff[i]->setEnabled(enabled[i]);
@@ -112,10 +115,13 @@ void HVpsuWidget::updateStatus(void *data){
 
             tabCHxSetRUP[i]->setEnabled(false);
             tabCHxSetRDWN[i]->setEnabled(false);
+            tabCHxSetVMAX[i]->setEnabled(false);
+            tabCHxSetIset[i]->setEnabled(false);
             tabCHxSTATUS[i]->setEnabled(false);
             tabCHxRUP[i]->setEnabled(false);
             tabCHxRDWN[i]->setEnabled(false);
             tabCHxVMAX[i]->setEnabled(false);
+            tabCHxIset[i]->setEnabled(false);
 
             tabCHxOn[i]->setEnabled(false);
             tabCHxOff[i]->setEnabled(false);
@@ -173,7 +179,9 @@ void HVpsuWidget::updateConfiguration(void *data){
             tabCHxSTATUS[i]->setText(val);
             tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
-
+            tabCHxSetIset[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxSetVMAX[i]->setEnabled(enabled[i] && connectionState);
+    
             tabCHxOn[i]->setEnabled(enabled[i] && connectionState);
             tabCHxOff[i]->setEnabled(enabled[i] && connectionState);
             //tabCHxKill[i]->setEnabled(enabled[i] && connectionState);
@@ -189,6 +197,10 @@ void HVpsuWidget::updateConfiguration(void *data){
             tabCHxRUP[i]->setText(val);
             val.sprintf("%3.1lf", channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
+            val.sprintf("%3.1lf", channelStatus.voltageMax[i]);
+            tabCHxVMAX[i]->setText(val);
+            val.sprintf("%3.1lf", channelStatus.currentSet[i]);
+            tabCHxIset[i]->setText(val);
         }
         val.sprintf("%6.1lf", channelStatus.totalVoltageSet);
         allTabVset[8]->setText(val);
@@ -310,6 +322,35 @@ void HVpsuWidget::setVMAXPressed()
         }
     }
 }
+
+void HVpsuWidget::setCurrentPressed()
+{
+    QObject* obj = sender();
+    bool ok;
+    int i;
+    for(i=0; i<8; i++)
+    {
+        if(tabCHxSetIset[i] == obj)
+        {
+            QString label;
+            if(CHxCustomName[i].isEmpty())
+                label = tr("CH %1  [Ampers]:").arg(i);
+            else
+                label = tr("CH %1  \"%2\"  [Ampers]:").arg(i).arg(CHxCustomName[i]);
+
+            double d = QInputDialog::getDouble(this, tr("Set CH %1 ISet").arg(i),
+                                          label, tabCHxIset[i]->text().toDouble(), 0, 1000, 1, &ok);
+            if (ok)
+            {
+                QString val;
+                val.sprintf("%6.1lf", d);
+                tabCHxIset[i]->setText(val);
+                HVController->callSetCurrent(i, d);
+            }
+        }
+    }
+}
+
 void HVpsuWidget::setRUPPressed()
 {
     QObject* obj = sender();
@@ -717,15 +758,20 @@ void HVpsuWidget::createChannelTabs()
 
         //create channel settings box
         QGroupBox *channelSettingsBox = new QGroupBox("Channel settings");
-        QHBoxLayout *qhbSettings = new QHBoxLayout();
+        QVBoxLayout *qvbSettings = new QVBoxLayout();
+        QHBoxLayout *qhbSettings1 = new QHBoxLayout();
+        QHBoxLayout *qhbSettings2 = new QHBoxLayout();
       //  tabSTATUSx[i]=new QLabel(".");
       //  qhbSettings->addWidget(tabSTATUSx[i]);
        //qhbSettings->addStretch();
-        channelSettingsBox->setLayout(qhbSettings);
+        channelSettingsBox->setLayout(qvbSettings);
+        qvbSettings->addLayout(qhbSettings1);
+        qvbSettings->addLayout(qhbSettings2);
+        channelSettingsBox->setLayout(qhbSettings1);
         // begin VMAX
         QLabel *VMAXLabel;
         VMAXLabel = new QLabel("VMAX [V]:");
-        qhbSettings->addWidget(VMAXLabel);
+        qhbSettings1->addWidget(VMAXLabel);
         tabCHxVMAX[i] = new QLabel();
         tabCHxVMAX[i]->setFixedWidth(40);
         QFont fontMAX = tabCHxVMAX[i]->font();
@@ -736,21 +782,45 @@ void HVpsuWidget::createChannelTabs()
         QString valMAX;
         valMAX.sprintf("%6.1lf", 0.0);
         tabCHxVMAX[i]->setText(valMAX);
-        qhbSettings->addWidget(tabCHxVMAX[i]);
+        qhbSettings1->addWidget(tabCHxVMAX[i]);
         tabCHxVMAX[i]->setEnabled(true);
         //end VMAX
         //begin setVMAX
         tabCHxSetVMAX[i] = new QPushButton("Set VMAX");
        // tabCHxSetVMAX[i]->setFixedWidth(70);
         tabCHxSetVMAX[i]->setEnabled(false);
-        qhbSettings->addWidget(tabCHxSetVMAX[i]);
+        qhbSettings1->addWidget(tabCHxSetVMAX[i]);
         connect(tabCHxSetVMAX[i], SIGNAL(pressed()), this, SLOT(setVMAXPressed()));
         //end setVMAX
-        qhbSettings->addStretch();
+        qhbSettings1->addStretch();
+        // begin Iset
+        QLabel *IsetLabel;
+        IsetLabel = new QLabel("Iset [A]:");
+        qhbSettings1->addWidget(IsetLabel);
+        tabCHxIset[i] = new QLabel();
+        tabCHxIset[i]->setFixedWidth(40);
+        QFont fontIset = tabCHxIset[i]->font();
+        //font.setPointSize(72);
+        fontIset.setBold(true);
+        tabCHxIset[i]->setFont(fontMAX);
+        tabCHxIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        QString valIset;
+        valIset.sprintf("%6.1lf", 0.0);
+        tabCHxIset[i]->setText(valIset);
+        qhbSettings1->addWidget(tabCHxIset[i]);
+        tabCHxIset[i]->setEnabled(true);
+        //end Iset
+        //begin setIset
+        tabCHxSetIset[i] = new QPushButton("Set current");
+       // tabCHxSetIset[i]->setFixedWidth(70);
+        tabCHxSetVMAX[i]->setEnabled(false);
+        qhbSettings1->addWidget(tabCHxSetIset[i]);
+        connect(tabCHxSetIset[i], SIGNAL(pressed()), this, SLOT(setCurrentPressed()));
+        //end setIset
         // begin RUP
         QLabel *RUPLabel;
         RUPLabel = new QLabel("Ramp Up [V/s]:");
-        qhbSettings->addWidget(RUPLabel);
+        qhbSettings2->addWidget(RUPLabel);
         tabCHxRUP[i] = new QLabel("");
         tabCHxRUP[i]->setFixedWidth(40);
         QFont fontRUP = tabCHxRUP[i]->font();
@@ -761,21 +831,21 @@ void HVpsuWidget::createChannelTabs()
         QString valRUP;
         valRUP.sprintf("%6.1lf", 0.0);
         tabCHxRUP[i]->setText(valRUP);
-        qhbSettings->addWidget(tabCHxRUP[i]);
+        qhbSettings2->addWidget(tabCHxRUP[i]);
         tabCHxRUP[i]->setEnabled(true);
         //end RUP
         //begin setRUP
         tabCHxSetRUP[i] = new QPushButton("Set RUP");
        // tabCHxSetRUP[i]->setFixedWidth(70);
         tabCHxSetRUP[i]->setEnabled(false);
-        qhbSettings->addWidget(tabCHxSetRUP[i]);
+        qhbSettings2->addWidget(tabCHxSetRUP[i]);
         connect(tabCHxSetRUP[i], SIGNAL(pressed()), this, SLOT(setRUPPressed()));
         //end setRUP
-        qhbSettings->addStretch();
+        qhbSettings2->addStretch();
         // begin RDWN
         QLabel *RDWNLabel;
         RDWNLabel = new QLabel("Ramp Down [V/s]:");
-        qhbSettings->addWidget(RDWNLabel);
+        qhbSettings2->addWidget(RDWNLabel);
         tabCHxRDWN[i] = new QLabel("");
         tabCHxRDWN[i]->setFixedWidth(40);
         QFont fontRDWN = tabCHxRDWN[i]->font();
@@ -786,14 +856,14 @@ void HVpsuWidget::createChannelTabs()
         QString valRDWN;
         valRDWN.sprintf("%6.1lf", 0.0);
         tabCHxRDWN[i]->setText(valRDWN);
-        qhbSettings->addWidget(tabCHxRDWN[i]);
+        qhbSettings2->addWidget(tabCHxRDWN[i]);
         tabCHxRDWN[i]->setEnabled(true);
         //end RDWN
         //begin setRDWN
         tabCHxSetRDWN[i] = new QPushButton("Set RDWN");
        // tabCHxSetRDWN[i]->setFixedWidth(70);
         tabCHxSetRDWN[i]->setEnabled(false);
-        qhbSettings->addWidget(tabCHxSetRDWN[i]);
+        qhbSettings2->addWidget(tabCHxSetRDWN[i]);
         connect(tabCHxSetRDWN[i], SIGNAL(pressed()), this, SLOT(setRDWNPressed()));
 
         //end setRDWN

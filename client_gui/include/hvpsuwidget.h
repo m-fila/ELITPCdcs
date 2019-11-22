@@ -41,6 +41,7 @@ public slots:
     void offPressed();
     void setVPressed();
     void setVMAXPressed();
+    void setCurrentPressed();
     void setRUPPressed();
     void setRDWNPressed();
     void changeNamePressed();
@@ -72,6 +73,8 @@ private:
     QLabel *tabCHxSTATUS[8];
     QPushButton *tabCHxSetVMAX[8];
     QLabel *tabCHxVMAX[8];
+    QPushButton *tabCHxSetIset[8];
+    QLabel *tabCHxIset[8];
     QPushButton *tabCHxSetRUP[8];
     QLabel *tabCHxRUP[8];
     QPushButton *tabCHxSetRDWN[8];

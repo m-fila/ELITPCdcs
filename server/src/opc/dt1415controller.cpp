@@ -103,8 +103,7 @@ UA_DT1415c DT1415Controller::getSettings(){
     for(i=0; i<size; i++)
     {
         std::getline(iss6, val, ';');
-        dtc.voltageSet[i] = std::stod(val.c_str());
-        total += dtc.currentSet[i];
+        dtc.currentSet[i] = std::stod(val.c_str());
     }
 
     dtc.totalVoltageSet= total;

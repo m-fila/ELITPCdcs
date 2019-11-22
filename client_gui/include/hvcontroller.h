@@ -11,12 +11,14 @@ public:
     void callSetVoltageMax(int nr, double voltage);
     void callSetRampUp(int nr, double rup);
     void callSetRampDown(int nr, double rdwn);
+    void callSetCurrent(int nr, double current);
 private:
     const std::string setChannelBrowseName;
     const std::string setVoltageBrowseName;
     const std::string setVoltageMaxBrowseName;
     const std::string setRampUpBrowseName;
     const std::string setRampDownBrowseName;
+    const std::string setCurrentBrowseName;
 //    UA_NodeId setChannelNodeId;
 //    UA_NodeId setVoltageNodeId;
 //    UA_NodeId setVoltageMaxNodeId;

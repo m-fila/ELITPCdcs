@@ -6,7 +6,8 @@ hv_controller::hv_controller(std::string OName, QObject *parent):
     setVoltageBrowseName("setvoltage"),
     setVoltageMaxBrowseName("setvoltagemax"),
     setRampUpBrowseName("setrampup"),
-    setRampDownBrowseName("setrampdown")
+    setRampDownBrowseName("setrampdown"),
+    setCurrentBrowseName("setcurrent")
 {
 }
 
@@ -67,6 +68,16 @@ void hv_controller::callSetRampDown(int nr,double rdwn){
        UA_Variant_clear(input);
 }
 
+void hv_controller::callSetCurrent(int nr,double current){
+    //   UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
+       UA_Variant input[2];
+       UA_Variant_init(input);
+       UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_INT16]);
+       UA_Variant_setScalarCopy(&input[1], &current, &UA_TYPES[UA_TYPES_DOUBLE]);
+       UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
+                                   browsedIds[setCurrentBrowseName], 2, input, nullptr,nullptr);
+       UA_Variant_clear(input);
+}
 /*void hv_controller::browseIds(){
     std::string connectBrowseName="connect";
     std::string disconnectBrowseName="disconnect";
