@@ -9,7 +9,7 @@ option(BUILD_DB "build database client" ON)
 option(BUILD_GUI "build operational client with gui" ON) 
 
 add_subdirectory(nodes)
-
+add_subdirectory(common)
 if(BUILD_SERVER) 
 	add_subdirectory(server)
 endif(BUILD_SERVER)
