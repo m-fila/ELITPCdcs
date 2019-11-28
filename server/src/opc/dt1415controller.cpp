@@ -21,6 +21,7 @@ void DT1415Controller::init(UA_Server* server){
     addConnectDeviceMethod(server);
     addSetChannelMethod(server);
     addSetVoltageMethod(server);
+    addSetCurrentMethod(server);
     addSetVoltageMaxMethod(server);
     addSetRampUpMethod(server);
     addSetRampDownMethod(server);
@@ -64,11 +65,13 @@ UA_DT1415c DT1415Controller::getSettings(){
     UA_DT1415c_init(&dtc);
     int size=8;
     dtc.voltageSetSize=size;
+    dtc.currentSetSize=size;
     dtc.statusSize=size;
     dtc.voltageMaxSize=size;
     dtc.rupSize=size;
     dtc.rdownSize=size;
     dtc.voltageSet=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
+    dtc.currentSet=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     dtc.status=static_cast<UA_UInt32*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_UINT32]));
     dtc.voltageMax=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     dtc.rdown=static_cast<UA_Double*>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
@@ -93,7 +96,14 @@ UA_DT1415c DT1415Controller::getSettings(){
         std::getline(iss2, val, ';');
         dtc.voltageSet[i] = std::stod(val.c_str());
         total += dtc.voltageSet[i];
-//        dtc.voltageMax[i]=0;
+    }
+
+    response = device.getCurrentSet(DT1415ET::CHANNEL::ALL);
+    std::istringstream iss6(response);
+    for(i=0; i<size; i++)
+    {
+        std::getline(iss6, val, ';');
+        dtc.currentSet[i] = std::stod(val.c_str());
     }
 
     dtc.totalVoltageSet= total;
@@ -112,6 +122,13 @@ UA_DT1415c DT1415Controller::getSettings(){
     {
         std::getline(iss4, val, ';');
         dtc.rdown[i] = std::stoi(val.c_str());
+    }
+    response = device.getVoltageMax(DT1415ET::CHANNEL::ALL);
+    std::istringstream iss5(response);
+    for(i=0; i<size; ++i)
+    {
+        std::getline(iss4, val, ';');
+        dtc.voltageMax[i] = std::stoi(val.c_str());
     }
 
     return dtc;
@@ -418,4 +435,58 @@ void DT1415Controller::connectDevice(TCPConnectionParameters *cp){
         //TODO: return to method or send event informing of connection fail or success 
         std::cerr<<objectName+" device controller catched on connect: "<<e.what()<<std::endl;
     }
+}
+
+void DT1415Controller::addSetCurrentMethod(UA_Server *server) {
+    UA_Argument inputArguments[2];
+    UA_Argument_init(&inputArguments[0]);
+    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
+    inputArguments[0].name = UA_String_fromChars("Channel");
+    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
+    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
+
+    UA_Argument_init(&inputArguments[1]);
+    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Current");
+    inputArguments[1].name = UA_String_fromChars("Current");
+    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
+    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
+
+
+    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
+    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Setcurrent");
+    methodAttr.executable = true;
+    methodAttr.userExecutable = true;
+    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setcurrent");
+    UA_Server_addMethodNode(server, UA_NODEID_NULL,
+                            objectNodeId,
+                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
+                            methodQName,
+                            methodAttr, &setCurrentCallback,
+                            2,inputArguments, 0, nullptr,this, nullptr);
+    UA_MethodAttributes_deleteMembers(&methodAttr);
+    UA_Argument_deleteMembers(&inputArguments[0]);
+    UA_Argument_deleteMembers(&inputArguments[1]);
+  //  UA_NodeId_deleteMembers(&MethodNodeId);
+    UA_QualifiedName_deleteMembers(&methodQName);
+}
+
+UA_StatusCode DT1415Controller::setCurrentCallback(UA_Server *server,
+                         const UA_NodeId *sessionId, void *sessionHandle,
+                         const UA_NodeId *methodId, void *methodContext,
+                         const UA_NodeId *objectId, void *objectContext,
+                         size_t inputSize, const UA_Variant *input,
+                         size_t outputSize, UA_Variant *output) {
+ //   UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "SetOutput was called");
+    DT1415Controller* Monitor=static_cast<DT1415Controller*>(methodContext);
+    if(Monitor->isConnected()){
+        UA_Int16 channel = *(UA_Int16*)input[0].data;
+        UA_Double current = *(UA_Double*)input[1].data;
+        DT1415ET::CHANNEL CH=static_cast <DT1415ET::CHANNEL>(channel);
+        DeviceCommand<DT1415ET> command=std::bind(&DT1415ET::setCurrentSet, _1,CH,current);
+        Monitor->buffer.push(command);
+    }
+    else {
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "device disconnected, SetCurrentSet not send");
+    }
+    return UA_STATUSCODE_GOOD;
 }
