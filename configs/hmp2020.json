@@ -1,0 +1,10 @@
+{
+    "type":"HMP2020",
+    "profiles":[
+        {
+            "id":"default",
+            "voltage":[12,12],
+            "current":[2,2]
+        }
+    ]
+}
