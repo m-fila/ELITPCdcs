@@ -11,7 +11,7 @@
 #include "hvpsuwidget.h"
 #include "piweatherwidget.h"
 #include "tpgwidget.h"
-#include "../common/loader.h"
+#include "configWrapper.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +22,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(Loader &loader, QWidget *parent = 0);
+    MainWindow(Json::Value& root, QWidget *parent = 0);
     ~MainWindow();
 
 protected:
@@ -35,7 +35,7 @@ private:
     std::vector<QPushButton*> startButtons;
     std::vector<AbstractWidget*> deviceWidgets;
     QComboBox *stateBox;
-    void loadWidgets(std::vector<Loader_item> items);
+    void loadWidgets(Json::Value items);
     void connectSignals();
     void buildStateBox();
 };

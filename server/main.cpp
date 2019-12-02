@@ -1,10 +1,11 @@
-#include "include/opc/opc_server.h"
-#include "include/opc/opc_state.h"
-#include "include/opc/hmp2020controller.h"
-#include "include/opc/dt1415controller.h"
-#include "include/opc/tpg362controller.h"
-#include "include/opc/piweathercontroller.h"
-#include "../common/loader.h"
+#include "opc/opc_server.h"
+#include "opc/opc_state.h"
+#include "opc/hmp2020controller.h"
+#include "opc/dt1415controller.h"
+#include "opc/tpg362controller.h"
+#include "opc/piweathercontroller.h"
+#include "configWrapper.h"
+#include <memory>
 
 int main(int argc, char *argv[]){
 /*
@@ -17,51 +18,50 @@ const std::string s(1,5);
 std::cout<<a.sendWithResponse(s)<<std::endl;
 return 0;
 */
-  Loader loader(argc, argv);
-  if(loader.isOpened()){
-    loader.parse();
+  ConfigWrapper configs;
+  Json::Value root;
+  if(argc==2){
+    std::ifstream ifs(static_cast<std::string>(argv[1]));
+    root=configs.parse(ifs);
   }
   else{
     std::cout<<"Can't open config file"<<std::endl;
     return 0;
   }
 
-  OpcServer server(loader.getAddress(),loader.getPort());
+  OpcServer server(root["address"].asString(),root["port"].asString());
   OpcState state;
   state.init(server.server);
 
-  std::vector<OpcMonitor*> controllers;
-  for (auto L : loader.getItems()) {
-    OpcMonitor* controller;
-    if(L.device=="HMP2020"){
-      controller=new HMP2020Controller(L.Id);
+  std::vector<std::unique_ptr<OpcMonitor>> controllers;
+  for (auto i : root["devices"]){
+    std::unique_ptr<OpcMonitor> controller;
+    if(i["type"].asString()=="HMP2020"){
+      controller=std::unique_ptr<HMP2020Controller>(new HMP2020Controller(i["id"].asString()));
     }
-    else if(L.device=="HMP4040"){
-      controller=new HMP4040Controller(L.Id);
+    else if(i["type"].asString()=="HMP4040"){
+      controller=std::unique_ptr<HMP4040Controller>(new HMP4040Controller(i["id"].asString()));
     }
-    else if(L.device=="DT1415ET"){
-      controller=new DT1415Controller(L.Id);
+    else if(i["type"].asString()=="DT1415ET"){
+      controller=std::unique_ptr<DT1415Controller>(new DT1415Controller(i["id"].asString()));
     }
-    else if(L.device=="TPG362"){
-      controller=new TPG362Controller(L.Id);
+    else if(i["type"].asString()=="TPG362"){
+      controller=std::unique_ptr<TPG362Controller>(new TPG362Controller(i["id"].asString()));
     }
-    else if(L.device=="PiWeather"){
-      controller=new PiWeatherController(L.Id);
+    else if(i["type"].asString()=="PiWeather"){
+      controller=std::unique_ptr<PiWeatherController>(new PiWeatherController(i["id"].asString()));
     }
     else{
-      std::cout<<"CONFIG: Unknown device "<<L.device<<std::endl;
+      std::cout<<"CONFIG: Unknown device "<<i["type"].asString()<<std::endl;
         continue;
     }
-    controllers.push_back(controller);
+
     controller->init(server.server);
-    controller->spawn_thread();
+    controllers.push_back(std::move(controller));
   }
 
   server.run();
 
-  for (auto i : controllers){
-    i->join_thread();
-    delete i;
-  }
 return 0;
+
 }
