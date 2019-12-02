@@ -3,7 +3,7 @@ find_package(open62541 REQUIRED)
 find_package(Qt5Widgets)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/common)
+include_directories(${CMAKE_SOURCE_DIR}/common/include)
 include_directories(${CMAKE_BINARY_DIR}/src_generated)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
