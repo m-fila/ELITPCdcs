@@ -28,11 +28,10 @@ public:
                                                 const UA_DataValue *value));
 //    void addMonitoredItem(UA_Server *server,UA_NodeId VariableId, UA_Double sampling=500.0);
 
-    void spawn_thread();
-    void join_thread();
-
 
 protected:
+    void spawn_thread();
+    void join_thread();
     virtual void run_thread()=0;
 
     virtual void updateMeasurementsVariable(UA_Server *server)=0;

@@ -10,7 +10,7 @@
 #include "abstractwidget.h"
 #include "hvcontroller.h"
 #include "kled.h"
-#include "../common/dt1415etchannelstatus.h"
+#include "dt1415etchannelstatus.h"
 #include "open62541/types_dcsnodeset_generated.h"
 
 namespace Ui {

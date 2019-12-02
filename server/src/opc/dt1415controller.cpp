@@ -25,6 +25,7 @@ void DT1415Controller::init(UA_Server* server){
     addSetVoltageMaxMethod(server);
     addSetRampUpMethod(server);
     addSetRampDownMethod(server);
+    spawn_thread();
 }
 
 UA_DT1415m DT1415Controller::getMeasurements(){

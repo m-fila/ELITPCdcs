@@ -17,7 +17,7 @@ void TPG362Controller::init(UA_Server *server){
     addStatusVariable(server);
     addDisconnectDeviceMethod(server);
     addConnectDeviceMethod(server);
-    
+    spawn_thread();
 }
 
 UA_TPG362m TPG362Controller::getMeasurements(){

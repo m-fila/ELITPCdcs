@@ -17,7 +17,7 @@ void PiWeatherController::init(UA_Server *server){
     addStatusVariable(server);
     addDisconnectDeviceMethod(server);
     addConnectDeviceMethod(server);
-    
+    spawn_thread();
 }
 
 UA_PiWeatherm PiWeatherController::getMeasurements(){

@@ -8,6 +8,9 @@ OpcMonitor::OpcMonitor(std::string name): OpcObject(name), thread_running(false)
 }
 
 OpcMonitor::~OpcMonitor(){
+    if (thread_running){
+        join_thread();
+    }
         UA_NodeId_deleteMembers(&objectNodeId);
 }
 

@@ -26,6 +26,7 @@ void HMPController::init(UA_Server *server){
     addSetChannelMethod(server);
     addSetVoltageMethod(server);
     addSetCurrentMethod(server);
+    spawn_thread();
 }
 
 UA_HMPm HMPController::getMeasurements(){
