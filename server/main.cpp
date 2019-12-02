@@ -20,12 +20,20 @@ return 0;
 */
   ConfigWrapper configs;
   Json::Value root;
-  if(argc==2){
-    std::ifstream ifs(static_cast<std::string>(argv[1]));
+  std::string configPath;
+  if(argc>1){
+    configPath=argv[1];
+  }
+  else{
+    std::string homePath=getenv("HOME");
+    configPath=homePath+"/.dcs/dcs.json";
+  }
+  std::ifstream ifs(configPath);
+  if(ifs.is_open()){
     root=configs.parse(ifs);
   }
   else{
-    std::cout<<"Can't open config file"<<std::endl;
+    std::cout<<"Can't find config file"<<std::endl;
     return 0;
   }
 
