@@ -1,38 +1,9 @@
 #ifndef DEVICECONTROLLER_H
 #define DEVICECONTROLLER_H
 
-//#include <QThread>
-//#include <memory>
-//#include "utl/TCPStream.h"
 #include "ConnectionParameters.h"
 #include "TCPConnector.h"
 #include <iostream>
-class DeviceController //: public QThread
-{
-//    Q_OBJECT
-
-public:
-    DeviceController();
-    virtual ~DeviceController();
-
-//signals:
-//    void connected();
-//    void disconnected();
-//    void statusChanged(QString info);
-
-//public slots:
-//    void deviceConnect(ConnectionParameters* parameters);
-//    void deviceDisconnect();
-
-protected:
-    volatile bool stopLoop;
-    volatile bool isStopped;
-    void setStop();
-
-    bool connectionStatus;
-    virtual void connect(ConnectionParameters*) {}
-    virtual void disconnect() = 0;
-};
 
 template<class T>
 class AbstractDeviceController
