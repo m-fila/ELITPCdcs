@@ -1,0 +1,7 @@
+set(MODULE_NAME "deps")
+MESSAGE( STATUS "Adding CMake fragment for module:\t\t" ${MODULE_NAME} )
+include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/include)
+#file(GLOB sources ${PROJECT_SOURCE_DIR}/${MODULE_NAME}/src/*.cpp ${PROJECT_SOURCE_DIR}/${MODULE_NAME}/src/*.c)
+add_library(sqlite3 SHARED src/sqlite3.c)
+add_library(json SHARED src/jsoncpp.cpp src/configWrapper.cpp)
+
