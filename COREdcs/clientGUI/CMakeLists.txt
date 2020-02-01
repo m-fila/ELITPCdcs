@@ -11,4 +11,4 @@ add_library(${MODULE_NAME}_${SUBMODULE_NAME}_Qt SHARED ${SOURCES} ${H_MOC} ${UI_
 add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${sources})
 
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME}_Qt Qt5::Widgets open62541::open62541)
-target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} open62541::open62541 json Qt5::Widgets  ${MODULE_NAME}_${SUBMODULE_NAME}_Qt)
+target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} open62541::open62541 Qt5::Widgets  ${MODULE_NAME}_${SUBMODULE_NAME}_Qt)

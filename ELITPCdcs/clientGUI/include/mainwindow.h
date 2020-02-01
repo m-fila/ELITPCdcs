@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QComboBox>
+#include <json.hpp>
 #include "eli_client_gui.h"
 #include "state.h"
 #include "lvpsuwidget.h"
@@ -11,7 +12,8 @@
 #include "hvpsuwidget.h"
 #include "piweatherwidget.h"
 #include "tpgwidget.h"
-#include "configWrapper.h"
+
+using json = nlohmann::json;
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +24,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(Json::Value& root, QWidget *parent = 0);
+    MainWindow(json& config, QWidget *parent = 0);
     ~MainWindow();
 
 protected:
@@ -35,7 +37,7 @@ private:
     std::vector<QPushButton*> startButtons;
     std::vector<AbstractWidget*> deviceWidgets;
     QComboBox *stateBox;
-    void loadWidgets(Json::Value items);
+    void loadWidgets(json &items);
     void connectSignals();
     void buildStateBox();
 };

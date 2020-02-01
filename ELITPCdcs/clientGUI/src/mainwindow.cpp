@@ -1,13 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFormLayout>
-MainWindow::MainWindow(Json::Value &root,QWidget *parent) :
+MainWindow::MainWindow(json &config,QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    client=new eli_client(root["address"].asString(),root["port"].asString());
-    loadWidgets(root["devices"]);
+    client=new eli_client(config.at("address").get<std::string>(),config.at("port").get<std::string>());
+    loadWidgets(config.at("devices"));
     buildStateBox();
     statemachine=new stateMachine("MachineState");
     connectSignals();
@@ -51,32 +51,47 @@ void MainWindow::closeEvent(QCloseEvent* e)
     QWidget::closeEvent(e);
 }
 
-void MainWindow::loadWidgets(Json::Value items){
+void MainWindow::loadWidgets(json &items){
     
 
-    for (auto i : items) {
-
+    for (auto &i : items) {
+        std::cout<<i<<std::endl;
         AbstractWidget* new_widget;
-        if(i["type"].asString()=="HMP2020"){
-           new_widget=new LVpsuWidget(i["id"].asString(),i["address"].asString(),i["port"].asString());
+        auto type=i.at("type").get<std::string>();
+        auto id=i.at("id").get<std::string>();
+        std::string address, port;
+        try{
+            address=i.at("address").get<std::string>();
         }
-        else if(i["type"].asString()=="HMP4040"){
-          new_widget= new LV4psuWidget(i["id"].asString(),i["address"].asString(),i["port"].asString());
+        catch(nlohmann::detail::out_of_range){
+            address="";
+        }
+        try{
+            address=i.at("port").get<std::string>();
+        }
+        catch(nlohmann::detail::out_of_range){
+            port="";
+        }
+        if(type=="HMP2020"){
+           new_widget=new LVpsuWidget(id,address,port);
+        }
+        else if(type=="HMP4040"){
+          new_widget= new LV4psuWidget(id,address,port);
        }
-        else if(i["type"].asString()=="DT1415ET"){
-          new_widget=new HVpsuWidget(i["id"].asString(),i["address"].asString(),i["port"].asString());
+        else if(type=="DT1415ET"){
+          new_widget=new HVpsuWidget(id,address,port);
         }
-        else if(i["type"].asString()=="TPG362"){
-          new_widget=new TPGWidget(i["id"].asString(),i["address"].asString(),i["port"].asString());
+        else if(type=="TPG362"){
+          new_widget=new TPGWidget(id,address,port);
         }
-        else if(i["type"].asString()=="PiWeather"){
-          new_widget=new PiWeatherWidget(i["id"].asString(),i["address"].asString(),i["port"].asString());
+        else if(type=="PiWeather"){
+          new_widget=new PiWeatherWidget(id,address,port);
         }
         else{
-           std::cout<<"Unknown device:"<<i["type"].asString()<<std::endl;
+           std::cout<<"Unknown device:"<<type<<std::endl;
            continue;
         }
-        QPushButton* new_button=new QPushButton(QString::fromStdString("Start "+i["id"].asString()));
+        QPushButton* new_button=new QPushButton(QString::fromStdString("Start "+id));
         connect(new_button,SIGNAL(pressed()),new_widget,SLOT(startup()));
         connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
                 ,new_widget,SLOT(controllerInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
@@ -84,7 +99,7 @@ void MainWindow::loadWidgets(Json::Value items){
         startButtons.push_back(new_button);
         deviceWidgets.push_back(new_widget);
         new_widget->setWindowFlags(Qt::Window);
-        new_widget->setWindowTitle((i["type"].asString()+" ("+i["id"].asString()+")").c_str());
+        new_widget->setWindowTitle((type+" ("+id+")").c_str());
     }
 
 
