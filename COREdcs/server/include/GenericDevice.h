@@ -15,7 +15,7 @@ public:
     bool isConnected() {return connected;}
     void sendCommand(std::string command);
     std::string sendWithResponse(std::string command);
-
+    ConnectionType getActiveConnectionType() {return activeConnectionType;}
 
 protected:
     GenericDevice(ConnectionType allowed, ConnectionType active): connectionTypeAllowed(allowed), activeConnectionType(active) {}

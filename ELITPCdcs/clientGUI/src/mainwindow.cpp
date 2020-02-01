@@ -55,7 +55,6 @@ void MainWindow::loadWidgets(json &items){
     
 
     for (auto &i : items) {
-        std::cout<<i<<std::endl;
         AbstractWidget* new_widget;
         auto type=i.at("type").get<std::string>();
         auto id=i.at("id").get<std::string>();
