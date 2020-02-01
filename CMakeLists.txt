@@ -14,6 +14,7 @@ if(open62541_FOUND)
     add_subdirectory(deps)
     add_subdirectory(COREdcs)
     add_subdirectory(ELITPCdcs)
+    add_subdirectory(test)
 endif()
 
 #add_subdirectory(nodes)
