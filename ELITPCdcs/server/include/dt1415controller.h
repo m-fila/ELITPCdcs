@@ -1,7 +1,6 @@
 #ifndef DTCONTROLLER_H
 #define DTCONTROLLER_H
 
-#include "DeviceController.h"
 #include "DT1415ET.h"
 #include "opc_controller.h"
 #include "open62541/types_dcsnodeset_generated.h"

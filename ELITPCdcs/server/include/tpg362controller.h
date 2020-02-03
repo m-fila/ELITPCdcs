@@ -2,7 +2,6 @@
 #define TPG362CONTROLLER_H
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
-#include "DeviceController.h"
 #include "TPG362.h"
 #include "opc_controller.h"
 

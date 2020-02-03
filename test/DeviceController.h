@@ -17,11 +17,11 @@ protected:
     void connect(ConnectionParameters* parameters)
     {
         //TODO: use dedicated factory based on device activeConnectionType ?
-        if(device->getActiveConnectionType()==ConnectionType::TCP){
+        //if(device->getActiveConnectionType()==ConnectionType::TCP){
             auto cp = static_cast<TCPConnectionParameters*>(parameters);
             std::cout << cp->IPaddress  << ":" << cp->port << std::endl;
-            device->setConnectionStream(TCPConnector::connect(cp->IPaddress.c_str(), cp->port));
-        }
+            device->setConnectionStream(TCPConnector::connect(cp->IPaddress.c_str(), cp->port, device->getActiveConnectionType()));
+       // }
     }
 
         std::unique_ptr<T> device;

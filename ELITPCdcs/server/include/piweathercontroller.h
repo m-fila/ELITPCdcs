@@ -2,7 +2,6 @@
 #define PIWEATHERCONTROLLER_H
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
-#include "DeviceController.h"
 #include "PiWeather.h"
 #include "opc_controller.h"
 
