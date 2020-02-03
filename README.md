@@ -64,5 +64,10 @@ variables of OPC object
 * `mainwindow.cpp` create specific device controller if found in config file
 * `${device}controller` slots for calling device specific methods
 * `${device}widget` device specific gui
+### Roadmap
+- [ ] new devices (MKS 946) 
+- [ ] events
+- [ ] historizing
+- [ ] more efficient server side
 ## Authors
 * __Mateusz Fila__ basing on ELITPCdcsPanel by __Marcin Zaremba__
