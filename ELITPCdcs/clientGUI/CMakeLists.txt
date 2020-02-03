@@ -19,8 +19,8 @@ qt5_wrap_ui(UI_MOC ${forms})
 
 add_library(${MODULE_NAME}_${SUBMODULE_NAME}_Qt SHARED ${SOURCES} ${H_MOC} ${UI_MOC})
 add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${sources} ${res})
-add_executable(${SUBMODULE_NAME}${MODULE_NAME} bin/main.cpp)
+add_executable(dcsGUI bin/main.cpp)
 
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME}_Qt Qt5::Widgets open62541::open62541 )
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} COREdcs_${SUBMODULE_NAME} ${MODULE_NAME}_nodeset ${MODULE_NAME}_${SUBMODULE_NAME}_Qt)
-target_link_libraries(${SUBMODULE_NAME}${MODULE_NAME} ${MODULE_NAME}_${SUBMODULE_NAME})
+target_link_libraries(dcsGUI ${MODULE_NAME}_${SUBMODULE_NAME})
