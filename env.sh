@@ -1,0 +1,2 @@
+#export CMAKE_PREFIX_PATH=CMAKE_PREFIX_PATH:/opt/soft/open62541
+export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/home/mfila/open62541-install

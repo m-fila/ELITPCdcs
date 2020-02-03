@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project (ELITPC_DCS)
 set (CMAKE_CXX_STANDARD 11)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-set(CMAKE_PREFIX_PATH /opt/soft/open62541)
+#set(CMAKE_PREFIX_PATH /opt/soft/open62541)
 find_package(open62541 REQUIRED)
 
 if(open62541_FOUND)
@@ -16,15 +16,3 @@ if(open62541_FOUND)
     add_subdirectory(ELITPCdcs)
     add_subdirectory(test)
 endif()
-
-#add_subdirectory(nodes)
-#add_subdirectory(common)
-#if(BUILD_SERVER) 
-#	add_subdirectory(server)
-#endif(BUILD_SERVER)
-#if(BUILD_DB)
-#	add_subdirectory(client_db)
-#endif(BUILD_DB)
-#if(BUILD_GUI)
-#	add_subdirectory(client_gui)
-#endif(BUILD_GUI)
