@@ -53,16 +53,16 @@ sudo apt-get install sqlitebrowser
 ### Adding new devices
 The project is split into two catalogs COREdcs with framework and ELITPCdcs implementing handling specific devices. Ideally you shouldn't have to edit anything in COREdcs.
 #### Server
-`bin/main.cpp` create specific device controller if found in config file
-`${device}` hardware communication with device
-`${device}controller`  device specific methods and update routines for
+* `bin/main.cpp` create specific device controller if found in config file
+* `${device}` hardware communication with device
+* `${device}controller`  device specific methods and update routines for
 variables of OPC object
 #### Database client
-`bin/main.cpp` create specific device controller if found in config file
-`${device}variable` logging specific parameters of variables provided by server
+* `bin/main.cpp` create specific device controller if found in config file
+* `${device}variable` logging specific parameters of variables provided by server
 #### GUI client
-`mainwindow.cpp` create specific device controller if found in config file
-`${device}controller` slots for calling device specific methods
-`${device}widget` device specific gui
+* `mainwindow.cpp` create specific device controller if found in config file
+* `${device}controller` slots for calling device specific methods
+* `${device}widget` device specific gui
 ## Authors
 * __Mateusz Fila__ basing on ELITPCdcsPanel by __Marcin Zaremba__
