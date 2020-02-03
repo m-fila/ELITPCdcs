@@ -10,7 +10,7 @@ compatible with other clients such as UaExpert by Unified Automation.
 C++11 compiler and cmake>3.1
 
 This project requires open62541 (open source C implementation of OPC UA)
-build with enabled methodcalls, subscriptions (enabled by default) and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation:
+build with enabled methodcalls, subscriptions (enabled by default) and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation (in that case you should also edit env.sh with same path):
 ```
 git clone https://github.com/open62541/open62541
 mkdir open62541/build && cd open62541/build
@@ -25,11 +25,12 @@ sudo apt-get install qt5-default
 ```
 ### Building
 ```
+. env.sh
 mkdir build && cd build
 cmake ..
 ```
 
-`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project. In case of custom installation path  line `set(CMAKE_PREFIX_PATH /opt/soft)` in `dcs/CMakeLists.txt` should be edited.
+`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
 
 
@@ -50,17 +51,18 @@ sudo apt-get install sqlitebrowser
 ```
 
 ### Adding new devices
+The project is split into two catalogs COREdcs with framework and ELITPCdcs implementing handling specific devices. Ideally you shouldn't have to edit anything in COREdcs.
 #### Server
-`main.cpp` create specific device controller if found in config file
-`hw/*` hardware communication with device
-`opc/*controller`  device specific methods and update routines for
+`bin/main.cpp` create specific device controller if found in config file
+`${device}` hardware communication with device
+`${device}controller`  device specific methods and update routines for
 variables of OPC object
 #### Database client
-`main.cpp` create specific device controller if found in config file
-`*variable` logging specific parameters of variables provided by server
+`bin/main.cpp` create specific device controller if found in config file
+`${device}variable` logging specific parameters of variables provided by server
 #### GUI client
 `mainwindow.cpp` create specific device controller if found in config file
-`*controller` slots for calling device specific methods
-`*widget` device specific gui
+`${device}controller` slots for calling device specific methods
+`${device}widget` device specific gui
 ## Authors
 * __Mateusz Fila__ basing on ELITPCdcsPanel by __Marcin Zaremba__
