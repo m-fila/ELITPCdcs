@@ -4,6 +4,7 @@ MESSAGE( STATUS "Adding CMake fragment for submodule:\t\t" ${MODULE_NAME}_${SUBM
 file(GLOB_RECURSE sources ${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}/src/*.cpp)
 
 include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}/include)
+include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${sources})
 

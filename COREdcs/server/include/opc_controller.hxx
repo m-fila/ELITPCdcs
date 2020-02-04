@@ -96,12 +96,12 @@ void OpcTemplateController<M,C,D>::run_thread(){
             }
         }
         else{
-            //std::this_thread::sleep_for(std::chrono::milliseconds(1));
             update_status();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             if(isConnected()){
                   update_configuration();
                   update_measurements();
-                  UA_sleep_ms(100);
+            //      UA_sleep_ms(100);
             }
         }
         if(!thread_running){
