@@ -35,11 +35,16 @@ ssize_t ConnectionStream::receive(char* buffer, size_t len)
 
 std::string ConnectionStream::receive()
 {
-    char buffer[1024];
-    ssize_t len;
-    len=ConnectionStream::receive(buffer,1024);
     std::string response;
-    response.append(buffer, len);
+    ssize_t len;
+    do{
+        char buffer[1024];
+        len=ConnectionStream::receive(buffer,1024);
+        response.append(buffer, len);
+      //  std::fill(&buffer[0], &buffer[0]+len, 0);
+    }
+    while(len==1024);
+    
     response.erase(response.length()-1); //remove new line from answer
     return response;
 }
