@@ -20,7 +20,7 @@ protected:
         //if(device->getActiveConnectionType()==ConnectionType::TCP){
             auto cp = static_cast<TCPConnectionParameters*>(parameters);
             std::cout << cp->IPaddress  << ":" << cp->port << std::endl;
-            device->setConnectionStream(TCPConnector::connect(cp->IPaddress.c_str(), cp->port, device->getActiveConnectionType()));
+            device->setConnectionStream(TCPConnector::connect(cp->IPaddress.c_str(), cp->port));
        // }
     }
 
