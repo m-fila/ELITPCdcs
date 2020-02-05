@@ -1,5 +1,5 @@
-#ifndef DT1415ETCHANNELSTATUS
-#define DT1415ETCHANNELSTATUS
+#ifndef DT1415ETCODES_H
+#define DT1415ETCODES_H
 
 enum class DT1415ETchannelStatus
 {   OFF = 0,
@@ -32,5 +32,5 @@ constexpr DT1415ETchannelStatus operator &(DT1415ETchannelStatus a, DT1415ETchan
     return static_cast<DT1415ETchannelStatus>(static_cast<int>(a)&static_cast<int>(b));
 }
 
-#endif // DT1415ETCHANNELSTATUS
+#endif // DT1415ETCODES_H
 

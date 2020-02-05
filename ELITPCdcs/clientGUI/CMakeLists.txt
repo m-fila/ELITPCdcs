@@ -11,8 +11,10 @@ file(GLOB_RECURSE res ${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}/*.q
 
 include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}/include)
 include_directories(${PROJECT_SOURCE_DIR}/COREdcs/${SUBMODULE_NAME}/include)
+include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/shared)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 include_directories(${CMAKE_BINARY_DIR}/src_generated)
+
 
 qt5_wrap_cpp(H_MOC ${headers})
 qt5_wrap_ui(UI_MOC ${forms})

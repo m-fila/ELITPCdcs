@@ -5,6 +5,7 @@ file(GLOB_RECURSE sources ${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}
 
 include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}/include)
 include_directories(${PROJECT_SOURCE_DIR}/COREdcs/${SUBMODULE_NAME}/include)
+include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/shared)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 include_directories(${CMAKE_BINARY_DIR}/src_generated)
 
