@@ -2,6 +2,7 @@
 #define MKS910_H
 
 #include "GenericDevice.h"
+#include "mks910codes.h"
 
 class MKS910 : public GenericDevice
 {
@@ -34,7 +35,7 @@ public:
     std::string getPartNumer();
     std::string getUptime();
     // TORR, PASCAL, MBAR
-    void setUnits(std::string u);
+    void setUnits(MKS910codes::MKS910UNITS u);
     
     protected:
     std::string encapsulate(std::string content);
