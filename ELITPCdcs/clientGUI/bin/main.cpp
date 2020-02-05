@@ -34,9 +34,11 @@ int main(int argc, char *argv[]){
 
     QApplication a(argc, argv);
     a.setStyle(QStyleFactory::create("Fusion"));
+    a.setWindowIcon(QIcon(":/images/res/dcs_64x64_bw.png"));
     QCoreApplication::setOrganizationName("FUW");
     QCoreApplication::setApplicationName("ELITPCdcs client");
     MainWindow w(config);
+
     w.show();
     return a.exec();
 }
