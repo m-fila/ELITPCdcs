@@ -93,7 +93,7 @@ std::string MKS910::getUptime(){
     return sendWithDelayedResponse("TIM?");
 }
 
-void MKS910::setUnits(std::string u){
-    sendWithDelayedResponse("PN!"+u);
+void MKS910::setUnits(MKS910codes::MKS910UNITS u){
+    sendWithDelayedResponse("U!"+MKS910codes::unitsToString.at(u));
 }
 
