@@ -26,9 +26,15 @@ class TestController: public AbstractDeviceController<MKS910> {
         s=device->getSerialNumber();std::cout<<s.c_str()<<std::endl;
         s=device->getStatus();std::cout<<s.c_str()<<std::endl;
         s=device->getTemp();std::cout<<s.c_str()<<std::endl;
+        device->setUnits(MKS910codes::MKS910UNITS::TORR);
         s=device->getUnits();std::cout<<s.c_str()<<std::endl;
         s=device->getUptime();std::cout<<s.c_str()<<std::endl;
-        
+        device->setUnits(MKS910codes::MKS910UNITS::TORR);
+        s=device->getUnits();std::cout<<s.c_str()<<std::endl;
+        s=device->getPCombinedLong();std::cout<<s.c_str()<<std::endl;
+        device->setUnits(MKS910codes::MKS910UNITS::TORR);
+        s=device->getUnits();std::cout<<s.c_str()<<std::endl;
+        s=device->getPCombinedLong();std::cout<<s.c_str()<<std::endl;
        // for (auto &i :s){
             
        // }
@@ -39,7 +45,7 @@ int main(int argc, char** argv){
     srand(time(NULL));
     TCPConnectionParameters p;
     p.IPaddress="192.168.168.102";
-    p.port=5301;
+    p.port=5300;
  //   p.IPaddress="192.168.168.55";
  //   p.port=2244;
     TestController t;
