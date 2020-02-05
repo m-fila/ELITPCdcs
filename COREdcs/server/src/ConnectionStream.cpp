@@ -44,8 +44,9 @@ std::string ConnectionStream::receive()
       //  std::fill(&buffer[0], &buffer[0]+len, 0);
     }
     while(len==1024);
-    
-    response.erase(response.length()-1); //remove new line from answer
+    if (!response.empty() && response[response.length()-1] == '\n') {
+        response.erase(response.length()-1);
+    }   //remove new line from answer
     return response;
 }
 

@@ -3,7 +3,8 @@
 
 #include "ConnectionStream.h"
 #include <memory>
-
+#include <chrono>
+#include <thread>
 class GenericDevice
 {
 public:
@@ -14,7 +15,9 @@ public:
     void resetConnectionStream();
     bool isConnected() {return connected;}
     void sendCommand(std::string command);
+    std::string receiveResponse();
     std::string sendWithResponse(std::string command);
+    std::string sendWithDelayedResponse(std::string command, uint delay);
     ConnectionType getActiveConnectionType() {return activeConnectionType;}
 
 protected:

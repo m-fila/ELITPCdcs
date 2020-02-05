@@ -30,10 +30,28 @@ void GenericDevice::sendCommand(std::string command)
     }
 }
 
+std::string GenericDevice::receiveResponse(){
+       if(isConnected())
+    {
+        return connectionStream->receive();
+    } 
+}
+
 std::string GenericDevice::sendWithResponse(std::string command)
 {
     if(isConnected())
     {
         return connectionStream->sendWithResponse(command);
+    }
+}
+
+
+std::string GenericDevice::sendWithDelayedResponse(std::string command,uint delay)
+{
+    if(isConnected())
+    {   
+        connectionStream->send(command);
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        return connectionStream->receive();
     }
 }
