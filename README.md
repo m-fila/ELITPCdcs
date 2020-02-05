@@ -1,4 +1,4 @@
-# ELITPC DCS
+# ![ELITPCS dcs](docs/img/dcs_logo.png "ELITPC dcs")
 
 Detector Control System for ELITPC detector using OPC UA protocol.
 Provides server, operational gui client and database client. Server is
