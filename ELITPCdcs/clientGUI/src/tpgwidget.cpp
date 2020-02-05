@@ -102,7 +102,8 @@ void TPGWidget::updateMeasurements(void *data){
             s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
             val=QString::fromStdString(s);
             mVacuum[i]->display(val);
-            val=QString::fromStdString(status_names.at(measurements.status[i]));
+            TPG362codes::Status stat=static_cast<TPG362codes::Status>(measurements.status[i]);
+            val=QString::fromStdString(TPG362codes::statusToString.at(stat));
             mStatus[i]->setText(val);
 
         }

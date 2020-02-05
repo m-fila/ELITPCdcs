@@ -13,6 +13,7 @@
 #include <QTabWidget>
 #include <vector>
 #include "tpgcontroller.h"
+#include "tpg362codes.h"
 #include "open62541/types_dcsnodeset_generated.h"
 class TPGWidget : public AbstractWidget
 {
@@ -71,10 +72,6 @@ private:
     void connectSignals();
     void loadConfig();
     void saveConfig();
-    const std::vector<std::string> status_names{"Measurement data okay",
-    "Underrange","Overrange","Sensor error","Sensor off","No sensor",
-    "Identification error"};
-
 };
 
 #endif // TPGWIDGET_H
