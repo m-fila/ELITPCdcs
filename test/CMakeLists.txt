@@ -1,4 +1,4 @@
-MESSAGE( STATUS "Adding CMake fragment for module:\t\t" TEST )
+MESSAGE( STATUS "Adding CMake fragment for module:\t\t" test )
 include_directories(${PROJECT_SOURCE_DIR}/COREdcs/server/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 include_directories(${CMAKE_BINARY_DIR}/src_generated)
