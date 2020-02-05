@@ -32,7 +32,7 @@ public:
     std::string setFilter(FILTER f1, FILTER f2);
     void Reset(){}
 private:
-    std::string extractValue(std::string command){return "";}
+ //   std::string extractValue(std::string command){return "";}
     const std::string enq=std::string(1,5);
     std::string sendWithEnquiry(std::string command);
 };

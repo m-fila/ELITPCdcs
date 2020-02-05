@@ -5,7 +5,7 @@
 #include <map>
 #include "GenericDevice.h"
 
-enum class DT1415ETchannelStatus;
+//enum class DT1415ETchannelStatus;
 
 class DT1415ET : public GenericDevice
 {
