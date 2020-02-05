@@ -103,9 +103,7 @@ private:
     void createChannelTabs();
     void drawLine(QLayout *layout);
     void connectSignals();
-    std::string status_translate(DT1415ETchannelStatus status);
 };
 
-extern std::map<DT1415ETchannelStatus,std::string> enum_names;
 
 #endif // HVPSUWIDGET_H

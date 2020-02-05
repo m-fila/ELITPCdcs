@@ -163,9 +163,9 @@ void HVpsuWidget::updateConfiguration(void *data){
        // bool ON;//, enabled;
         QString val;
         for(int i=0; i<8; ++i){
-            DT1415ETchannelStatus chanStat=static_cast<DT1415ETchannelStatus>(channelStatus.status[i]);
-            enabled[i] = channelStatus.isRemote && !static_cast<bool>(chanStat & DT1415ETchannelStatus::ISDIS);
-            ON[i] = static_cast<bool>(chanStat & DT1415ETchannelStatus::ON);
+            DT1415ETcodes::ChannelStatus chanStat=static_cast<DT1415ETcodes::ChannelStatus>(channelStatus.status[i]);
+            enabled[i] = channelStatus.isRemote && !static_cast<bool>(chanStat & DT1415ETcodes::ChannelStatus::ISDIS);
+            ON[i] = static_cast<bool>(chanStat & DT1415ETcodes::ChannelStatus::ON);
             tabCHxLed[i]->setState( static_cast<KLed::State>(ON[i] && connectionState ));
             allTabOn[i]->setEnabled(enabled[i] && connectionState);
             allTabOff[i]->setEnabled(enabled[i] && connectionState);
@@ -175,7 +175,7 @@ void HVpsuWidget::updateConfiguration(void *data){
             allTabOn[i]->setChecked(ON[i] && connectionState);
             allTabOff[i]->setChecked((!ON[i]) && connectionState);
 
-            val=QString::fromStdString(status_translate(chanStat));
+            val=QString::fromStdString(DT1415ETcodes::translateChannelStatus(chanStat));
             tabCHxSTATUS[i]->setText(val);
             tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
@@ -924,37 +924,4 @@ void HVpsuWidget::drawLine(QLayout *layout)
     layout->addWidget(line);
 }
 
-std::map<DT1415ETchannelStatus,std::string> enum_names = {
-{DT1415ETchannelStatus::OFF, "OFF"},
-{DT1415ETchannelStatus::ON, "ON"},
-{DT1415ETchannelStatus::RUP,"RUP"},
-{DT1415ETchannelStatus::RDW,"RDW"},
-{DT1415ETchannelStatus::OVC,"OVC"},
-{DT1415ETchannelStatus::OVV,"OVV"},
-{DT1415ETchannelStatus::UNV,"UNV"},
-{DT1415ETchannelStatus::TRIP,"TRIP"},
-{DT1415ETchannelStatus::OVP,"OVP"},
-{DT1415ETchannelStatus::TWN,"TWN"},
-{DT1415ETchannelStatus::OVT,"OVT"},
-{DT1415ETchannelStatus::KILL,"KILL"},
-{DT1415ETchannelStatus::INTLK,"INTLK"},
-{DT1415ETchannelStatus::ISDIS,"ISDIS"},
-{DT1415ETchannelStatus::FAIL,"FAIL"},
-{DT1415ETchannelStatus::LOCK,"LOCK"},
-{DT1415ETchannelStatus::UNKNOWN,"UNKNOWN"}
-};
-std::string HVpsuWidget::status_translate(DT1415ETchannelStatus status){
-    std::string str="";
-    for(int i=0;i<15;++i){
-        DT1415ETchannelStatus current_status=static_cast<DT1415ETchannelStatus>(1<<i);
-        if(static_cast<bool>(status & current_status)){
-            str+=" ";
-            str+=enum_names[current_status];
-        }
-    }
 
-    if(status==DT1415ETchannelStatus::OFF){
-        str=enum_names[DT1415ETchannelStatus::OFF];
-    }
-    return str;
-}

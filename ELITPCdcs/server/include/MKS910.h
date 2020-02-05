@@ -35,7 +35,7 @@ public:
     std::string getPartNumer();
     std::string getUptime();
     // TORR, PASCAL, MBAR
-    void setUnits(MKS910codes::MKS910UNITS u);
+    void setUnits(MKS910codes::Units u);
     
     protected:
     std::string encapsulate(std::string content);

@@ -4,20 +4,21 @@
 #include <string>
 
 namespace MKS910codes{
-enum class MKS910UNITS
-{   PASCAL,MBAR,TORR
-};
+    enum class Units{   
+        PASCAL,MBAR,TORR
+    };
 
-std::map<MKS910UNITS, std::string> unitsToString={
-    {MKS910UNITS::PASCAL, "PASCAL"},
-    {MKS910UNITS::MBAR,"MBAR"},
-    {MKS910UNITS::TORR,"TORR"}
-};
-std::map<std::string, MKS910UNITS> unitsFromString={
-    {"PASCAL",MKS910UNITS::PASCAL},
-    {"MBAR",MKS910UNITS::MBAR},
-    {"TORR",MKS910UNITS::TORR}
-};
+    static std::map<Units, std::string> unitsToString={
+        {Units::PASCAL, "PASCAL"},
+        {Units::MBAR,"MBAR"},
+        {Units::TORR,"TORR"}
+    };
+
+    static std::map<std::string, Units> unitsFromString={
+        {"PASCAL",Units::PASCAL},
+        {"MBAR",Units::MBAR},
+        {"TORR",Units::TORR}
+    };
 }
 #endif // MKS910CODES_H
 
