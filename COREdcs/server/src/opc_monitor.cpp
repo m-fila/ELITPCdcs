@@ -1,5 +1,5 @@
 #include "opc_monitor.h"
-#include <iostream>
+
 OpcMonitor::OpcMonitor(std::string name): OpcObject(name), thread_running(false),
     measurementsVariableName("Measurements"),
     configurationVariableName("Configuration"),
@@ -8,7 +8,7 @@ OpcMonitor::OpcMonitor(std::string name): OpcObject(name), thread_running(false)
 }
 
 OpcMonitor::~OpcMonitor(){
-    if (thread_running){
+    if (thread_running){        
         join_thread();
     }
         UA_NodeId_deleteMembers(&objectNodeId);
@@ -78,23 +78,6 @@ UA_StatusCode OpcMonitor::disconnectDeviceCallback(UA_Server *server,
     return UA_STATUSCODE_GOOD;
 }
 
-void OpcMonitor::addDisconnectDeviceMethod(UA_Server *server) {
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Disconnect device");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","disconnect");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName=UA_QUALIFIEDNAME_ALLOC(1,"disconnect");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &disconnectDeviceCallback,
-                            0, nullptr, 0, nullptr, this, nullptr);
-    UA_QualifiedName_deleteMembers(&methodQName);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-}
-
 UA_StatusCode OpcMonitor::connectDeviceCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
                          const UA_NodeId *methodId, void *methodContext,
@@ -112,40 +95,13 @@ UA_StatusCode OpcMonitor::connectDeviceCallback(UA_Server *server,
     monitor->connectDevice(&parameters);
     return UA_STATUSCODE_GOOD;
 }
-void OpcMonitor::addConnectDeviceMethod(UA_Server *server) {
 
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Host");
-    inputArguments[0].name = UA_String_fromChars("Host address");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_STRING].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Port");
-    inputArguments[1].name = UA_String_fromChars("TCP port");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_INT32].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Connect device");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","connect");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-
-    UA_QualifiedName methodQName=UA_QUALIFIEDNAME_ALLOC(1,"connect");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &connectDeviceCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_QualifiedName_deleteMembers(&methodQName);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
+void OpcMonitor::addConnectDeviceMethod(UA_Server *server){
+    addMethod(server,"connect",connectDeviceCallback,"Connect device",{{UA_TYPES[UA_TYPES_STRING],"Address"," Host's address"},{UA_TYPES[UA_TYPES_INT32],"Port"," Host's port"}},{});
 }
-
+void OpcMonitor::addDisconnectDeviceMethod(UA_Server *server){
+    addMethod(server,"disconnect",disconnectDeviceCallback,"Disconnect device",{},{});
+}
 
 /*
 void OpcMonitor::addMonitoredItem(UA_Server *server,UA_NodeId VariableId,UA_Double sampling) {
