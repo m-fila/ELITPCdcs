@@ -1,16 +1,12 @@
 #include "dt1415controller.h"
 #include <sstream>
+
 DT1415Controller::DT1415Controller(std::string name): OpcTemplateController<UA_DT1415m,UA_DT1415c,DT1415ET>(name){
     variableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M];
     variableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C];
     UA_DT1415m_init(&measurements);
     UA_DT1415c_init(&configuration);
 }
-
-//DT1415Controller::~DT1415Controller(){
-//    UA_NodeId_deleteMembers(&ObjectNodeId);
-//}
-
 
 void DT1415Controller::init(UA_Server* server){
     addObject(server);
@@ -164,41 +160,9 @@ UA_StatusCode DT1415Controller::setChannelCallback(UA_Server *server,
     return UA_STATUSCODE_GOOD;
 
 }
-
 void DT1415Controller::addSetChannelMethod(UA_Server* server){
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "ON/OFF");
-    inputArguments[1].name = UA_String_fromChars("State");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel ON/OFF");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setchannel");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
- //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetChannel");
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setchannel");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setChannelCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-  //  UA_NodeId_deleteMembers(&MethodNodeId);
-    UA_QualifiedName_deleteMembers(&methodQName);
-}
+    addMethod(server,"setchannel",setChannelCallback,"Sets channel ON/OFF",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_BOOLEAN],"State","ON/OFF"}},{});
+}    
 
 UA_StatusCode DT1415Controller::setVoltageCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
@@ -223,39 +187,8 @@ UA_StatusCode DT1415Controller::setVoltageCallback(UA_Server *server,
 }
 
 void DT1415Controller::addSetVoltageMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Voltage");
-    inputArguments[1].name = UA_String_fromChars("Voltage");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's voltage");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setvoltage");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
- //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetVoltage");
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setvoltage");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setVoltageCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-  //  UA_NodeId_deleteMembers(&MethodNodeId);
-    UA_QualifiedName_deleteMembers(&methodQName);
-}
+    addMethod(server,"setvoltage",setVoltageCallback,"Sets channel's voltage",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Voltage","Voltage in V"}},{});
+} 
 
 UA_StatusCode DT1415Controller::setVoltageMaxCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
@@ -280,38 +213,7 @@ UA_StatusCode DT1415Controller::setVoltageMaxCallback(UA_Server *server,
 }
 
 void DT1415Controller::addSetVoltageMaxMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Voltage");
-    inputArguments[1].name = UA_String_fromChars("Voltage");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's voltage max");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setvoltagemax");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
- //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetVoltage");
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setvoltagemax");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setVoltageMaxCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-  //  UA_NodeId_deleteMembers(&MethodNodeId);
-    UA_QualifiedName_deleteMembers(&methodQName);
+    addMethod(server,"setvoltagemax",setVoltageCallback,"Sets channel's voltage max",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Maximum voltage","Maximum voltage in V"}},{});
 }
 
 UA_StatusCode DT1415Controller::setRampUpCallback(UA_Server *server,
@@ -337,36 +239,7 @@ UA_StatusCode DT1415Controller::setRampUpCallback(UA_Server *server,
 }
 
 void DT1415Controller::addSetRampUpMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "V/s");
-    inputArguments[1].name = UA_String_fromChars("Ramp up");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's ramp up");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setrampup");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setrampup");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setRampUpCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-    UA_QualifiedName_deleteMembers(&methodQName);
+    addMethod(server,"setrampup",setRampUpCallback,"Sets channel's ramp up",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Ramp up","Ramp up in V/s"}},{});
 }
 
 UA_StatusCode DT1415Controller::setRampDownCallback(UA_Server *server,
@@ -392,37 +265,8 @@ UA_StatusCode DT1415Controller::setRampDownCallback(UA_Server *server,
 }
 
 void DT1415Controller::addSetRampDownMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "V/s");
-    inputArguments[1].name = UA_String_fromChars("Ramp down");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel's ramp down");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setrampdown");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setrampdown");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setRampDownCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-    UA_QualifiedName_deleteMembers(&methodQName);
-}    
+    addMethod(server,"setrampdown",setRampDownCallback,"Sets channel's ramp down",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Ramp down","Ramp down in V/s"}},{});
+}
 
 void DT1415Controller::connectDevice(TCPConnectionParameters *cp){
     try{
@@ -439,36 +283,7 @@ void DT1415Controller::connectDevice(TCPConnectionParameters *cp){
 }
 
 void DT1415Controller::addSetCurrentMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Current");
-    inputArguments[1].name = UA_String_fromChars("Current");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Setcurrent");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setcurrent");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setCurrentCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-  //  UA_NodeId_deleteMembers(&MethodNodeId);
-    UA_QualifiedName_deleteMembers(&methodQName);
+    addMethod(server,"setcurrent",setCurrentCallback,"Sets channel's current",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Current","Current in A"}},{});
 }
 
 UA_StatusCode DT1415Controller::setCurrentCallback(UA_Server *server,
