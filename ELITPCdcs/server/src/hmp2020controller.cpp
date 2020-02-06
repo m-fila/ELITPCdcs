@@ -93,30 +93,7 @@ UA_StatusCode HMPController::setOutputCallback(UA_Server *server,
 }
 
 void HMPController::addSetOutputMethod(UA_Server *server) {
-
-    UA_Argument inputArgument;
-    UA_Argument_init(&inputArgument);
-    inputArgument.description = UA_LOCALIZEDTEXT_ALLOC("en-US", "ON/OFF");
-    inputArgument.name = UA_String_fromChars("State");
-    inputArgument.dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;
-    inputArgument.valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets output ON/OFF");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setoutput");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setoutput");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setOutputCallback,
-                            1,&inputArgument, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArgument);
-    UA_QualifiedName_deleteMembers(&methodQName);
+    addMethod(server,"setoutput",setOutputCallback,"Sets output ON/OFF",{{UA_TYPES[UA_TYPES_BOOLEAN],"State","ON/OFF"}},{});
 }
 
 UA_StatusCode HMPController::setChannelCallback(UA_Server *server,
@@ -142,36 +119,7 @@ UA_StatusCode HMPController::setChannelCallback(UA_Server *server,
 }
 
 void HMPController::addSetChannelMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "ON/OFF");
-    inputArguments[1].name = UA_String_fromChars("State");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_BOOLEAN].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets channel ON/OFF");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setchannel");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setchannel");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setChannelCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-    UA_QualifiedName_deleteMembers(&methodQName);
+    addMethod(server,"setchannel",setChannelCallback,"Sets channel ON/OFF",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channels number"},{UA_TYPES[UA_TYPES_BOOLEAN],"State","ON/OFF"}},{});
 }
 
 UA_StatusCode HMPController::setVoltageCallback(UA_Server *server,
@@ -197,38 +145,8 @@ UA_StatusCode HMPController::setVoltageCallback(UA_Server *server,
 }
 
 void HMPController::addSetVoltageMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Voltage in V");
-    inputArguments[1].name = UA_String_fromChars("Voltage");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets voltage");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setvoltage");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setvoltage");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setVoltageCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-    UA_QualifiedName_deleteMembers(&methodQName);
-}
-
+    addMethod(server,"setvoltage",setVoltageCallback,"Sets voltage",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Voltage","Voltage in V"}},{});
+}    
 
 UA_StatusCode HMPController::setCurrentCallback(UA_Server *server,
                          const UA_NodeId *sessionId, void *sessionHandle,
@@ -253,34 +171,5 @@ UA_StatusCode HMPController::setCurrentCallback(UA_Server *server,
 }
 
 void HMPController::addSetCurrentMethod(UA_Server *server) {
-    UA_Argument inputArguments[2];
-    UA_Argument_init(&inputArguments[0]);
-    inputArguments[0].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Channel number");
-    inputArguments[0].name = UA_String_fromChars("Channel");
-    inputArguments[0].dataType = UA_TYPES[UA_TYPES_INT16].typeId;
-    inputArguments[0].valueRank = UA_VALUERANK_SCALAR;
-
-    UA_Argument_init(&inputArguments[1]);
-    inputArguments[1].description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Current in A");
-    inputArguments[1].name = UA_String_fromChars("Current");
-    inputArguments[1].dataType = UA_TYPES[UA_TYPES_DOUBLE].typeId;
-    inputArguments[1].valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Sets current");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setcurrent");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
-    UA_QualifiedName methodQName= UA_QUALIFIEDNAME_ALLOC(1, "setcurrent");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            methodQName,
-                            methodAttr, &setCurrentCallback,
-                            2,inputArguments, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArguments[0]);
-    UA_Argument_deleteMembers(&inputArguments[1]);
-    UA_QualifiedName_deleteMembers(&methodQName);
+    addMethod(server,"setcurrent",setCurrentCallback,"Sets current",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Current","Current in A"}},{});
 }
