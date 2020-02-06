@@ -1,32 +1,15 @@
 #include "eli_client_db.h"
-
 #include "hmp_variable.h"
 #include "dt1415_variable.h"
 #include "tpg362_variable.h"
 #include "piweather_variable.h"
-#include "json.hpp"
+#include "configloader.h"
 #include <fstream>
 #include <iostream>
 using json = nlohmann::json;
-int main(int argc, char *argv[])
-{
-  json config;
-  std::string configPath;
-  if(argc>1){
-    configPath=argv[1];
-  }
-  else{
-    std::string homePath=getenv("HOME");
-    configPath=homePath+"/.dcs/dcs.json";
-  }
-  std::ifstream ifs(configPath);
-  if(ifs.is_open()){
-    ifs>>config;
-  }
-  else{
-    std::cout<<"Can't find config file"<<std::endl;
-    return 0;
-  }
+int main(int argc, char *argv[]){
+  
+  json config=ConfigLoader::getMasterConfig(argc,argv);
 
     eli_client client(config.at("address").get<std::string>(),config.at("port").get<std::string>());
     

@@ -4,39 +4,13 @@
 #include "dt1415controller.h"
 #include "tpg362controller.h"
 #include "piweathercontroller.h"
-#include "json.hpp"
 #include <memory>
 #include <fstream>
+#include "configloader.h"
 using json = nlohmann::json;
 int main(int argc, char *argv[]){
-/*
-GenericDevice a;
-a.setConnectionStream(TCPConnector::connect("192.168.168.40",8000));
-//a.sendCommand("AYT\r");
-std::string r=a.sendWithResponse("PRX\r");
-std::cout<<int(r.at(0))<<std::endl;
-const std::string s(1,5);
-std::cout<<a.sendWithResponse(s)<<std::endl;
-return 0;
-*/
-  json config;
-  std::string configPath;
-  if(argc>1){
-    configPath=argv[1];
-  }
-  else{
-    std::string homePath=getenv("HOME");
-    configPath=homePath+"/.dcs/dcs.json";
-  }
-  std::ifstream ifs(configPath);
-  if(ifs.is_open()){
-    ifs>>config;
 
-  }
-  else{
-    std::cout<<"Can't find config file"<<std::endl;
-    return 0;
-  }
+  json config=ConfigLoader::getMasterConfig(argc,argv);
 
   ELIServer server(config.at("address").get<std::string>(),config.at("port").get<std::string>());
   OpcState state;

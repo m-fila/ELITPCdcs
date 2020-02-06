@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "json.hpp"
+#include "configloader.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <signal.h>
@@ -13,24 +13,9 @@ void stopHandler(int sig) {
 int main(int argc, char *argv[]){
     signal(SIGINT, stopHandler);
     signal(SIGTERM, stopHandler);
-    
-  json config;
-  std::string configPath;
-  if(argc>1){
-    configPath=argv[1];
-  }
-  else{
-    std::string homePath=getenv("HOME");
-    configPath=homePath+"/.dcs/dcs.json";
-  }
-  std::ifstream ifs(configPath);
-  if(ifs.is_open()){
-    ifs>>config;
-  }
-  else{
-    std::cout<<"Can't find config file"<<std::endl;
-    return 0;
-  }
+
+
+  json config=ConfigLoader::getMasterConfig(argc,argv);
 
     QApplication a(argc, argv);
     a.setStyle(QStyleFactory::create("Fusion"));
@@ -38,7 +23,6 @@ int main(int argc, char *argv[]){
     QCoreApplication::setOrganizationName("FUW");
     QCoreApplication::setApplicationName("ELITPCdcs client");
     MainWindow w(config);
-
     w.show();
     return a.exec();
 }
