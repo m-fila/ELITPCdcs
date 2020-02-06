@@ -42,32 +42,6 @@ UA_StatusCode OpcState::setStateCallback(UA_Server *server,
     return UA_STATUSCODE_GOOD;
 }
 void OpcState::addSetStateMethod(UA_Server *server) {
-
-    UA_Argument inputArgument;
-    UA_Argument_init(&inputArgument);
-    inputArgument.description = UA_LOCALIZEDTEXT_ALLOC("en-US", "state");
-    inputArgument.name = UA_String_fromChars("State");
-    inputArgument.dataType = UA_TYPES[UA_TYPES_INT32].typeId;
-    inputArgument.valueRank = UA_VALUERANK_SCALAR;
-
-
-    UA_MethodAttributes methodAttr = UA_MethodAttributes_default;
-    methodAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US","Changes state of machine");
-    methodAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US","setstate");
-    methodAttr.executable = true;
-    methodAttr.userExecutable = true;
- //   UA_NodeId MethodNodeId=UA_NODEID_STRING_ALLOC(1,"SetState");
-    UA_QualifiedName MethodQName= UA_QUALIFIEDNAME_ALLOC(1, "setstate");
-    UA_Server_addMethodNode(server, UA_NODEID_NULL,
-                            objectNodeId,
-                            UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
-                            MethodQName,
-                            methodAttr, &setStateCallback,
-                            1,&inputArgument, 0, nullptr,this, nullptr);
-    UA_MethodAttributes_deleteMembers(&methodAttr);
-    UA_Argument_deleteMembers(&inputArgument);
- //   UA_NodeId_deleteMembers(&MethodNodeId);
-    UA_QualifiedName_deleteMembers(&MethodQName);
+    addMethod(server,"setstate",setStateCallback,"Changes state of machine",{{UA_TYPES[UA_TYPES_INT32],"State","State"}},{});
 }
-
 
