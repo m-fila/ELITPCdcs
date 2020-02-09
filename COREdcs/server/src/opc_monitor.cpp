@@ -1,9 +1,13 @@
 #include "opc_monitor.h"
 
-OpcMonitor::OpcMonitor(std::string name): OpcObject(name), thread_running(false),
+OpcMonitor::OpcMonitor(std::string name,UA_DataType typeM, UA_DataType typeC): 
+    OpcObject(name),
+    thread_running(false),
     measurementsVariableName("Measurements"),
     configurationVariableName("Configuration"),
-    statusVariableName("Status")
+    statusVariableName("Status"),
+    variableTypeM(typeM),
+    variableTypeC(typeC)
     {
 }
 

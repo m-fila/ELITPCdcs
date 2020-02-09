@@ -1,11 +1,11 @@
 #include "hmp2020controller.h"
 #include <cstring>
 
-HMPController::HMPController(std::string name, int size): OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>(name), size(size){
-   variableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM];
-   variableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC];
-   UA_HMPm_init(&measurements);
-   UA_HMPc_init(&configuration);
+HMPController::HMPController(std::string name, int size):
+    OpcTemplateController<UA_HMPm,UA_HMPc,HMP2020>(name,
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM],
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC]),
+    size(size){
 }
 
 //HMPController~HMPController(){

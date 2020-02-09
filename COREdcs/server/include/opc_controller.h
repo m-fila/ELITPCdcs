@@ -1,13 +1,12 @@
 #ifndef OPC_TEMPLATE_CONTROLLER_H
 #define OPC_TEMPLATE_CONTROLLER_H
 #include <open62541/server.h>
+#include <functional>
 #include "opc_monitor.h"
-
-
 #include "ConnectionParameters.h"
 #include "TCPConnector.h"
 #include "devicebuffer.h"
-#include <functional>
+#include "TypeWrapper.h"
 template <class D>
 using DeviceCommand = std::function<void(D&)>;
 
@@ -18,7 +17,8 @@ class OpcTemplateController :public OpcMonitor
 {
 
 public:
-    OpcTemplateController(std::string name) : OpcMonitor(name){
+    OpcTemplateController(std::string name, UA_DataType typeM,UA_DataType typeC):
+        OpcMonitor(name,typeM,typeC),  measurements(variableTypeM),  configuration(variableTypeC){
         disconnectDevice();
     }
 
@@ -42,8 +42,8 @@ private:
 
 protected:
     bool isConnected(){return device.isConnected();}
-    M measurements;
-    C configuration;
+    TypeWrapper<M> measurements;
+    TypeWrapper<C> configuration;
     bool status;
     D device;
     DeviceBuffer<DeviceCommand<D>> buffer;

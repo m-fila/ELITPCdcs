@@ -1,13 +1,11 @@
 #include "piweathercontroller.h"
 #include <sstream>
 
-PiWeatherController::PiWeatherController(std::string name): OpcTemplateController<UA_PiWeatherm,UA_PiWeatherc,PiWeather>(name){
-   variableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PIWEATHERM];
-   variableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PIWEATHERC];
-   UA_PiWeatherm_init(&measurements);
-   UA_PiWeatherc_init(&configuration);
+PiWeatherController::PiWeatherController(std::string name):
+    OpcTemplateController<UA_PiWeatherm,UA_PiWeatherc,PiWeather>(name,
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PIWEATHERM],
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PIWEATHERC]){
 }
-
 
 
 void PiWeatherController::init(UA_Server *server){

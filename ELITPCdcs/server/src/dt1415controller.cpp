@@ -1,11 +1,10 @@
 #include "dt1415controller.h"
 #include <sstream>
 
-DT1415Controller::DT1415Controller(std::string name): OpcTemplateController<UA_DT1415m,UA_DT1415c,DT1415ET>(name){
-    variableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M];
-    variableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C];
-    UA_DT1415m_init(&measurements);
-    UA_DT1415c_init(&configuration);
+DT1415Controller::DT1415Controller(std::string name): 
+    OpcTemplateController<UA_DT1415m,UA_DT1415c,DT1415ET>(name,
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M],
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C]){
 }
 
 void DT1415Controller::init(UA_Server* server){

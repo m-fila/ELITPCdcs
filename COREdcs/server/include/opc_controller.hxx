@@ -22,7 +22,7 @@ template <class M,class C,class D>
 void OpcTemplateController<M,C,D>::updateMeasurementsVariable(UA_Server *server){
     UA_Variant value;
     std::lock_guard<std::mutex> lock(mMutex);
-    UA_Variant_setScalar(&value, &measurements, &variableTypeM);
+    UA_Variant_setScalar(&value, measurements.getData(), &variableTypeM);
     UA_Server_writeValue(server, measurementsId, value);
 }
 
@@ -30,7 +30,7 @@ template <class M,class C,class D>
 void OpcTemplateController<M,C,D>::updateConfigurationVariable(UA_Server *server){
     UA_Variant value;
     std::lock_guard<std::mutex> lock(cMutex);
-    UA_Variant_setScalar(&value, &configuration, &variableTypeC);
+    UA_Variant_setScalar(&value, configuration.getData(), &variableTypeC);
     UA_Server_writeValue(server, configurationId, value);
 }
 
@@ -49,7 +49,7 @@ template <class M,class C,class D>
 void OpcTemplateController<M,C,D>::update_measurements(){
     if(isConnected()){
         try{
-            M now =getMeasurements();
+            TypeWrapper<M> now(getMeasurements(),variableTypeM);
             std::lock_guard<std::mutex> lock(mMutex);
             measurements=now;
         }
@@ -64,7 +64,7 @@ template <class M,class C,class D>
 void OpcTemplateController<M,C,D>::update_configuration(){
     if(isConnected()){
         try{
-            C now =getSettings();
+            TypeWrapper<C> now (getSettings(),variableTypeC);
             std::lock_guard<std::mutex> lock(cMutex);
             configuration=now;
         }

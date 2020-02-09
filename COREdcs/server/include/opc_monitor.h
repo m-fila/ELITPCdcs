@@ -13,7 +13,7 @@
 class OpcMonitor: public OpcObject
 {
 public:
-    OpcMonitor(std::string name);
+    OpcMonitor(std::string name, UA_DataType typeM,UA_DataType typeC);
     virtual ~OpcMonitor();
     virtual void init(UA_Server *server)=0;
     void addMeasurementsVariable(UA_Server *server);
@@ -28,10 +28,10 @@ public:
                                                 const UA_DataValue *value));
 //    void addMonitoredItem(UA_Server *server,UA_NodeId VariableId, UA_Double sampling=500.0);
 
-
-protected:
     void spawn_thread();
     void join_thread();
+protected:
+
     virtual void run_thread()=0;
 
     virtual void updateMeasurementsVariable(UA_Server *server)=0;

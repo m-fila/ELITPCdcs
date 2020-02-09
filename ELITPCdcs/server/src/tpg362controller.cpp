@@ -1,13 +1,12 @@
 #include "tpg362controller.h"
 #include <sstream>
 
-TPG362Controller::TPG362Controller(std::string name): OpcTemplateController<UA_TPG362m,UA_TPG362c,TPG362>(name){
-   variableTypeM=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362M];
-   variableTypeC=UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362C];
-   UA_TPG362m_init(&measurements);
-   UA_TPG362c_init(&configuration);
-}
+TPG362Controller::TPG362Controller(std::string name): 
+    OpcTemplateController<UA_TPG362m,UA_TPG362c,TPG362>(name,
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362M],
+        UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362C]){
 
+}
 
 
 void TPG362Controller::init(UA_Server *server){
