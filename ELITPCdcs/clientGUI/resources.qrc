@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>res/hv_gui_pic.png</file>
+        <file>res/dcs_64x64_bw.png</file>
+    </qresource>
+</RCC>

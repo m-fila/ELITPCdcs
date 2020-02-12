@@ -1,0 +1,33 @@
+{
+    "address":"192.168.168.2",
+    "port":"6669",
+    "devices":[
+        {   "id":"LV1",
+            "type":"HMP2020",
+            "address":"192.168.168.20",
+            "port":"5025"
+        },
+        {
+            "id":"LV2",
+            "type":"HMP4040"
+        },
+        {
+            "id":"HV1",
+            "type":"DT1415ET",
+            "address":"192.168.168.40",
+            "port":"1470"
+        },
+        {
+            "id":"PM1",
+            "type":"TPG362",
+            "address":"192.168.168.40",
+            "port":"8000"
+        },
+        {
+            "id":"Weather",
+            "type":"PiWeather",
+            "address":"192.168.168.55",
+            "port":"2244"
+        }
+    ]
+}

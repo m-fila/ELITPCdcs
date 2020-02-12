@@ -1,8 +1,8 @@
-# ELITPC DCS
+# ![ELITPCS dcs](docs/img/dcs_logo.png "ELITPC dcs")
 
 Detector Control System for ELITPC detector using OPC UA protocol.
 Provides server, operational gui client and database client. Server is
-compatible with other clients such as UAExpert by Unified Automation.
+compatible with other clients such as UaExpert by Unified Automation.
 
 ## Getting Started
 
@@ -10,7 +10,7 @@ compatible with other clients such as UAExpert by Unified Automation.
 C++11 compiler and cmake>3.1
 
 This project requires open62541 (open source C implementation of OPC UA)
-build with enabled methodcalls, subscriptions (enabled by default) and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation:
+build with enabled methodcalls, subscriptions (enabled by default) and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation (in that case you should also edit env.sh with same path):
 ```
 git clone https://github.com/open62541/open62541
 mkdir open62541/build && cd open62541/build
@@ -19,18 +19,19 @@ cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=RelWit
 make
 sudo make install
 ```
-Furthermore database and GUI clients requires respectively sqlite3 and Qt5 :
+Furthermore the GUI clients requires Qt5 :
 ```
-sudo apt-get install libsqlite3-dev
 sudo apt-get install qt5-default
 ```
 ### Building
 ```
+. env.sh
 mkdir build && cd build
 cmake ..
 ```
 
-`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project. In case of custom installation path  line `set(CMAKE_PREFIX_PATH /opt/soft/open62541)` in `dcs/CMakeLists.txt` should be edited.
+`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
+Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
 
 ## Usage
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
@@ -38,9 +39,9 @@ Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb
 * dcsGui - GUI client. Provides graphic interface for utilies exposed to user by server such as monitoring and manipulating devices.
 * dcsDb - data logger client . Connects to server and loggs states and measurements into local SQLite database.
 
-### Config file
+## Usage
 
-At startup server and clients look for dcs.config file with list of
+At startup server and clients look for dcs.json file with list of
 devices used in experimental setup and address of a server. So far known devices are:
 * HMP2020 - 2 channel lv psu
 * HMP4040 - 4 channel lv psu
@@ -48,33 +49,30 @@ devices used in experimental setup and address of a server. So far known devices
 * TPG362 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
 
-Example line from config file `DEVICETYPE: UNIQUE_ID OPTIONAL_ADDRESS
-OPTIONAL_PORT`:
-```
-HMP2020: HMP2 192.168.168.20 5025
-```
-Exampline line conntaining server address `SERVER: dumy ADDRESS PORT`:
-```
-SERVER: serv1 192.168.168.2 6669
-```
-A path to config file should be given in first argument for server or client application. Otherwise a shared config can be placed at `${HOME}/.config/dcs.config`.
-
+A path to config file should be given in first argument for server or client application. Otherwise a shared config can be placed at `${HOME}/.dcs/dcs.json`.
 You may consider installing `sqlitebrowser` for reading database files:
 ```
 sudo apt-get install sqlitebrowser
 ```
-### Adding new device types
+
+### Adding new devices
+The project is split into two catalogs COREdcs with framework and ELITPCdcs implementing handling specific devices. Ideally you shouldn't have to edit anything in COREdcs.
 #### Server
-`main.cpp` create specific device controller if found in config file
-`hw/*` hardware communication with device
-`opc/*controller`  device specific methods and update routines for
+* `bin/main.cpp` create specific device controller if found in config file
+* `${device}` hardware communication with device
+* `${device}controller`  device specific methods and update routines for
 variables of OPC object
 #### Database client
-`main.cpp` create specific device controller if found in config file
-`*variable` logging specific parameters of variables provided by server
+* `bin/main.cpp` create specific device controller if found in config file
+* `${device}variable` logging specific parameters of variables provided by server
 #### GUI client
-`mainwindow.cpp` create specific device controller if found in config file
-`*controller` slots for calling device specific methods
-`*widget` device specific gui
+* `mainwindow.cpp` create specific device controller if found in config file
+* `${device}controller` slots for calling device specific methods
+* `${device}widget` device specific gui
+### Roadmap
+- [ ] new devices (MKS 946) 
+- [ ] events
+- [ ] historizing
+- [ ] more efficient server side
 ## Authors
 * __Mateusz Fila__ basing on ELITPCdcsPanel by __Marcin Zaremba__
