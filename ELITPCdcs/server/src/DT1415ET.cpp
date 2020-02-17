@@ -64,14 +64,15 @@ std::string DT1415ET::getModuleName()
 std::string DT1415ET::getFirmwareVersion()
 {
     std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDFREL", "");
-    firmwareVersion=extractCommandValue(resp);
-    return firmwareVersion;
+    std::string fwv=extractCommandValue(resp);
+    firmwareVersion=Version(firmwareVersion);
+    return fwv;
 }
 
 void DT1415ET::setFirmwareVersion()
 {
     std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDFREL", "");
-    firmwareVersion=extractCommandValue(resp);
+    firmwareVersion=Version(extractCommandValue(resp));
 }
 
 std::string DT1415ET::getSerialNumber()
@@ -120,7 +121,7 @@ std::string DT1415ET::getCurrentSet(CHANNEL channel)
 std::string DT1415ET::getVoltageMax(CHANNEL channel)
 {
     std::string resp;
-    if(firmwareVersion=="1.10")
+    if(firmwareVersion>="1.10")
         resp = sendDT1415ETcommand(CMD::MON, channel, "SWVMAX", "");
     else
         resp = sendDT1415ETcommand(CMD::MON, channel, "SVMAX", "");
@@ -135,7 +136,7 @@ std::string DT1415ET::getRampUp(CHANNEL channel)
 std::string DT1415ET::getRampDown(CHANNEL channel)
 {   
     std::string resp;
-    if(firmwareVersion=="1.10")
+    if(firmwareVersion>="1.10")
         resp = sendDT1415ETcommand(CMD::MON, channel, "RDWN", "");
     else
         resp = sendDT1415ETcommand(CMD::MON, channel, "RDW", "");
@@ -152,7 +153,7 @@ std::string DT1415ET::getVoltage(CHANNEL channel)
 std::string DT1415ET::getStatus(CHANNEL channel)
 {
     std::string resp;
-    if(firmwareVersion=="1.10")
+    if(firmwareVersion>="1.10")
         resp = sendDT1415ETcommand(CMD::MON, channel, "STATUS", "");
     else
         resp = sendDT1415ETcommand(CMD::MON, channel, "STAT", "");
@@ -208,7 +209,7 @@ void DT1415ET::setVoltageMax(CHANNEL channel, double value)
         std::ostringstream sb;
         sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
         //std::cout << sb.str() << std::endl;
-        if(firmwareVersion=="1.10")
+        if(firmwareVersion>="1.10")
             sendDT1415ETcommand(CMD::SET, channel, "SWVMAX", sb.str());
         else
             sendDT1415ETcommand(CMD::SET, channel, "SVMAX", sb.str());
@@ -232,7 +233,7 @@ void DT1415ET::setRampDown(CHANNEL channel, double value)
         std::ostringstream sb;
         sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
         //std::cout << sb.str() << std::endl;
-        if(firmwareVersion=="1.10")
+        if(firmwareVersion>="1.10")
             sendDT1415ETcommand(CMD::SET, channel, "RDWN", sb.str());
         else 
             sendDT1415ETcommand(CMD::SET, channel, "RDW", sb.str());

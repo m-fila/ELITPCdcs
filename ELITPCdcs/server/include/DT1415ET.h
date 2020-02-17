@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include "GenericDevice.h"
+#include "version.h"
 
 //enum class DT1415ETchannelStatus;
 
@@ -52,7 +53,7 @@ private:
 
     std::string extractCommandStatus(std::string command);
     std::string extractCommandValue(std::string command);
-    std::string firmwareVersion;
+    Version firmwareVersion;
 };
 
 
