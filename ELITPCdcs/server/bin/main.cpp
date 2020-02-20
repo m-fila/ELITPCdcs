@@ -4,6 +4,7 @@
 #include "dt1415controller.h"
 #include "tpg362controller.h"
 #include "piweathercontroller.h"
+#include "mks910controller.h"
 #include <memory>
 #include <fstream>
 #include "configloader.h"
@@ -35,6 +36,9 @@ int main(int argc, char *argv[]){
     }
     else if(type=="PiWeather"){
       controller=std::unique_ptr<PiWeatherController>(new PiWeatherController(id));
+    }
+    else if(type=="MKS910"){
+      controller=std::unique_ptr<MKS910Controller>(new MKS910Controller(id));
     }
     else{
       std::cout<<"CONFIG: Unknown device "<<type<<std::endl;

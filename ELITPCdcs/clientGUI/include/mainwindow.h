@@ -12,6 +12,7 @@
 #include "hvpsuwidget.h"
 #include "piweatherwidget.h"
 #include "tpgwidget.h"
+#include "mks910widget.h"
 
 using json = nlohmann::json;
 

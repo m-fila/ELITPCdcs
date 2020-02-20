@@ -86,6 +86,9 @@ void MainWindow::loadWidgets(json &items){
         else if(type=="PiWeather"){
           new_widget=new PiWeatherWidget(id,address,port);
         }
+        else if(type=="MKS910"){
+          new_widget=new MKS910Widget(id,address,port);
+        }
         else{
            std::cout<<"Unknown device:"<<type<<std::endl;
            continue;

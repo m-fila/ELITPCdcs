@@ -6,8 +6,8 @@ TPG362m_Encoding_DefaultBinary,36204,Object
 TPG362c_Encoding_DefaultBinary,36214,Object
 PiWeatherm_Encoding_DefaultBinary,31404,Object
 PiWeatherc_Encoding_DefaultBinary,31414,Object
-MKS910m_Encoding_DefaultBinary,94004,Object
-MKS910c_Encoding_DefaultBinary,94014,Object
+MKS910m_Encoding_DefaultBinary,9104,Object
+MKS910c_Encoding_DefaultBinary,9114,Object
 HMPm,20201,DataType
 HMPc,20211,DataType
 DT1415m,14151,DataType
@@ -16,5 +16,5 @@ TPG362m,36201,DataType
 TPG362c,36211,DataType
 PiWeatherm,31401,DataType
 PiWeatherc,31411,DataType
-MKS910m,94001,DataType
-MKS910c,94011,DataType
+MKS910m,9101,DataType
+MKS910c,9111,DataType

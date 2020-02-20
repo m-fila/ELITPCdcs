@@ -3,6 +3,7 @@
 #include "dt1415_variable.h"
 #include "tpg362_variable.h"
 #include "piweather_variable.h"
+#include "mks910_variable.h"
 #include "configloader.h"
 #include <fstream>
 #include <iostream>
@@ -31,6 +32,9 @@ int main(int argc, char *argv[]){
         }
         else if(type=="PiWeather"){
             client.addVariable(new PiWeatherVariable(id,"Measurements"));
+        }
+        else if(type=="MKS910"){
+            client.addVariable(new MKS910Variable(id,"Measurements"));
         }
         else{
            std::cout<<"Unknown device:"<<type<<std::endl;
