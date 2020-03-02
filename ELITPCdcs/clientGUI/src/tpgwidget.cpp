@@ -24,6 +24,8 @@ TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,par
 TPGWidget::TPGWidget(std::string name, std::string address, std::string port, QWidget *parent): TPGWidget(name,parent){
     if(address.size()!=0 && port.size()!=0){
         connectionIP->setText(QString::fromStdString(address));
+    }
+    if(port.size()){
         connectionPort->setText(QString::fromStdString(port));
     }
 }

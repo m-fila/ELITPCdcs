@@ -20,8 +20,10 @@ HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name
     connectSignals();
 }
 HVpsuWidget::HVpsuWidget(std::string name, std::string address, std::string port, QWidget *parent): HVpsuWidget(name,parent){
-    if(address.size()!=0 && port.size()!=0){
+    if(address.size()){
         ui->connectionIP->setText(QString::fromStdString(address));
+    }
+    if(port.size()){
         ui->connectionPort->setText(QString::fromStdString(port));
     }
 }

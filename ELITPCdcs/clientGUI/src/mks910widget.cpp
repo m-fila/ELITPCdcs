@@ -22,8 +22,10 @@ MKS910Widget::MKS910Widget(std::string name,QWidget *parent) : AbstractWidget(na
     connectionPort->setText(QSettings().value(Port.c_str()).toString());
 }
 MKS910Widget::MKS910Widget(std::string name, std::string address, std::string port, QWidget *parent): MKS910Widget(name,parent){
-    if(address.size()!=0 && port.size()!=0){
+    if(address.size()){
         connectionIP->setText(QString::fromStdString(address));
+    }
+    if(port.size()){
         connectionPort->setText(QString::fromStdString(port));
     }
 }
