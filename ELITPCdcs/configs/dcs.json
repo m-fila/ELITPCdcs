@@ -1,6 +1,7 @@
 {
     "address":"192.168.168.2",
     "port":"6669",
+    "databasePath":"/home/mfila/dcs/build/dcs.db",
     "devices":[
         {   "id":"LV1",
             "type":"HMP2020",
