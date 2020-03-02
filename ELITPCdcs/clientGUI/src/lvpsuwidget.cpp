@@ -16,8 +16,10 @@ LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent) : AbstractWidget(nam
     connectSignals();
 }
 LVpsuWidget::LVpsuWidget(std::string name, std::string address, std::string port, QWidget *parent): LVpsuWidget(name,parent){
-    if(address.size()!=0 && port.size()!=0){
-        ui->connectionIP->setText(QString::fromStdString(address));
+    if(address.size()){
+        ui->connectionIP->setText(QString::fromStdString(address)); 
+    }
+    if(port.size()){
         ui->connectionPort->setText(QString::fromStdString(port));
     }
 }

@@ -63,10 +63,11 @@ void MainWindow::loadWidgets(json &items){
             address=i.at("address").get<std::string>();
         }
         catch(nlohmann::detail::out_of_range){
+            std::cout<<"missing address"<<std::endl;
             address="";
         }
         try{
-            address=i.at("port").get<std::string>();
+            port=i.at("port").get<std::string>();
         }
         catch(nlohmann::detail::out_of_range){
             port="";
