@@ -123,7 +123,7 @@ UA_DT1415c DT1415Controller::getSettings(){
     std::istringstream iss5(response);
     for(i=0; i<size; ++i)
     {
-        std::getline(iss4, val, ';');
+        std::getline(iss5, val, ';');
         dtc.voltageMax[i] = std::stoi(val.c_str());
     }
 
@@ -212,7 +212,7 @@ UA_StatusCode DT1415Controller::setVoltageMaxCallback(UA_Server *server,
 }
 
 void DT1415Controller::addSetVoltageMaxMethod(UA_Server *server) {
-    addMethod(server,"setvoltagemax",setVoltageCallback,"Sets channel's voltage max",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Maximum voltage","Maximum voltage in V"}},{});
+    addMethod(server,"setvoltagemax",setVoltageMaxCallback,"Sets channel's voltage max",{{UA_TYPES[UA_TYPES_INT16],"Channel","Channel number"},{UA_TYPES[UA_TYPES_DOUBLE],"Maximum voltage","Maximum voltage in V"}},{});
 }
 
 UA_StatusCode DT1415Controller::setRampUpCallback(UA_Server *server,
