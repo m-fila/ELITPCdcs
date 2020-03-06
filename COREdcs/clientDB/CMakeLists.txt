@@ -9,3 +9,5 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${sources})
 
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} open62541::open62541 sqlite3 ${CMAKE_DL_LIBS})
+
+install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME} LIBRARY DESTINATION lib)

@@ -15,5 +15,8 @@ add_executable(dcsServer bin/main.cpp)
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} COREdcs_${SUBMODULE_NAME} ${MODULE_NAME}_nodeset)
 target_link_libraries(dcsServer ${MODULE_NAME}_${SUBMODULE_NAME})
 
+install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME} LIBRARY DESTINATION lib)
+install(TARGETS dcsServer RUNTIME DESTINATION bin)
+
 
 

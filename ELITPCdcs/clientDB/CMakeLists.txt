@@ -15,5 +15,6 @@ add_executable(dcsDB bin/main.cpp)
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} COREdcs_${SUBMODULE_NAME} ${MODULE_NAME}_nodeset)
 target_link_libraries(dcsDB ${MODULE_NAME}_${SUBMODULE_NAME})
 
-
+install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME} LIBRARY DESTINATION lib)
+install(TARGETS dcsDB RUNTIME DESTINATION bin)
 
