@@ -28,13 +28,15 @@ sudo apt-get install qt5-default
 . env.sh
 mkdir build && cd build
 cmake ..
+make
+make install
 ```
 
-`-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
-Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
+CMake flags `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
+`-DCMAKE_INSTALL_PREFIX=your_path` can be used to specify custom installation path.
 
-## Usage
-Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
+
+Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available:
 * dcsServer - provides OPC server and device controllers. Should be run on a computer with access to devices.
 * dcsGui - GUI client. Provides graphic interface for utilies exposed to user by server such as monitoring and manipulating devices.
 * dcsDb - data logger client . Connects to server and loggs states and measurements into local SQLite database.
