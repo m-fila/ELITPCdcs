@@ -32,6 +32,7 @@ cmake ..
 
 `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
+`-DCMAKE_INSTALL_PREFIX=your_path` can be used to specify other installation path.
 
 ## Usage
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available in `build/bin` directory.
