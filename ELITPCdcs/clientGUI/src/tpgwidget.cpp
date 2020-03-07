@@ -61,6 +61,7 @@ void TPGWidget::deviceDisconnect(){
 }
 
 void TPGWidget::updateStatus(void *data){
+    AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){

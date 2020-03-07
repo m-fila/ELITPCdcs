@@ -59,6 +59,7 @@ void LVpsuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_C
 
 
 void LVpsuWidget::updateStatus(void* data){
+    AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
@@ -261,11 +262,14 @@ void LVpsuWidget::setVPressed(){
     QObject* obj = sender();
     bool ok;
     int i;
+    double val;
     if(ui->CH1confVSet==obj){
         i=0;
+        val=ui->CH1volatgeSet->value();
     }
     else if(ui->CH2confVSet==obj){
         i=1;
+        val=ui->CH2voltageSet->value();
     }
     QString label;
     if(customName[i].isEmpty())
@@ -273,7 +277,7 @@ void LVpsuWidget::setVPressed(){
     else
         label = tr("CH %1  \"%2\"  [Volts]:").arg(i+1).arg(customName[i]);
     double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i+1),
-                                          label, 12, 0, 1000, 1, &ok);
+                                          label, val, 0, 20, 1, &ok);
     if(ok){
         LVController->callSetVoltage(i+1,d);
     }
@@ -283,11 +287,14 @@ void LVpsuWidget::setIPressed(){
     QObject* obj = sender();
     bool ok;
     int i;
+    double val;
     if(ui->CH1confISet==obj){
         i=0;
+        val=ui->CH1currentSet->value();
     }
     else if(ui->CH2confISet==obj){
         i=1;
+        val=ui->CH2currentSet->value();
     }
     QString label;
     if(customName[i].isEmpty())
@@ -295,7 +302,7 @@ void LVpsuWidget::setIPressed(){
     else
         label = tr("CH %1  \"%2\"  [Ampers]:").arg(i+1).arg(customName[i]);
     double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i+1),
-                                          label, 2, 0, 1000, 1, &ok);
+                                          label, val, 0, 10, 1, &ok);
     if(ok){
         LVController->callSetCurrent(i+1,d);
     }

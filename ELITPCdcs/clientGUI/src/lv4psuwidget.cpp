@@ -69,6 +69,7 @@ void LV4psuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_
 
 
 void LV4psuWidget::updateStatus(void* data){
+    AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
@@ -336,17 +337,23 @@ void LV4psuWidget::setVPressed(){
     QObject* obj = sender();
     bool ok;
     int i;
+    double val;
     if(ui->CH1confVSet==obj){
         i=0;
+        val=ui->CH1voltageSet->value();
+
     }
     else if(ui->CH2confVSet==obj){
         i=1;
+        val=ui->CH2voltageSet->value();
     }
     else if(ui->CH3confVSet==obj){
         i=2;
+        val=ui->CH3voltageSet->value();
     }
     else if(ui->CH4confVSet==obj){
         i=3;
+        val=ui->CH4voltageSet->value();
     }
     QString label;
     if(customName[i].isEmpty())
@@ -354,7 +361,7 @@ void LV4psuWidget::setVPressed(){
     else
         label = tr("CH %1  \"%2\"  [Volts]:").arg(i+1).arg(customName[i]);
     double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i+1),
-                                          label, 3.6, 0, 1000, 1, &ok);
+                                          label, val, 0, 20, 1, &ok);
     if(ok){
         LVController->callSetVoltage(i+1,d);
     }
@@ -364,17 +371,22 @@ void LV4psuWidget::setIPressed(){
     QObject* obj = sender();
     bool ok;
     int i;
+    double val;
     if(ui->CH1confISet==obj){
         i=0;
+        val=ui->CH1currentSet->value();
     }
     else if(ui->CH2confISet==obj){
         i=1;
+        val=ui->CH2currentSet->value();
     }
         else if(ui->CH3confISet==obj){
         i=2;
+        val=ui->CH3currentSet->value();
     }
         else if(ui->CH4confISet==obj){
         i=3;
+        val=ui->CH4currentSet->value();
     }
     QString label;
     if(customName[i].isEmpty())
@@ -382,7 +394,7 @@ void LV4psuWidget::setIPressed(){
     else
         label = tr("CH %1  \"%2\"  [Ampers]:").arg(i+1).arg(customName[i]);
     double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i+1),
-                                          label, 2, 0, 1000, 1, &ok);
+                                          label, val, 0, 10, 1, &ok);
     if(ok){
         LVController->callSetCurrent(i+1,d);
     }

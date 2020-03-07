@@ -47,6 +47,7 @@ void HVpsuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_C
 }
 
 void HVpsuWidget::updateStatus(void *data){
+    AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){

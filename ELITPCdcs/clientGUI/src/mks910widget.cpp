@@ -61,6 +61,7 @@ void MKS910Widget::deviceDisconnect(){
 }
 
 void MKS910Widget::updateStatus(void *data){
+    AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
