@@ -30,10 +30,10 @@ public slots:
     void deviceConnect();
     void deviceDisconnect();
 
-    void updateStatus(void *data);
+    void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
-    void controllerInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse);
+    void controllerInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse) override;
 
     void allOnPressed();
     void allOffPressed();

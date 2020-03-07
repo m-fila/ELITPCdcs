@@ -42,10 +42,10 @@ public slots:
 
     void deviceConnect();
     void deviceDisconnect();
-    void updateStatus(void* data);
+    void updateStatus(void* data) override;
     void updateMeasurements(void* data);
     void updateConfiguration(void* data);
-    void controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp);
+    void controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp) override;
 
     void setCH1ON();
     void setCH1OFF();

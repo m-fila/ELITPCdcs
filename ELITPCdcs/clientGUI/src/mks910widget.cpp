@@ -1,4 +1,4 @@
-#include "tpgwidget.h"
+#include "mks910widget.h"
 #include <string>
 #include <QSettings>
 #include <QInputDialog>
@@ -7,10 +7,10 @@
 #include <iomanip>
 #include <algorithm>
 
-TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
+MKS910Widget::MKS910Widget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
 {   createLayout();
 //    instanceName = name;
-    controller = new tpg_controller(instanceName);
+    controller = new MKS910_controller(instanceName);
     connectSignals();
     loadConfig();
     setChannelsNames();
@@ -21,8 +21,8 @@ TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,par
     connectionIP->setText(QSettings().value(IP.c_str()).toString());
     connectionPort->setText(QSettings().value(Port.c_str()).toString());
 }
-TPGWidget::TPGWidget(std::string name, std::string address, std::string port, QWidget *parent): TPGWidget(name,parent){
-    if(address.size()!=0 && port.size()!=0){
+MKS910Widget::MKS910Widget(std::string name, std::string address, std::string port, QWidget *parent): MKS910Widget(name,parent){
+    if(address.size()){
         connectionIP->setText(QString::fromStdString(address));
     }
     if(port.size()){
@@ -30,13 +30,13 @@ TPGWidget::TPGWidget(std::string name, std::string address, std::string port, QW
     }
 }
 
-TPGWidget::~TPGWidget()
+MKS910Widget::~MKS910Widget()
 {
     //delete ui;
     delete controller;
 }
 
-void TPGWidget::connectSignals()
+void MKS910Widget::connectSignals()
 {
     connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
     connect(disconnectButton, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
@@ -45,22 +45,22 @@ void TPGWidget::connectSignals()
     connect(controller,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
 
 }
-void TPGWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
+void MKS910Widget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
      controller->opcInit(client,config,resp);
 }
 
-void TPGWidget::deviceConnect()
+void MKS910Widget::deviceConnect()
 {
     std::string IPaddress = connectionIP->text().toStdString();
     int port = connectionPort->text().toInt();
     controller->callConnect(IPaddress,port);
 }
 
-void TPGWidget::deviceDisconnect(){
+void MKS910Widget::deviceDisconnect(){
     controller->callDisconnect();
 }
 
-void TPGWidget::updateStatus(void *data){
+void MKS910Widget::updateStatus(void *data){
     AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
@@ -85,43 +85,47 @@ void TPGWidget::updateStatus(void *data){
         connectionStatus->setPalette(palette);
         connectionIP->setEnabled(true);
         connectionPort->setEnabled(true);
-
-        for(int i=0;i!=2;++i){
-            mVacuum[i]->display(0);
-            mStatus[i]->setText("");
-        }
+        mStatus->setText("");
+           mVacuum->display(0);
     }
 }
-void TPGWidget::updateMeasurements(void *data){
-    UA_TPG362m measurements=*static_cast<UA_TPG362m*>(data);
-    if(measurements.statusSize){
-        QString val;
-        std::string s;
-        for(int i=0;i!=2;++i){
-            std::ostringstream os;
-            os<<std::scientific<<std::setprecision(5)<<std::uppercase<<measurements.vacuum[i];
-            s=os.str();
-            s.insert(s.size()-4," ");
-            s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
-            val=QString::fromStdString(s);
-            mVacuum[i]->display(val);
-            TPG362codes::Status stat=static_cast<TPG362codes::Status>(measurements.status[i]);
-            val=QString::fromStdString(TPG362codes::statusToString.at(stat));
-            mStatus[i]->setText(val);
+void MKS910Widget::updateMeasurements(void *data){
+    if(connectionState){
+    UA_MKS910m measurements=*static_cast<UA_MKS910m*>(data);
+    QString val;
+    std::string s;
+    std::ostringstream os;
+    os<<std::scientific<<std::setprecision(5)<<std::uppercase<<measurements.vacuum;
+    s=os.str();
+    s.insert(s.size()-4," ");
+    s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
+    val=QString::fromStdString(s);
+    mVacuum->display(val);
 
-        }
-    }
+   MKS910codes::Units units=static_cast<MKS910codes::Units>(measurements.units);
+   val=QString::fromStdString(MKS910codes::unitsToString.at(units));
+   mUnitLabel->setText(val);
+   MKS910codes::Status status=static_cast<MKS910codes::Status>(measurements.status);
+   if(status==MKS910codes::Status::O){
+       val=QString::fromStdString("OK");
+   }
+   else{
+       val=QString::fromStdString(MKS910codes::statusToString.at(status)+"fail");
+   }
+   mStatus->setText(val);
+ //   val=QString::fromStdString(MKS910codes::statusToString.at(stat));
+ //   mStatus->setText(val);
+}
+}
+void MKS910Widget::updateConfiguration(void *data){
+
 }
 
-void TPGWidget::updateConfiguration(void *data){
-
-}
-
-void TPGWidget::updateStatusLabel(QString info){
+void MKS910Widget::updateStatusLabel(QString info){
     statusLabel->setText(info);
 }
 
-void TPGWidget::closeEvent(QCloseEvent* e)
+void MKS910Widget::closeEvent(QCloseEvent* e)
 {
     std::string IP(instanceName);
     IP.append("/IP");
@@ -135,8 +139,7 @@ void TPGWidget::closeEvent(QCloseEvent* e)
     QWidget::closeEvent(e);
 }
 
-void TPGWidget::createLayout()
-{
+void MKS910Widget::createLayout(){
     //create main layout with base size
     mainLayout = new QVBoxLayout();
     resize(400,350);
@@ -159,77 +162,73 @@ void TPGWidget::createLayout()
     //set main layout at the end
     setLayout(mainLayout);
 }
-void TPGWidget::createMTab(){
+void MKS910Widget::createMTab(){
     QWidget* mWidget=new QWidget();
     tab->addTab(mWidget,"Measurements");
     QVBoxLayout *mLayout=new QVBoxLayout();
     mWidget->setLayout(mLayout);    
    // mainLayout->addStretch();
-    for(int i=0; i!=2;++i){
-
-        mBox[i]= new QGroupBox(("CH"+std::to_string(i+2)).c_str());
+        mBox= new QGroupBox("Pressure");
         QHBoxLayout* mhLayout= new QHBoxLayout();
         QVBoxLayout* mvLayout= new QVBoxLayout();
-        mBox[i]->setLayout(mvLayout);
+        mBox->setLayout(mvLayout);
         mvLayout->addLayout(mhLayout);
-        mVacuum[i]=new QLCDNumber();
-        mVacuum[i]->setDigitCount(12);
-        mVacuum[i]->setSegmentStyle(QLCDNumber::Flat);
-        mVacuum[i]->setMinimumSize(QSize(200,50));
-        QPalette palette = mVacuum[i]->palette();
+        mVacuum=new QLCDNumber();
+        mVacuum->setDigitCount(12);
+        mVacuum->setSegmentStyle(QLCDNumber::Flat);
+        mVacuum->setMinimumSize(QSize(200,50));
+        QPalette palette = mVacuum->palette();
         palette.setColor(QPalette::WindowText, Qt::darkGreen);
-        mVacuum[i]->setPalette(palette);
-        mVacuum[i]->display(0.00);
-        mStatusLabel[i]=new QLabel("Status: ");
-        mStatusLabel[i]->setAlignment(Qt::AlignLeft);//|Qt::AlignCenter);
-        mStatus[i]=new QLabel(".");
-        mStatus[i]->setAlignment(Qt::AlignLeft);
-        QFont statusFont=mStatus[i]->font();
-       // statusFont.setBold(true);
-        mStatus[i]->setFont(statusFont);
-        QLabel* unit=new QLabel("mbar");
-        unit->setAlignment(Qt::AlignRight);
-        mhLayout->addWidget(mStatusLabel[i]);
-        mhLayout->addWidget(mStatus[i]);
-        mhLayout->addWidget(unit);
+        mVacuum->setPalette(palette);
+        mVacuum->display(0.00);
+        mStatusLabel=new QLabel("Status: ");
+        mStatusLabel->setAlignment(Qt::AlignLeft);//|Qt::AlignCenter);
+        mStatus=new QLabel(".");
+        mStatus->setAlignment(Qt::AlignLeft);
+        QFont statusFont=mStatus->font();
+        statusFont.setBold(true);
+        mStatus->setFont(statusFont);
+        mUnitLabel=new QLabel("mbar");
+        mUnitLabel->setAlignment(Qt::AlignRight);
+        mhLayout->addWidget(mStatusLabel);
+        mhLayout->addWidget(mStatus);
+        mhLayout->addWidget(mUnitLabel);
         QHBoxLayout* mhhLayout= new QHBoxLayout();
         mvLayout->addLayout(mhhLayout);
        // mhhLayout->addStretch();
-        mhhLayout->addWidget(mVacuum[i]);
+        mhhLayout->addWidget(mVacuum);
         
-        mLayout->addWidget(mBox[i]);
+        mLayout->addWidget(mBox);
         mLayout->addStretch();
-    }
     
 }
-void TPGWidget::createCTab(){
+void MKS910Widget::createCTab(){
     QWidget* cWidget=new QWidget();
     tab->addTab(cWidget,"Configuration");
     QVBoxLayout *cLayout=new QVBoxLayout();
     cWidget->setLayout(cLayout); 
-    for(int i=0; i!=2;++i){
-        QGroupBox* cBox= new QGroupBox(("CH "+std::to_string(i+1)).c_str());
+
+        QGroupBox* cBox= new QGroupBox("CH ");
         cLayout->addWidget(cBox);
         QHBoxLayout* chLayout= new QHBoxLayout();
         cBox->setLayout(chLayout);
         QLabel* clabel=new QLabel("Custom name:");
-        cNameLabel[i]=new QLabel("...");
-        cNameButton[i]=new QPushButton("Change name");
-        connect(cNameButton[i], SIGNAL(pressed()), this, SLOT(changeNamePressed()));
+        cNameLabel=new QLabel("...");
+        cNameButton=new QPushButton("Change name");
+        connect(cNameButton, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
         chLayout->addWidget(clabel);
-        chLayout->addWidget(cNameLabel[i]);
-        chLayout->addWidget(cNameButton[i]);
-    }
+        chLayout->addWidget(cNameLabel);
+        chLayout->addWidget(cNameButton);
 
 }
-void TPGWidget::createHTab(){
+void MKS910Widget::createHTab(){
     QWidget* hWidget=new QWidget();
     tab->addTab(hWidget,"Historical");
     QVBoxLayout *hLayout=new QVBoxLayout();
     hWidget->setLayout(hLayout); 
 }
 
-void TPGWidget::drawLine()
+void MKS910Widget::drawLine()
 {
     QFrame *line = new QFrame();
     line->setFrameShape(QFrame::HLine);
@@ -237,7 +236,7 @@ void TPGWidget::drawLine()
     mainLayout->addWidget(line);
 }
 
-void TPGWidget::createConnectionSection()
+void MKS910Widget::createConnectionSection()
 {
     //Connection status
     QLabel *connectionStatusLabel = new QLabel("Connection status: ");
@@ -281,41 +280,41 @@ void TPGWidget::createConnectionSection()
     mainLayout->addLayout(hb2);
 }
 
-void TPGWidget::changeNamePressed()
+void MKS910Widget::changeNamePressed()
 {
     QObject* obj = sender();
     bool ok;
     int i;
     for(i=0; i<2; i++)
     {
-        if(cNameButton[i] == obj)
+        if(cNameButton == obj)
         {
             QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
-                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, cCustomName[i], &ok);
+                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, cCustomName, &ok);
             if(ok)
             {
-                cCustomName[i] = newName;
+                cCustomName = newName;
                 setChannelName(i);
             }
         }
     }
 }
 
-void TPGWidget::setChannelName(int channelno)
+void MKS910Widget::setChannelName(int channelno)
 {
     QString title;
     title = tr("CH %1        ").arg(channelno+1);
-    title.append(cCustomName[channelno]);
-    mBox[channelno]->setTitle(title);
+    title.append(cCustomName);
+    mBox->setTitle(title);
     //set name on CH x tab (... if empty)
-    if(cCustomName[channelno].isEmpty())
-        cNameLabel[channelno]->setText("...");
+    if(cCustomName.isEmpty())
+        cNameLabel->setText("...");
     else
-        cNameLabel[channelno]->setText(cCustomName[channelno]);
+        cNameLabel->setText(cCustomName);
 
 }
 
-void TPGWidget::setChannelsNames()
+void MKS910Widget::setChannelsNames()
 {
     int i;
     for(i=0; i!=2; ++i)
@@ -324,24 +323,24 @@ void TPGWidget::setChannelsNames()
     }
 }
 
-void TPGWidget::loadConfig()
+void MKS910Widget::loadConfig()
 {
     int i;
     QString configkey;
     for(i=0; i!=2; ++i)
     {
-        configkey = tr("TPG362CH%1/CustomName").arg(i);
-        cCustomName[i] = QSettings().value(configkey).toString();
+        configkey = tr("MKS910CH%1/CustomName").arg(i);
+        cCustomName = QSettings().value(configkey).toString();
     }
 }
 
-void TPGWidget::saveConfig()
+void MKS910Widget::saveConfig()
 {
     int i;
     QString configkey;
     for(i=0; i!=2; ++i)
     {
-        configkey = tr("TPG362CH%1/CustomName").arg(i);
-        QSettings().setValue(configkey,cCustomName[i]);
+        configkey = tr("MKS910CH%1/CustomName").arg(i);
+        QSettings().setValue(configkey,cCustomName);
     }
 }

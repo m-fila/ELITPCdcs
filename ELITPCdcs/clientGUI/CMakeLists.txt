@@ -26,3 +26,7 @@ add_executable(dcsGUI bin/main.cpp)
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME}_Qt Qt5::Widgets open62541::open62541 )
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} COREdcs_${SUBMODULE_NAME} ${MODULE_NAME}_nodeset ${MODULE_NAME}_${SUBMODULE_NAME}_Qt)
 target_link_libraries(dcsGUI ${MODULE_NAME}_${SUBMODULE_NAME})
+
+install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME}_Qt LIBRARY DESTINATION lib)
+install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME} LIBRARY DESTINATION lib)
+install(TARGETS dcsGUI RUNTIME DESTINATION bin)

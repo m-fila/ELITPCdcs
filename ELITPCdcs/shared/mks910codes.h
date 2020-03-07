@@ -19,6 +19,22 @@ namespace MKS910codes{
         {"MBAR",Units::MBAR},
         {"TORR",Units::TORR}
     };
+
+    enum class Status{   
+        O,M,Z
+    };
+    static std::map<std::string, Status> statusFromString={
+        {"O",Status::O},
+        {"M",Status::M},
+        {"Z",Status::Z}
+    };
+
+    static std::map<Status, std::string> statusToString={
+        {Status::O,"O"},
+        {Status::M,"M"},
+        {Status::Z,"Z"}
+    };
+    
 }
 #endif // MKS910CODES_H
 

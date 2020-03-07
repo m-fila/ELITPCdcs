@@ -1,5 +1,5 @@
-#ifndef TPGWIDGET_H
-#define TPGWIDGET_H
+#ifndef MKS910WIDGET_H
+#define MKS910WIDGET_H
 
 #include "abstractwidget.h"
 #include <QLabel>
@@ -12,17 +12,17 @@
 #include <QLCDNumber>
 #include <QTabWidget>
 #include <vector>
-#include "tpgcontroller.h"
-#include "tpg362codes.h"
+#include "mks910controller.h"
+#include "mks910codes.h"
 #include "open62541/types_dcsnodeset_generated.h"
-class TPGWidget : public AbstractWidget
+class MKS910Widget : public AbstractWidget
 {
     Q_OBJECT
 
 public:
-    explicit TPGWidget(std::string name, QWidget *parent = 0);
-    explicit TPGWidget(std::string name, std::string address, std::string port, QWidget *parent = 0);
-    ~TPGWidget();
+    explicit MKS910Widget(std::string name, QWidget *parent = 0);
+    explicit MKS910Widget(std::string name, std::string address, std::string port, QWidget *parent = 0);
+    ~MKS910Widget();
 
 public slots:
     void deviceConnect();
@@ -41,7 +41,7 @@ protected:
 
 private:
 //    std::string instanceName;
-    tpg_controller *controller;
+    MKS910_controller *controller;
     bool connectionState;
     //create layout procedures and variables
     QVBoxLayout *mainLayout;
@@ -51,15 +51,15 @@ private:
     QLineEdit *connectionPort;
     QPushButton *connectButton;
     QPushButton *disconnectButton;
-
+    QLabel* mUnitLabel; 
     QTabWidget* tab;
-    QGroupBox* mBox[2];
-    QLCDNumber* mVacuum[2];
-    QLabel* mStatusLabel[2];
-    QLabel* mStatus[2];
-    QPushButton* cNameButton[2];
-    QLabel*  cNameLabel[2];
-    QString cCustomName[2];
+    QGroupBox* mBox;
+    QLCDNumber* mVacuum;
+    QLabel* mStatusLabel;
+    QLabel* mStatus;
+    QPushButton* cNameButton;
+    QLabel*  cNameLabel;
+    QString cCustomName;
 
     void createLayout();
     void drawLine();
@@ -74,4 +74,4 @@ private:
     void saveConfig();
 };
 
-#endif // TPGWIDGET_H
+#endif // MKS910WIDGET_H

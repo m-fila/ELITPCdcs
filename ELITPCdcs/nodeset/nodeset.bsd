@@ -77,10 +77,11 @@
     <opc:Field Name="vacuum" TypeName="opc:Double" />
     <opc:Field Name="temperature" TypeName="opc:Double" />
     <opc:Field Name="status" TypeName="opc:UInt32" />
+    <opc:Field Name="units" TypeName="opc:UInt32" />
   </opc:StructuredType>
 
-    <opc:StructuredType Name="MKS910c" BaseType="ua:ExtensionObject">
-    <opc:Field Name="Units" TypeName="opc:UInt32" />
+  <opc:StructuredType Name="MKS910c" BaseType="ua:ExtensionObject">
+    <opc:Field Name="dummy" TypeName="opc:UInt32" />
   </opc:StructuredType>
 
 </opc:TypeDictionary>

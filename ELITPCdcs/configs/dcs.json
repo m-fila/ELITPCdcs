@@ -1,6 +1,7 @@
 {
     "address":"192.168.168.2",
     "port":"6669",
+    "databasePath":"/home/mfila/dcs/build/dcs.db",
     "devices":[
         {   "id":"LV1",
             "type":"HMP2020",
@@ -9,7 +10,8 @@
         },
         {
             "id":"LV2",
-            "type":"HMP4040"
+            "type":"HMP4040",
+            "port":"5025"
         },
         {
             "id":"HV1",
@@ -28,6 +30,18 @@
             "type":"PiWeather",
             "address":"192.168.168.55",
             "port":"2244"
+        },
+        {
+            "id":"MKS1",
+            "type":"MKS910",
+            "address":"192.168.168.102",
+            "port":"5300"
+        },
+        {
+            "id":"MKS2",
+            "type":"MKS910",
+            "address":"192.168.168.102",
+            "port":"5301"
         }
     ]
 }

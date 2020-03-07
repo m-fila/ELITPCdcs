@@ -47,6 +47,7 @@ void PiWeatherWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,
 
 
 void PiWeatherWidget::updateStatus(void* data){
+    AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
