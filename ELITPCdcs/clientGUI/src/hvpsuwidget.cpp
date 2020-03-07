@@ -200,7 +200,7 @@ void HVpsuWidget::updateConfiguration(void *data){
             tabCHxRUP[i]->setText(val);
             val.sprintf("%3.1lf", channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
-            val.sprintf("%3.1lf", channelStatus.voltageMax[i]);
+            val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
             tabCHxVMAX[i]->setText(val);
             val.sprintf("%3.1lf", channelStatus.currentSet[i]);
             tabCHxIset[i]->setText(val);
