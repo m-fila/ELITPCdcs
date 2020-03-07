@@ -13,8 +13,10 @@ This project requires open62541 (open source C implementation of OPC UA)
 build with enabled methodcalls, subscriptions (enabled by default) and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation (in that case you should also edit env.sh with same path):
 ```
 git clone https://github.com/open62541/open62541
-mkdir open62541/build && cd open62541/build
+cd open62541
+git checkout v1.0.1
 git submodule update --init --recursive
+mkdir build && cd build
 cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/open62541 ..
 make
 sudo make install
