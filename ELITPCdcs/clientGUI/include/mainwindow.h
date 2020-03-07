@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <json.hpp>
+#include "kled.h"
 #include "eli_client_gui.h"
 #include "state.h"
 #include "lvpsuwidget.h"
@@ -36,6 +37,7 @@ private:
     eli_client *client;
     stateMachine* statemachine;
     std::vector<QPushButton*> startButtons;
+    std::vector<KLed*> controlLeds;
     std::vector<AbstractWidget*> deviceWidgets;
     QComboBox *stateBox;
     void loadWidgets(json &items);

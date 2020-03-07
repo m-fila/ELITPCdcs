@@ -94,15 +94,25 @@ void MainWindow::loadWidgets(json &items){
            std::cout<<"Unknown device:"<<type<<std::endl;
            continue;
         }
+        QHBoxLayout* deviceLayout=new QHBoxLayout();
+        ui->verticalLayout->addLayout(deviceLayout);
+        KLed* buttonLed= new KLed();
+        buttonLed->setFixedSize(20,20);
+        buttonLed->off();
+        buttonLed->setColor(Qt::red);
+        controlLeds.push_back(buttonLed);
+        deviceLayout->addWidget(buttonLed);
+
         QPushButton* new_button=new QPushButton(QString::fromStdString("Start "+id));
         connect(new_button,SIGNAL(pressed()),new_widget,SLOT(startup()));
         connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
                 ,new_widget,SLOT(controllerInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
-        ui->verticalLayout->addWidget(new_button);
+        deviceLayout->addWidget(new_button);
         startButtons.push_back(new_button);
         deviceWidgets.push_back(new_widget);
         new_widget->setWindowFlags(Qt::Window);
         new_widget->setWindowTitle((type+" ("+id+")").c_str());
+        new_widget->setExternalLed(buttonLed);
     }
 
 
