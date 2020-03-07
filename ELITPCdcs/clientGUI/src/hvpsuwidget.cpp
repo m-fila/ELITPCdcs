@@ -806,34 +806,10 @@ void HVpsuWidget::createChannelTabs()
         connect(tabCHxSetVMAX[i], SIGNAL(pressed()), this, SLOT(setVMAXPressed()));
         //end setVMAX
         qhbSettings1->addStretch();
-        // begin Iset
-        QLabel *IsetLabel;
-        IsetLabel = new QLabel("Iset [A]:");
-        qhbSettings1->addWidget(IsetLabel);
-        tabCHxIset[i] = new QLabel();
-        tabCHxIset[i]->setFixedWidth(40);
-        QFont fontIset = tabCHxIset[i]->font();
-        //font.setPointSize(72);
-        fontIset.setBold(true);
-        tabCHxIset[i]->setFont(fontMAX);
-        tabCHxIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-        QString valIset;
-        valIset.sprintf("%6.1lf", 0.0);
-        tabCHxIset[i]->setText(valIset);
-        qhbSettings1->addWidget(tabCHxIset[i]);
-        tabCHxIset[i]->setEnabled(true);
-        //end Iset
-        //begin setIset
-        tabCHxSetIset[i] = new QPushButton("Set current");
-       // tabCHxSetIset[i]->setFixedWidth(70);
-        tabCHxSetVMAX[i]->setEnabled(false);
-        qhbSettings1->addWidget(tabCHxSetIset[i]);
-        connect(tabCHxSetIset[i], SIGNAL(pressed()), this, SLOT(setCurrentPressed()));
-        //end setIset
         // begin RUP
         QLabel *RUPLabel;
         RUPLabel = new QLabel("Ramp Up [V/s]:");
-        qhbSettings2->addWidget(RUPLabel);
+        qhbSettings1->addWidget(RUPLabel);
         tabCHxRUP[i] = new QLabel("");
         tabCHxRUP[i]->setFixedWidth(40);
         QFont fontRUP = tabCHxRUP[i]->font();
@@ -844,16 +820,41 @@ void HVpsuWidget::createChannelTabs()
         QString valRUP;
         valRUP.sprintf("%6.1lf", 0.0);
         tabCHxRUP[i]->setText(valRUP);
-        qhbSettings2->addWidget(tabCHxRUP[i]);
+        qhbSettings1->addWidget(tabCHxRUP[i]);
         tabCHxRUP[i]->setEnabled(true);
         //end RUP
         //begin setRUP
         tabCHxSetRUP[i] = new QPushButton("Set RUP");
        // tabCHxSetRUP[i]->setFixedWidth(70);
         tabCHxSetRUP[i]->setEnabled(false);
-        qhbSettings2->addWidget(tabCHxSetRUP[i]);
+        qhbSettings1->addWidget(tabCHxSetRUP[i]);
         connect(tabCHxSetRUP[i], SIGNAL(pressed()), this, SLOT(setRUPPressed()));
         //end setRUP
+        // begin Iset
+        QLabel *IsetLabel;
+        IsetLabel = new QLabel("Iset [A]:\t ");
+        qhbSettings2->addWidget(IsetLabel);
+        tabCHxIset[i] = new QLabel();
+        tabCHxIset[i]->setFixedWidth(40);
+        QFont fontIset = tabCHxIset[i]->font();
+        //font.setPointSize(72);
+        fontIset.setBold(true);
+        tabCHxIset[i]->setFont(fontMAX);
+        tabCHxIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+        QString valIset;
+        valIset.sprintf("%6.1lf", 0.0);
+        tabCHxIset[i]->setText(valIset);
+        qhbSettings2->addWidget(tabCHxIset[i]);
+        tabCHxIset[i]->setEnabled(true);
+        //end Iset
+        //begin setIset
+        tabCHxSetIset[i] = new QPushButton("Set current");
+       // tabCHxSetIset[i]->setFixedWidth(70);
+        tabCHxSetVMAX[i]->setEnabled(false);
+        qhbSettings2->addWidget(tabCHxSetIset[i]);
+        connect(tabCHxSetIset[i], SIGNAL(pressed()), this, SLOT(setCurrentPressed()));
+        //end setIset
+
         qhbSettings2->addStretch();
         // begin RDWN
         QLabel *RDWNLabel;
