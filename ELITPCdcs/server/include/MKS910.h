@@ -1,26 +1,18 @@
 #ifndef MKS910_H
 #define MKS910_H
 
-#include "GenericDevice.h"
+#include "MKS.h"
 #include "mks910codes.h"
 
-class MKS910 : public GenericDevice
+class MKS910 : public MKS
 {
 public:
     MKS910();
-
-    enum class UNIT {mbar, torr, pascal};
-    inline void setDeviceDelay(int d){delay=d;}
-    inline void setDeviceChannel(int ch){channel=ch;}
-
-     std::string sendWithDelayedResponse(std::string command);
-    //device specific commands
 
     //O ok, M Pirani fail, Z Piezo fail
     std::string getStatus();
     //Piezo temperatur +-3 C deg
     std::string getTemp();
-    std::string getUnits();
     std::string getPPirani();
     std::string getPPiezo();
     std::string getPCombined();
@@ -36,12 +28,6 @@ public:
     std::string getUptime();
     // TORR, PASCAL, MBAR
     void setUnits(MKS910codes::Units u);
-    
-    protected:
-    std::string encapsulate(std::string content);
-    std::string extract(std::string content);
-    int delay;
-    int channel;
 };
 
 #endif // MKS910_H
