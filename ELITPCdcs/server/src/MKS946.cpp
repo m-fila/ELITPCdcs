@@ -16,6 +16,59 @@ std::string MKS946::getFlow(CH ch){
     return sendWithDelayedResponse(cmd);
 }
 
+std::string MKS946::getFlowFactor(CH ch){
+    std::string cmd="QSF"+std::to_string(static_cast<int>(ch))+"?";
+    return sendWithDelayedResponse(cmd);
+}
+
+std::string MKS946::getFlowNominalRange(CH ch){
+    std::string cmd="RNG"+std::to_string(static_cast<int>(ch))+"?";
+    return sendWithDelayedResponse(cmd);
+}
+
+void MKS946::zeroMFC(CH ch){
+    std::string cmd="QZ"+std::to_string(static_cast<int>(ch))+"?";
+    sendWithDelayedResponse(cmd);
+}
+
+std::string MKS946::getFlowPoint(CH ch){
+    std::string cmd="QSP"+std::to_string(static_cast<int>(ch))+"?";
+    return sendWithDelayedResponse(cmd);
+}
+
+std::string MKS946::getFlowMode(CH ch){
+    std::string cmd="QMD"+std::to_string(static_cast<int>(ch))+"?";
+    return sendWithDelayedResponse(cmd);
+}
+
+
+std::string MKS946::getActiveRatioRecipe(){
+    std::string cmd="RCP?";
+    return sendWithDelayedResponse(cmd);
+}
+std::string MKS946::getActivePIDRecipe(){
+    std::string cmd="RRCP?";
+    return sendWithDelayedResponse(cmd);
+}
+
+
+
+std::string MKS946::getModuleType(){
+    std::string cmd="MT?";
+    return sendWithDelayedResponse(cmd);
+}
+std::string MKS946::getSensorType(MODULE m){
+    std::string n;
+    switch(m){
+        case MODULE::A : n="A"; break;
+        case MODULE::B : n="B"; break;
+        case MODULE::C : n="C"; break;
+    }
+    std::string cmd="ST"+n;
+    return sendWithDelayedResponse(cmd);
+}
+
+
 
 std::string MKS946::getFirmware(){
     return sendWithDelayedResponse("FV?");
