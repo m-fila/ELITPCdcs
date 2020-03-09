@@ -14,8 +14,6 @@ HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name
     createAllChannelsTab();
     createChannelTabs();
     setChannelsNames();
-    ui->connectionIP->setText(QSettings().value("HVpsu/IP").toString());
-    ui->connectionPort->setText(QSettings().value("HVpsu/Port").toString());
     HVController=new hv_controller(instanceName);
     connectSignals();
 }
@@ -212,15 +210,6 @@ void HVpsuWidget::updateConfiguration(void *data){
         //allTabKill[8]->setEnabled(channelStatus.isRemote);
         isRemote=channelStatus.isRemote;
     }
-}
-
-void HVpsuWidget::closeEvent(QCloseEvent* e)
-{
-    QSettings().setValue("HVpsu/IP",ui->connectionIP->text());
-    QSettings().setValue("HVpsu/Port",ui->connectionPort->text());
-    saveConfig();
-
-    QWidget::closeEvent(e);
 }
 
 void HVpsuWidget::updateStatusLabel(QString info)
@@ -445,23 +434,36 @@ void HVpsuWidget::changeNamePressed()
 
 //create layout procedures
 void HVpsuWidget::loadConfig()
-{
+{   std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    ui->connectionIP->setText(QSettings().value(IP.c_str()).toString());
+    ui->connectionPort->setText(QSettings().value(Port.c_str()).toString());
+
     int i;
     QString configkey;
     for(i=0; i<9; i++)
     {
-        configkey = tr("HVpsuCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         CHxCustomName[i] = QSettings().value(configkey).toString();
     }
 }
 
 void HVpsuWidget::saveConfig()
 {
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    QSettings().setValue(IP.c_str(),ui->connectionIP->text());
+    QSettings().setValue(Port.c_str(),ui->connectionPort->text());
+
     int i;
     QString configkey;
     for(i=0; i<9; i++)
     {
-        configkey = tr("HVpsuCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         QSettings().setValue(configkey,CHxCustomName[i]);
     }
 }

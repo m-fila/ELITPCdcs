@@ -36,9 +36,6 @@ public slots:
     void changeNamePressed();
     void updateStatusLabel(QString info);
 
-protected:
-    void closeEvent(QCloseEvent* e);
-
 private:
 //    std::string instanceName;
     tpg_controller *controller;

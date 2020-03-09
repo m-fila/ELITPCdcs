@@ -10,8 +10,6 @@ PiWeatherWidget::PiWeatherWidget(std::string name, QWidget *parent) : AbstractWi
     ui->setupUi(this);
     loadConfig();
     setChannelsNames();
-    ui->connectionIP->setText(QSettings().value("PiWeatherIP").toString());
-    ui->connectionPort->setText(QSettings().value("PiWeatherPort").toString());
     controller=new piweather_controller(instanceName);
     connectSignals();
 }
@@ -104,27 +102,33 @@ void PiWeatherWidget::deviceDisconnect(){
     controller->callDisconnect();
 }
 
-
-void PiWeatherWidget::closeEvent(QCloseEvent* e)
-{
-    QSettings().setValue("PiWeatherIP",ui->connectionIP->text());
-    QSettings().setValue("PiWeatherPort",ui->connectionPort->text());
-    saveConfig();
-    QWidget::closeEvent(e);
-}
-
 void PiWeatherWidget::loadConfig(){
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    ui->connectionIP->setText(QSettings().value(IP.c_str()).toString());
+    ui->connectionPort->setText(QSettings().value(Port.c_str()).toString());
+
     QString configkey;
     for(int i=0; i!=4;++i){
-        configkey=tr("PiWeatherCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         customName[i]= QSettings().value(configkey).toString();
     }
 }
 
 void PiWeatherWidget::saveConfig(){
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    //save settings
+    QSettings().setValue(IP.c_str(),ui->connectionIP->text());
+    QSettings().setValue(Port.c_str(),ui->connectionPort->text());
+    
     QString configkey;
     for(int i=0; i!=4;++i){
-        configkey=tr("PiWeatherCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         QSettings().setValue(configkey,customName[i]);
     }
 }

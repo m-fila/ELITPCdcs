@@ -46,8 +46,6 @@ public slots:
     void setRDWNPressed();
     void changeNamePressed();
     void updateStatusLabel(QString info);
-protected:
-    void closeEvent(QCloseEvent* e);
 
 private:
     Ui::HVpsuWidget *ui;

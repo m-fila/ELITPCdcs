@@ -14,13 +14,8 @@ MKS910Widget::MKS910Widget(std::string name,QWidget *parent) : AbstractWidget(na
     connectSignals();
     loadConfig();
     setChannelName();
-    std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    connectionIP->setText(QSettings().value(IP.c_str()).toString());
-    connectionPort->setText(QSettings().value(Port.c_str()).toString());
 }
+
 MKS910Widget::MKS910Widget(std::string name, std::string address, std::string port, QWidget *parent): MKS910Widget(name,parent){
     if(address.size()){
         connectionIP->setText(QString::fromStdString(address));
@@ -125,20 +120,6 @@ void MKS910Widget::updateConfiguration(void *data){
 
 void MKS910Widget::updateStatusLabel(QString info){
     statusLabel->setText(info);
-}
-
-void MKS910Widget::closeEvent(QCloseEvent* e)
-{
-    std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    //save settings
-    QSettings().setValue(IP.c_str(),connectionIP->text());
-    QSettings().setValue(Port.c_str(),connectionPort->text());
-
-    saveConfig();
-    QWidget::closeEvent(e);
 }
 
 void MKS910Widget::createLayout(){
@@ -341,13 +322,27 @@ void MKS910Widget::setChannelName()
 
 
 void MKS910Widget::loadConfig()
-{
-    QString configkey= tr((instanceName+"/CustomName").c_str());
+{   std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    connectionIP->setText(QSettings().value(IP.c_str()).toString());
+    connectionPort->setText(QSettings().value(Port.c_str()).toString());
+    
+    QString configkey;
+    configkey.sprintf("%s/CustomName",instanceName.c_str());
     cCustomName = QSettings().value(configkey).toString();
 }
 
 void MKS910Widget::saveConfig()
-{
-    QString configkey = tr((instanceName+"/CustomName").c_str());
-        QSettings().setValue(configkey,cCustomName);
+{   std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    QSettings().setValue(IP.c_str(),connectionIP->text());
+    QSettings().setValue(Port.c_str(),connectionPort->text());
+
+    QString configkey;
+    configkey.sprintf("%s/CustomName",instanceName.c_str());
+    QSettings().setValue(configkey,cCustomName);
 }

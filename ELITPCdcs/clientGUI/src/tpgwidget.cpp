@@ -14,13 +14,8 @@ TPGWidget::TPGWidget(std::string name,QWidget *parent) : AbstractWidget(name,par
     connectSignals();
     loadConfig();
     setChannelsNames();
-    std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    connectionIP->setText(QSettings().value(IP.c_str()).toString());
-    connectionPort->setText(QSettings().value(Port.c_str()).toString());
 }
+
 TPGWidget::TPGWidget(std::string name, std::string address, std::string port, QWidget *parent): TPGWidget(name,parent){
     if(address.size()!=0 && port.size()!=0){
         connectionIP->setText(QString::fromStdString(address));
@@ -119,20 +114,6 @@ void TPGWidget::updateConfiguration(void *data){
 
 void TPGWidget::updateStatusLabel(QString info){
     statusLabel->setText(info);
-}
-
-void TPGWidget::closeEvent(QCloseEvent* e)
-{
-    std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    //save settings
-    QSettings().setValue(IP.c_str(),connectionIP->text());
-    QSettings().setValue(Port.c_str(),connectionPort->text());
-
-    saveConfig();
-    QWidget::closeEvent(e);
 }
 
 void TPGWidget::createLayout()
@@ -326,22 +307,36 @@ void TPGWidget::setChannelsNames()
 
 void TPGWidget::loadConfig()
 {
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    connectionIP->setText(QSettings().value(IP.c_str()).toString());
+    connectionPort->setText(QSettings().value(Port.c_str()).toString());
+    
     int i;
     QString configkey;
     for(i=0; i!=2; ++i)
     {
-        configkey = tr("TPG362CH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         cCustomName[i] = QSettings().value(configkey).toString();
     }
 }
 
 void TPGWidget::saveConfig()
 {
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    QSettings().setValue(IP.c_str(),connectionIP->text());
+    QSettings().setValue(Port.c_str(),connectionPort->text());
+
     int i;
     QString configkey;
     for(i=0; i!=2; ++i)
     {
-        configkey = tr("TPG362CH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         QSettings().setValue(configkey,cCustomName[i]);
     }
 }

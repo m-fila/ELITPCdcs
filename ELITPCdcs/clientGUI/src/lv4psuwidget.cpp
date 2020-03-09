@@ -10,8 +10,6 @@ LV4psuWidget::LV4psuWidget(std::string name, QWidget *parent) : AbstractWidget(n
     ui->setupUi(this);
     loadConfig();
     setChannelsNames();
-    ui->connectionIP->setText(QSettings().value("LVpsuIP").toString());
-    ui->connectionPort->setText(QSettings().value("LVpsuPort").toString());
     LVController=new lv_controller(instanceName);
     connectSignals();
 }
@@ -245,27 +243,32 @@ void LV4psuWidget::setOutputOFF(){
     LVController->callSetOutput(false);
 }
 
-
-void LV4psuWidget::closeEvent(QCloseEvent* e)
-{
-    QSettings().setValue("LVpsuIP",ui->connectionIP->text());
-    QSettings().setValue("LVpsuPort",ui->connectionPort->text());
-    saveConfig();
-    QWidget::closeEvent(e);
-}
-
 void LV4psuWidget::loadConfig(){
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    ui->connectionIP->setText(QSettings().value(IP.c_str()).toString());
+    ui->connectionPort->setText(QSettings().value(Port.c_str()).toString());
+
     QString configkey;
     for(int i=0; i!=4;++i){
-        configkey=tr("LV4psuCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         customName[i]= QSettings().value(configkey).toString();
     }
 }
 
 void LV4psuWidget::saveConfig(){
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    QSettings().setValue(IP.c_str(),ui->connectionIP->text());
+    QSettings().setValue(Port.c_str(),ui->connectionPort->text());
+
     QString configkey;
     for(int i=0; i!=4;++i){
-        configkey=tr("LV4psuCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         QSettings().setValue(configkey,customName[i]);
     }
 }

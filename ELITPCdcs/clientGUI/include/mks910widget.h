@@ -38,8 +38,6 @@ public slots:
     void updateStatusLabel(QString info);
 
     void changeUnits(int u);
-protected:
-    void closeEvent(QCloseEvent* e);
 
 private:
 //    std::string instanceName;
