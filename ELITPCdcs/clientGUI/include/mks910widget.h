@@ -11,6 +11,7 @@
 #include <QFrame>
 #include <QLCDNumber>
 #include <QTabWidget>
+#include <QComboBox>
 #include <vector>
 #include "mks910controller.h"
 #include "mks910codes.h"
@@ -36,6 +37,7 @@ public slots:
     void changeNamePressed();
     void updateStatusLabel(QString info);
 
+    void changeUnits(int u);
 protected:
     void closeEvent(QCloseEvent* e);
 
@@ -57,9 +59,11 @@ private:
     QLCDNumber* mVacuum;
     QLabel* mStatusLabel;
     QLabel* mStatus;
+    QLabel* mTemp;
     QPushButton* cNameButton;
     QLabel*  cNameLabel;
     QString cCustomName;
+    QComboBox* unitsBox;
 
     void createLayout();
     void drawLine();
@@ -67,8 +71,7 @@ private:
     void createMTab();
     void createCTab();
     void createHTab();
-    void setChannelName(int channelno);
-    void setChannelsNames();
+    void setChannelName();
     void connectSignals();
     void loadConfig();
     void saveConfig();
