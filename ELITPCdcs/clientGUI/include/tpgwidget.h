@@ -60,7 +60,6 @@ private:
 
     void createLayout();
     void drawLine();
-    void createConnectionSection();
     void createMTab();
     void createCTab();
     void createHTab();

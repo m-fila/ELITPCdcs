@@ -46,11 +46,7 @@ private:
     //create layout procedures and variables
     QVBoxLayout *mainLayout;
     QLabel *statusLabel;
-    QLabel *connectionStatus;
-    QLineEdit *connectionIP;
-    QLineEdit *connectionPort;
-    QPushButton *connectButton;
-    QPushButton *disconnectButton;
+    
     QLabel* mUnitLabel; 
     QTabWidget* tab;
     QGroupBox* mBox;

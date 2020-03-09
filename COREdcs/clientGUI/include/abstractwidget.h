@@ -2,28 +2,23 @@
 #define ABSTRACTWIDGET_H
 
 #include <QWidget>
+#include <QSettings>
 #include <string>
-#include "kled.h"
-#include "opc_controller.h"
+#include "basewidget.h"
+#include "TCPWidget.h"
 
 class KLed;
-class AbstractWidget : public QWidget
+class AbstractWidget : public BaseWidget
 {
     Q_OBJECT
 public:
-    explicit AbstractWidget(std::string,QWidget *parent=0);
-    inline void setExternalLed(KLed* led){externalLed=led;}
+    explicit AbstractWidget(std::string,bool horizontalTpcPanel =false, QWidget *parent=0);
 protected:
-    const std::string instanceName;
-    KLed *externalLed;
+    TCPWidget *tcp;
     virtual void saveConfig();
     virtual void loadConfig();
-    virtual void closeEvent(QCloseEvent* e);
-signals:
-
+    virtual void connectSignals();
 public slots:
-    virtual void startup();
-    virtual void controllerInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)=0;
     virtual void updateStatus(void *data);
 
 };

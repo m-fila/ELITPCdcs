@@ -7,9 +7,10 @@
 #include <QInputDialog>
 #include <QGridLayout>
 #include "dialogs.h"
-HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name,parent), ui(new Ui::HVpsuWidget)
+HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name,true,parent), ui(new Ui::HVpsuWidget)
 {
     ui->setupUi(this);
+    ui->tcpLayout->addWidget(tcp);
     loadConfig();   //need to be called first because create functions use some settings!
     createAllChannelsTab();
     createChannelTabs();
@@ -19,10 +20,10 @@ HVpsuWidget::HVpsuWidget(std::string name,QWidget *parent) : AbstractWidget(name
 }
 HVpsuWidget::HVpsuWidget(std::string name, std::string address, std::string port, QWidget *parent): HVpsuWidget(name,parent){
     if(address.size()){
-        ui->connectionIP->setText(QString::fromStdString(address));
+        tcp->setIP(address);
     }
     if(port.size()){
-        ui->connectionPort->setText(QString::fromStdString(port));
+        tcp->setPort(port);
     }
 }
 
@@ -34,8 +35,7 @@ HVpsuWidget::~HVpsuWidget()
 }
 
 void HVpsuWidget::connectSignals(){
-    connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
+    AbstractWidget::connectSignals();
     connect(HVController,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
     connect(HVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(HVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
@@ -49,14 +49,6 @@ void HVpsuWidget::updateStatus(void *data){
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
-        ui->connect->setEnabled(false);
-        ui->disconnect->setEnabled(true);
-        ui->connectionStatus->setText("CONNECTED");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::darkGreen);
-        ui->connectionStatus->setPalette(palette);
-        ui->connectionIP->setEnabled(false);
-        ui->connectionPort->setEnabled(false);
         for(int i=0; i<8; i++){
             allTabOn[i]->setEnabled(enabled[i]);
             allTabOff[i]->setEnabled(enabled[i]);
@@ -95,16 +87,6 @@ void HVpsuWidget::updateStatus(void *data){
         allOff->setEnabled(isRemote);
     }
     else{
-        ui->connect->setEnabled(true);
-        ui->disconnect->setEnabled(false);
-        ui->connectionStatus->setText("DISCONNECTED");
-        ui->statusLabel->setText("...");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::red);
-        ui->connectionStatus->setPalette(palette);
-        ui->connectionIP->setEnabled(true);
-        ui->connectionPort->setEnabled(true);
-
         for(int i=0; i<8; i++){
             allTabOn[i]->setEnabled(false);
             allTabOff[i]->setEnabled(false);
@@ -219,8 +201,8 @@ void HVpsuWidget::updateStatusLabel(QString info)
 
 void HVpsuWidget::deviceConnect()
 {
-    std::string IPaddress = ui->connectionIP->text().toStdString();
-    int port = ui->connectionPort->text().toInt();
+    std::string IPaddress = tcp->getIP();
+    int port = tcp->getPort();
     HVController->callConnect(IPaddress,port);
 }
 
@@ -434,12 +416,7 @@ void HVpsuWidget::changeNamePressed()
 
 //create layout procedures
 void HVpsuWidget::loadConfig()
-{   std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    ui->connectionIP->setText(QSettings().value(IP.c_str()).toString());
-    ui->connectionPort->setText(QSettings().value(Port.c_str()).toString());
+{   AbstractWidget::loadConfig();
 
     int i;
     QString configkey;
@@ -452,12 +429,7 @@ void HVpsuWidget::loadConfig()
 
 void HVpsuWidget::saveConfig()
 {
-    std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    QSettings().setValue(IP.c_str(),ui->connectionIP->text());
-    QSettings().setValue(Port.c_str(),ui->connectionPort->text());
+    AbstractWidget::saveConfig();
 
     int i;
     QString configkey;
@@ -472,15 +444,14 @@ void HVpsuWidget::setChannelName(int channelno)
 {
     QString title;
     if(channelno==8)
-        title = tr("TOTAL        ");
+        title = tr("TOTAL");
     else
         title = tr("CH %1        ").arg(channelno);
 
     title.append(CHxCustomName[channelno]);
-
+    title.append("    ");
     //set name on ALL Channles Tab
     allTabCHx[channelno]->setTitle(title);
-
     //set name on CH x tab (... if empty)
     if(CHxCustomName[channelno].isEmpty())
         tabCHxCustomName[channelno]->setText("...");

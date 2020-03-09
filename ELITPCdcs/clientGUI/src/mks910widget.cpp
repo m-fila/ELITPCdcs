@@ -9,7 +9,6 @@
 
 MKS910Widget::MKS910Widget(std::string name,QWidget *parent) : AbstractWidget(name,parent)
 {   createLayout();
-//    instanceName = name;
     controller = new MKS910_controller(instanceName);
     connectSignals();
     loadConfig();
@@ -18,10 +17,10 @@ MKS910Widget::MKS910Widget(std::string name,QWidget *parent) : AbstractWidget(na
 
 MKS910Widget::MKS910Widget(std::string name, std::string address, std::string port, QWidget *parent): MKS910Widget(name,parent){
     if(address.size()){
-        connectionIP->setText(QString::fromStdString(address));
+        tcp->setIP(address);
     }
     if(port.size()){
-        connectionPort->setText(QString::fromStdString(port));
+        tcp->setPort(port);
     }
 }
 
@@ -33,8 +32,7 @@ MKS910Widget::~MKS910Widget()
 
 void MKS910Widget::connectSignals()
 {
-    connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-    connect(disconnectButton, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
+    AbstractWidget::connectSignals();
     connect(controller,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
     connect(controller,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(controller,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
@@ -47,8 +45,8 @@ void MKS910Widget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_
 
 void MKS910Widget::deviceConnect()
 {
-    std::string IPaddress = connectionIP->text().toStdString();
-    int port = connectionPort->text().toInt();
+    std::string IPaddress = tcp->getIP();
+    int port = tcp->getPort();
     controller->callConnect(IPaddress,port);
 }
 
@@ -60,29 +58,6 @@ void MKS910Widget::updateStatus(void *data){
     AbstractWidget::updateStatus(data);
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
-    if(isConnected){
-        connectButton->setEnabled(false);
-        disconnectButton->setEnabled(true);
-        connectionStatus->setText("CONNECTED");
-        QPalette palette = connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::darkGreen);
-        connectionStatus->setPalette(palette);
-        connectionIP->setEnabled(false);
-        connectionPort->setEnabled(false);
-        unitsBox->setEnabled(true);
-    }
-    else{
-        connectButton->setEnabled(true);
-        disconnectButton->setEnabled(false);
-        connectionStatus->setText("DISCONNECTED");
-        statusLabel->setText("...");
-        QPalette palette = connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::red);
-        connectionStatus->setPalette(palette);
-        connectionIP->setEnabled(true);
-        connectionPort->setEnabled(true);
-        unitsBox->setEnabled(false);
-    }
 }
 void MKS910Widget::updateMeasurements(void *data){
     UA_MKS910m measurements=*static_cast<UA_MKS910m*>(data);
@@ -127,10 +102,7 @@ void MKS910Widget::createLayout(){
     mainLayout = new QVBoxLayout();
     resize(400,350);
 
-    createConnectionSection();
-    //drawLine();
-
-    //todo ADD DISPLAY HERE
+    mainLayout->addWidget(tcp);
     tab=new QTabWidget();
     mainLayout->addWidget(tab);
 
@@ -138,11 +110,10 @@ void MKS910Widget::createLayout(){
     createHTab();
     createCTab();
     mainLayout->addStretch();
- //   drawLine();
+
     statusLabel = new QLabel("...");
     mainLayout->addWidget(statusLabel);
 
-    //set main layout at the end
     setLayout(mainLayout);
 }
 void MKS910Widget::createMTab(){
@@ -246,49 +217,6 @@ void MKS910Widget::drawLine()
     mainLayout->addWidget(line);
 }
 
-void MKS910Widget::createConnectionSection()
-{
-    //Connection status
-    QLabel *connectionStatusLabel = new QLabel("Connection status: ");
-    connectionStatus = new QLabel("DISCONNECTED");
-    QPalette palette = connectionStatus->palette();
-    palette.setColor(QPalette::WindowText, Qt::red);
-    connectionStatus->setPalette(palette);
-
-    QHBoxLayout *hb1 = new QHBoxLayout;
-    hb1->addWidget(connectionStatusLabel);
-    hb1->addWidget(connectionStatus);
-    hb1->addStretch();
-
-    mainLayout->addLayout(hb1);
-
-    //Connecion parameters and buttons
-    QVBoxLayout *vbIP = new QVBoxLayout();
-    QLabel *connectionIPLabel = new QLabel("IP:");
-    connectionIP = new QLineEdit();
-    vbIP->addWidget(connectionIPLabel);
-    vbIP->addWidget(connectionIP);
-
-    QVBoxLayout *vbPort = new QVBoxLayout();
-    QLabel *connectionPortLabel = new QLabel("Port:");
-    connectionPort = new QLineEdit();
-    vbPort->addWidget(connectionPortLabel);
-    vbPort->addWidget(connectionPort);
-
-    QVBoxLayout *vbConnect = new QVBoxLayout();
-    connectButton = new QPushButton("Connect");
-    disconnectButton = new QPushButton("Disconnect");
-    disconnectButton->setEnabled(false);
-    vbConnect->addWidget(connectButton);
-    vbConnect->addWidget(disconnectButton);
-
-    QHBoxLayout *hb2 = new QHBoxLayout;
-    hb2->addLayout(vbIP);
-    hb2->addLayout(vbPort);
-    hb2->addLayout(vbConnect);
-
-    mainLayout->addLayout(hb2);
-}
 
 void MKS910Widget::changeUnits(int u){
     if(connectionState){
@@ -322,12 +250,7 @@ void MKS910Widget::setChannelName()
 
 
 void MKS910Widget::loadConfig()
-{   std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    connectionIP->setText(QSettings().value(IP.c_str()).toString());
-    connectionPort->setText(QSettings().value(Port.c_str()).toString());
+{   AbstractWidget::loadConfig();
     
     QString configkey;
     configkey.sprintf("%s/CustomName",instanceName.c_str());
@@ -335,13 +258,7 @@ void MKS910Widget::loadConfig()
 }
 
 void MKS910Widget::saveConfig()
-{   std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    QSettings().setValue(IP.c_str(),connectionIP->text());
-    QSettings().setValue(Port.c_str(),connectionPort->text());
-
+{   AbstractWidget::saveConfig();
     QString configkey;
     configkey.sprintf("%s/CustomName",instanceName.c_str());
     QSettings().setValue(configkey,cCustomName);

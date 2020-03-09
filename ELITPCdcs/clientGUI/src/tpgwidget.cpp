@@ -6,11 +6,10 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
+#include "TCPWidget.h"
 TPGWidget::TPGWidget(std::string name, QWidget *parent)
     : AbstractWidget(name, parent) {
   createLayout();
-  //    instanceName = name;
   controller = new tpg_controller(instanceName);
   connectSignals();
   loadConfig();
@@ -21,19 +20,17 @@ TPGWidget::TPGWidget(std::string name, std::string address, std::string port,
                      QWidget *parent)
     : TPGWidget(name, parent) {
   if (address.size() != 0 && port.size() != 0) {
-    connectionIP->setText(QString::fromStdString(address));
+    tcp->setIP(address);
   }
   if (port.size()) {
-    connectionPort->setText(QString::fromStdString(port));
+    tcp->setPort(port);
   }
 }
 
 TPGWidget::~TPGWidget() { delete controller; }
 
 void TPGWidget::connectSignals() {
-  connect(connectButton, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-  connect(disconnectButton, SIGNAL(clicked(bool)), this,
-          SLOT(deviceDisconnect()));
+  AbstractWidget::connectSignals();
   connect(controller, SIGNAL(statusChanged(void *)), this,
           SLOT(updateStatus(void *)));
   connect(controller, SIGNAL(measurementsChanged(void *)), this,
@@ -47,8 +44,8 @@ void TPGWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
 }
 
 void TPGWidget::deviceConnect() {
-  std::string IPaddress = connectionIP->text().toStdString();
-  int port = connectionPort->text().toInt();
+  std::string IPaddress = tcp->getIP();
+  int port = tcp->getPort();
   controller->callConnect(IPaddress, port);
 }
 
@@ -59,25 +56,7 @@ void TPGWidget::updateStatus(void *data) {
   bool isConnected = *static_cast<bool *>(data);
   connectionState = isConnected;
   if (isConnected) {
-    connectButton->setEnabled(false);
-    disconnectButton->setEnabled(true);
-    connectionStatus->setText("CONNECTED");
-    QPalette palette = connectionStatus->palette();
-    palette.setColor(QPalette::WindowText, Qt::darkGreen);
-    connectionStatus->setPalette(palette);
-    connectionIP->setEnabled(false);
-    connectionPort->setEnabled(false);
-
   } else {
-    connectButton->setEnabled(true);
-    disconnectButton->setEnabled(false);
-    connectionStatus->setText("DISCONNECTED");
-    statusLabel->setText("...");
-    QPalette palette = connectionStatus->palette();
-    palette.setColor(QPalette::WindowText, Qt::red);
-    connectionStatus->setPalette(palette);
-    connectionIP->setEnabled(true);
-    connectionPort->setEnabled(true);
 
     for (int i = 0; i != 2; ++i) {
       mVacuum[i]->display(0);
@@ -115,7 +94,7 @@ void TPGWidget::createLayout() {
   mainLayout = new QVBoxLayout();
   resize(400, 350);
 
-  createConnectionSection();
+  mainLayout->addWidget(tcp);
   tab = new QTabWidget();
   mainLayout->addWidget(tab);
 
@@ -147,7 +126,7 @@ void TPGWidget::createMTab() {
     palette.setColor(QPalette::WindowText, Qt::darkGreen);
     mVacuum[i]->setPalette(palette);
     mVacuum[i]->display(0.00);
-    
+
     mStatusLabel[i] = new QLabel("Status: ");
     mStatusLabel[i]->setAlignment(Qt::AlignLeft); 
     mStatus[i] = new QLabel(".");
@@ -202,49 +181,6 @@ void TPGWidget::drawLine() {
   mainLayout->addWidget(line);
 }
 
-void TPGWidget::createConnectionSection() {
-  // Connection status
-  QLabel *connectionStatusLabel = new QLabel("Connection status: ");
-  connectionStatus = new QLabel("DISCONNECTED");
-  QPalette palette = connectionStatus->palette();
-  palette.setColor(QPalette::WindowText, Qt::red);
-  connectionStatus->setPalette(palette);
-
-  QHBoxLayout *hb1 = new QHBoxLayout;
-  hb1->addWidget(connectionStatusLabel);
-  hb1->addWidget(connectionStatus);
-  hb1->addStretch();
-
-  mainLayout->addLayout(hb1);
-
-  // Connecion parameters and buttons
-  QVBoxLayout *vbIP = new QVBoxLayout();
-  QLabel *connectionIPLabel = new QLabel("IP:");
-  connectionIP = new QLineEdit();
-  vbIP->addWidget(connectionIPLabel);
-  vbIP->addWidget(connectionIP);
-
-  QVBoxLayout *vbPort = new QVBoxLayout();
-  QLabel *connectionPortLabel = new QLabel("Port:");
-  connectionPort = new QLineEdit();
-  vbPort->addWidget(connectionPortLabel);
-  vbPort->addWidget(connectionPort);
-
-  QVBoxLayout *vbConnect = new QVBoxLayout();
-  connectButton = new QPushButton("Connect");
-  disconnectButton = new QPushButton("Disconnect");
-  disconnectButton->setEnabled(false);
-  vbConnect->addWidget(connectButton);
-  vbConnect->addWidget(disconnectButton);
-
-  QHBoxLayout *hb2 = new QHBoxLayout;
-  hb2->addLayout(vbIP);
-  hb2->addLayout(vbPort);
-  hb2->addLayout(vbConnect);
-
-  mainLayout->addLayout(hb2);
-}
-
 void TPGWidget::changeNamePressed() {
   QObject *obj = sender();
   bool ok;
@@ -282,13 +218,8 @@ void TPGWidget::setChannelsNames() {
 }
 
 void TPGWidget::loadConfig() {
-  std::string IP(instanceName);
-  IP.append("/IP");
-  std::string Port(instanceName);
-  Port.append("/Port");
-  connectionIP->setText(QSettings().value(IP.c_str()).toString());
-  connectionPort->setText(QSettings().value(Port.c_str()).toString());
-
+    AbstractWidget::loadConfig();
+        std::cout<<"AAAAAAAAAAAAA"<<std::endl;
   int i;
   QString configkey;
   for (i = 0; i != 2; ++i) {
@@ -298,13 +229,7 @@ void TPGWidget::loadConfig() {
 }
 
 void TPGWidget::saveConfig() {
-  std::string IP(instanceName);
-  IP.append("/IP");
-  std::string Port(instanceName);
-  Port.append("/Port");
-  QSettings().setValue(IP.c_str(), connectionIP->text());
-  QSettings().setValue(Port.c_str(), connectionPort->text());
-
+    AbstractWidget::saveConfig();
   int i;
   QString configkey;
   for (i = 0; i != 2; ++i) {

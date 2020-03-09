@@ -8,6 +8,7 @@
 LV4psuWidget::LV4psuWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent), ui(new Ui::LV4psuWidget)
 {
     ui->setupUi(this);
+    ui->tcpLayout->addWidget(tcp);
     loadConfig();
     setChannelsNames();
     LVController=new lv_controller(instanceName);
@@ -15,10 +16,10 @@ LV4psuWidget::LV4psuWidget(std::string name, QWidget *parent) : AbstractWidget(n
 }
 LV4psuWidget::LV4psuWidget(std::string name, std::string address, std::string port, QWidget *parent): LV4psuWidget(name,parent){
     if(address.size()){
-        ui->connectionIP->setText(QString::fromStdString(address));
+        tcp->setIP(address);
     }
     if(port.size()){
-        ui->connectionPort->setText(QString::fromStdString(port));
+        tcp->setPort(port);
     }
 }
 LV4psuWidget::~LV4psuWidget()
@@ -28,8 +29,7 @@ LV4psuWidget::~LV4psuWidget()
 }
 
 void LV4psuWidget::connectSignals(){
-    connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
+    AbstractWidget::connectSignals();
     connect(LVController,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
     connect(LVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(LVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
@@ -71,14 +71,6 @@ void LV4psuWidget::updateStatus(void* data){
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
-        ui->connect->setEnabled(false);
-        ui->disconnect->setEnabled(true);
-        ui->connectionStatus->setText("CONNECTED");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::darkGreen);
-        ui->connectionStatus->setPalette(palette);
-        ui->connectionIP->setEnabled(false);
-        ui->connectionPort->setEnabled(false);
         ui->CH1on->setEnabled(!deviceSettings.CH1);
         ui->CH1off->setEnabled(deviceSettings.CH1);
         ui->CH2on->setEnabled(!deviceSettings.CH2);
@@ -101,17 +93,6 @@ void LV4psuWidget::updateStatus(void* data){
         ui->CH4confISet->setEnabled(true);
     }
     else{
-        ui->connect->setEnabled(true);
-        ui->disconnect->setEnabled(false);
-        ui->connectionStatus->setText("DISCONNECTED");
-     //   ui->statusLabel->setText("...");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::red);
-        ui->connectionStatus->setPalette(palette);
-
-        ui->connectionIP->setEnabled(true);
-        ui->connectionPort->setEnabled(true);
-
         ui->CH1on->setEnabled(false);
         ui->CH1off->setEnabled(false);
         ui->CH2on->setEnabled(false);
@@ -204,8 +185,8 @@ void LV4psuWidget::updateConfiguration(void* data){
 
 void LV4psuWidget::deviceConnect()
 {
-    std::string IPaddress = ui->connectionIP->text().toStdString();
-    int port = ui->connectionPort->text().toInt();
+    std::string IPaddress = tcp->getIP();
+    int port = tcp->getPort();
     LVController->callConnect(IPaddress,port);
 }
 void LV4psuWidget::deviceDisconnect(){
@@ -244,12 +225,7 @@ void LV4psuWidget::setOutputOFF(){
 }
 
 void LV4psuWidget::loadConfig(){
-    std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    ui->connectionIP->setText(QSettings().value(IP.c_str()).toString());
-    ui->connectionPort->setText(QSettings().value(Port.c_str()).toString());
+    AbstractWidget::loadConfig();
 
     QString configkey;
     for(int i=0; i!=4;++i){
@@ -259,12 +235,7 @@ void LV4psuWidget::loadConfig(){
 }
 
 void LV4psuWidget::saveConfig(){
-    std::string IP(instanceName);
-    IP.append("/IP");
-    std::string Port(instanceName);
-    Port.append("/Port");
-    QSettings().setValue(IP.c_str(),ui->connectionIP->text());
-    QSettings().setValue(Port.c_str(),ui->connectionPort->text());
+    AbstractWidget::saveConfig();
 
     QString configkey;
     for(int i=0; i!=4;++i){
