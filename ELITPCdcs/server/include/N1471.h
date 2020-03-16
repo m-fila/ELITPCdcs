@@ -1,11 +1,11 @@
-#ifndef N1417_H
-#define N1417_H
+#ifndef N1471_H
+#define N1471_H
 
 #include <string>
 #include <map>
 #include "GenericDevice.h"
 
-class N1417 : public GenericDevice
+class N1471 : public GenericDevice
 {
 public:
     enum class CMD {MON, SET};
@@ -13,8 +13,8 @@ public:
     enum class STATUS {CMDOK, CMDERR, CHERR, PARERR, VALERR, LOCERR, UNKNOWN};
 
 public:
-    N1417();
-    std::string sendN1417command(CMD command, CHANNEL channel, std::string function, std::string value);
+    N1471();
+    std::string sendN1471command(CMD command, CHANNEL channel, std::string function, std::string value);
 
     std::string getModuleName();
     std::string getFirmwareVersion();
@@ -54,4 +54,4 @@ private:
 
 
 
-#endif // N1417_H
+#endif // N1471_H

@@ -1,15 +1,15 @@
 #ifndef DTCONTROLLER_H
 #define DTCONTROLLER_H
 
-#include "N1417.h"
+#include "N1471.h"
 #include "opc_controller.h"
 #include "open62541/types_dcsnodeset_generated.h"
 #include "open62541/types_dcsnodeset_generated_handling.h"
-class N1417Controller :public OpcTemplateController<UA_DT1415m,UA_DT1415c,N1417>
+class N1471Controller :public OpcTemplateController<UA_DT1415m,UA_DT1415c,N1471>
 {
 public:
-    N1417Controller(std::string name);
-//    ~N1417Controller();
+    N1471Controller(std::string name);
+//    ~N1471Controller();
     void init(UA_Server *server);
     void addSetChannelMethod(UA_Server *server);
     void addSetVoltageMethod(UA_Server *server);

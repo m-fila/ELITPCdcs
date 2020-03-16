@@ -1,9 +1,9 @@
-#ifndef N1417CODES_H
-#define N1417CODES_H
+#ifndef N1471CODES_H
+#define N1471CODES_H
 #include <map>
 #include <string>
 
-namespace N1417codes{
+namespace N1471codes{
     enum class ChannelStatus{
         OFF = 0,
         ON = (1 << 0),
@@ -67,5 +67,5 @@ namespace N1417codes{
     }
 
 }
-#endif // N1417CODES_H
+#endif // N1471CODES_H
 
