@@ -51,6 +51,7 @@ devices used in experimental setup and address of a server. So far known devices
 * HMP4040 - 4 channel lv psu
 * DT1415ET - hv psu
 * TPG362 - vacuum gauge
+* MKS910 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
 
 A path to config file should be given in first argument for server or client application. Otherwise a shared config can be placed at `${HOME}/.dcs/dcs.json`.
