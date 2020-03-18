@@ -1,4 +1,5 @@
 #include "tpgwidget.h"
+#include "TCPWidget.h"
 #include <QInputDialog>
 #include <QSettings>
 #include <algorithm>
@@ -6,7 +7,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "TCPWidget.h"
 TPGWidget::TPGWidget(std::string name, QWidget *parent)
     : AbstractWidget(name, parent) {
   createLayout();
@@ -128,7 +128,7 @@ void TPGWidget::createMTab() {
     mVacuum[i]->display(0.00);
 
     mStatusLabel[i] = new QLabel("Status: ");
-    mStatusLabel[i]->setAlignment(Qt::AlignLeft); 
+    mStatusLabel[i]->setAlignment(Qt::AlignLeft);
     mStatus[i] = new QLabel(".");
     mStatus[i]->setAlignment(Qt::AlignLeft);
     QFont statusFont = mStatus[i]->font();
@@ -218,8 +218,7 @@ void TPGWidget::setChannelsNames() {
 }
 
 void TPGWidget::loadConfig() {
-    AbstractWidget::loadConfig();
-        std::cout<<"AAAAAAAAAAAAA"<<std::endl;
+  AbstractWidget::loadConfig();
   int i;
   QString configkey;
   for (i = 0; i != 2; ++i) {
@@ -229,7 +228,7 @@ void TPGWidget::loadConfig() {
 }
 
 void TPGWidget::saveConfig() {
-    AbstractWidget::saveConfig();
+  AbstractWidget::saveConfig();
   int i;
   QString configkey;
   for (i = 0; i != 2; ++i) {
