@@ -1,5 +1,5 @@
-#ifndef DTCONTROLLER_H
-#define DTCONTROLLER_H
+#ifndef N1471CONTROLLER_H
+#define N1471CONTROLLER_H
 
 #include "N1471.h"
 #include "opc_controller.h"
@@ -62,4 +62,4 @@ private:
 
 
 
-#endif // DTCONTROLLER_H
+#endif // N1471CONTROLLER_H

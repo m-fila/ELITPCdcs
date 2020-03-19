@@ -19,7 +19,7 @@ std::string N1471::sendN1471command(CMD command, CHANNEL channel, std::string fu
 {
     std::stringstream cb;
     //module number 0-31
-    cb<<"$BD:" << moduleAddress<<",";
+    cb<<"$BD:" << std::setfill('0')<<std::setw(2)<< moduleAddress<<",";
     //CMD value SET OR mon
     cb << "$CMD:" << CommandsMap.at(command);
 
@@ -34,10 +34,11 @@ std::string N1471::sendN1471command(CMD command, CHANNEL channel, std::string fu
     if(!value.empty())
         cb << ",VAL:" << value;
 
-    //add \cr\lf at the end
-    cb << "\n";
+    //add \cr at the end
+    cb << "\r";
 
     //send command using opened connection and return response
+    std::cout<<cb.str()<<std::endl;
     return sendWithResponse(cb.str());
 }
 
@@ -48,6 +49,7 @@ std::string N1471::extractCommandStatus(std::string command)
 
 std::string N1471::extractCommandValue(std::string command)
 {
+    std::cout<<command<<std::endl;
     //TODO: extract command status, if error throw exception, if no, extract value
     command.erase(command.length()-1);
     std::size_t pos = command.find("VAL:");
@@ -191,7 +193,7 @@ void N1471::setCurrentSet(CHANNEL channel, double value)
 
 void N1471::setVoltageMax(CHANNEL channel, double value)
 {
-    if(isRemote())
+    if(true)
     {
         std::ostringstream sb;
         sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
