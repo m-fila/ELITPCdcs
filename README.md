@@ -49,7 +49,8 @@ At startup server and clients look for dcs.json file with list of
 devices used in experimental setup and address of a server. So far known devices are:
 * HMP2020 - 2 channel lv psu
 * HMP4040 - 4 channel lv psu
-* DT1415ET - hv psu
+* DT1415ET - 8 channel hv psu
+* N1471 - 4 channel NIM hv psu
 * TPG362 - vacuum gauge
 * MKS910 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
