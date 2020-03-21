@@ -26,6 +26,20 @@
             "port":"5303"
         },
         {
+            "id":"HiVolta",
+            "type":"DT1415ET",
+            "address":"192.168.168.40",
+            "port":"1470",
+            "enabledChannels":6
+        },
+        {
+            "id":"N1471",
+            "type":"N1471",
+            "address":"192.168.168.103",
+            "port":"5303",
+            "enabledChannels":1
+        },
+        {
             "id":"PM1",
             "type":"TPG362",
             "address":"192.168.168.40",

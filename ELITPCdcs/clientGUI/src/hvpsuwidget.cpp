@@ -1,14 +1,12 @@
 #include "hvpsuwidget.h"
 #include "dialogs.h"
-#include "ui_hvpsuwidget.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QSettings>
 #include <QVBoxLayout>
 #include <iostream>
-HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber,
-                         QWidget *parent)
+HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber, QWidget *parent)
     : AbstractWidget(name, true, parent), ui(new Ui::HVpsuWidget),
       channelsNumber(channelsNumber) {
   ui->setupUi(this);
@@ -22,8 +20,7 @@ HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber,
   connectSignals();
 }
 HVpsuWidget::HVpsuWidget(std::string name, std::string address,
-                         std::string port, int channelsNumber,
-                         QWidget *parent)
+                         std::string port, int channelsNumber, QWidget *parent)
     : HVpsuWidget(name, channelsNumber, parent) {
   if (address.size()) {
     tcp->setIP(address);
@@ -131,9 +128,9 @@ void HVpsuWidget::updateMeasurements(void *data) {
   UA_DT1415m measurements = *static_cast<UA_DT1415m *>(data);
   if (measurements.voltageSize) {
     QString val;
-    double totalVoltage=0;
+    double totalVoltage = 0;
     for (int i = 0; i < channelsNumber; i++) {
-      totalVoltage+=measurements.voltage[i];
+      totalVoltage += measurements.voltage[i];
       val.sprintf("%.1lf", measurements.voltage[i]);
       allTabCHvoltage[i]->display(val);
       tabCHxvoltage[i]->display(val);
@@ -150,7 +147,7 @@ void HVpsuWidget::updateConfiguration(void *data) {
   if (channelStatus.statusSize) {
     // bool ON;//, enabled;
     QString val;
-    double totalVoltageSet=0;
+    double totalVoltageSet = 0;
     for (int i = 0; i < channelsNumber; ++i) {
       DT1415ETcodes::ChannelStatus chanStat =
           static_cast<DT1415ETcodes::ChannelStatus>(channelStatus.status[i]);
@@ -185,7 +182,7 @@ void HVpsuWidget::updateConfiguration(void *data) {
       tabCHxOn[i]->setChecked(ON[i] && connectionState);
       tabCHxOff[i]->setChecked((!ON[i]) && connectionState);
 
-      totalVoltageSet+=channelStatus.voltageSet[i];
+      totalVoltageSet += channelStatus.voltageSet[i];
       val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
       allTabVset[i]->setText(val);
       tabCHxVset[i]->setText(val);
@@ -236,9 +233,13 @@ void HVpsuWidget::offPressed() {
   }
 }
 
-void HVpsuWidget::allOnPressed() { HVController->callSetChannel(channelsNumber, true); }
+void HVpsuWidget::allOnPressed() {
+  HVController->callSetChannel(channelsNumber, true);
+}
 
-void HVpsuWidget::allOffPressed() { HVController->callSetChannel(channelsNumber, false); }
+void HVpsuWidget::allOffPressed() {
+  HVController->callSetChannel(channelsNumber, false);
+}
 
 void HVpsuWidget::setVPressed() {
   QObject *obj = sender();
@@ -378,7 +379,7 @@ void HVpsuWidget::changeNamePressed() {
   QObject *obj = sender();
   bool ok;
   int i;
-  for (i = 0; i < channelsNumber+1; i++) {
+  for (i = 0; i < channelsNumber + 1; i++) {
     if (tabCHxChangeName[i] == obj) {
       QString newName = QInputDialog::getText(
           this, tr("Set CH %1 name").arg(i), tr("CH %1 name:").arg(i),
@@ -397,9 +398,9 @@ void HVpsuWidget::loadConfig() {
 
   int i;
   QString configkey;
-  for (i = 0; i < channelsNumber+1; i++) {
+  for (i = 0; i < channelsNumber + 1; i++) {
     configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
-    CHxCustomName[i]=QSettings().value(configkey).toString();
+    CHxCustomName[i] = QSettings().value(configkey).toString();
   }
 }
 
@@ -408,7 +409,7 @@ void HVpsuWidget::saveConfig() {
 
   int i;
   QString configkey;
-  for (i = 0; i < channelsNumber+1; i++) {
+  for (i = 0; i < channelsNumber + 1; i++) {
     configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
     QSettings().setValue(configkey, CHxCustomName[i]);
   }
@@ -434,7 +435,7 @@ void HVpsuWidget::setChannelName(int channelno) {
 
 void HVpsuWidget::setChannelsNames() {
   int i;
-  for (i = 0; i < channelsNumber+1; i++) {
+  for (i = 0; i < channelsNumber + 1; i++) {
     setChannelName(i);
   }
 }
@@ -443,7 +444,7 @@ void HVpsuWidget::createAllChannelsTab() {
   int i;
   // define layout for ALL tab
   QVBoxLayout *allTabLayout = new QVBoxLayout;
-  for (i = 0; i < channelsNumber+1; i++) {
+  for (i = 0; i < channelsNumber + 1; i++) {
     // Generate GroupBoxes
     allTabCHx[i] = new QGroupBox();
 
@@ -581,10 +582,11 @@ void HVpsuWidget::createAllChannelsTab() {
     allTabLayout->addWidget(allTabCHx[i]);
 
     // draw line before total box
-    if (i == channelsNumber-1)
+    if (i == channelsNumber - 1)
       drawLine(allTabLayout);
   }
   // set layout for ALL tab
+  allTabLayout->addStretch();
   ui->AllSettings->setLayout(allTabLayout);
 }
 
@@ -864,12 +866,31 @@ void HVpsuWidget::drawLine(QLayout *layout) {
   line->setFrameShadow(QFrame::Sunken);
   layout->addWidget(line);
 }
-void N1471Widget::updateConfiguration(void* data){
+
+DT1415Widget::DT1415Widget(std::string name, std::string address,
+                           std::string port, int enabledChannels,
+                           QWidget *parent)
+    : HVpsuWidget(name, address, port, enabledChannels, parent) {
+
+      if (enabledChannels<8){
+          ui->HVGUI->setPixmap(
+      QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png")));
+      }
+    }
+
+N1471Widget::N1471Widget(std::string name, std::string address, std::string port,
+                   int enabledChannels, QWidget *parent)
+    : HVpsuWidget(name, address, port, enabledChannels, parent) {
+  ui->HVGUI->setPixmap(
+      QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png")));
+}
+
+void N1471Widget::updateConfiguration(void *data) {
   UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data);
   if (channelStatus.statusSize) {
     // bool ON;//, enabled;
     QString val;
-    double totalVoltageSet=0;
+    double totalVoltageSet = 0;
     for (int i = 0; i < channelsNumber; ++i) {
       N1471codes::ChannelStatus chanStat =
           static_cast<N1471codes::ChannelStatus>(channelStatus.status[i]);
@@ -888,8 +909,8 @@ void N1471Widget::updateConfiguration(void* data){
       allTabOn[i]->setChecked(ON[i] && connectionState);
       allTabOff[i]->setChecked((!ON[i]) && connectionState);
 
-      val = QString::fromStdString(
-          N1471codes::translateChannelStatus(chanStat));
+      val =
+          QString::fromStdString(N1471codes::translateChannelStatus(chanStat));
       tabCHxSTATUS[i]->setText(val);
       tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
       tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
@@ -904,7 +925,7 @@ void N1471Widget::updateConfiguration(void* data){
       tabCHxOn[i]->setChecked(ON[i] && connectionState);
       tabCHxOff[i]->setChecked((!ON[i]) && connectionState);
 
-      totalVoltageSet+=channelStatus.voltageSet[i];
+      totalVoltageSet += channelStatus.voltageSet[i];
       val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
       allTabVset[i]->setText(val);
       tabCHxVset[i]->setText(val);

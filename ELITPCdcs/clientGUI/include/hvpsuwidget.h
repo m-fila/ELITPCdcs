@@ -11,6 +11,7 @@
 #include "abstractwidget.h"
 #include "hvcontroller.h"
 #include "kled.h"
+#include "ui_hvpsuwidget.h"
 #include "dt1415etcodes.h"
 #include "n1471codes.h"
 #include "open62541/types_dcsnodeset_generated.h"
@@ -28,6 +29,7 @@ public:
     explicit HVpsuWidget(std::string name, std::string address, std::string port, int channelsNumber=9, QWidget* parent=0);
     ~HVpsuWidget();
     hv_controller *HVController;
+    Ui::HVpsuWidget *ui;
 public slots:
     void deviceConnect();
     void deviceDisconnect();
@@ -50,7 +52,7 @@ public slots:
     void updateStatusLabel(QString info);
 
 protected:
-    Ui::HVpsuWidget *ui;
+    
     const int channelsNumber;
     std::vector<QString> CHxCustomName=std::vector<QString>(channelsNumber+1);
     //create layout procedures and variables
@@ -107,12 +109,15 @@ protected:
 };
 
 class DT1415Widget: public HVpsuWidget{
+    Q_OBJECT
     public:
-    DT1415Widget(std::string name, std::string address, std::string port, int enabledChannels=8, QWidget* parent=0): HVpsuWidget(name,address,port,enabledChannels,parent){}
+    DT1415Widget(std::string name, std::string address, std::string port, int enabledChannels=8, QWidget* parent=0);
 };
+
 class N1471Widget: public HVpsuWidget{
+    Q_OBJECT
     public:
-    N1471Widget(std::string name, std::string address, std::string port, int enabledChannels=4, QWidget* parent=0): HVpsuWidget(name,address,port,enabledChannels,parent){}
+    N1471Widget(std::string name, std::string address, std::string port, int enabledChannels=4, QWidget* parent=0);
     void updateConfiguration(void* data) final;
 };
 
