@@ -63,7 +63,6 @@ void MainWindow::loadWidgets(json &items){
             address=i.at("address").get<std::string>();
         }
         catch(nlohmann::detail::out_of_range){
-            std::cout<<"missing address"<<std::endl;
             address="";
         }
         try{
@@ -79,7 +78,22 @@ void MainWindow::loadWidgets(json &items){
           new_widget= new LV4psuWidget(id,address,port);
        }
         else if(type=="DT1415ET"){
-          new_widget=new HVpsuWidget(id,address,port);
+            try{
+                int enabledChannels=i.at("enabledChannels").get<int>();
+                new_widget=new DT1415Widget(id,address,port,enabledChannels);
+            }
+            catch(nlohmann::detail::out_of_range){
+                new_widget=new DT1415Widget(id,address,port);
+            }    
+        }
+        else if(type=="N1471"){
+            try{
+                int enabledChannels=i.at("enabledChannels").get<int>();
+                new_widget=new N1471Widget(id,address,port,enabledChannels);
+            }
+            catch(nlohmann::detail::out_of_range){
+                new_widget=new N1471Widget(id,address,port);
+            }    
         }
         else if(type=="TPG362"){
           new_widget=new TPGWidget(id,address,port);

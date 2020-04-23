@@ -1,7 +1,7 @@
 #include "abstractwidget.h"
 
-AbstractWidget::AbstractWidget(std::string name,bool horizontalTpcPanel, QWidget *parent): BaseWidget(name,parent) {
-    tcp=new TCPWidget(horizontalTpcPanel);
+AbstractWidget::AbstractWidget(std::string name,bool horizontalTcpPanel, QWidget *parent): BaseWidget(name,parent) {
+    tcp=new TCPWidget(horizontalTcpPanel);
     loadConfig();
 }
 
