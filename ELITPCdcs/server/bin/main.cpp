@@ -18,38 +18,34 @@ int main(int argc, char *argv[]){
   OpcState state;
   state.init(server.server);
 
-  std::vector<std::unique_ptr<OpcMonitor>> controllers;
   for (auto &i : config.at("devices")){
-    std::unique_ptr<OpcMonitor> controller;
     auto type=i.at("type").get<std::string>();
     auto id=i.at("id").get<std::string>();
     if(type=="HMP2020"){
-      controller=std::unique_ptr<HMP2020Controller>(new HMP2020Controller(id));
+      server.addController<HMP2020Controller>(id);
     }
     else if(type=="HMP4040"){
-      controller=std::unique_ptr<HMP4040Controller>(new HMP4040Controller(id));
+      server.addController<HMP4040Controller>(id);
     }
     else if(type=="DT1415ET"){
-      controller=std::unique_ptr<DT1415Controller>(new DT1415Controller(id));
+      server.addController<DT1415Controller>(id);
     }
     else if(type=="TPG362"){
-      controller=std::unique_ptr<TPG362Controller>(new TPG362Controller(id));
+      server.addController<TPG362Controller>(id);
     }
     else if(type=="PiWeather"){
-      controller=std::unique_ptr<PiWeatherController>(new PiWeatherController(id));
+      server.addController<PiWeatherController>(id);
     }
     else if(type=="MKS910"){
-      controller=std::unique_ptr<MKS910Controller>(new MKS910Controller(id));
+      server.addController<MKS910Controller>(id);
     }
     else if(type=="N1471"){
-      controller=std::unique_ptr<N1471Controller>(new N1471Controller(id));
+      server.addController<N1471Controller>(id);
     }
     else{
       std::cout<<"CONFIG: Unknown device "<<type<<std::endl;
         continue;
     }
-    controller->init(server.server);
-    controllers.push_back(std::move(controller));
   }
 
   server.run();

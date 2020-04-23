@@ -8,7 +8,6 @@ OpcServer::OpcServer(std::string address, std::string port)
 {
     server=UA_Server_new();
     config=UA_Server_getConfig(server);
-    //UA_ServerConfig_setDefault(config);
     UA_ServerConfig_setMinimal(config, std::stoi(port), nullptr);
      UA_String hostname= UA_STRING_ALLOC(address.c_str());
     UA_ServerConfig_setCustomHostname(config,hostname);
@@ -17,6 +16,7 @@ OpcServer::OpcServer(std::string address, std::string port)
 }
 
 OpcServer::~OpcServer(){
+    controllers.clear();
     UA_Server_delete(server);
 }
 
