@@ -28,6 +28,7 @@ protected:
                             std::vector<methodInputOutput> outputs,UA_NodeId *methodNodeId=nullptr);
     const std::string objectName;
     UA_NodeId objectNodeId;
+    void addVariable(std::string variableName, UA_DataType variableType);
 };
 
 #endif // OPC_OBJECT_H

@@ -1,5 +1,5 @@
 #include "GenericDevice.h"
-
+#include <iostream>
 GenericDevice::GenericDevice(): connected(false)
 {
 
@@ -18,6 +18,7 @@ void GenericDevice::setConnectionStream(ConnectionStream* stream)
 
 void GenericDevice::resetConnectionStream()
 {
+    std::cout<<"dis"<<std::endl;
     connectionStream.reset();
     connected = false;
 }
