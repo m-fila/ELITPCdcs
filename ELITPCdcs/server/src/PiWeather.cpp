@@ -1,17 +1,8 @@
 #include "PiWeather.h"
-#include <sstream>
 #include <iostream>
-PiWeather::PiWeather() : GenericDevice(ConnectionType::TCP | ConnectionType::Serial, ConnectionType::TCP)
-{
+#include <sstream>
+PiWeather::PiWeather()
+    : GenericDevice(ConnectionType::TCP | ConnectionType::Serial,
+                    ConnectionType::TCP) {}
 
-}
-
-PiWeather::~PiWeather()
-{
-
-}
-
-std::string PiWeather::getMeasurements()
-{
-    return sendWithResponse("GET");
-}
+std::string PiWeather::getMeasurements() { return sendWithResponse("GET"); }

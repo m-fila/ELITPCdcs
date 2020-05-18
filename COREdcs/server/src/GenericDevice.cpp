@@ -2,7 +2,6 @@
 #include <iostream>
 GenericDevice::GenericDevice(): connected(false)
 {
-
 }
 
 GenericDevice::~GenericDevice()
@@ -18,7 +17,6 @@ void GenericDevice::setConnectionStream(ConnectionStream* stream)
 
 void GenericDevice::resetConnectionStream()
 {
-    std::cout<<"dis"<<std::endl;
     connectionStream.reset();
     connected = false;
 }
@@ -29,6 +27,7 @@ void GenericDevice::sendCommand(std::string command)
     {
         connectionStream->send(command);
     }
+    
 }
 
 std::string GenericDevice::receiveResponse(){
@@ -36,6 +35,9 @@ std::string GenericDevice::receiveResponse(){
     {
         return connectionStream->receive();
     } 
+        else{
+        return "";
+    }
 }
 
 std::string GenericDevice::sendWithResponse(std::string command)
@@ -43,6 +45,9 @@ std::string GenericDevice::sendWithResponse(std::string command)
     if(isConnected())
     {
         return connectionStream->sendWithResponse(command);
+    }
+    else{
+        return "";
     }
 }
 

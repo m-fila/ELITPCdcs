@@ -3,7 +3,7 @@
 #include <condition_variable>
 #include <functional>
 #include <mutex>
-#include <queue>
+#include <deque>
 #include <thread>
 #include <iostream>
 
@@ -15,7 +15,7 @@ public:
   // RAII worker thread ~ 1-thread thread pool
   // To be used as member of Device Controllers
   DCSWorkerThread() {
-    worker = std::thread([this] { workerLoop(); });
+    worker = std::thread([this]() { workerLoop(); });
   }
   ~DCSWorkerThread() {
     {
@@ -25,26 +25,18 @@ public:
     condition.notify_all();
     worker.join();
   }
-  // Pushes jobs to thread queue and immediately wakes thread
-  inline void pushJob(std::function<void()> command) {
-    std::unique_lock<std::mutex> lock(qMutex);
-    buffer.push(command);
-    condition.notify_all();
+ 
+  // thread-safe job scheduling for last position. Addinational arguments are bound to f
+  void push_back(std::function<void()>f) {
+    return pushJob(false,f);
   }
-  // Binds jobs and pushes it to thread queue and immediately wakes thread
-  template <class F, class... Args> void pushJob(F f, Args... args) {
-    std::function<void()> command = std::bind(f, args...);
-    pushJob(command);
+  // thread-safe job scheduling for first position. Addinational arguments are bound to f
+void push_front(std::function<void()>f) {
+    return pushJob(true,f);
   }
 
 private:
-    //thread-safe queue front+pop
-  inline std::function<void()> dequeue() {
-    std::unique_lock<std::mutex> lock(qMutex);
-    auto command = buffer.front();
-    buffer.pop();
-    return command;
-  }
+
   //thread-safe queue size
   inline int size() {
     std::unique_lock<std::mutex> lock(qMutex);
@@ -66,13 +58,23 @@ private:
           return;
         }
         job = buffer.front();
-        buffer.pop();
+        buffer.pop_front();
       }
       job();
       std::cout<< "called from device thread"<<std::endl;
     }
   }
-  std::queue<std::function<void()>> buffer;
+    // Binds jobs and pushes it to thread queue and immediately wakes thread
+void pushJob(bool frontQueue, std::function<void()>f) {
+    std::function<void()> command=f;
+        std::unique_lock<std::mutex> lock(qMutex);
+    if(frontQueue){buffer.push_front(command);}
+    else{
+    buffer.push_back(command);
+    }condition.notify_all();
+  }
+
+  std::deque<std::function<void()>> buffer;
   std::mutex qMutex;
   std::condition_variable condition;
   std::thread worker;

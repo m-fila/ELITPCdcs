@@ -29,17 +29,18 @@ public:
 
   void addMethod(std::string methodName, std::string methodDescription,
             std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
-            const std::function<void(const UA_Variant *, UA_Variant *)> &
-                methodBody);
+            const std::function<void(std::vector<UA_Variant> , UA_Variant *)> &
+                methodBody, void * context=nullptr);
 
 protected:
   DCSObject(UA_Server *server, std::string name);
+  virtual ~DCSObject();
   UA_Server *server;
   const std::string objectName;
   UA_NodeId objectNodeId;
   std::map<const std::string, DCSVariable> variables;
   std::map<UA_NodeId,
-           std::function<void(const UA_Variant *, UA_Variant *)>,NodeIdCmp>
+           std::function<void(std::vector<UA_Variant>, UA_Variant *)>,NodeIdCmp>
       methods;
   static UA_StatusCode
   methodCallback(UA_Server *server, const UA_NodeId *sessionId,

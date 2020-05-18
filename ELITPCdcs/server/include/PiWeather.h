@@ -3,15 +3,12 @@
 
 #include "GenericDevice.h"
 
-class PiWeather : public GenericDevice
-{
+class PiWeather : public GenericDevice {
 public:
-    PiWeather();
-    virtual ~PiWeather();
+  PiWeather();
 
-    //device specific commands
-    std::string getMeasurements();
-
+  // device specific commands
+  std::string getMeasurements();
 };
 
 #endif // PIWEATHER_H

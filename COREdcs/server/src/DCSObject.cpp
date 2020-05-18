@@ -14,6 +14,8 @@ DCSObject::DCSObject(UA_Server *server, std::string name)
   UA_QualifiedName_deleteMembers(&qName);
 }
 
+DCSObject::~DCSObject() { UA_NodeId_deleteMembers(&objectNodeId); }
+
 DCSVariable &DCSObject::addVariable(std::string variableName,
                                     UA_DataType variableType) {
   if (variables.find(variableName) == variables.end()) {
@@ -27,8 +29,9 @@ DCSVariable &DCSObject::addVariable(std::string variableName,
 
 void DCSObject::addMethod(
     std::string methodName, std::string methodDescription,
-    std::vector<methodArgs>inputs, std::vector<methodArgs> outputs,
-    const std::function<void(const UA_Variant *, UA_Variant *)> & methodBody) {
+    std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
+    const std::function<void(std::vector<UA_Variant>, UA_Variant *)> &methodBody,
+    void *context) {
 
   UA_Argument *inputArguments = static_cast<UA_Argument *>(
       UA_Array_new(inputs.size(), &UA_TYPES[UA_TYPES_ARGUMENT]));
@@ -68,7 +71,7 @@ void DCSObject::addMethod(
                           UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                           methodQName, methodAttr, methodCallback,
                           inputs.size(), inputArguments, outputs.size(),
-                          outputArguments, this, &methodNodeId);
+                          outputArguments, context, &methodNodeId);
 
   UA_MethodAttributes_deleteMembers(&methodAttr);
   UA_QualifiedName_deleteMembers(&methodQName);
@@ -76,7 +79,8 @@ void DCSObject::addMethod(
   UA_Array_delete(inputArguments, inputs.size(), &UA_TYPES[UA_TYPES_ARGUMENT]);
   UA_Array_delete(outputArguments, outputs.size(),
                   &UA_TYPES[UA_TYPES_ARGUMENT]);
-
+  //                if(context!=nullptr){
+  // UA_Server_setMethodNodeAsync(server, methodNodeId, UA_TRUE); }
   methods.insert({methodNodeId, methodBody});
 }
 
@@ -87,9 +91,18 @@ UA_StatusCode DCSObject::methodCallback(
     size_t outputSize, UA_Variant *output) {
 
   auto object = static_cast<DCSObject *>(objectContext);
-  // auto methodName=*static_cast<std::string*>(methodContext);
-  // auto method=*static_cast<std::function<void(const UA_Variant*,
-  // UA_Variant*)>*>(methodContext);
-  object->methods.at (*methodId)(input, output);
+std::vector<UA_Variant> inp(inputSize);
+for(size_t i=0;i!=inputSize;++i){
+  UA_Variant_copy(&input[i],&inp[i]);
+}
+
+
+
+  object->methods.at (*methodId)(inp, output);
+
+  // for (size_t i=0;i!=inputSize;++i){
+  //  UA_Variant_deleteMembers(&inp.at(i));
+  //  //inp.at(i)=input[i];
+  //}
   return UA_STATUSCODE_GOOD;
 }

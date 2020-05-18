@@ -92,6 +92,9 @@ UA_StatusCode OpcMonitor::connectDeviceCallback(UA_Server *server,
     OpcMonitor* monitor=static_cast<OpcMonitor*>(methodContext);
     UA_Int32 port = *(UA_Int32*)input[1].data;
     UA_String host = *(UA_String*)input[0].data;
+    if( host.length==0){
+    return UA_STATUSCODE_GOOD;
+    }
     std::string address(reinterpret_cast<char*>(host.data));
     TCPConnectionParameters parameters;
     parameters.IPaddress=address;

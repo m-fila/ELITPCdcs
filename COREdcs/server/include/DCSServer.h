@@ -9,8 +9,12 @@
 #include <signal.h>
 #include <stdexcept>
 #include <string>
+#include "DCSWorkerThread.h"
+
+static DCSWorkerThread dispatcherThread;
 
 class DCSServer {
+
 
 public:
   DCSServer(std::string address, std::string port);
