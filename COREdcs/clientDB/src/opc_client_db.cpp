@@ -41,12 +41,17 @@ void opc_client_db::addSubscription(){
     }
 }
 
-void opc_client_db::stateCallback(UA_Client *client, UA_ClientState clientState){
-    if(clientState==UA_CLIENTSTATE_SESSION) {
-        opc_client_db* context=static_cast<opc_client_db*>(UA_Client_getConfig(client)->clientContext);
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
-        context->addSubscription();
-     }
+void opc_client_db::stateCallback(UA_Client *client,
+                                  UA_SecureChannelState channelState,
+                                  UA_SessionState sessionState,
+                                  UA_StatusCode recoveryStatus) {
+  if (sessionState == UA_SESSIONSTATE_ACTIVATED) {
+    opc_client_db *context = static_cast<opc_client_db *>(
+        UA_Client_getConfig(client)->clientContext);
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
+                "A session with the server is open");
+    context->addSubscription();
+  }
 }
 void opc_client_db::open(std::string dbname){
     dbase.open(dbname.c_str());

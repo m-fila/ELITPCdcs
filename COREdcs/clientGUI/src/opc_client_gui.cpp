@@ -23,15 +23,18 @@ void opc_client::iterate(){
     std::string tcp_address="opc.tcp://"+address+":"+port;
     UA_StatusCode retval = UA_Client_connect(client, tcp_address.c_str());
     if(retval==UA_STATUSCODE_GOOD){
-    UA_Client_run_iterate(client, 1);
+    UA_Client_run_iterate(client, 100);
     }
 }
+
 void opc_client::connectSignals(){
     connect(client_clock,SIGNAL(timeout()),this,SLOT(iterate()));
 }
 
-void opc_client::stateCallback (UA_Client *client, UA_ClientState clientState){
-    if(clientState==UA_CLIENTSTATE_SESSION) {
+void
+opc_client::stateCallback(UA_Client *client, UA_SecureChannelState channelState,
+              UA_SessionState sessionState, UA_StatusCode recoveryStatus){
+    if (sessionState == UA_SESSIONSTATE_ACTIVATED) {
         opc_client* context=static_cast<opc_client*>(UA_Client_getConfig(client)->clientContext);
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
         context->addSubscription();

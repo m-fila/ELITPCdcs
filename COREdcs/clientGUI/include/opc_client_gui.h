@@ -24,7 +24,10 @@ protected:
    // static opc_client* context;
     QTimer* client_clock;
     void connectSignals();
-    static void stateCallback (UA_Client *client, UA_ClientState clientState);
+  static void stateCallback(UA_Client *client,
+                            UA_SecureChannelState channelState,
+                            UA_SessionState sessionState,
+                            UA_StatusCode recoveryStatus);
     void addSubscription(UA_Double interval=500);
 //custom Types:
    void addCustomTypes(UA_DataTypeArray *custom);

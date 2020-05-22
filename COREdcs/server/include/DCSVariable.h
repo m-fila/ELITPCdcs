@@ -86,9 +86,10 @@ protected:
 
   static void timedCallback(UA_Server *server, void *data) {
     auto var = static_cast<DCSVariable *>(data);
-    auto t =
+        auto t =
         UA_DateTime_nowMonotonic() + var->updateInterval_ms * UA_DATETIME_MSEC;
     var->updateCallback();
+
     UA_Server_addTimedCallback(server, timedCallback, var, t, nullptr);
   }
 

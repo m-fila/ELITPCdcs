@@ -2,9 +2,9 @@
 #include <iostream>
 opc_controller::opc_controller(std::string OName, QObject *parent):
     opcQObject(OName, parent),
-    statusVariableName("Status"),
-    measurementsVariableName("Measurements"),
-    configurationVariableName("Configuration"),
+    statusVariableName("status"),
+    measurementsVariableName("measurements"),
+    configurationVariableName("configuration"),
     connectBrowseName("connect"),
     disconnectBrowseName("disconnect")
 {

@@ -122,7 +122,6 @@ private:
   }
 
   bool getConnectionStatus() {
-    std::cout << device.isConnected() << std::endl;
     return device.isConnected();
   }
 };
