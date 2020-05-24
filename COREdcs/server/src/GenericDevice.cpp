@@ -60,4 +60,7 @@ std::string GenericDevice::sendWithDelayedResponse(std::string command,uint dela
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
         return connectionStream->receive();
     }
+    else{
+        return "";
+    }
 }

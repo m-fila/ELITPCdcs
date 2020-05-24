@@ -11,7 +11,7 @@ void OpcTemplateController<M,C,D>::connectDevice(TCPConnectionParameters *cp){
     DeviceCommand<D> command=std::bind(&D::setConnectionStream, _1,stream);
     buffer.push(command);
     }
-    catch(std::runtime_error e){
+    catch(const std::runtime_error& e){
         //TODO: return to method or send event informing of connection fail or success 
         std::cerr<<objectName+" device controller catched: "<<e.what()<<std::endl;
     }
@@ -90,7 +90,7 @@ void OpcTemplateController<M,C,D>::run_thread(){
             try{
                 command(device);
             }
-            catch(runtime_error e ){
+            catch(const std::runtime_error & e ){
                 std::cerr<<objectName+" device controller catched "<<e.what()<<" when running device command"<<std::endl;
                 device.resetConnectionStream();
             }

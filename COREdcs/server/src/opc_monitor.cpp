@@ -3,11 +3,12 @@
 OpcMonitor::OpcMonitor(std::string name,UA_DataType typeM, UA_DataType typeC): 
     OpcObject(name),
     thread_running(false),
+    variableTypeM(typeM),
+    variableTypeC(typeC),
     measurementsVariableName("Measurements"),
     configurationVariableName("Configuration"),
-    statusVariableName("Status"),
-    variableTypeM(typeM),
-    variableTypeC(typeC)
+    statusVariableName("Status")
+
     {
 }
 

@@ -91,11 +91,11 @@
 
   <opc:StructuredType Name="Relay" BaseType="ua:ExtensionObject">
   <opc:Field Name="relayNumber" TypeName="opc:UInt32"/>
-    <opc:Field Name="direction" TypeName="opc:Boolean" LengthField="relayNumber" />
-    <opc:Field Name="setpoint" TypeName="opc:Double" LengthField="relayNumber"/>
-    <opc:Field Name="hysteresis" TypeName="opc:Double" LengthField="relayNumber"/>
-    <opc:Field Name="enabled" TypeName="opc:UInt32" LengthField="relayNumber"/>
-    <opc:Field Name="status" TypeName="opc:Boolean" LengthField="relayNumber"/>
+  <opc:Field Name="direction" TypeName="opc:Boolean" LengthField="relayNumber" />
+  <opc:Field Name="setpoint" TypeName="opc:Double" LengthField="relayNumber"/>
+  <opc:Field Name="hysteresis" TypeName="opc:Double" LengthField="relayNumber"/>
+  <opc:Field Name="enabled" TypeName="opc:UInt32" LengthField="relayNumber"/>
+  <opc:Field Name="status" TypeName="opc:Boolean" LengthField="relayNumber"/>
   </opc:StructuredType>
 
 </opc:TypeDictionary>

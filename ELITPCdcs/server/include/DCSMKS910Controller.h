@@ -10,10 +10,13 @@ class DCSMKS910Controller : public DCSDeviceController<MKS910> {
 
 private:
   DCSMKS910Controller(UA_Server *server, std::string name);
-  void setUnits(std::vector<UA_Variant> input, UA_Variant *output);
 
+  void setUnits(std::vector<UA_Variant> input, UA_Variant *output);
+  void setRelay(std::vector<UA_Variant> input, UA_Variant *output);
+  
   UA_MKS910m getMeasurements();
   UA_MKS910c getConfiguration();
+  UA_Relay getRelay();
 };
 
 #endif // DCS_MKS910_CONTROLLER_H

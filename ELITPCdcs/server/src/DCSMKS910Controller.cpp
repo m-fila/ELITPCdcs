@@ -7,10 +7,12 @@ DCSMKS910Controller::DCSMKS910Controller(UA_Server *server, std::string name)
   auto &c = addVariable("configuration",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS910C]);
   addVariableUpdate(c, 1000, &DCSMKS910Controller::getConfiguration, this);
+
+  auto &r=addVariable("relay", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_RELAY]);
+  addVariableUpdate(r, 1000, &DCSMKS910Controller::getRelay, this);
   addControllerMethod("setunits", "Sets pressure units",
                       {{"Unit", "PASCAL/BAR/TORR", UA_TYPES[UA_TYPES_INT16]}},
                       {}, &DCSMKS910Controller::setUnits, this);
-  addVariable("relay", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_RELAY]);
 }
 
 UA_MKS910m DCSMKS910Controller::getMeasurements() {
@@ -35,4 +37,10 @@ void DCSMKS910Controller::setUnits(std::vector<UA_Variant> input,
                                    UA_Variant *) {
   int unit = *static_cast<UA_Int16 *>(input.at(0).data);
   device.setUnits(static_cast<MKS910codes::Units>(unit));
+}
+
+UA_Relay DCSMKS910Controller::getRelay() {
+  UA_Relay relay;
+  UA_Relay_init(&relay);
+  return relay;
 }

@@ -70,7 +70,7 @@ private:
   int getVal(size_t i) const {
     try {
       return digits.at(i);
-    } catch (std::out_of_range e) {
+    } catch (const std::out_of_range& e) {
       return 0;
     }
   }

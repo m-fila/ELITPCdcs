@@ -113,7 +113,7 @@ private:
     try {
       auto stream = TCPConnector::connect(address, port);
       device.setConnectionStream(stream);
-    } catch (std::runtime_error e) {
+    } catch (const std::runtime_error& e) {
       // TODO: return to method or send event informing of connection fail or
       // success
       std::cerr << objectName + " device controller catched: " << e.what()

@@ -77,7 +77,7 @@ void OpcObject::addMethod(UA_Server *server, std::string methodName, UA_MethodCa
                           std::string methodDescription,std::vector<methodInputOutput> inputs,
                           std::vector<methodInputOutput> outputs,UA_NodeId *methodNodeId){
     UA_Argument *inputArguments=static_cast<UA_Argument*>(UA_Array_new(inputs.size(),&UA_TYPES[UA_TYPES_ARGUMENT]));
-    for (int i=0; i<inputs.size();i++){
+    for (size_t i=0; i<inputs.size();++i){
         UA_Argument_init(&inputArguments[i]);
         inputArguments[i].description = UA_LOCALIZEDTEXT_ALLOC("en-US", inputs.at(i).description.c_str());
         inputArguments[i].name = UA_String_fromChars(inputs.at(i).name.c_str());
@@ -85,7 +85,7 @@ void OpcObject::addMethod(UA_Server *server, std::string methodName, UA_MethodCa
         inputArguments[i].valueRank = UA_VALUERANK_SCALAR;
     }
     UA_Argument *outputArguments=static_cast<UA_Argument*>(UA_Array_new(outputs.size(),&UA_TYPES[UA_TYPES_ARGUMENT]));
-    for (int i=0; i<outputs.size();++i){
+    for (size_t i=0; i<outputs.size();++i){
         UA_Argument_init(&outputArguments[i]);
         outputArguments[i].description = UA_LOCALIZEDTEXT_ALLOC("en-US", outputs.at(i).description.c_str());
         outputArguments[i].name = UA_String_fromChars(outputs.at(i).name.c_str());

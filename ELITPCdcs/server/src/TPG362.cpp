@@ -5,11 +5,16 @@ TPG362::TPG362() : GenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
 
 std::string TPG362::sendWithEnquiry(std::string command) {
   std::string r = sendWithResponse(command + "\r");
-  if (static_cast<int>(r.at(0) == 6)) {
+  auto code=r.at(0);
+  if (code == 6) {
     // 6->ACK
     return sendWithResponse(enq);
-  } else {
+  } else if (code==21){
     // 21->NACK
+    throw std::runtime_error("TPG362 acknowledgement error. Received NACK");
+  }
+  else{
+    throw std::runtime_error("TPG362 acknowledgement error.");
   }
 }
 
