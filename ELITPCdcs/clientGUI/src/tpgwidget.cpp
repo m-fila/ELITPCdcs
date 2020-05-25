@@ -101,6 +101,7 @@ void TPGWidget::createLayout() {
   createMTab();
   createHTab();
   createCTab();
+  createRTab();
   mainLayout->addStretch();
   statusLabel = new QLabel("...");
   mainLayout->addWidget(statusLabel);
@@ -172,6 +173,19 @@ void TPGWidget::createHTab() {
   tab->addTab(hWidget, "Historical");
   QVBoxLayout *hLayout = new QVBoxLayout();
   hWidget->setLayout(hLayout);
+}
+
+void TPGWidget::createRTab() {
+  QWidget *rWidget = new QWidget();
+  tab->addTab(rWidget, "Relay");
+  QVBoxLayout *rLayout = new QVBoxLayout();
+    std::map<int,std::string> enabledLabels={{0,"OFF"},{1,"ON"},{2,"CH 1"},{3,"CH 2"}};
+  rWidget->setLayout(rLayout);
+      for(int i=1; i<=4;++i){
+        auto relayPanel=new DCSRelayWidget(i,RelayDirectionPolicy::Below);
+        relayPanel->setEnabledLabels(enabledLabels);
+        rLayout->addWidget(relayPanel);
+    }
 }
 
 void TPGWidget::drawLine() {

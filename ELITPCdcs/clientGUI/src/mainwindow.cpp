@@ -62,13 +62,13 @@ void MainWindow::loadWidgets(json &items){
         try{
             address=i.at("address").get<std::string>();
         }
-        catch(nlohmann::detail::out_of_range){
+        catch(const nlohmann::detail::out_of_range &){
             address="";
         }
         try{
             port=i.at("port").get<std::string>();
         }
-        catch(nlohmann::detail::out_of_range){
+        catch(const nlohmann::detail::out_of_range &){
             port="";
         }
         if(type=="HMP2020"){
@@ -82,7 +82,7 @@ void MainWindow::loadWidgets(json &items){
                 int enabledChannels=i.at("enabledChannels").get<int>();
                 new_widget=new DT1415Widget(id,address,port,enabledChannels);
             }
-            catch(nlohmann::detail::out_of_range){
+            catch(const nlohmann::detail::out_of_range &){
                 new_widget=new DT1415Widget(id,address,port);
             }    
         }
@@ -91,7 +91,7 @@ void MainWindow::loadWidgets(json &items){
                 int enabledChannels=i.at("enabledChannels").get<int>();
                 new_widget=new N1471Widget(id,address,port,enabledChannels);
             }
-            catch(nlohmann::detail::out_of_range){
+            catch(const nlohmann::detail::out_of_range &){
                 new_widget=new N1471Widget(id,address,port);
             }    
         }

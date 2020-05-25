@@ -12,6 +12,7 @@
 #include <QLCDNumber>
 #include <QTabWidget>
 #include <vector>
+#include "DCSRelayWidget.h"
 #include "tpgcontroller.h"
 #include "tpg362codes.h"
 #include "open62541/types_dcsnodeset_generated.h"
@@ -63,6 +64,7 @@ private:
     void createMTab();
     void createCTab();
     void createHTab();
+    void createRTab();
     void setChannelName(int channelno);
     void setChannelsNames();
     void connectSignals();

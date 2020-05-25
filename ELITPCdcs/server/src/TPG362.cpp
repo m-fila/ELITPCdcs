@@ -31,7 +31,7 @@ std::string TPG362::getGaugesIdentification() { return sendWithEnquiry("TID"); }
 
 std::string TPG362::getUnits() { return sendWithEnquiry("UNI"); }
 
-std::string TPG362::getSwitchingFunctions() { return sendWithEnquiry("SPS"); }
+std::string TPG362::getSwitchingFunctionStatus() { return sendWithEnquiry("SPS"); }
 
 std::string TPG362::getSwitchingFunction(SWITCHING_FUNCTION f) {
   int F = static_cast<int>(f);

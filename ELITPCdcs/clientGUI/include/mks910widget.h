@@ -13,6 +13,7 @@
 #include <QTabWidget>
 #include <QComboBox>
 #include <vector>
+#include "DCSRelayWidget.h"
 #include "mks910controller.h"
 #include "mks910codes.h"
 #include "open62541/types_dcsnodeset_generated.h"
@@ -65,6 +66,7 @@ private:
     void createMTab();
     void createCTab();
     void createHTab();
+    void createRTab();
     void setChannelName();
     void connectSignals();
     void loadConfig();
