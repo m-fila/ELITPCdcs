@@ -121,7 +121,7 @@ void MKS910Widget::createLayout() {
 }
 void MKS910Widget::createMTab() {
   QWidget *mWidget = new QWidget();
-  tab->addTab(mWidget, "Measurements");
+  tab->addTab(mWidget, "Pressure");
   QVBoxLayout *mLayout = new QVBoxLayout();
   mWidget->setLayout(mLayout);
   // mainLayout->addStretch();
@@ -172,7 +172,7 @@ void MKS910Widget::createMTab() {
 }
 void MKS910Widget::createCTab() {
   QWidget *cWidget = new QWidget();
-  tab->addTab(cWidget, "Configuration");
+  tab->addTab(cWidget, "Config");
   QVBoxLayout *cLayout = new QVBoxLayout();
   cWidget->setLayout(cLayout);
 
@@ -204,14 +204,14 @@ void MKS910Widget::createCTab() {
 }
 void MKS910Widget::createHTab() {
   QWidget *hWidget = new QWidget();
-  tab->addTab(hWidget, "Historical");
+  tab->addTab(hWidget, "Plots");
   QVBoxLayout *hLayout = new QVBoxLayout();
   hWidget->setLayout(hLayout);
 }
 
 void MKS910Widget::createRTab() {
   QWidget *rWidget = new QWidget();
-  tab->addTab(rWidget, "Relay");
+  tab->addTab(rWidget, "Interlock");
   QVBoxLayout *rLayout = new QVBoxLayout();
   rWidget->setLayout(rLayout);
   std::map<int,std::string> enabledLabels;

@@ -110,7 +110,7 @@ void TPGWidget::createLayout() {
 
 void TPGWidget::createMTab() {
   QWidget *mWidget = new QWidget();
-  tab->addTab(mWidget, "Measurements");
+  tab->addTab(mWidget, "Pressure");
   QVBoxLayout *mLayout = new QVBoxLayout();
   mWidget->setLayout(mLayout);
   for (int i = 0; i != 2; ++i) {
@@ -151,7 +151,7 @@ void TPGWidget::createMTab() {
 }
 void TPGWidget::createCTab() {
   QWidget *cWidget = new QWidget();
-  tab->addTab(cWidget, "Configuration");
+  tab->addTab(cWidget, "Config");
   QVBoxLayout *cLayout = new QVBoxLayout();
   cWidget->setLayout(cLayout);
   for (int i = 0; i != 2; ++i) {
@@ -170,14 +170,14 @@ void TPGWidget::createCTab() {
 }
 void TPGWidget::createHTab() {
   QWidget *hWidget = new QWidget();
-  tab->addTab(hWidget, "Historical");
+  tab->addTab(hWidget, "Plots");
   QVBoxLayout *hLayout = new QVBoxLayout();
   hWidget->setLayout(hLayout);
 }
 
 void TPGWidget::createRTab() {
   QWidget *rWidget = new QWidget();
-  tab->addTab(rWidget, "Relay");
+  tab->addTab(rWidget, "Interlock");
   QVBoxLayout *rLayout = new QVBoxLayout();
     std::map<int,std::string> enabledLabels={{0,"OFF"},{1,"ON"},{2,"CH 1"},{3,"CH 2"}};
   rWidget->setLayout(rLayout);
