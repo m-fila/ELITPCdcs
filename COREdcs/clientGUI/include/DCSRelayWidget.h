@@ -26,6 +26,7 @@ struct RelayStruct {
   int enabled;
   double setpoint;
   double hysteresis;
+  std::string unit;
 };
 
 class DCSRelayWidget : public QWidget {
@@ -50,6 +51,7 @@ protected:
   QLabel *direction;
   QLabel *enabled;
   QLabel *status;
+  QLabel *units;
   QPushButton *setButton;
   RelayStruct value;
 
@@ -75,6 +77,7 @@ private:
   QDoubleSpinBox hysteresis;
   QDoubleSpinBox setpoint;
   QLabel img;
+  const std::string unit;
 public slots:
   void updateDirection(double = 0.);
   void updateHysteresis(double = 0.);
