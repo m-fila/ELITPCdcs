@@ -3,6 +3,7 @@
 #include "DCSObject.h"
 #include "DCSWorkerThread.h"
 #include "TCPConnector.h"
+#include "DCSUAJson.h"
 
 using namespace std::placeholders;
 
@@ -94,6 +95,14 @@ protected:
                         &DCSDeviceController::disconnectDevice, this);
   }
 
+
+
+  void dumpConfig(std::vector<UA_Variant>, UA_Variant *){
+   auto v=variables.at("configuration").getValueByVariant();
+   std::cout<<UAJson::toString(&v,&UA_TYPES[UA_TYPES_VARIANT])<<std::endl;
+  }
+
+
   Device device;
   DCSWorkerThread deviceThread;
 
@@ -124,6 +133,7 @@ private:
   bool getConnectionStatus() {
     return device.isConnected();
   }
+
 };
 
 #endif // DCS_DEVICE_CONTROLLER_H

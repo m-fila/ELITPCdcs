@@ -11,7 +11,7 @@ add_executable(db db.cpp)
 
 target_link_libraries(test_protocol COREdcs_server ELITPCdcs_server)
 target_link_libraries(DCS COREdcs_server ELITPCdcs_server)
-target_link_libraries(db COREdcs_server ELITPCdcs_server UA_JSON)
+target_link_libraries(db COREdcs_server ELITPCdcs_server)
 
 
 
