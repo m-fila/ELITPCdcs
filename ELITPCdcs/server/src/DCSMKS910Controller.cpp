@@ -68,8 +68,8 @@ UA_Relay DCSMKS910Controller::getRelay() {
   relay.status = static_cast<UA_Boolean *>(
       UA_Array_new(size, &UA_TYPES[UA_TYPES_BOOLEAN]));
 
-  for (size_t i = 0; i < size; ++i) {
-    auto no = static_cast<MKS910::RelayNo>(i);
+  for (size_t i = 1; i< size; ++i) {
+    auto no = static_cast<MKS910::RelayNo>(i+1);
     std::string resp;
     resp = device.getRelayDirection(no);
     relay.direction[i] =
