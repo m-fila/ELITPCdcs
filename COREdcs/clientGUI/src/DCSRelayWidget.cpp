@@ -39,7 +39,7 @@ DCSRelayWidget::DCSRelayWidget(uint nr, RelayDirectionPolicy directionPolicy,
   secondRow->addWidget(hysteresisLabel);
   secondRow->addWidget(hysteresis);
   units=new QLabel("");
-  units->setFixedWidth(30);
+  units->setFixedWidth(40);
   secondRow->addWidget(units);
   setButton = new QPushButton("Set relay", this);
   secondRow->addWidget(setButton);

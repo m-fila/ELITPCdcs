@@ -27,17 +27,13 @@ static std::map<std::string, RelayDirection> relayDirectionFromString = {
 static std::map<RelayDirection, std::string> relayDirectionToString = {
     {RelayDirection::Below, "BELOW"}, {RelayDirection::Above, "ABOVE"}};
 
-enum class RelayEnabled { Off, Diff, Abs };
+enum class RelayEnabled { Off, On };
 
 static std::map<std::string, RelayEnabled> relayEnabledFromString = {
-    {"OFF", RelayEnabled::Off},
-    {"DIFF", RelayEnabled::Diff},
-    {"ABS", RelayEnabled::Abs}};
+    {"OFF", RelayEnabled::Off}, {"ON", RelayEnabled::On}};
 
 static std::map<RelayEnabled, std::string> relayEnabledToString = {
-    {RelayEnabled::Off, "OFF"},
-    {RelayEnabled::Diff, "DIFF"},
-    {RelayEnabled::Abs, "ABS"}};
+    {RelayEnabled::Off, "OFF"}, {RelayEnabled::On, "ON"}};
 
 enum class RelaySet { Clear, Set };
 
@@ -55,5 +51,5 @@ static std::map<std::string, RelayDelay> relayDelayFromString = {
 static std::map<RelayDelay, std::string> relayDelayToString = {
     {RelayDelay::On, "ON"}, {RelayDelay::Off, "OFF"}};
 
-}
+} // namespace MKS910codes
 #endif // MKS910CODES_H
