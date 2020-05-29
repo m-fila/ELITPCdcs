@@ -2,7 +2,7 @@
 
 Detector Control System for ELITPC detector using OPC UA protocol.
 Provides server, operational gui client and database client. Server is
-compatible with other clients such as UaExpert by Unified Automation.
+compatible with other OPC UA clients such as UaExpert by Unified Automation.
 
 ## Getting Started
 
@@ -10,14 +10,14 @@ compatible with other clients such as UaExpert by Unified Automation.
 C++11 compiler and cmake>3.1
 
 This project requires open62541 (open source C implementation of OPC UA)
-build with enabled methodcalls, subscriptions (enabled by default) and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation (in that case you should also edit env.sh with same path):
+build with enabled methodcalls, subscriptions (enabled by default), historizing, multithread-safety and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation (in that case you should also edit env.sh with the same path):
 ```
 git clone https://github.com/open62541/open62541
 cd open62541
-git checkout v1.0.1
+git checkout v1.1-rc1
 git submodule update --init --recursive
 mkdir build && cd build
-cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/open62541 ..
+cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DUA_ENABLE_HISTORIZING=ON -DUA_MULTITHREADING=150 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/open62541 ..
 make
 sudo make install
 ```
@@ -77,6 +77,7 @@ variables of OPC object
 * `${device}widget` device specific gui
 ### Roadmap
 - [ ] new devices (MKS 946) 
+- [ ] interlock support 
 - [ ] events
 - [ ] historizing
 - [ ] more efficient server side
