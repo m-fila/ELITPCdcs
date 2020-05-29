@@ -14,6 +14,13 @@ DT1415ET::~DT1415ET()
 
 }
 
+void DT1415ET::setConnectionStream(ConnectionStream* stream){
+    GenericDevice::setConnectionStream(stream);
+    if(connected){
+        setFirmwareVersion();
+    }
+}
+
 std::string DT1415ET::sendDT1415ETcommand(CMD command, CHANNEL channel, std::string function,std::string value)
 {
     std::stringstream cb;
