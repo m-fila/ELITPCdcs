@@ -23,7 +23,7 @@ void opc_client::iterate(){
     std::string tcp_address="opc.tcp://"+address+":"+port;
     UA_StatusCode retval = UA_Client_connect(client, tcp_address.c_str());
     if(retval==UA_STATUSCODE_GOOD){
-    UA_Client_run_iterate(client, 100);
+    UA_Client_run_iterate(client, 5);
     }
 }
 
