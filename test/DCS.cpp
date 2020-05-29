@@ -6,7 +6,6 @@
 #include "DCSPiWeatherController.h"
 #include "DCSMKS910Controller.h"
 #include "DCSN1471Controller.h"
-#include <fstream>
 #include "configloader.h"
 using json = nlohmann::json;
 int main(int argc, char *argv[]){
