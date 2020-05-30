@@ -7,9 +7,10 @@
 #include "DCSMKS910Controller.h"
 #include "DCSN1471Controller.h"
 #include "configloader.h"
+#include "DCSArt.h"
 using json = nlohmann::json;
 int main(int argc, char *argv[]){
-
+  DCSArt::header();
   json config=ConfigLoader::getMasterConfig(argc,argv);
 
   ELITPCServer server(config.at("address").get<std::string>(),config.at("port").get<std::string>());

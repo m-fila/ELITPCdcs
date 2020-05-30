@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <QStyleFactory>
 #include <signal.h>
-#include <fstream>
+#include "DCSArt.h"
 using json = nlohmann::json;
 void stopHandler(int sig) {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
@@ -13,7 +13,7 @@ void stopHandler(int sig) {
 int main(int argc, char *argv[]){
     signal(SIGINT, stopHandler);
     signal(SIGTERM, stopHandler);
-
+    DCSArt::header();
 
   json config=ConfigLoader::getMasterConfig(argc,argv);
 
