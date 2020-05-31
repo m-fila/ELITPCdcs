@@ -13,8 +13,8 @@ using json = nlohmann::json;
 int main(int argc, char *argv[]){
   std::cout<<DCSArt::ascii<<std::endl;
   json config=ConfigLoader::getMasterConfig(argc,argv);
-
-  ELITPCServer server(config.at("address").get<std::string>(),config.at("port").get<std::string>());
+  
+  ELITPCServer server(config.at("server").at("address").get<std::string>(),config.at("server").at("port").get<std::string>());
   server.addController<DCSState>("");
 
   for (auto &i : config.at("devices")){
