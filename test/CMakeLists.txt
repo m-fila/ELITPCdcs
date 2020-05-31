@@ -5,7 +5,7 @@ include_directories(${CMAKE_BINARY_DIR}/src_generated)
 include_directories(${PROJECT_SOURCE_DIR}/test)
 include_directories(${PROJECT_SOURCE_DIR}/ELITPCdcs/server/include)
 include_directories(${PROJECT_SOURCE_DIR}/ELITPCdcs/shared)
-add_executable(test_protocol n1471protocol.cpp)
+add_executable(test_protocol influx.cpp)
 add_executable(DCS DCS.cpp)
 add_executable(db db.cpp)
 
