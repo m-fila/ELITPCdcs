@@ -1,9 +1,9 @@
 #ifndef DCS_DEVICE_CONTROLLER_H
 #define DCS_DEVICE_CONTROLLER_H
 #include "DCSObject.h"
+#include "DCSUAJson.h"
 #include "DCSWorkerThread.h"
 #include "TCPConnector.h"
-#include "DCSUAJson.h"
 
 using namespace std::placeholders;
 
@@ -53,17 +53,24 @@ public:
 
   template <class T>
   void addVariableUpdate(DCSVariable &variable, uint interval_ms,
-                         T updateMethod, bool threaded = true) {
-    auto callback = [this, &variable, updateMethod]() {
-      if (device.isConnected()) {
+                         T updateMethod, bool threaded = true,
+                         bool deviceProtected = true) {
+    std::function<void()> callback;
+    if (deviceProtected) {
+      callback = [this, &variable, updateMethod]() {
+        if (device.isConnected()) {
+          variable.setValue(updateMethod());
+        } else {
+          void *fallback;
+          UA_init(&fallback, variable.getdataType());
+          variable.setValueByPointer(&fallback);
+        }
+      };
+    } else {
+      callback = [this, &variable, updateMethod]() {
         variable.setValue(updateMethod());
-      } else {
-        void *fallback;
-        UA_init(&fallback, variable.getdataType());
-        variable.setValueByPointer(&fallback);
-      }
-    };
-
+      };
+    }
     if (threaded) {
       auto threadedCallback = [this, callback]() {
         this->deviceThread.push_back(callback);
@@ -76,9 +83,11 @@ public:
 
   template <class T, class B>
   void addVariableUpdate(DCSVariable &variable, uint interval_ms,
-                         T updateMethod, B instance, bool threaded = true) {
+                         T updateMethod, B instance, bool threaded = true,
+                         bool deviceProtected = true) {
     auto callback = std::bind(updateMethod, instance);
-    return addVariableUpdate(variable, interval_ms, callback, threaded);
+    return addVariableUpdate(variable, interval_ms, callback, threaded,
+                             deviceProtected);
   }
 
 protected:
@@ -95,13 +104,11 @@ protected:
                         &DCSDeviceController::disconnectDevice, this);
   }
 
-
-
-  void dumpConfig(std::vector<UA_Variant>, UA_Variant *){
-   auto v=variables.at("configuration").getValueByVariant();
-   std::cout<<UAJson::toString(&v,&UA_TYPES[UA_TYPES_VARIANT])<<std::endl;
+  void dumpConfig(std::vector<UA_Variant>, UA_Variant *) {
+    auto v = variables.at("configuration").getValueByVariant();
+    std::cout << DCSUAJson::toString(&v, &UA_TYPES[UA_TYPES_VARIANT])
+              << std::endl;
   }
-
 
   Device device;
   DCSWorkerThread deviceThread;
@@ -122,7 +129,7 @@ private:
     try {
       auto stream = TCPConnector::connect(address, port);
       device.setConnectionStream(stream);
-    } catch (const std::runtime_error& e) {
+    } catch (const std::runtime_error &e) {
       // TODO: return to method or send event informing of connection fail or
       // success
       std::cerr << objectName + " device controller catched: " << e.what()
@@ -130,10 +137,7 @@ private:
     }
   }
 
-  bool getConnectionStatus() {
-    return device.isConnected();
-  }
-
+  bool getConnectionStatus() { return device.isConnected(); }
 };
 
 #endif // DCS_DEVICE_CONTROLLER_H
