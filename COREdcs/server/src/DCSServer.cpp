@@ -1,41 +1,19 @@
 #include "DCSServer.h"
 
-DCSServer::DCSServer(std::string address, std::string port) {
+DCSServer::DCSServer(std::string address, int port) {
   server = UA_Server_new();
   config = UA_Server_getConfig(server);
-  UA_ServerConfig_setMinimal(config, std::stoi(port), nullptr);
+  UA_ServerConfig_setMinimal(config, port, nullptr);
   UA_String hostname = UA_STRING_ALLOC(address.c_str());
   UA_ServerConfig_setCustomHostname(config, hostname);
   UA_String_deleteMembers(&hostname);
   //  setDescription("DCS", "urn:DCS.server.application",
   //                 "http://fuw.edu.pl/~mfila/dcs");
-
-  /*config->asyncOperationNotifyCallback = [](UA_Server *server) {
-    std::cout << "!!!!!!!!" << std::endl;
-    dispatcherThread.pushJob([server]() {
-      const UA_AsyncOperationRequest *request = nullptr;
-      void *context = nullptr;
-      UA_AsyncOperationType type;
-      while(UA_Server_getAsyncOperationNonBlocking(server, &type, &request,
-                                                 &context, NULL) == false)
-        {std::this_thread::sleep_for(std::chrono::milliseconds(100));}
-        void *context2;
-        UA_Server_getNodeContext(server, request->callMethodRequest.methodId,
-                                 &context2);
-        auto thread = static_cast<DCSWorkerThread *>(context2);
-        // std::cout<<thread<<std::endl;
-        thread->pushJob([context,request,server]() {
-          UA_CallMethodResult response =
-              UA_Server_call(server, &request->callMethodRequest);
-          UA_Server_setAsyncOperationResult(
-              server, (UA_AsyncOperationResponse *)&response, context);
-          UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
-                      "AsyncMethod_Testing: Call done: OKAY");
-          UA_CallMethodResult_clear(&response);
-        });
-
-    });
-  };*/
+  auto retv =UA_Server_setNodeContext(server, UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER), this);
+  if(retv!=UA_STATUSCODE_GOOD){
+    throw std::runtime_error("Can't add context to server node");
+  }
+  addHistorizing();
 }
 
 void DCSServer::setDescription(std::string appName, std::string appURI,
@@ -57,11 +35,19 @@ DCSServer::~DCSServer() {
   for (auto i : objects) {
     delete i.second;
   }
+  for (auto i : historyBackends) {
+    delete i.second;
+  }
   UA_Server_delete(server);
 }
 
 void DCSServer::addCustomTypes(UA_DataTypeArray *custom) {
   config->customDataTypes = custom;
+}
+
+void DCSServer::addHistorizing(){
+  UA_HistoryDataGathering gathering = UA_HistoryDataGathering_Default(1000);
+	config->historyDatabase = UA_HistoryDatabase_default(gathering);
 }
 
 UA_Boolean DCSServer::running = false;
@@ -74,4 +60,13 @@ int DCSServer::run() {
   signal(SIGINT, SIG_DFL);
   signal(SIGTERM, SIG_DFL);
   return EXIT_SUCCESS;
+}
+
+DCSServer* DCSServer::getServerContext(UA_Server* server){
+  void *context;
+  auto retv = UA_Server_getNodeContext(server, UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER), &context);
+	if (retv != UA_STATUSCODE_GOOD){
+   throw std::runtime_error("Can't get server node context");
+  }
+  return static_cast<DCSServer*>(context);
 }

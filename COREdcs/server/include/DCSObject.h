@@ -14,6 +14,7 @@ struct methodArgs {
   UA_DataType dataType;
 };
 class DCSServer;
+class DCSVariable;
 
 struct NodeIdCmp {
     bool operator()(const UA_NodeId& a, const UA_NodeId& b) const {

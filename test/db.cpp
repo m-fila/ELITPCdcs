@@ -13,14 +13,14 @@ int main() {
   int b[3] = {1, 2, 3};
   UA_Double *t =
       static_cast<UA_Double *>(UA_Array_new(7, &UA_TYPES[UA_TYPES_DOUBLE]));
-  std::cout << UAJson::toStringViaVariant(&z,
+  std::cout << DCSUAJson::toStringViaVariant(&z,
                                 &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM])
             << std::endl;
-  std::cout << UAJson::toStringViaVariant(&a, &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC])
+  std::cout << DCSUAJson::toStringViaVariant(&a, &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC])
             << std::endl;
-  std::cout << UAJson::toStringViaVariant(b, 3, &UA_TYPES[UA_TYPES_INT32])
+  std::cout << DCSUAJson::toStringViaVariant(b, 3, &UA_TYPES[UA_TYPES_INT32])
             << std::endl;
-  std::cout << UAJson::toStringViaVariant(t, 7, &UA_TYPES[UA_TYPES_DOUBLE])
+  std::cout << DCSUAJson::toStringViaVariant(t, 7, &UA_TYPES[UA_TYPES_DOUBLE])
             << std::endl;
 
   return 0;

@@ -62,7 +62,7 @@ public:
           variable.setValue(updateMethod());
         } else {
           void *fallback;
-          UA_init(&fallback, variable.getdataType());
+          UA_init(&fallback, variable.getDataType());
           variable.setValueByPointer(&fallback);
         }
       };

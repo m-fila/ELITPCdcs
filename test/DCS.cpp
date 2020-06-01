@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 
   json config=ConfigLoader::getMasterConfig(argc,argv);
 
-  ELITPCServer server(config.at("address").get<std::string>(),config.at("port").get<std::string>());
+  ELITPCServer server(config.at("address").get<std::string>(),config.at("port").get<int>());
   server.addController<DCSState>("");
 
   for (auto &i : config.at("devices")){

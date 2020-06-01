@@ -2,21 +2,23 @@
 #define DCS_VARIABLE_H
 #include <functional>
 #include <iostream>
+#include <open62541/plugin/historydata/history_data_gathering_default.h>
+#include <open62541/plugin/historydata/history_database_default.h>
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
+#include <open62541/server_config.h>
 #include <string>
-// OPC UA variable wrapper
+#include "DCSObject.h"
 class DCSObject;
-
+// OPC UA variable wrapper
 class DCSVariable {
   friend DCSObject;
 
 public:
-
-inline const UA_DataType* getdataType(){return &dataType;}
+  inline const UA_DataType *getDataType() { return &dataType; }
   inline void setValueByVariant(UA_Variant &newVal) {
     UA_Server_writeValue(server, variableNodeId, newVal);
-  //  UA_Variant_deleteMembers(&newVal)
+    //  UA_Variant_deleteMembers(&newVal)
   }
   template <class T> void setValueByPointer(T newVal) {
     UA_Variant var;
@@ -63,12 +65,15 @@ inline const UA_DataType* getdataType(){return &dataType;}
     setAccessLevel(UA_ACCESSLEVELMASK_TIMESTAMPWRITE, access);
   }
 
- void addUpdate(uint interval_ms, std::function<void()> callback) {
+  void addUpdate(uint interval_ms, std::function<void()> callback) {
     updateInterval_ms = interval_ms;
     updateCallback = callback;
     updateActive = true;
     timedCallback(server, this);
   }
+
+  void setHistorizing(std::string backendName="default");
+  void stopHistorizing();
 
 protected:
   DCSVariable(UA_Server *server, UA_NodeId parentNodeId, std::string name,
@@ -86,7 +91,7 @@ protected:
 
   static void timedCallback(UA_Server *server, void *data) {
     auto var = static_cast<DCSVariable *>(data);
-        auto t =
+    auto t =
         UA_DateTime_nowMonotonic() + var->updateInterval_ms * UA_DATETIME_MSEC;
     var->updateCallback();
 
