@@ -6,7 +6,7 @@ MainWindow::MainWindow(json &config,QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    client=new eli_client(config.at("server").at("address").get<std::string>(),config.at("server").at("port").get<std::string>());
+    client=new eli_client(config.at("server").at("address").get<std::string>(),config.at("server").at("port").get<int>());
     loadWidgets(config.at("devices"));
     buildStateBox();
     statemachine=new stateMachine("MachineState");

@@ -1,7 +1,7 @@
 #include "opc_client_gui.h"
 //opc_client* opc_client::context=nullptr;
 
-opc_client::opc_client(std::string address, std::string port): 
+opc_client::opc_client(std::string address, int port): 
 address(address), 
 port(port)
 {
@@ -20,7 +20,7 @@ opc_client::~opc_client(){
 }
 
 void opc_client::iterate(){
-    std::string tcp_address="opc.tcp://"+address+":"+port;
+    std::string tcp_address="opc.tcp://"+address+":"+std::to_string(port);
     UA_StatusCode retval = UA_Client_connect(client, tcp_address.c_str());
     if(retval==UA_STATUSCODE_GOOD){
     UA_Client_run_iterate(client, 5);

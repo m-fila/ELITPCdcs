@@ -2,12 +2,12 @@
     "server": {
         "id": "test server",
         "address": "192.168.168.2",
-        "port": "6669"
+        "port": 6669
     },
     "database": {
         "type": "influxdb",
         "address": "127.0.0.1",
-        "port": "8086",
+        "port": 8086,
         "db": "test"
     },
     "devices": [

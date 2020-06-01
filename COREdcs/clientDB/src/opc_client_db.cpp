@@ -3,7 +3,7 @@
 //opc_client_db* opc_client_db::context=nullptr;
 UA_Boolean opc_client_db::running = false;
 
-opc_client_db::opc_client_db(std::string address, std::string port):
+opc_client_db::opc_client_db(std::string address, int port):
 address(address),
 port(port)
 {
@@ -62,7 +62,7 @@ int opc_client_db::run(){
     signal(SIGTERM, stopHandler);
     running=true;
     while(running) {
-            std::string tpc_address ="opc.tcp://"+address+":"+port;
+            std::string tpc_address ="opc.tcp://"+address+":"+std::to_string(port);
             UA_StatusCode retval = UA_Client_connect(client,tpc_address.c_str() );
             if(retval != UA_STATUSCODE_GOOD) {
                 UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,

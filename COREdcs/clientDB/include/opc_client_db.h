@@ -14,7 +14,7 @@
 class opc_client_db
 {
 public:
-    opc_client_db(std::string address,std::string port);
+    opc_client_db(std::string address,int port);
     ~opc_client_db();
     opc_client_db(opc_client_db const&) = delete;
     void operator=(opc_client_db const&)  = delete;
@@ -30,7 +30,7 @@ public:
 protected:
 
     std::string address;
-    std::string port;
+    int port;
     std::vector<abstract_variable*> variables;
     database dbase;
   static void stateCallback(UA_Client *client,

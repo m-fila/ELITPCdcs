@@ -8,15 +8,26 @@
 #include "DCSN1471Controller.h"
 #include "configloader.h"
 #include "DCSArt.h"
-#include "iostream"
+#include <iostream>
+#include "DCSHistoryBackendInflux.h"
+
 using json = nlohmann::json;
 int main(int argc, char *argv[]){
   std::cout<<DCSArt::ascii<<std::endl;
   json config=ConfigLoader::getMasterConfig(argc,argv);
   
-  ELITPCServer server(config.at("server").at("address").get<std::string>(),config.at("server").at("port").get<std::string>());
+  ELITPCServer server(config.at("server").at("address").get<std::string>(),config.at("server").at("port").get<int>());
+  {
+    auto database= config.at("database");
+    auto type=database.at("type").get<std::string>();
+    if(type=="influxdb"){
+      auto& db=server.addHistoryBackend<DCSHistoryBackendInflux>("default");
+      db.setConnetionAddress(database.at("address").get<std::string>(),database.at("port").get<int>());
+      db.setDatabase(database.at("db").get<std::string>());
+    } 
+  }
+  
   server.addController<DCSState>("");
-
   for (auto &i : config.at("devices")){
     auto type=i.at("type").get<std::string>();
     auto id=i.at("id").get<std::string>();

@@ -14,13 +14,13 @@ class opc_client: public QObject//QThread
 {
     Q_OBJECT
 public:
-    opc_client(std::string address,std::string port);
+    opc_client(std::string address,int port);
     ~opc_client();
     UA_Client *client;
     UA_ClientConfig *config;
 protected:
     std::string address;
-    std::string port;
+    int port;
    // static opc_client* context;
     QTimer* client_clock;
     void connectSignals();
