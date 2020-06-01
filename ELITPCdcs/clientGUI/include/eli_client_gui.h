@@ -6,7 +6,7 @@ class eli_client: public opc_client//QThread
 {
     Q_OBJECT
 public:
-    eli_client(std::string address,std::string port);
+    eli_client(std::string address,int port);
 private:
    UA_DataTypeArray customDataTypesArray = { nullptr, UA_TYPES_DCSNODESET_COUNT, UA_TYPES_DCSNODESET};
 };
