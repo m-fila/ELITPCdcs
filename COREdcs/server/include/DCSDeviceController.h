@@ -61,6 +61,7 @@ public:
         if (device.isConnected()) {
           variable.setValue(updateMethod());
         } else {
+        //  variable.setNull();
           void *fallback;
           UA_init(&fallback, variable.getDataType());
           variable.setValueByPointer(&fallback);

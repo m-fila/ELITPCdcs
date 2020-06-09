@@ -25,6 +25,8 @@ public:
     condition.notify_all();
     worker.join();
   }
+  // Thread-safe size wrapper. Equals total size of priority (commands) and normal (monitoring) buffer
+  size_t size(){std::unique_lock<std::mutex> lock(qMutex); return bufferPriority.size()+buffer.size();}
 
   // thread-safe job scheduling for last position. Addinational arguments are
   // bound to f

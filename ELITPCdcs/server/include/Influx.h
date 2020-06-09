@@ -4,7 +4,7 @@
 class Influx : public HTTPDevice {
     public:
   Influx(std::string database = "", std::string user = "",
-         std::string password = "", std::string time = "ns")
+         std::string password = "", std::string time = "ms")
       : HTTPDevice(), database(database), user(user), password(password),
         time(time) {}
 

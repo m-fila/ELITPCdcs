@@ -2,7 +2,7 @@
 #include "DCSUAJson.h"
 #include <iostream>
 #include <open62541/plugin/log_stdout.h>
-#include <json.hpp>
+
 using namespace nlohmann;
 
 UA_HistoryDataBackend DCSHistoryBackendInflux::getUaBackend() {
@@ -36,22 +36,26 @@ UA_StatusCode DCSHistoryBackendInflux::serverSetHistoryData(
     UA_Server *server, void *context, const UA_NodeId *sessionId,
     void *sessionContext, const UA_NodeId *nodeId, UA_Boolean historizing,
     const UA_DataValue *value) {
-
-  //  auto v=DCSUAJson::toString(value,&UA_TYPES[UA_TYPES_DATAVALUE]);
-  //  json j=json::parse(v);
-  //     std::cout<<j.at("Value").at("Body")<<std::endl;
-  auto i = static_cast<DCSHistoryBackendInflux *>(context);
-  //auto p = i->db.getConnectionParameters();
-  //std::cout << nodeId->identifier.numeric << "start" << std::endl;
-  //  std::this_thread::sleep_for(std::chrono::seconds(1));
-  i->worker.push_front([&i, nodeId]() {
-    try {
-      i->db.write("foo c=" + to_string(nodeId->identifier.numeric));
-    } catch (std::runtime_error &e) {
-      UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_NETWORK, "Influxdb error: %s", e.what());
-    };
-  });
-  std::cout << nodeId->identifier.numeric << "stop" << std::endl;
+  if (!(value->hasValue)) {
+    return UA_STATUSCODE_GOODDATAIGNORED;
+  } else if (UA_Variant_isEmpty(&value->value)) {
+    return UA_STATUSCODE_GOODDATAIGNORED;
+  }
+  auto instance = static_cast<DCSHistoryBackendInflux *>(context);
+  json j = json::parse(
+      DCSUAJson::toString(&value->value, &UA_TYPES[UA_TYPES_VARIANT]));
+  size_t time = 0;
+  if (value->hasSourceTimestamp) {
+    time = value->sourceTimestamp;
+  } else if (value->hasServerTimestamp) {
+    time = value->serverTimestamp;
+  }
+  auto cmd = instance->toInflux(j.at("Body"));
+  auto measurement = instance->getNodeName(nodeId);
+  instance->write(
+      measurement + " " + cmd + " " +
+      (time ? std::to_string((time - UA_DATETIME_UNIX_EPOCH) / UA_DATETIME_MSEC)
+            : ""));
   return UA_STATUSCODE_GOOD;
 }
 
@@ -147,3 +151,38 @@ UA_StatusCode DCSHistoryBackendInflux::removeDataValue(
 }
 
 void DCSHistoryBackendInflux::deleteMembers(UA_HistoryDataBackend *backend) {}
+
+std::string DCSHistoryBackendInflux::toInflux(json j) {
+  if (j.contains("Body")) {
+    j = j.at("Body");
+  }
+  std::stringstream ss;
+  for (auto &it : j.items()) {
+    auto k = it.key();
+    if (k.empty()) {
+      k = "v";
+    }
+    auto v = it.value();
+    if (v.is_array()) {
+      for (size_t i = 0; i < v.size(); ++i) {
+        ss << k << i + 1 << "=" << v.at(i) << ",";
+      }
+    } else {
+      ss << k << "=" << v << ",";
+    }
+  }
+  auto s = ss.str();
+  s.pop_back();
+  return s;
+}
+
+void DCSHistoryBackendInflux::write(const std::string &str) {
+  worker.push_front([str, this]() {
+    try {
+      db.write(str);
+    } catch (std::runtime_error &e) {
+      UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_NETWORK,
+                     "Influxdb error: %s", e.what());
+    };
+  });
+}

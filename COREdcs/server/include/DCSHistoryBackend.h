@@ -6,7 +6,8 @@
 #include <open62541/server.h>
 #include <open62541/server_config.h>
 #include <string>
-#include <unordered_map>
+#include <map>
+#include "DCSNodeIdMap.h"
 class DCSServer;
 
 typedef struct {
@@ -26,11 +27,12 @@ virtual ~DCSHistoryBackend()=default;
         ->gathering;
   }
   void registerNode(UA_NodeId *nodeId, std::string nodeName) {
-    idToName[nodeId] = nodeName;
-    nameToId[nodeName] = nodeId;
+    idToName[*nodeId] = nodeName;
+    nameToId[nodeName] = *nodeId;
   }
-  UA_NodeId *getNodeId(std::string nodeName) { return nameToId[nodeName]; }
-  std::string getNodeName(UA_NodeId *nodeId) { return idToName[nodeId]; }
+  UA_NodeId *getNodeId(std::string nodeName) { return &nameToId[nodeName]; }
+  std::string getNodeName(UA_NodeId *nodeId) { return idToName[*nodeId]; }
+  std::string getNodeName(const UA_NodeId *nodeId) { return idToName[*nodeId]; }
 
 protected:
   DCSHistoryBackend(UA_Server *server, std::string name)
@@ -40,7 +42,7 @@ protected:
   std::string name;
 
 private:
-  std::unordered_map<std::string, UA_NodeId *> nameToId;
-  std::unordered_map<UA_NodeId *, std::string> idToName;
+  std::map<std::string, UA_NodeId> nameToId;
+  std::map<UA_NodeId , std::string, NodeIdCmp> idToName;
 };
 #endif // DCS_HISTORY_H

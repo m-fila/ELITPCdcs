@@ -8,7 +8,6 @@ ConnectionStream::ConnectionStream()
 
 ConnectionStream::~ConnectionStream()
 {
-    std::cout << "Closing connection in destructor ..." << std::endl;
     close(m_sd);
 }
 
@@ -43,7 +42,7 @@ std::string ConnectionStream::receive()
         response.append(buffer, len);
       //  std::fill(&buffer[0], &buffer[0]+len, 0);
     }
-    while(len==1024);
+    while(len!=0);
     if (!response.empty() && response[response.length()-1] == '\n') {
         response.erase(response.length()-1);
     }   //remove new line from answer

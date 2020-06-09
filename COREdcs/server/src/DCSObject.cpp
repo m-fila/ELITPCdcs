@@ -19,7 +19,7 @@ DCSObject::~DCSObject() { UA_NodeId_deleteMembers(&objectNodeId); }
 DCSVariable &DCSObject::addVariable(std::string variableName,
                                     UA_DataType variableType) {
   if (variables.find(variableName) == variables.end()) {
-    DCSVariable variable{server, objectNodeId, variableName, variableType};
+    DCSVariable variable{server, objectNodeId, objectName, variableName, variableType};
     return variables.insert({variableName, variable}).first->second;
   } else {
     throw std::runtime_error("None unique variable id: " + objectName + "/" +

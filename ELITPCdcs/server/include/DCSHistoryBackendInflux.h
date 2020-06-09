@@ -1,5 +1,6 @@
 #ifndef DCS_HISTORY_BACKEND_INFLUX_H
 #define DCS_HISTORY_BACKEND_INFLUX_H
+#include <json.hpp>
 #include "DCSHistoryBackend.h"
 #include "Influx.h"
 #include "DCSWorkerThread.h"
@@ -91,6 +92,12 @@ removeDataValue(UA_Server *server, void *hdbContext, const UA_NodeId *sessionId,
                 UA_DateTime startTimestamp, UA_DateTime endTimestamp);
 
 static void deleteMembers(UA_HistoryDataBackend *backend);
+
+
+
+std::string toInflux(nlohmann::json j);
+
+void write(const std::string &str);
 
 Influx db;
 DCSWorkerThread worker;

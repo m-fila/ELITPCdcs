@@ -1,5 +1,6 @@
 #ifndef DCS_VARIABLE_H
 #define DCS_VARIABLE_H
+#include "DCSObject.h"
 #include <functional>
 #include <iostream>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
@@ -8,7 +9,6 @@
 #include <open62541/server.h>
 #include <open62541/server_config.h>
 #include <string>
-#include "DCSObject.h"
 class DCSObject;
 // OPC UA variable wrapper
 class DCSVariable {
@@ -16,6 +16,11 @@ class DCSVariable {
 
 public:
   inline const UA_DataType *getDataType() { return &dataType; }
+  inline void setNull(){
+    UA_Variant var;
+  UA_Variant_init(&var);
+    UA_Server_writeValue(server,variableNodeId,var);
+  }
   inline void setValueByVariant(UA_Variant &newVal) {
     UA_Server_writeValue(server, variableNodeId, newVal);
     //  UA_Variant_deleteMembers(&newVal)
@@ -72,11 +77,12 @@ public:
     timedCallback(server, this);
   }
 
-  void setHistorizing(std::string backendName="default");
+  void setHistorizing(std::string backendName = "default");
   void stopHistorizing();
 
 protected:
-  DCSVariable(UA_Server *server, UA_NodeId parentNodeId, std::string name,
+  DCSVariable(UA_Server *server, UA_NodeId parentNodeId,
+              const std::string &parentName, const std::string &variableName,
               UA_DataType type);
   inline UA_Byte getAccesLevel() {
     UA_Byte accessLevel;
@@ -99,6 +105,7 @@ protected:
   }
 
   UA_Server *server;
+  const std::string parentName;
   const std::string variableName;
   UA_NodeId variableNodeId;
   UA_DataType dataType;

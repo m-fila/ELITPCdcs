@@ -1,11 +1,14 @@
 #ifndef DCS_OBJECT_H
 #define DCS_OBJECT_H
 #include "DCSVariable.h"
+#include "DCSNodeIdMap.h"
 #include <map>
 #include <unordered_map>
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
 #include <vector>
+#include <string>
+#include <functional>
 // dataType, name ,description
 // example:  "Status", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]
 struct methodArgs {
@@ -15,12 +18,6 @@ struct methodArgs {
 };
 class DCSServer;
 class DCSVariable;
-
-struct NodeIdCmp {
-    bool operator()(const UA_NodeId& a, const UA_NodeId& b) const {
-        return UA_NodeId_hash(&a) < UA_NodeId_hash(&b);
-    }
-};
 
 class DCSObject {
   friend DCSServer;

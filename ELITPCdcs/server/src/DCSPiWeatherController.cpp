@@ -5,6 +5,7 @@
       : DCSDeviceController<PiWeather>(server, name) {
          auto &m= addVariable("measurements",UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PIWEATHERM]);
          addVariableUpdate(m,500,[this](){return getMeasurements();});
+         m.setHistorizing("default");
   }
 
   UA_PiWeatherm DCSPiWeatherController::getMeasurements(){
