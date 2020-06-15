@@ -47,7 +47,7 @@ HTTPDevice::HTTPResponse HTTPDevice::request(Method method, std::string path,
   msg += "Host: " + connectionParameters.IPaddress + "\r\n";
   msg += "Content-Length: " + std::to_string(content.size()) + "\r\n\r\n" +
          content;
-  return HTTPResponse(sendWithResponse(msg));
+  return HTTPResponse(sendWithDelayedResponse(msg,1));
 }
 
 void HTTPDevice::connect() {
