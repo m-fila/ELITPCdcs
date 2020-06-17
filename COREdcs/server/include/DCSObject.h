@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include "DCSEvent.h"
 // dataType, name ,description
 // example:  "Status", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]
 struct methodArgs {
@@ -29,7 +30,9 @@ public:
             std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
             const std::function<void(std::vector<UA_Variant> , UA_Variant *)> &
                 methodBody, void * context=nullptr);
-
+  DCSEvent createEvent(){
+    return DCSEvent(server,objectNodeId);
+  }
 protected:
   DCSObject(UA_Server *server, std::string name);
   virtual ~DCSObject();
