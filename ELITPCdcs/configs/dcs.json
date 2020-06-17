@@ -1,4 +1,6 @@
 {
+    "logFile": "/home/mfila/.dcs/dcs.log",
+    "configDir": "/home/mfila/.dcs", 
     "server": {
         "id": "test server",
         "address": "192.168.168.2",

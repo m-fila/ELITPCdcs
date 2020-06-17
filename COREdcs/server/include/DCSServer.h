@@ -2,7 +2,6 @@
 #define DCS_SERVER_H
 #include <map>
 #include <memory>
-#include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
@@ -13,6 +12,7 @@
 #include "DCSWorkerThread.h"
 #include "DCSHistoryBackend.h"
 #include "DCSObject.h"
+#include "DCSLogger.h"
 
 class DCSServer {
 
@@ -62,7 +62,7 @@ protected:
   static UA_Boolean running;
 
   static void stopHandler(int sig) {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "Received ctrl-c");
+    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "Received ctrl-c");
     running = false;
   }
 

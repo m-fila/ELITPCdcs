@@ -8,6 +8,7 @@
 #include "DCSN1471Controller.h"
 #include "configloader.h"
 #include "DCSArt.h"
+#include "DCSLogger.h"
 #include <iostream>
 #include "DCSHistoryBackendInflux.h"
 
@@ -16,6 +17,7 @@ int main(int argc, char *argv[]){
   std::cout<<DCSArt::ascii<<std::endl;
   json config=ConfigLoader::getMasterConfig(argc,argv);
   
+  DCSLogger::setFile(config.at("logFile").get<std::string>());
   ELITPCServer server(config.at("server").at("address").get<std::string>(),config.at("server").at("port").get<int>());
   {
     auto database= config.at("database");

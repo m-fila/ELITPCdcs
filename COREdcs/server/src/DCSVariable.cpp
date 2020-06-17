@@ -28,7 +28,7 @@ void DCSVariable::setHistorizing(std::string backendName) {
   auto backend = serv->getHistoryBackend(backendName);
   backend->registerNode(&variableNodeId, parentName+"."+variableName);
   if (backend == nullptr) {
-    UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
+    UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                    "Historizing backend %s not found", backendName.c_str());
     return;
   }

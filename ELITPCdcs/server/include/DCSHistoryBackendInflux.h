@@ -4,6 +4,7 @@
 #include "DCSHistoryBackend.h"
 #include "Influx.h"
 #include "DCSWorkerThread.h"
+#include "DCSLogger.h"
 class DCSServer;
 
 class DCSHistoryBackendInflux: public DCSHistoryBackend {

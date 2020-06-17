@@ -1,7 +1,6 @@
 #include "DCSHistoryBackendInflux.h"
 #include "DCSUAJson.h"
 #include <iostream>
-#include <open62541/plugin/log_stdout.h>
 
 using namespace nlohmann;
 
@@ -181,7 +180,7 @@ void DCSHistoryBackendInflux::write(const std::string &str) {
     try {
       db.write(str);
     } catch (std::runtime_error &e) {
-      UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_NETWORK,
+      UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_NETWORK,
                      "Influxdb error: %s", e.what());
     };
   });

@@ -1,11 +1,11 @@
 #ifndef DCS_VARIABLE_H
 #define DCS_VARIABLE_H
 #include "DCSObject.h"
+#include "DCSLogger.h"
 #include <functional>
 #include <iostream>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
 #include <open62541/plugin/historydata/history_database_default.h>
-#include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
 #include <open62541/server_config.h>
 #include <string>

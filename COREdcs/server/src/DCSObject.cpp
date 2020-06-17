@@ -19,7 +19,8 @@ DCSObject::~DCSObject() { UA_NodeId_deleteMembers(&objectNodeId); }
 DCSVariable &DCSObject::addVariable(std::string variableName,
                                     UA_DataType variableType) {
   if (variables.find(variableName) == variables.end()) {
-    DCSVariable variable{server, objectNodeId, objectName, variableName, variableType};
+    DCSVariable variable{server, objectNodeId, objectName, variableName,
+                         variableType};
     return variables.insert({variableName, variable}).first->second;
   } else {
     throw std::runtime_error("None unique variable id: " + objectName + "/" +
@@ -27,11 +28,12 @@ DCSVariable &DCSObject::addVariable(std::string variableName,
   }
 }
 
-void DCSObject::addMethod(
-    std::string methodName, std::string methodDescription,
-    std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
-    const std::function<void(std::vector<UA_Variant>, UA_Variant *)> &methodBody,
-    void *context) {
+void DCSObject::addMethod(std::string methodName, std::string methodDescription,
+                          std::vector<methodArgs> inputs,
+                          std::vector<methodArgs> outputs,
+                          const std::function<void(std::vector<UA_Variant>,
+                                                   UA_Variant *)> &methodBody,
+                          void *context) {
 
   UA_Argument *inputArguments = static_cast<UA_Argument *>(
       UA_Array_new(inputs.size(), &UA_TYPES[UA_TYPES_ARGUMENT]));
@@ -91,10 +93,10 @@ UA_StatusCode DCSObject::methodCallback(
     size_t outputSize, UA_Variant *output) {
 
   auto object = static_cast<DCSObject *>(objectContext);
-std::vector<UA_Variant> inp(inputSize);
-for(size_t i=0;i!=inputSize;++i){
-  UA_Variant_copy(&input[i],&inp[i]);
-}
+  std::vector<UA_Variant> inp(inputSize);
+  for (size_t i = 0; i != inputSize; ++i) {
+    UA_Variant_copy(&input[i], &inp[i]);
+  }
 
 
 

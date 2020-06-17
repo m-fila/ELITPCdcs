@@ -1,13 +1,13 @@
 #ifndef DCS_HISTORY_BACKEND_H
 #define DCS_HISTORY_BACKEND_H
+#include "DCSNodeIdMap.h"
+#include <map>
 #include <open62541/plugin/historydata/history_data_backend.h>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
 #include <open62541/plugin/historydata/history_database_default.h>
 #include <open62541/server.h>
 #include <open62541/server_config.h>
 #include <string>
-#include <map>
-#include "DCSNodeIdMap.h"
 class DCSServer;
 
 typedef struct {
@@ -19,7 +19,7 @@ class DCSHistoryBackend {
   friend DCSServer;
 
 public:
-virtual ~DCSHistoryBackend()=default;
+  virtual ~DCSHistoryBackend() = default;
   virtual UA_HistoryDataBackend getUaBackend() = 0;
   UA_HistoryDataGathering getGathering() {
     return static_cast<UA_HistoryDatabaseContext_default *>(
@@ -43,6 +43,6 @@ protected:
 
 private:
   std::map<std::string, UA_NodeId> nameToId;
-  std::map<UA_NodeId , std::string, NodeIdCmp> idToName;
+  std::map<UA_NodeId, std::string, NodeIdCmp> idToName;
 };
 #endif // DCS_HISTORY_H
