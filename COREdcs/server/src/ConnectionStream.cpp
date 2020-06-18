@@ -1,5 +1,5 @@
 #include "ConnectionStream.h"
-#include <iostream>
+#include <stdexcept>
 
 ConnectionStream::ConnectionStream()
 {
@@ -28,7 +28,7 @@ ssize_t ConnectionStream::receive(char* buffer, size_t len)
 {
     ssize_t s=read(m_sd, buffer, len);
     if(s==-1)
-        throw std::runtime_error("Encountered error when writing to stream");
+        throw std::runtime_error("Encountered error when reading from stream");
     return s;
 }
 

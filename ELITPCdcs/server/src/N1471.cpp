@@ -1,7 +1,7 @@
 #include "N1471.h"
 #include <string>
 #include <sstream>
-#include <iostream>
+
 #include <iomanip>
 
 N1471::N1471() : GenericDevice(ConnectionType::TCP, ConnectionType::TCP), moduleAddress(0)
@@ -38,7 +38,7 @@ std::string N1471::sendN1471command(CMD command, CHANNEL channel, std::string fu
     cb << "\r";
 
     //send command using opened connection and return response
-    std::cout<<cb.str()<<std::endl;
+//    std::cout<<cb.str()<<std::endl;
     return sendWithResponse(cb.str());
 }
 
@@ -49,7 +49,7 @@ std::string N1471::extractCommandStatus(std::string command)
 
 std::string N1471::extractCommandValue(std::string command)
 {
-    std::cout<<command<<std::endl;
+   // std::cout<<command<<std::endl;
     //TODO: extract command status, if error throw exception, if no, extract value
     command.erase(command.length()-1);
     std::size_t pos = command.find("VAL:");

@@ -1,7 +1,7 @@
 #include "DT1415ET.h"
 #include <string>
 #include <sstream>
-#include <iostream>
+
 #include <iomanip>
 
 DT1415ET::DT1415ET() : GenericDevice(ConnectionType::TCP, ConnectionType::TCP), firmwareVersion("1.10")

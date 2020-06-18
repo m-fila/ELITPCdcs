@@ -1,5 +1,5 @@
 #include "GenericDevice.h"
-#include <iostream>
+
 GenericDevice::GenericDevice(): connected(false)
 {
 }

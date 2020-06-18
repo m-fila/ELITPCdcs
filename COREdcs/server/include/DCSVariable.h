@@ -3,7 +3,6 @@
 #include "DCSObject.h"
 #include "DCSLogger.h"
 #include <functional>
-#include <iostream>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
 #include <open62541/plugin/historydata/history_database_default.h>
 #include <open62541/server.h>
@@ -15,6 +14,8 @@ class DCSVariable {
   friend DCSObject;
 
 public:
+  std::string getName(){return variableName;}
+  std::string getFullName(){return parentName+"."+variableName;}
   inline const UA_DataType *getDataType() { return &dataType; }
   inline void setNull(){
     UA_Variant var;

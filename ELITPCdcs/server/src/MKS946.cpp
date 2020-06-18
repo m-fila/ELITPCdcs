@@ -1,6 +1,6 @@
 #include "MKS946.h"
 #include <sstream>
-#include <iostream>
+
 MKS946::MKS946() : MKS(){
 }
 

@@ -13,12 +13,12 @@ class DCSEvent {
 public:
     void setSeverity(uint severity);
   //  uint getSeverity();
-    void setMessage(std::string message);
+    void setMessage(const std::string &message);
  //   std::string getMessage();
-    void setTime(UA_DateTime time);
+    void setTime(const UA_DateTime &time);
     void setTimeNow();
  //   UA_DateTime getTime();
-    void setSourceName(std::string sourceName);
+    void setSourceName(const std::string &sourceName);
 //  std::string getSourceName();
     void trigger();
     ~DCSEvent();

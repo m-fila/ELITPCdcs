@@ -1,5 +1,5 @@
 #include "PiWeather.h"
-#include <iostream>
+
 #include <sstream>
 PiWeather::PiWeather()
     : GenericDevice(ConnectionType::TCP | ConnectionType::Serial,

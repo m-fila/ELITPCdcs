@@ -1,13 +1,13 @@
 #include "DCSEvent.h"
-#include <iostream>
 void DCSEvent::setSeverity(uint severity) {
+  auto s=severity>1000 ? 1000 : severity;
   UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(0, "Severity");
-  UA_Server_writeObjectProperty_scalar(server, eventId, qName, &severity,
+  UA_Server_writeObjectProperty_scalar(server, eventId, qName, &s,
                                        &UA_TYPES[UA_TYPES_UINT16]);
   UA_QualifiedName_deleteMembers(&qName);
 }
 
-void DCSEvent::setTime(UA_DateTime time) {
+void DCSEvent::setTime(const UA_DateTime & time) {
   UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(0, "Time");
   UA_Server_writeObjectProperty_scalar(server, eventId, qName, &time,
                                        &UA_TYPES[UA_TYPES_DATETIME]);
@@ -16,7 +16,7 @@ void DCSEvent::setTime(UA_DateTime time) {
 
 void DCSEvent::setTimeNow() { return setTime(UA_DateTime_now()); }
 
-void DCSEvent::setMessage(std::string message) {
+void DCSEvent::setMessage(const std::string & message) {
   UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(0, "Message");
   UA_LocalizedText text = UA_LOCALIZEDTEXT_ALLOC("en-Us", message.c_str());
   UA_Server_writeObjectProperty_scalar(server, eventId, qName, &text,
@@ -25,7 +25,7 @@ void DCSEvent::setMessage(std::string message) {
   UA_QualifiedName_deleteMembers(&qName);
 }
 
-void DCSEvent::setSourceName(std::string sourceName) {
+void DCSEvent::setSourceName(const std::string & sourceName) {
   UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(0, "SourceName");
   UA_String text = UA_STRING_ALLOC(sourceName.c_str());
   UA_Server_writeObjectProperty_scalar(server, eventId, qName, &text,

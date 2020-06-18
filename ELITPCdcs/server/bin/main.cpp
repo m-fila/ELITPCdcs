@@ -9,7 +9,6 @@
 #include "configloader.h"
 #include "DCSArt.h"
 #include "DCSLogger.h"
-#include <iostream>
 #include "DCSHistoryBackendInflux.h"
 
 using json = nlohmann::json;
@@ -55,7 +54,7 @@ int main(int argc, char *argv[]){
       server.addController<DCSN1471Controller>(id);
     }
     else{
-      std::cout<<"CONFIG: Unknown device "<<type<<std::endl;
+      UA_LOG_WARNING(DCSLogger::getLogger(),UA_LOGCATEGORY_SERVER, "CONFIG: Unknown device %s", type.c_str());
         continue;
     }
   }

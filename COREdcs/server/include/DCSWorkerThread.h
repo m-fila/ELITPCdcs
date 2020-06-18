@@ -2,7 +2,6 @@
 #define DCS_WORKER_THREAD_H
 #include <condition_variable>
 #include <functional>
-#include <iostream>
 #include <mutex>
 #include <queue>
 #include <thread>

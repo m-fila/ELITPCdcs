@@ -1,6 +1,6 @@
 #include "MKS.h"
 #include <sstream>
-#include <iostream>
+
 MKS::MKS() : GenericDevice(ConnectionType::TCP | ConnectionType::Serial, ConnectionType::TCP),delay(200),channel(253){
 }
 
@@ -31,8 +31,8 @@ std::string MKS::extract(std::string content){
 
 std::string MKS::sendWithDelayedResponse(std::string command){
     std::string s=GenericDevice::sendWithDelayedResponse(encapsulate(command),delay);
-    std::cout<<encapsulate(command)<<std::endl;
-    std::cout<<s<<std::endl;
+   // std::cout<<encapsulate(command)<<std::endl;
+  //  std::cout<<s<<std::endl;
     return extract(s);
 }
 

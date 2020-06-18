@@ -1,6 +1,7 @@
 #ifndef DCS_INFLUX_H
 #define DCS_INFLUX_H
 #include "HTTPDevice.h"
+
 class Influx : public HTTPDevice {
     public:
   Influx(std::string database = "", std::string user = "",
