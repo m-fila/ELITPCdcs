@@ -13,6 +13,7 @@
 #include "DCSHistoryBackend.h"
 #include "DCSObject.h"
 #include "DCSLogger.h"
+#include "DCSContext.h"
 
 class DCSServer {
 
@@ -20,7 +21,7 @@ public:
   DCSServer(std::string address, int port);
   ~DCSServer();
  std::map<std::string,DCSHistoryBackend*> historyBackends;
-  static DCSServer* getServerContext(UA_Server* server);
+  static DCSServer* getServerContext(UA_Server* server){return DCS::getContext<DCSServer*>(server,UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER));}
   DCSHistoryBackend* getHistoryBackend(std::string backendName){
     auto i=historyBackends.find(backendName);
     return i!=historyBackends.end() ? i->second  : nullptr;
@@ -33,7 +34,7 @@ public:
       return *static_cast<T *>(
           objects.insert({name, new T(server, name)}).first->second);
     } else {
-      throw std::runtime_error("None unique controller id: " + name);
+      throw std::runtime_error("Not unique controller id: " + name);
     }
   }
 
@@ -48,7 +49,7 @@ public:
       return *static_cast<T *>(
           historyBackends.insert({name, new T(server)}).first->second);
     } else {
-      throw std::runtime_error("None unique backend id: " + name);
+      throw std::runtime_error("Not unique backend id: " + name);
     }
     
   }

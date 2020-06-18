@@ -26,7 +26,6 @@ void DCSVariable::stopHistorizing() {
 void DCSVariable::setHistorizing(std::string backendName) {
   auto serv = DCSServer::getServerContext(server);
   auto backend = serv->getHistoryBackend(backendName);
-  backend->registerNode(&variableNodeId, parentName+"."+variableName);
   if (backend == nullptr) {
     UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                    "Historizing backend %s not found", backendName.c_str());

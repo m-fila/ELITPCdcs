@@ -26,13 +26,6 @@ public:
                UA_Server_getConfig(server)->historyDatabase.context)
         ->gathering;
   }
-  void registerNode(UA_NodeId *nodeId, std::string nodeName) {
-    idToName[*nodeId] = nodeName;
-    nameToId[nodeName] = *nodeId;
-  }
-  UA_NodeId *getNodeId(std::string nodeName) { return &nameToId[nodeName]; }
-  std::string getNodeName(UA_NodeId *nodeId) { return idToName[*nodeId]; }
-  std::string getNodeName(const UA_NodeId *nodeId) { return idToName[*nodeId]; }
 
 protected:
   DCSHistoryBackend(UA_Server *server, std::string name)
@@ -40,9 +33,5 @@ protected:
 
   UA_Server *server;
   std::string name;
-
-private:
-  std::map<std::string, UA_NodeId> nameToId;
-  std::map<UA_NodeId, std::string, NodeIdCmp> idToName;
 };
 #endif // DCS_HISTORY_H
