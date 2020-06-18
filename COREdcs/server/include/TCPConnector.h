@@ -24,6 +24,7 @@ public:
 private:
     TCPStream* createConnection(const char* server, int port);
 	int resolveHostName(const char* host, struct in_addr* addr);
+    int connectWithTimeout(int sd, sockaddr_in* address,uint timeout_s);
 };
 
 #endif /* TCPCONNECTOR_H_ */
