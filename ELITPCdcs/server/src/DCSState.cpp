@@ -9,5 +9,5 @@ DCSState::DCSState(UA_Server *server, std::string name)
 
 void DCSState::setState(std::vector<UA_Variant> input, UA_Variant *output) {
     MachineState state = *static_cast<MachineState*>(input.at(0).data);
-    variables.at("State").setValue(state);
+    variables.at("State")->setValue(state);
 }

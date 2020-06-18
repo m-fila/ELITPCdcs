@@ -1,15 +1,15 @@
 #ifndef DCS_OBJECT_H
 #define DCS_OBJECT_H
-#include "DCSVariable.h"
+#include "DCSEvent.h"
 #include "DCSNodeIdMap.h"
+#include "DCSVariable.h"
+#include <functional>
 #include <map>
-#include <unordered_map>
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/server.h>
-#include <vector>
 #include <string>
-#include <functional>
-#include "DCSEvent.h"
+#include <unordered_map>
+#include <vector>
 // dataType, name ,description
 // example:  "Status", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]
 struct methodArgs {
@@ -25,23 +25,35 @@ class DCSObject {
 
 public:
   DCSVariable &addVariable(std::string variableName, UA_DataType variableType);
-
-  void addMethod(std::string methodName, std::string methodDescription,
+  std::string getName() { return objectName; }
+  void
+  addMethod(std::string methodName, std::string methodDescription,
             std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
-            const std::function<void(std::vector<UA_Variant> , UA_Variant *)> &
-                methodBody, void * context=nullptr);
-  DCSEvent createEvent(){
-    return DCSEvent(server,objectNodeId);
+            const std::function<void(std::vector<UA_Variant>, UA_Variant *)>
+                &methodBody,
+            void *context = nullptr);
+
+  DCSEvent createEvent() { return DCSEvent(server, objectNodeId); }
+
+  void fastEvent(const std::string &sourceName, uint severity,
+                 const std::string &message) {
+    auto event = createEvent();
+    event.setSourceName(sourceName);
+    event.setMessage(message);
+    event.setSeverity(severity);
+    event.trigger();
   }
+
 protected:
   DCSObject(UA_Server *server, std::string name);
   virtual ~DCSObject();
   UA_Server *server;
   const std::string objectName;
   UA_NodeId objectNodeId;
-  std::map<const std::string, DCSVariable> variables;
+  std::map<const std::string, DCSVariable*> variables;
   std::map<UA_NodeId,
-           std::function<void(std::vector<UA_Variant>, UA_Variant *)>,NodeIdCmp>
+           std::function<void(std::vector<UA_Variant>, UA_Variant *)>,
+           NodeIdCmp>
       methods;
   static UA_StatusCode
   methodCallback(UA_Server *server, const UA_NodeId *sessionId,

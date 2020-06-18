@@ -1,10 +1,11 @@
 #ifndef DCS_DEVICE_CONTROLLER_H
 #define DCS_DEVICE_CONTROLLER_H
+#include "DCSLogger.h"
 #include "DCSObject.h"
 #include "DCSUAJson.h"
 #include "DCSWorkerThread.h"
 #include "TCPConnector.h"
-
+#include <iostream>
 using namespace std::placeholders;
 
 template <class Device> class DCSDeviceController : public DCSObject {
@@ -18,9 +19,19 @@ public:
                            std::vector<methodArgs> inputArgs,
                            std::vector<methodArgs> outputArgs,
                            const T &methodBody, bool threaded = true) {
-    auto newBody = [methodBody](std::vector<UA_Variant> input,
-                                UA_Variant *output) {
-      methodBody(input, output);
+    auto newBody = [methodBody, methodName, this](std::vector<UA_Variant> input,
+                                                  UA_Variant *output) {
+      try {
+        methodBody(input, output);
+      } catch (const exception &e) {
+        UA_LOG_ERROR(
+            DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+            "Method %s encountered error: %s . Disconnecting device...",
+            methodName.c_str(), e.what());
+        fastEvent(this->getName(), 400,
+                  "Device communication error occured. Disconnecting device.");
+        this->device.resetConnectionStream();
+      }
       for (auto &i : input) {
         UA_Variant_deleteMembers(&i);
       }
@@ -59,9 +70,20 @@ public:
     if (deviceProtected) {
       callback = [this, &variable, updateMethod]() {
         if (device.isConnected()) {
-          variable.setValue(updateMethod());
+          try {
+            variable.setValue(updateMethod());
+          } catch (const std::exception &e) {
+            UA_LOG_ERROR(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                         "Variable %s update encountered error: %s . "
+                         "Disconnecting device...",
+                         variable.getFullName().c_str(), e.what());
+            fastEvent(this->getName(), 40,
+                      "Device communication error occured. Disconnecting "
+                      "device.");
+            this->device.resetConnectionStream();
+          }
         } else {
-        //  variable.setNull();
+          //  variable.setNull();
           void *fallback;
           UA_init(&fallback, variable.getDataType());
           variable.setValueByPointer(&fallback);
@@ -69,7 +91,18 @@ public:
       };
     } else {
       callback = [this, &variable, updateMethod]() {
-        variable.setValue(updateMethod());
+        try {
+          variable.setValue(updateMethod());
+        } catch (const std::exception &e) {
+          UA_LOG_ERROR(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                       "Variable %s update encountered error: %s . "
+                       "Disconnecting device...",
+                       variable.getFullName().c_str(), e.what());
+          fastEvent(
+              this->getName(), 40,
+              "Device communication error occured. Disconnecting device.");
+          this->device.resetConnectionStream();
+        }
       };
     }
     if (threaded) {
@@ -106,7 +139,7 @@ protected:
   }
 
   void dumpConfig(std::vector<UA_Variant>, UA_Variant *) {
-    auto v = variables.at("configuration").getValueByVariant();
+    auto v = variables.at("configuration")->getValueByVariant();
     std::cout << DCSUAJson::toString(&v, &UA_TYPES[UA_TYPES_VARIANT])
               << std::endl;
   }
@@ -133,8 +166,7 @@ private:
     } catch (const std::runtime_error &e) {
       // TODO: return to method or send event informing of connection fail or
       // success
-      std::cerr << objectName + " device controller catched: " << e.what()
-                << std::endl;
+      UA_LOG_WARNING(DCSLogger::getLogger(),UA_LOGCATEGORY_USERLAND, "%s device controller catched: \"%s\"", objectName.c_str(), e.what());
     }
   }
 

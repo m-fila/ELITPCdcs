@@ -14,16 +14,23 @@ DCSObject::DCSObject(UA_Server *server, std::string name)
   UA_QualifiedName_deleteMembers(&qName);
 }
 
-DCSObject::~DCSObject() { UA_NodeId_deleteMembers(&objectNodeId); }
+DCSObject::~DCSObject() {
+  UA_NodeId_deleteMembers(&objectNodeId);
+  for (auto i : variables) {
+    delete i.second;
+  }
+}
 
 DCSVariable &DCSObject::addVariable(std::string variableName,
                                     UA_DataType variableType) {
   if (variables.find(variableName) == variables.end()) {
-    DCSVariable variable{server, objectNodeId, objectName, variableName,
-                         variableType};
-    return variables.insert({variableName, variable}).first->second;
+    return *variables
+                .insert({variableName,
+                         new DCSVariable(server, objectNodeId, objectName,
+                                         variableName, variableType)})
+                .first->second;
   } else {
-    throw std::runtime_error("None unique variable id: " + objectName + "/" +
+    throw std::runtime_error("Not unique variable id: " + objectName + "/" +
                              variableName);
   }
 }
@@ -97,8 +104,6 @@ UA_StatusCode DCSObject::methodCallback(
   for (size_t i = 0; i != inputSize; ++i) {
     UA_Variant_copy(&input[i], &inp[i]);
   }
-
-
 
   object->methods.at (*methodId)(inp, output);
 
