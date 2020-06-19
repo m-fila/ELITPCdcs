@@ -72,8 +72,6 @@ protected:
   void addHistorizing();
   UA_Server *server;
   UA_ServerConfig *config;
-
-  void addEventType();
 };
 
 #endif // DCS_SERVER_H

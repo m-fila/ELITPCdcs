@@ -13,7 +13,6 @@ DCSServer::DCSServer(std::string address, int port) {
   if(retv!=UA_STATUSCODE_GOOD){
     throw std::runtime_error("Can't add context to server node");
   }
-  addEventType();
   addHistorizing();
 }
 
@@ -61,20 +60,4 @@ int DCSServer::run() {
   signal(SIGINT, SIG_DFL);
   signal(SIGTERM, SIG_DFL);
   return EXIT_SUCCESS;
-}
-
-void DCSServer::addEventType(){
-    UA_ObjectTypeAttributes attr = UA_ObjectTypeAttributes_default;
-    UA_NodeId eventTypeId=UA_NODEID_STRING_ALLOC(0,"DCSEvent");
-    attr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US", "DCSEventType");
-    attr.description = UA_LOCALIZEDTEXT_ALLOC("en-US", "Generic information event");
-    UA_QualifiedName qName=UA_QUALIFIEDNAME_ALLOC(0, "SimpleEventType");
-    UA_Server_addObjectTypeNode(server, eventTypeId,
-                                       UA_NODEID_NUMERIC(0, UA_NS0ID_BASEEVENTTYPE),
-                                       UA_NODEID_NUMERIC(0, UA_NS0ID_HASSUBTYPE),
-                                       qName,
-                                       attr, nullptr, nullptr);
-    UA_ObjectTypeAttributes_deleteMembers(&attr);
-    UA_QualifiedName_deleteMembers(&qName);
-    UA_NodeId_deleteMembers(&eventTypeId);
 }
