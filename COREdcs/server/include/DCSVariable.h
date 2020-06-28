@@ -24,14 +24,17 @@ public:
   }
   inline void setValueByVariant(UA_Variant &newVal) {
     UA_Server_writeValue(server, variableNodeId, newVal);
-    //  UA_Variant_deleteMembers(&newVal)
+    if(newVal.type->pointerFree==false){
+      UA_deleteMembers(newVal.data,newVal.type);
+    //  UA_Variant_deleteMembers(&newVal);
+    }
   }
   template <class T> void setValueByPointer(T newVal) {
     UA_Variant var;
     UA_Variant_setScalar(&var, newVal, &dataType);
     return setValueByVariant(var);
   }
-  template <class T> void setValue(T &&newVal) {
+  template <class T> void setValue( T &&newVal) {
     UA_Variant var;
     UA_Variant_setScalar(&var, &newVal, &dataType);
     return setValueByVariant(var);
