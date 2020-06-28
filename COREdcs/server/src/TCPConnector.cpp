@@ -41,7 +41,8 @@ int TCPConnector::resolveHostName(const char *host, struct in_addr *addr) {
            sizeof(struct in_addr));
     freeaddrinfo(res);
   } else {
-    throw std::runtime_error("Error while resolving hostname.");
+    throw std::runtime_error("Error while resolving hostname." +
+                             std::string(host));
   }
   return result;
 }
