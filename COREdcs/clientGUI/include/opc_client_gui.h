@@ -19,8 +19,7 @@ public:
     UA_Client *client;
     UA_ClientConfig *config;
 protected:
-    std::string address;
-    int port;
+    std::string tcp_address;
    // static opc_client* context;
     QTimer* client_clock;
     void connectSignals();
@@ -29,10 +28,13 @@ protected:
                             UA_SessionState sessionState,
                             UA_StatusCode recoveryStatus);
     void addSubscription(UA_Double interval=500);
+    enum class Connection {Closed, Opened,Initial} connection=Connection::Initial;
+
 //custom Types:
    void addCustomTypes(UA_DataTypeArray *custom);
 signals:
     void subCreated(UA_Client *client, UA_ClientConfig *config ,UA_CreateSubscriptionResponse response);
+    void clientConnected(bool);
 public slots:
     void iterate();
 };

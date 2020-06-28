@@ -1,9 +1,9 @@
 #include "opc_client_gui.h"
+#include <QMessageBox>
 //opc_client* opc_client::context=nullptr;
 
 opc_client::opc_client(std::string address, int port): 
-address(address), 
-port(port)
+tcp_address("opc.tcp://"+address+":"+std::to_string(port))
 {
     client = UA_Client_new();
     config= UA_Client_getConfig(client);
@@ -13,6 +13,7 @@ port(port)
     client_clock=new QTimer;
     client_clock->start(10);
     connectSignals();
+
 }
 opc_client::~opc_client(){
     UA_Client_delete(client);
@@ -20,9 +21,10 @@ opc_client::~opc_client(){
 }
 
 void opc_client::iterate(){
-    std::string tcp_address="opc.tcp://"+address+":"+std::to_string(port);
-    UA_StatusCode retval = UA_Client_connect(client, tcp_address.c_str());
-    if(retval==UA_STATUSCODE_GOOD){
+    if(connection!=Connection::Opened){
+        UA_Client_connect(client, tcp_address.c_str());
+    }
+    if(connection==Connection::Opened){
     UA_Client_run_iterate(client, 5);
     }
 }
@@ -34,14 +36,31 @@ void opc_client::connectSignals(){
 void
 opc_client::stateCallback(UA_Client *client, UA_SecureChannelState channelState,
               UA_SessionState sessionState, UA_StatusCode recoveryStatus){
+    opc_client* context=static_cast<opc_client*>(UA_Client_getConfig(client)->clientContext);
     if (sessionState == UA_SESSIONSTATE_ACTIVATED) {
-        opc_client* context=static_cast<opc_client*>(UA_Client_getConfig(client)->clientContext);
+        
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A session with the server is open");
         context->addSubscription();
     }
-//    if(clientState==UA_CLIENTSTATE_DISCONNECTED){
-//        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A connection with the server is closed");
- //   }
+    if(channelState==UA_SECURECHANNELSTATE_OPEN && context->connection!=Connection::Opened){
+        context->connection=Connection::Opened;
+        emit context->clientConnected(true);
+        context->client_clock->setInterval(10);
+    }
+    else if(channelState==UA_SECURECHANNELSTATE_CLOSED && context->connection!=Connection::Closed){
+        context->connection=Connection::Closed;
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A connection with the server is closed");
+        emit context->clientConnected(false);
+        /*
+        QMessageBox msgBox;
+        msgBox.setText("Unabled to connect with server:");
+        msgBox.setInformativeText(QString::asprintf("tcp://%s:%d",context->address.c_str(),context->port));
+        msgBox.setStandardButtons(QMessageBox::NoButton);
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setWindowModality(Qt::NonModal);
+        msgBox.exec();*/
+    context->client_clock->setInterval(1000);
+    }
 }
 
 void opc_client::addSubscription(UA_Double interval){

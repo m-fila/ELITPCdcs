@@ -42,6 +42,7 @@ void MainWindow::connectSignals(){
     connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
             ,statemachine,SLOT(opcInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
     connect(statemachine,SIGNAL(stateChanged(int)),stateBox,SLOT(setCurrentIndex(int)));
+    connect(client,SIGNAL(clientConnected(bool)),this,SLOT(setEnabled(bool)));
 }
 
 void MainWindow::closeEvent(QCloseEvent* e)
@@ -121,6 +122,7 @@ void MainWindow::loadWidgets(json &items){
         connect(new_button,SIGNAL(pressed()),new_widget,SLOT(startup()));
         connect(client,SIGNAL(subCreated(UA_Client*,UA_ClientConfig*, UA_CreateSubscriptionResponse))
                 ,new_widget,SLOT(controllerInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
+        connect(client,SIGNAL(clientConnected(bool)),new_widget,SLOT(setEnabled(bool)));        
         deviceLayout->addWidget(new_button);
         startButtons.push_back(new_button);
         deviceWidgets.push_back(new_widget);
