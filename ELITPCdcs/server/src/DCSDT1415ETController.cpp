@@ -142,7 +142,7 @@ UA_DT1415c DCSDT1415ETController::getConfiguration() {
   return dtc;
 }
 
-void DCSDT1415ETController::setChannel(std::vector<UA_Variant> input,
+void DCSDT1415ETController::setChannel(const UA_Variant* input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Boolean state = *(UA_Boolean *)input[1].data;
@@ -153,35 +153,35 @@ void DCSDT1415ETController::setChannel(std::vector<UA_Variant> input,
     device.setOFF(CH);
   }
 }
-void DCSDT1415ETController::setVoltage(std::vector<UA_Variant> input,
+void DCSDT1415ETController::setVoltage(const UA_Variant* input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setVoltageSet(CH, voltage);
 }
-void DCSDT1415ETController::setCurrent(std::vector<UA_Variant> input,
+void DCSDT1415ETController::setCurrent(const UA_Variant* input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double current = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setCurrentSet(CH, current);
 }
-void DCSDT1415ETController::setVoltageMax(std::vector<UA_Variant> input,
+void DCSDT1415ETController::setVoltageMax(const UA_Variant* input,
                                           UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setVoltageMax(CH, voltage);
 }
-void DCSDT1415ETController::setRampUp(std::vector<UA_Variant> input,
+void DCSDT1415ETController::setRampUp(const UA_Variant* input,
                                       UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setRampUp(CH, ramp);
 }
-void DCSDT1415ETController::setRampDown(std::vector<UA_Variant> input,
+void DCSDT1415ETController::setRampDown(const UA_Variant* input,
                                         UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;

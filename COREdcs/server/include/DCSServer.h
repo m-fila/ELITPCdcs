@@ -72,6 +72,8 @@ protected:
   void addHistorizing();
   UA_Server *server;
   UA_ServerConfig *config;
+  DCSWorkerThread dispatcherThread;
+  static void asyncCallback(UA_Server* server);
 };
 
 #endif // DCS_SERVER_H

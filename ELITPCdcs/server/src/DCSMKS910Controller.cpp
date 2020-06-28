@@ -40,9 +40,9 @@ UA_MKS910c DCSMKS910Controller::getConfiguration() {
   return mks;
 }
 
-void DCSMKS910Controller::setUnits(std::vector<UA_Variant> input,
+void DCSMKS910Controller::setUnits(const UA_Variant* input,
                                    UA_Variant *) {
-  int unit = *static_cast<UA_Int16 *>(input.at(0).data);
+  int unit = *static_cast<UA_Int16 *>(input[0].data);
   device.setUnits(static_cast<MKS910codes::Units>(unit));
 }
 
@@ -86,13 +86,13 @@ UA_Relay DCSMKS910Controller::getRelay() {
   return relay;
 }
 
-void DCSMKS910Controller::setRelay(std::vector<UA_Variant> input,
+void DCSMKS910Controller::setRelay(const UA_Variant* input,
                                    UA_Variant *output) {
-  auto no = *static_cast<UA_UInt32 *>(input.at(0).data);
+  auto no = *static_cast<UA_UInt32 *>(input[0].data);
   auto relayNo = static_cast<MKS910::RelayNo>(no);
-  auto enabled = *static_cast<UA_UInt32 *>(input.at(1).data);
-  auto setpoint = *static_cast<UA_Double *>(input.at(2).data);
-  auto hysteresis = *static_cast<UA_Double *>(input.at(3).data);
+  auto enabled = *static_cast<UA_UInt32 *>(input[1].data);
+  auto setpoint = *static_cast<UA_Double *>(input[2].data);
+  auto hysteresis = *static_cast<UA_Double *>(input[3].data);
 
   device.setRelayEnabled(relayNo, false);
   if (setpoint < hysteresis) {

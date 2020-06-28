@@ -12,10 +12,10 @@ protected:
   DCSHMPController(UA_Server *server, std::string name, int size);
 
 private:
-  void setChannel(std::vector<UA_Variant> input, UA_Variant *output);
-  void setOutput(std::vector<UA_Variant> input, UA_Variant *output);
-  void setVoltage(std::vector<UA_Variant> input, UA_Variant *output);
-  void setCurrent(std::vector<UA_Variant> input, UA_Variant *output);
+  void setChannel(const UA_Variant* input, UA_Variant *output);
+  void setOutput(const UA_Variant* input, UA_Variant *output);
+  void setVoltage(const UA_Variant* input, UA_Variant *output);
+  void setCurrent(const UA_Variant* input, UA_Variant *output);
   UA_HMPm getMeasurements();
   UA_HMPc getConfiguration();
   const int size;

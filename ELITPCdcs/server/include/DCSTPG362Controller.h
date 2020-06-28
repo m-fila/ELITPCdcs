@@ -11,7 +11,7 @@ class DCSTPG362Controller : public DCSDeviceController<TPG362> {
 private:
   DCSTPG362Controller(UA_Server *server, std::string name);
 
-  void setRelay(std::vector<UA_Variant>, UA_Variant*);
+  void setRelay(const UA_Variant*, UA_Variant*);
   
   UA_TPG362m getMeasurements();
   UA_TPG362c getConfiguration();

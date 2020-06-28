@@ -7,7 +7,7 @@ DCSState::DCSState(UA_Server *server, std::string name)
             std::bind(&::DCSState::setState, this,_1,_2));
 }
 
-void DCSState::setState(std::vector<UA_Variant> input, UA_Variant *output) {
-    MachineState state = *static_cast<MachineState*>(input.at(0).data);
+void DCSState::setState(const UA_Variant* input, UA_Variant *output) {
+    MachineState state = *static_cast<MachineState*>(input[0].data);
     variables.at("State")->setValue(state);
 }

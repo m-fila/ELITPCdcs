@@ -9,7 +9,7 @@ class DCSState : public DCSObject {
 
 private:
   DCSState(UA_Server *server, std::string name);
-  void setState(std::vector<UA_Variant> input, UA_Variant *output);
+  void setState(const UA_Variant* input, UA_Variant *output);
 
   enum MachineState : UA_Int32 {
     Idle,

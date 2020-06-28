@@ -38,7 +38,7 @@ DCSVariable &DCSObject::addVariable(std::string variableName,
 void DCSObject::addMethod(std::string methodName, std::string methodDescription,
                           std::vector<methodArgs> inputs,
                           std::vector<methodArgs> outputs,
-                          const std::function<void(std::vector<UA_Variant>,
+                          const std::function<void(const UA_Variant*,
                                                    UA_Variant *)> &methodBody,
                           void *context) {
 
@@ -88,8 +88,9 @@ void DCSObject::addMethod(std::string methodName, std::string methodDescription,
   UA_Array_delete(inputArguments, inputs.size(), &UA_TYPES[UA_TYPES_ARGUMENT]);
   UA_Array_delete(outputArguments, outputs.size(),
                   &UA_TYPES[UA_TYPES_ARGUMENT]);
-  //                if(context!=nullptr){
-  // UA_Server_setMethodNodeAsync(server, methodNodeId, UA_TRUE); }
+  if (context != nullptr) {
+    UA_Server_setMethodNodeAsync(server, methodNodeId, UA_TRUE);
+  }
   methods.insert({methodNodeId, methodBody});
 }
 
@@ -100,12 +101,12 @@ UA_StatusCode DCSObject::methodCallback(
     size_t outputSize, UA_Variant *output) {
 
   auto object = static_cast<DCSObject *>(objectContext);
-  std::vector<UA_Variant> inp(inputSize);
-  for (size_t i = 0; i != inputSize; ++i) {
-    UA_Variant_copy(&input[i], &inp[i]);
-  }
+//  UA_Variant* inp(inputSize);
+ // for (size_t i = 0; i != inputSize; ++i) {
+  //  UA_Variant_copy(&input[i], &inp[i]);
+//  }
 
-  object->methods.at (*methodId)(inp, output);
+  object->methods.at (*methodId)(input, output);
 
   // for (size_t i=0;i!=inputSize;++i){
   //  UA_Variant_deleteMembers(&inp.at(i));

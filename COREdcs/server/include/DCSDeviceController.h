@@ -19,7 +19,8 @@ public:
                            std::vector<methodArgs> inputArgs,
                            std::vector<methodArgs> outputArgs,
                            const T &methodBody, bool threaded = true) {
-    auto newBody = [methodBody, methodName, this](std::vector<UA_Variant> input,
+    // wrap with exception
+    auto newBody = [methodBody, methodName, this](const UA_Variant* input,
                                                   UA_Variant *output) {
       try {
         methodBody(input, output);
@@ -32,17 +33,22 @@ public:
                   "Device communication error occured. Disconnecting device.");
         this->device.resetConnectionStream();
       }
-      for (auto &i : input) {
-        UA_Variant_deleteMembers(&i);
-      }
+      //for (auto &i : input) {
+      //  UA_Variant_deleteMembers(&i);
+     // }
     };
+
     if (threaded) {
-      auto newerBody = [newBody, this](std::vector<UA_Variant> i,
-                                       UA_Variant *o) {
-        deviceThread.push_front(std::bind(newBody, i, o));
-      };
+      //  auto newerBody = [newBody, this](UA_Variant* i,
+      //                                   UA_Variant *o) {
+      //    deviceThread.push_front(std::bind(newBody, i, o));
+      //  };
+      //   DCSObject::addMethod(methodName, methodDescription, inputArgs,
+      //   outputArgs,
+      //                        newerBody, &this->deviceThread);
+      // } else {
       DCSObject::addMethod(methodName, methodDescription, inputArgs, outputArgs,
-                           newerBody);
+                           newBody, &this->deviceThread);
     } else {
       DCSObject::addMethod(methodName, methodDescription, inputArgs, outputArgs,
                            newBody);
@@ -56,7 +62,7 @@ public:
                       std::vector<methodArgs> outputArgs, const T &methodBody,
                       B instance, bool threaded = true) {
 
-    std::function<void(std::vector<UA_Variant>, UA_Variant *)> newBody =
+    std::function<void(const UA_Variant*, UA_Variant *)> newBody =
         std::bind(methodBody, instance, _1, _2);
     addControllerMethod(methodName, methodDescription, inputArgs, outputArgs,
                         newBody, threaded);
@@ -138,7 +144,7 @@ protected:
                         &DCSDeviceController::disconnectDevice, this);
   }
 
-  void dumpConfig(std::vector<UA_Variant>, UA_Variant *) {
+  void dumpConfig(const UA_Variant*, UA_Variant *) {
     auto v = variables.at("configuration")->getValueByVariant();
     std::cout << DCSUAJson::toString(&v, &UA_TYPES[UA_TYPES_VARIANT])
               << std::endl;
@@ -148,25 +154,28 @@ protected:
   DCSWorkerThread deviceThread;
 
 private:
-  void disconnectDevice(std::vector<UA_Variant>, UA_Variant *) {
+  void disconnectDevice(const UA_Variant*, UA_Variant *) {
     device.resetConnectionStream();
   }
 
-  void connectDevice(std::vector<UA_Variant> input, UA_Variant *output) {
+  void connectDevice(const UA_Variant* input, UA_Variant *output) {
     UA_String host = *(UA_String *)input[0].data;
     if (host.length == 0) {
       return;
     }
-
-    const char *address = reinterpret_cast<char *>(host.data);
+    std::string address(reinterpret_cast<char *>(host.data),host.length);
+    //const char *address = reinterpret_cast<char *>(host.data);
+    //std::cout<<address<<std::endl;
     UA_Int32 port = *(UA_Int32 *)input[1].data;
     try {
-      auto stream = TCPConnector::connect(address, port);
+      auto stream = TCPConnector::connect(address.c_str(), port);
       device.setConnectionStream(stream);
     } catch (const std::runtime_error &e) {
       // TODO: return to method or send event informing of connection fail or
       // success
-      UA_LOG_WARNING(DCSLogger::getLogger(),UA_LOGCATEGORY_USERLAND, "%s device controller catched: \"%s\"", objectName.c_str(), e.what());
+      UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                     "%s device controller catched: \"%s\"", objectName.c_str(),
+                     e.what());
     }
   }
 

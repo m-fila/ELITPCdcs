@@ -145,7 +145,7 @@ UA_DT1415c DCSN1471Controller::getConfiguration() {
   return dtc;
 }
 
-void DCSN1471Controller::setChannel(std::vector<UA_Variant> input,
+void DCSN1471Controller::setChannel(const UA_Variant* input,
                                     UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Boolean state = *(UA_Boolean *)input[1].data;
@@ -156,35 +156,35 @@ void DCSN1471Controller::setChannel(std::vector<UA_Variant> input,
     device.setOFF(CH);
   }
 }
-void DCSN1471Controller::setVoltage(std::vector<UA_Variant> input,
+void DCSN1471Controller::setVoltage(const UA_Variant* input,
                                     UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setVoltageSet(CH, voltage);
 }
-void DCSN1471Controller::setCurrent(std::vector<UA_Variant> input,
+void DCSN1471Controller::setCurrent(const UA_Variant* input,
                                     UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double current = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setCurrentSet(CH, current);
 }
-void DCSN1471Controller::setVoltageMax(std::vector<UA_Variant> input,
+void DCSN1471Controller::setVoltageMax(const UA_Variant* input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setVoltageMax(CH, voltage);
 }
-void DCSN1471Controller::setRampUp(std::vector<UA_Variant> input,
+void DCSN1471Controller::setRampUp(const UA_Variant* input,
                                    UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setRampUp(CH, ramp);
 }
-void DCSN1471Controller::setRampDown(std::vector<UA_Variant> input,
+void DCSN1471Controller::setRampDown(const UA_Variant* input,
                                      UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;

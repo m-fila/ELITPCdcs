@@ -29,7 +29,7 @@ public:
   void
   addMethod(std::string methodName, std::string methodDescription,
             std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
-            const std::function<void(std::vector<UA_Variant>, UA_Variant *)>
+            const std::function<void(const UA_Variant*, UA_Variant *)>
                 &methodBody,
             void *context = nullptr);
 
@@ -52,7 +52,7 @@ protected:
   UA_NodeId objectNodeId;
   std::map<const std::string, DCSVariable*> variables;
   std::map<UA_NodeId,
-           std::function<void(std::vector<UA_Variant>, UA_Variant *)>,
+           std::function<void(const UA_Variant*, UA_Variant *)>,
            NodeIdCmp>
       methods;
   static UA_StatusCode

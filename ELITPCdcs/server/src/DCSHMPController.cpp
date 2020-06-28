@@ -68,25 +68,25 @@ UA_HMPc DCSHMPController::getConfiguration() {
   return hmp;
 }
 
-void DCSHMPController::setChannel(std::vector<UA_Variant> input, UA_Variant *) {
-  int channel = *static_cast<UA_Int16 *>(input.at(0).data);
-  bool state = *static_cast<UA_Boolean *>(input.at(1).data);
+void DCSHMPController::setChannel(const UA_Variant* input, UA_Variant *) {
+  int channel = *static_cast<UA_Int16 *>(input[0].data);
+  bool state = *static_cast<UA_Boolean *>(input[1].data);
   device.setOutputSel(channel, state);
 }
 
-void DCSHMPController::setOutput(std::vector<UA_Variant> input, UA_Variant *) {
-  bool state = *static_cast<UA_Boolean *>(input.at(0).data);
+void DCSHMPController::setOutput(const UA_Variant* input, UA_Variant *) {
+  bool state = *static_cast<UA_Boolean *>(input[0].data);
   device.setOutputGen(state);
 }
 
-void DCSHMPController::setVoltage(std::vector<UA_Variant> input, UA_Variant *) {
-  int channel = *static_cast<UA_Int16 *>(input.at(0).data);
-  double v = *static_cast<UA_Double *>(input.at(1).data);
+void DCSHMPController::setVoltage(const UA_Variant* input, UA_Variant *) {
+  int channel = *static_cast<UA_Int16 *>(input[0].data);
+  double v = *static_cast<UA_Double *>(input[1].data);
   device.setVoltage(channel, v);
 }
 
-void DCSHMPController::setCurrent(std::vector<UA_Variant> input, UA_Variant *) {
-  int channel = *static_cast<UA_Int16 *>(input.at(0).data);
-  double i = *static_cast<UA_Double *>(input.at(1).data);
+void DCSHMPController::setCurrent(const UA_Variant* input, UA_Variant *) {
+  int channel = *static_cast<UA_Int16 *>(input[0].data);
+  double i = *static_cast<UA_Double *>(input[1].data);
   device.setCurrent(channel, i);
 }

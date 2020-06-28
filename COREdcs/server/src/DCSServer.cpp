@@ -9,10 +9,12 @@ DCSServer::DCSServer(std::string address, int port) {
   UA_String_deleteMembers(&hostname);
   //  setDescription("DCS", "urn:DCS.server.application",
   //                 "http://fuw.edu.pl/~mfila/dcs");
-  auto retv =UA_Server_setNodeContext(server, UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER), this);
-  if(retv!=UA_STATUSCODE_GOOD){
+  auto retv = UA_Server_setNodeContext(
+      server, UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER), this);
+  if (retv != UA_STATUSCODE_GOOD) {
     throw std::runtime_error("Can't add context to server node");
   }
+  config->asyncOperationNotifyCallback = asyncCallback;
   addHistorizing();
 }
 
@@ -45,9 +47,9 @@ void DCSServer::addCustomTypes(UA_DataTypeArray *custom) {
   config->customDataTypes = custom;
 }
 
-void DCSServer::addHistorizing(){
+void DCSServer::addHistorizing() {
   UA_HistoryDataGathering gathering = UA_HistoryDataGathering_Default(1000);
-	config->historyDatabase = UA_HistoryDatabase_default(gathering);
+  config->historyDatabase = UA_HistoryDatabase_default(gathering);
 }
 
 UA_Boolean DCSServer::running = false;
@@ -60,4 +62,30 @@ int DCSServer::run() {
   signal(SIGINT, SIG_DFL);
   signal(SIGTERM, SIG_DFL);
   return EXIT_SUCCESS;
+}
+
+void DCSServer::asyncCallback(UA_Server *server) {
+  auto dcsServer = getServerContext(server);
+  dcsServer->dispatcherThread.push_back([server]() {
+    const UA_AsyncOperationRequest *request = nullptr;
+    void *context = nullptr;
+    UA_AsyncOperationType type;
+    while (UA_Server_getAsyncOperationNonBlocking(server, &type, &request,
+                                                  &context, NULL) == false) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    void *threadContext;
+    UA_Server_getNodeContext(server, request->callMethodRequest.methodId,
+                             &threadContext);
+    auto thread = static_cast<DCSWorkerThread *>(threadContext);
+    thread->push_front([context, request, server]() {
+      UA_CallMethodResult response =
+          UA_Server_call(server, &request->callMethodRequest);
+      UA_Server_setAsyncOperationResult(
+          server, (UA_AsyncOperationResponse *)&response, context);
+      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
+                  "AsyncMethod_Testing: Call done: OKAY");
+      UA_CallMethodResult_clear(&response);
+    });
+  });
 }
