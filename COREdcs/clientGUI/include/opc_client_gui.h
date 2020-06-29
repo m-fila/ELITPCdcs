@@ -16,6 +16,7 @@ class opc_client: public QObject//QThread
     friend MainWindow;
 public:
     opc_client(std::string address,int port);
+    void start(){client_clock->start(100);}
     ~opc_client();
     UA_Client *client;
     UA_ClientConfig *config;
@@ -37,7 +38,6 @@ protected:
 signals:
     void subCreated(UA_Client *client, UA_ClientConfig *config ,UA_CreateSubscriptionResponse response);
     void clientConnected(bool);
-    void closeDialog();
 public slots:
     void iterate();
 };

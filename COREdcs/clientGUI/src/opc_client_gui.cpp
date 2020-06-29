@@ -10,10 +10,8 @@ tcp_address("opc.tcp://"+address+":"+std::to_string(port))
     UA_ClientConfig_setDefault(config);
     config->stateCallback=stateCallback;
     config->clientContext=this;
-    client_clock=new QTimer;
-    client_clock->start(10);
+    client_clock=new QTimer(this);
     connectSignals();
-
 }
 opc_client::~opc_client(){
     client_clock->stop();
@@ -45,7 +43,6 @@ opc_client::stateCallback(UA_Client *client, UA_SecureChannelState channelState,
     }
     if(channelState==UA_SECURECHANNELSTATE_OPEN && context->connection!=Connection::Opened){
         context->connection=Connection::Opened;
-        emit context->closeDialog();
         emit context->clientConnected(true);
         context->client_clock->setInterval(10);
         

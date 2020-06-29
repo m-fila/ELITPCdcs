@@ -44,6 +44,8 @@ private:
     void connectSignals();
     void buildStateBox();
 private slots:
-    void popConnectionAlert(bool);
+    void connectionStatusChanged(bool);
+signals:
+    void closeConnectionAlert();
 };
 #endif // MAINWINDOW_H
