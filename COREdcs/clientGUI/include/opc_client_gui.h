@@ -9,10 +9,11 @@
 #include <open62541/plugin/log_stdout.h>
 #include <open62541/client_subscriptions.h>
 #include <iostream>
-
+class MainWindow;
 class opc_client: public QObject//QThread
 {
     Q_OBJECT
+    friend MainWindow;
 public:
     opc_client(std::string address,int port);
     ~opc_client();
@@ -30,11 +31,13 @@ protected:
     void addSubscription(UA_Double interval=500);
     enum class Connection {Closed, Opened,Initial} connection=Connection::Initial;
 
+
 //custom Types:
    void addCustomTypes(UA_DataTypeArray *custom);
 signals:
     void subCreated(UA_Client *client, UA_ClientConfig *config ,UA_CreateSubscriptionResponse response);
     void clientConnected(bool);
+    void closeDialog();
 public slots:
     void iterate();
 };

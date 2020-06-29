@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFormLayout>
+#include <QMessageBox>
 MainWindow::MainWindow(json &config,QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -43,6 +44,7 @@ void MainWindow::connectSignals(){
             ,statemachine,SLOT(opcInit(UA_Client*,UA_ClientConfig*,UA_CreateSubscriptionResponse)));
     connect(statemachine,SIGNAL(stateChanged(int)),stateBox,SLOT(setCurrentIndex(int)));
     connect(client,SIGNAL(clientConnected(bool)),this,SLOT(setEnabled(bool)));
+    connect(client,SIGNAL(clientConnected(bool)),this,SLOT(popConnectionAlert(bool)));
 }
 
 void MainWindow::closeEvent(QCloseEvent* e)
@@ -132,4 +134,24 @@ void MainWindow::loadWidgets(json &items){
     }
 
 
+}
+#include<iostream>
+
+void MainWindow::popConnectionAlert(bool isConnected){
+if (!isConnected){
+       QMessageBox* msgBox=new QMessageBox(this);
+        msgBox->setText(QString::asprintf("Connection error\n\nUnable to connect to server\n%s\n\nNext connection attempt in %d s", client->tcp_address.c_str(), client->client_clock->interval()/1000));
+        std::cout<<client->tcp_address.c_str()<<std::endl;
+        //msgBox->setMinimumSize();
+        msgBox->setStandardButtons(QMessageBox::NoButton);
+        msgBox->setIcon(QMessageBox::Critical);
+        msgBox->setModal(false);
+        msgBox->setAttribute(Qt::WA_DeleteOnClose);
+        msgBox->setWindowModality(Qt::NonModal);
+        connect(client,SIGNAL(closeDialog()),msgBox,SLOT(reject()));
+        QPushButton* exitButton=new QPushButton("Exit",msgBox);
+        msgBox->addButton(exitButton,QMessageBox::AcceptRole);
+        connect(exitButton,SIGNAL(pressed()),this,SLOT(close()));
+        msgBox->show();
+    }
 }

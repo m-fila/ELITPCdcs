@@ -43,5 +43,7 @@ private:
     void loadWidgets(json &items);
     void connectSignals();
     void buildStateBox();
+private slots:
+    void popConnectionAlert(bool);
 };
 #endif // MAINWINDOW_H

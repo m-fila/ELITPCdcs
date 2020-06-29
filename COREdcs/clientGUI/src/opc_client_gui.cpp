@@ -1,5 +1,5 @@
 #include "opc_client_gui.h"
-#include <QMessageBox>
+
 //opc_client* opc_client::context=nullptr;
 
 opc_client::opc_client(std::string address, int port): 
@@ -16,6 +16,7 @@ tcp_address("opc.tcp://"+address+":"+std::to_string(port))
 
 }
 opc_client::~opc_client(){
+    client_clock->stop();
     UA_Client_delete(client);
     delete client_clock;
 }
@@ -44,22 +45,16 @@ opc_client::stateCallback(UA_Client *client, UA_SecureChannelState channelState,
     }
     if(channelState==UA_SECURECHANNELSTATE_OPEN && context->connection!=Connection::Opened){
         context->connection=Connection::Opened;
+        emit context->closeDialog();
         emit context->clientConnected(true);
         context->client_clock->setInterval(10);
+        
     }
     else if(channelState==UA_SECURECHANNELSTATE_CLOSED && context->connection!=Connection::Closed){
         context->connection=Connection::Closed;
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "A connection with the server is closed");
+        context->client_clock->setInterval(1000);
         emit context->clientConnected(false);
-        /*
-        QMessageBox msgBox;
-        msgBox.setText("Unabled to connect with server:");
-        msgBox.setInformativeText(QString::asprintf("tcp://%s:%d",context->address.c_str(),context->port));
-        msgBox.setStandardButtons(QMessageBox::NoButton);
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.setWindowModality(Qt::NonModal);
-        msgBox.exec();*/
-    context->client_clock->setInterval(1000);
     }
 }
 
@@ -80,3 +75,4 @@ void opc_client::addSubscription(UA_Double interval){
 void opc_client::addCustomTypes(UA_DataTypeArray *custom){
     config->customDataTypes=custom;
 }
+
