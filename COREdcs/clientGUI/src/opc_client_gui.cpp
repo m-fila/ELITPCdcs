@@ -16,7 +16,6 @@ tcp_address("opc.tcp://"+address+":"+std::to_string(port))
 opc_client::~opc_client(){
     client_clock->stop();
     UA_Client_delete(client);
-    delete client_clock;
 }
 
 void opc_client::iterate(){
