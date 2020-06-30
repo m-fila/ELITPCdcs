@@ -7,6 +7,7 @@
 
 #include "TCPConnector.h"
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <stdexcept>
 #include <string.h>
@@ -26,7 +27,8 @@ TCPStream *TCPConnector::createConnection(const char *server, int port) {
   }
   int sd = socket(AF_INET, SOCK_STREAM, 0);
   // if (::connect(sd, (struct sockaddr *)&address, sizeof(address)) != 0) {
-  if (connectWithTimeout(sd, &address, 2) != 0) {
+  if (connect(sd, (struct sockaddr *)&address, sizeof(address), {2,0}) != 0) {
+    close(sd);
     throw std::runtime_error("Error while connecting to endpoint or device.");
   }
   return new TCPStream(sd, &address);
@@ -46,71 +48,69 @@ int TCPConnector::resolveHostName(const char *host, struct in_addr *addr) {
   }
   return result;
 }
-#include <fcntl.h>
-int TCPConnector::connectWithTimeout(int sd, sockaddr_in *address,
-                                     uint timeout_s) {
-  // Set non-blocking
-  int arg;
-  if ((arg = fcntl(sd, F_GETFL, NULL)) < 0) {
-    //   fprintf(stderr, "Error fcntl(..., F_GETFL) (%s)\n", strerror(errno));
-    return 1;
+
+
+int TCPConnector::connect(int sockno, struct sockaddr *addr,
+                               size_t addrlen, struct timeval timeout) {
+  int res, opt;
+
+  // get socket flags
+  if ((opt = fcntl(sockno, F_GETFL, NULL)) < 0) {
+    return -1;
   }
-  arg |= O_NONBLOCK;
-  if (fcntl(sd, F_SETFL, arg) < 0) {
-    // fprintf(stderr, "Error fcntl(..., F_SETFL) (%s)\n", strerror(errno));
-    return 1;
+
+  // set socket non-blocking
+  if (fcntl(sockno, F_SETFL, opt | O_NONBLOCK) < 0) {
+    return -1;
   }
-  auto rv = ::connect(sd, (struct sockaddr *)address, sizeof(*address));
-  if (rv < 0) {
+
+  // try to connect
+  if ((res = ::connect(sockno, addr, addrlen)) < 0) {
     if (errno == EINPROGRESS) {
-      //     fprintf(stderr, "EINPROGRESS in connect() - selecting\n");
-      do {
-        timeval tv{timeout_s, 0};
-        fd_set myset;
-        FD_ZERO(&myset);
-        FD_SET(sd, &myset);
-        rv = select(sd + 1, NULL, &myset, NULL, &tv);
-        if (rv < 0 && errno != EINTR) {
-          //  fprintf(stderr, "Error connecting %d - %s\n", errno,
-          //  strerror(errno));
-          return 1;
-        } else if (rv > 0) {
-          // Socket selected for write
-          int valopt;
-          socklen_t optlen = sizeof(valopt);
-          if (getsockopt(sd, SOL_SOCKET, SO_ERROR, (void *)(&valopt), &optlen) <
-              0) {
-            //     fprintf(stderr, "Error in getsockopt() %d - %s\n", errno,
-            //     strerror(errno));
-            return 1;
-          }
-          // Check the value returned...
-          if (valopt) {
-            //          fprintf(stderr, "Error in delayed connection() %d -
-            //          %s\n", valopt, strerror(valopt));
-            return 1;
-          }
-          break;
-        } else {
-          //         fprintf(stderr, "Timeout in select() - Cancelling!\n");
-          return 1;
-        }
-      } while (1);
-    } else {
-      //   fprintf(stderr, "Error connecting %d - %s\n", errno,
-      //   strerror(errno));
-      return 1;
+      fd_set wait_set;
+
+      // make file descriptor set with socket
+      FD_ZERO(&wait_set);
+      FD_SET(sockno, &wait_set);
+
+      // wait for socket to be writable; return after given timeout
+      res = select(sockno + 1, NULL, &wait_set, NULL, &timeout);
     }
   }
-  // Set to blocking mode again...
-  if ((arg = fcntl(sd, F_GETFL, NULL)) < 0) {
-    // fprintf(stderr, "Error fcntl(..., F_GETFL) (%s)\n", strerror(errno));
+  // connection was successful immediately
+  else {
+    res = 1;
+  }
+
+  // reset socket flags
+  if (fcntl(sockno, F_SETFL, opt) < 0) {
+    return -1;
+  }
+
+  // an error occured in connect or select
+  if (res < 0) {
+    return -1;
+  }
+  // select timed out
+  else if (res == 0) {
+    errno = ETIMEDOUT;
     return 1;
   }
-  arg &= (~O_NONBLOCK);
-  if (fcntl(sd, F_SETFL, arg) < 0) {
-    //  fprintf(stderr, "Error fcntl(..., F_SETFL) (%s)\n", strerror(errno));
-    return 1;
+  // almost finished...
+  else {
+    socklen_t len = sizeof(opt);
+
+    // check for errors in socket layer
+    if (getsockopt(sockno, SOL_SOCKET, SO_ERROR, &opt, &len) < 0) {
+      return -1;
+    }
+
+    // there was an error
+    if (opt) {
+      errno = opt;
+      return -1;
+    }
   }
+
   return 0;
 }
