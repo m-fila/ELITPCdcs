@@ -38,10 +38,6 @@ void opcQObject::addMonitoredItem(UA_NodeId VariableId, UA_CreateSubscriptionRes
         UA_MonitoredItemCreateResult monResponse = UA_Client_MonitoredItems_createDataChange(client, response.subscriptionId,
                                                                                             UA_TIMESTAMPSTORETURN_BOTH,
                                                                                             monRequest, this, ValueChangedCallback, nullptr);
-        if(monResponse.statusCode == UA_STATUSCODE_GOOD){
-           UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"created monitored item %u", VariableId.identifier.numeric);
-        }
-       // UA_NodeId_deleteMembers(&VariableId);
     }
 
 
