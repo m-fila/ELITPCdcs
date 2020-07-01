@@ -121,7 +121,7 @@ UA_StatusCode DCSObject::methodCallback(
             " ";
       }
     }
-    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "%s",
                 message.c_str());
   }
 
@@ -143,9 +143,10 @@ UA_StatusCode DCSObject::methodCallback(
               .dump() +
           " ";
     }
-    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "%s",
                 message.c_str());
   }
-  UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, message.c_str());
+  UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "%s",
+              message.c_str());
   return UA_STATUSCODE_GOOD;
 }

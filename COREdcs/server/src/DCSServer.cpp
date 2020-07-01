@@ -83,8 +83,6 @@ void DCSServer::asyncCallback(UA_Server *server) {
           UA_Server_call(server, &request->callMethodRequest);
       UA_Server_setAsyncOperationResult(
           server, (UA_AsyncOperationResponse *)&response, context);
-      UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
-                  "AsyncMethod_Testing: Call done: OKAY");
       UA_CallMethodResult_clear(&response);
     });
   });
