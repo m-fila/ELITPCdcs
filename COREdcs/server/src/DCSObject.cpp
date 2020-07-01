@@ -36,16 +36,20 @@ DCSVariable &DCSObject::addVariable(std::string variableName,
   }
 }
 
-void DCSObject::addMethod(
+DCSObject::Method &DCSObject::addMethod(
     std::string methodName, std::string methodDescription,
     std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
     const std::function<void(const UA_Variant *, UA_Variant *)> &methodBody,
     void *context) {
 
+  Method method;
+  method.method = methodBody;
+  method.context = context;
   UA_Argument *inputArguments = static_cast<UA_Argument *>(
       UA_Array_new(inputs.size(), &UA_TYPES[UA_TYPES_ARGUMENT]));
 
   for (size_t i = 0; i < inputs.size(); ++i) {
+    method.inputsNames.push_back(inputs.at(i).name);
     UA_Argument_init(&inputArguments[i]);
     inputArguments[i].description =
         UA_LOCALIZEDTEXT_ALLOC("en-US", inputs.at(i).description.c_str());
@@ -58,6 +62,7 @@ void DCSObject::addMethod(
       UA_Array_new(outputs.size(), &UA_TYPES[UA_TYPES_ARGUMENT]));
 
   for (size_t i = 0; i < outputs.size(); ++i) {
+    method.outputsNames.push_back(outputs.at(i).name);
     UA_Argument_init(&outputArguments[i]);
     outputArguments[i].description =
         UA_LOCALIZEDTEXT_ALLOC("en-US", outputs.at(i).description.c_str());
@@ -80,8 +85,10 @@ void DCSObject::addMethod(
                           UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                           methodQName, methodAttr, methodCallback,
                           inputs.size(), inputArguments, outputs.size(),
-                          outputArguments, context, &methodNodeId);
+                          outputArguments, nullptr, &methodNodeId);
 
+  auto &methodContext = methods.insert({methodName, method}).first->second;
+  UA_Server_setNodeContext(server, methodNodeId, &methodContext);
   UA_MethodAttributes_deleteMembers(&methodAttr);
   UA_QualifiedName_deleteMembers(&methodQName);
 
@@ -91,7 +98,7 @@ void DCSObject::addMethod(
   if (context != nullptr) {
     UA_Server_setMethodNodeAsync(server, methodNodeId, UA_TRUE);
   }
-  methods.insert({methodNodeId, methodBody});
+  return methodContext;
 }
 
 UA_StatusCode DCSObject::methodCallback(
@@ -101,19 +108,22 @@ UA_StatusCode DCSObject::methodCallback(
     size_t outputSize, UA_Variant *output) {
 
   auto object = static_cast<DCSObject *>(objectContext);
+  auto method = static_cast<Method *>(methodContext);
 
+  UA_LocalizedText methodName;
+  UA_Server_readDisplayName(server, *methodId, &methodName);
+  auto mName = std::string(reinterpret_cast<char *>(methodName.text.data),
+                           methodName.text.length);
+  UA_LocalizedText_deleteMembers(&methodName);
   {
-    std::string message = object->objectName + " called method \"";
-    UA_LocalizedText methodName;
-    UA_Server_readDisplayName(server, *methodId, &methodName);
-    message += std::string(reinterpret_cast<char *>(methodName.text.data),
-                           methodName.text.length) +
-               "\" with arguments: ";
+    std::string message = object->objectName + " called method \"" + mName +
+                          "\" with arguments: ";
     if (inputSize == 0) {
       message += "none";
     } else {
       for (size_t i = 0; i < inputSize; i++) {
         message +=
+            method->inputsNames.at(i) + ":" +
             nlohmann::json::parse(
                 DCSUAJson::toString(&input[i], &UA_TYPES[UA_TYPES_VARIANT]))
                 .at("Body")
@@ -124,19 +134,17 @@ UA_StatusCode DCSObject::methodCallback(
     UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "%s",
                 message.c_str());
   }
+  // actuall call
+  (*method)(input, output);
 
-  object->methods.at (*methodId)(input, output);
-  std::string message = object->objectName + " method \"";
-  UA_LocalizedText methodName;
-  UA_Server_readDisplayName(server, *methodId, &methodName);
-  message += std::string(reinterpret_cast<char *>(methodName.text.data),
-                         methodName.text.length) +
-             "\" returned: ";
+  std::string message =
+      object->objectName + " called method \"" + mName + "\" with arguments: ";
   if (outputSize == 0) {
     message += "void";
   } else {
     for (size_t i = 0; i < outputSize; i++) {
       message +=
+          method->outputsNames.at(i) + ":" +
           nlohmann::json::parse(
               DCSUAJson::toString(&output[i], &UA_TYPES[UA_TYPES_VARIANT]))
               .at("Body")

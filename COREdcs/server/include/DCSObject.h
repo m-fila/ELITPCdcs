@@ -24,14 +24,20 @@ class DCSObject {
   friend DCSServer;
 
 public:
+  struct Method {
+    std::function<void(const UA_Variant *, UA_Variant *)> method;
+    std::vector<std::string> inputsNames;
+    std::vector<std::string> outputsNames;
+    void *context;
+    void operator()(const UA_Variant *in, UA_Variant *out) { method(in, out); }
+  };
   DCSVariable &addVariable(std::string variableName, UA_DataType variableType);
   std::string getName() { return objectName; }
-  void
-  addMethod(std::string methodName, std::string methodDescription,
-            std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
-            const std::function<void(const UA_Variant*, UA_Variant *)>
-                &methodBody,
-            void *context = nullptr);
+  Method &addMethod(
+      std::string methodName, std::string methodDescription,
+      std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
+      const std::function<void(const UA_Variant *, UA_Variant *)> &methodBody,
+      void *context = nullptr);
 
   DCSEvent createEvent() { return DCSEvent(server, objectNodeId); }
 
@@ -50,11 +56,9 @@ protected:
   UA_Server *server;
   const std::string objectName;
   UA_NodeId objectNodeId;
-  std::map<const std::string, DCSVariable*> variables;
-  std::map<UA_NodeId,
-           std::function<void(const UA_Variant*, UA_Variant *)>,
-           NodeIdCmp>
-      methods;
+  std::map<const std::string, DCSVariable *> variables;
+
+  std::map<std::string, Method> methods;
   static UA_StatusCode
   methodCallback(UA_Server *server, const UA_NodeId *sessionId,
                  void *sessionContext, const UA_NodeId *methodId,

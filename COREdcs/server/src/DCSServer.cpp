@@ -72,12 +72,13 @@ void DCSServer::asyncCallback(UA_Server *server) {
     UA_AsyncOperationType type;
     while (UA_Server_getAsyncOperationNonBlocking(server, &type, &request,
                                                   &context, NULL) == false) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    void *threadContext;
+    void *methodContext;
     UA_Server_getNodeContext(server, request->callMethodRequest.methodId,
-                             &threadContext);
-    auto thread = static_cast<DCSWorkerThread *>(threadContext);
+                             &methodContext);
+    auto thread = static_cast<DCSWorkerThread *>(
+        static_cast<DCSObject::Method *>(methodContext)->context);
     thread->push_front([context, request, server]() {
       UA_CallMethodResult response =
           UA_Server_call(server, &request->callMethodRequest);
