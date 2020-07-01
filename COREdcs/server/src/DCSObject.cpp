@@ -1,5 +1,6 @@
 #include "DCSObject.h"
-
+#include "DCSUAJson.h"
+#include "json.hpp"
 DCSObject::DCSObject(UA_Server *server, std::string name)
     : server(server), objectName(name),
       objectNodeId(UA_NODEID_STRING_ALLOC(1, name.c_str())) {
@@ -35,12 +36,11 @@ DCSVariable &DCSObject::addVariable(std::string variableName,
   }
 }
 
-void DCSObject::addMethod(std::string methodName, std::string methodDescription,
-                          std::vector<methodArgs> inputs,
-                          std::vector<methodArgs> outputs,
-                          const std::function<void(const UA_Variant*,
-                                                   UA_Variant *)> &methodBody,
-                          void *context) {
+void DCSObject::addMethod(
+    std::string methodName, std::string methodDescription,
+    std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
+    const std::function<void(const UA_Variant *, UA_Variant *)> &methodBody,
+    void *context) {
 
   UA_Argument *inputArguments = static_cast<UA_Argument *>(
       UA_Array_new(inputs.size(), &UA_TYPES[UA_TYPES_ARGUMENT]));
@@ -101,16 +101,51 @@ UA_StatusCode DCSObject::methodCallback(
     size_t outputSize, UA_Variant *output) {
 
   auto object = static_cast<DCSObject *>(objectContext);
-//  UA_Variant* inp(inputSize);
- // for (size_t i = 0; i != inputSize; ++i) {
-  //  UA_Variant_copy(&input[i], &inp[i]);
-//  }
+
+  {
+    std::string message = object->objectName + " called method \"";
+    UA_LocalizedText methodName;
+    UA_Server_readDisplayName(server, *methodId, &methodName);
+    message += std::string(reinterpret_cast<char *>(methodName.text.data),
+                           methodName.text.length) +
+               "\" with arguments: ";
+    if (inputSize == 0) {
+      message += "none";
+    } else {
+      for (size_t i = 0; i < inputSize; i++) {
+        message +=
+            nlohmann::json::parse(
+                DCSUAJson::toString(&input[i], &UA_TYPES[UA_TYPES_VARIANT]))
+                .at("Body")
+                .dump() +
+            " ";
+      }
+    }
+    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                message.c_str());
+  }
 
   object->methods.at (*methodId)(input, output);
-
-  // for (size_t i=0;i!=inputSize;++i){
-  //  UA_Variant_deleteMembers(&inp.at(i));
-  //  //inp.at(i)=input[i];
-  //}
+  std::string message = object->objectName + " method \"";
+  UA_LocalizedText methodName;
+  UA_Server_readDisplayName(server, *methodId, &methodName);
+  message += std::string(reinterpret_cast<char *>(methodName.text.data),
+                         methodName.text.length) +
+             "\" returned: ";
+  if (outputSize == 0) {
+    message += "void";
+  } else {
+    for (size_t i = 0; i < outputSize; i++) {
+      message +=
+          nlohmann::json::parse(
+              DCSUAJson::toString(&output[i], &UA_TYPES[UA_TYPES_VARIANT]))
+              .at("Body")
+              .dump() +
+          " ";
+    }
+    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                message.c_str());
+  }
+  UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, message.c_str());
   return UA_STATUSCODE_GOOD;
 }
