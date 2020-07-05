@@ -13,25 +13,27 @@ void DCSLogger::log(void *context, UA_LogLevel level, UA_LogCategory category,
             (int)(tOffset / UA_DATETIME_SEC / 36));
   }
   const std::lock_guard<std::mutex> lock(logC->mutex);
-  FILE *file = nullptr;
-  file = fopen(logC->file.c_str(), "a");
-  if (file != nullptr) {
-    std::va_list args2;
-    va_copy(args2, args);
-    fprintf(file, "%s %s/%s\t", date, logC->logLevelNames[level],
-            logC->logCategoryNames[category]);
-    vfprintf(file, msg, args2);
-    fprintf(file, "\n");
-    fflush(file);
-    fclose(file);
-    va_end(args2);
-  } else {
-    printf("%s%s %s/%s%s\t", date, logC->logLeveLColors[UA_LOGLEVEL_ERROR],
-           logC->logLevelNames[UA_LOGLEVEL_ERROR],
-           logC->logCategoryNames[UA_LOGCATEGORY_SERVER],
-           logC->logLevelResetColor);
-    printf("Can't open log file: %s\n", logC->file.c_str());
-    fflush(stdout);
+  if (!logC->file.empty()) {
+    FILE *file = nullptr;
+    file = fopen(logC->file.c_str(), "a");
+    if (file != nullptr) {
+      std::va_list args2;
+      va_copy(args2, args);
+      fprintf(file, "%s %s/%s\t", date, logC->logLevelNames[level],
+              logC->logCategoryNames[category]);
+      vfprintf(file, msg, args2);
+      fprintf(file, "\n");
+      fflush(file);
+      fclose(file);
+      va_end(args2);
+    } else {
+      printf("%s%s %s/%s%s\t", date, logC->logLeveLColors[UA_LOGLEVEL_ERROR],
+             logC->logLevelNames[UA_LOGLEVEL_ERROR],
+             logC->logCategoryNames[UA_LOGCATEGORY_SERVER],
+             logC->logLevelResetColor);
+      printf("Can't open log file: %s\n", logC->file.c_str());
+      fflush(stdout);
+    }
   }
   printf("%s%s %s/%s%s\t", date, logC->logLeveLColors[level],
          logC->logLevelNames[level], logC->logCategoryNames[category],
@@ -42,7 +44,7 @@ void DCSLogger::log(void *context, UA_LogLevel level, UA_LogCategory category,
 }
 
 void DCSLogger::setFile(std::string logFile) {
-    auto &c = getInstance().context;
-    const std::lock_guard<std::mutex> lock(c.mutex);
-    c.file = logFile;
-  };
+  auto &c = getInstance().context;
+  const std::lock_guard<std::mutex> lock(c.mutex);
+  c.file = logFile;
+};

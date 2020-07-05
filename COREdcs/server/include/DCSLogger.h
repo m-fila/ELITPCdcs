@@ -24,12 +24,13 @@ private:
 
   DCSLogger() : logger({log, &context, nullptr}) {}
 
+  UA_Logger logger;
+
   static void log(void *context, UA_LogLevel level, UA_LogCategory category,
                   const char *msg, va_list args);
 
-  UA_Logger logger;
   struct logContext {
-    std::string file;
+    std::string file = "";
     std::mutex mutex;
     const char *const logLevelNames[6] = {"trace", "debug", "info",
                                           "warn",  "error", "fatal"};
