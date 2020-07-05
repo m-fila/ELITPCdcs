@@ -1,7 +1,7 @@
 #ifndef DCS_VARIABLE_H
 #define DCS_VARIABLE_H
-#include "DCSObject.h"
 #include "DCSLogger.h"
+#include "DCSObject.h"
 #include <functional>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
 #include <open62541/plugin/historydata/history_database_default.h>
@@ -14,19 +14,19 @@ class DCSVariable {
   friend DCSObject;
 
 public:
-  std::string getName(){return variableName;}
-  std::string getFullName(){return parentName+"."+variableName;}
+  std::string getName() { return variableName; }
+  std::string getFullName() { return parentName + "." + variableName; }
   inline const UA_DataType *getDataType() { return &dataType; }
-  inline void setNull(){
+  inline void setNull() {
     UA_Variant var;
-  UA_Variant_init(&var);
-    UA_Server_writeValue(server,variableNodeId,var);
+    UA_Variant_init(&var);
+    UA_Server_writeValue(server, variableNodeId, var);
   }
   inline void setValueByVariant(UA_Variant &newVal) {
     UA_Server_writeValue(server, variableNodeId, newVal);
-    if(newVal.type->pointerFree==false){
-      UA_deleteMembers(newVal.data,newVal.type);
-    //  UA_Variant_deleteMembers(&newVal);
+    if (newVal.type->pointerFree == false) {
+      UA_deleteMembers(newVal.data, newVal.type);
+      //  UA_Variant_deleteMembers(&newVal);
     }
   }
   template <class T> void setValueByPointer(T newVal) {
@@ -34,22 +34,27 @@ public:
     UA_Variant_setScalar(&var, newVal, &dataType);
     return setValueByVariant(var);
   }
-  template <class T> void setValue( T &&newVal) {
+  template <class T> void setValue(T &&newVal) {
     UA_Variant var;
     UA_Variant_setScalar(&var, &newVal, &dataType);
     return setValueByVariant(var);
   }
 
-  inline UA_Variant getValueByVariant() {
-    UA_Variant val;
-    UA_Server_readValue(server, variableNodeId, &val);
-    return val;
+  inline UA_Variant getValueByVariant() const {
+    UA_Variant var;
+    UA_Server_readValue(server, variableNodeId, &var);
+    return var;
   }
-  template <class T> T getValue() {
-    return *static_cast<T *>(getValueByVariant());
+  template <class T> T getValue() const {
+    auto var = getValueByVariant();
+    if (UA_Variant_isEmpty(&var)) {
+      throw std::runtime_error("empty value");
+    }
+    return *static_cast<T *>(var.data);
   }
-  template <class T> T getValueByPointer() {
-    return static_cast<T>(getValueByVariant());
+  template <class T> T getValueByPointer() const {
+    auto var = getValueByVariant();
+    return UA_Variant_isEmpty(&var) ? static_cast<T>(var.data) : nullptr;
   }
 
   inline void setAccessRead(bool access) {

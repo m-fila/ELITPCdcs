@@ -1,6 +1,7 @@
 #ifndef DCS_CONTEXT_H
 #define DCS_CONTEXT_H
 #include <open62541/server.h>
+#include <stdexcept>
 namespace DCS {
 template <class T> T getContext(UA_Server *server, const UA_NodeId nodeId) {
   void *i;
