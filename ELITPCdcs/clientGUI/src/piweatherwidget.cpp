@@ -1,6 +1,5 @@
 #include "piweatherwidget.h"
 #include "ui_piweather.h"
-//#include "src/ConnectionParameters.h"
 #include <iostream>
 #include <QSettings>
 #include <QInputDialog>
@@ -8,17 +7,18 @@
 PiWeatherWidget::PiWeatherWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent), ui(new Ui::PiWeatherWidget)
 {
     ui->setupUi(this);
+    ui->tcpLayout->addWidget(tcp);
     loadConfig();
     setChannelsNames();
-    ui->connectionIP->setText(QSettings().value("PiWeatherIP").toString());
-    ui->connectionPort->setText(QSettings().value("PiWeatherPort").toString());
     controller=new piweather_controller(instanceName);
     connectSignals();
 }
 PiWeatherWidget::PiWeatherWidget(std::string name, std::string address, std::string port, QWidget *parent): PiWeatherWidget(name,parent){
-    if(address.size()!=0 && port.size()!=0){
-        ui->connectionIP->setText(QString::fromStdString(address));
-        ui->connectionPort->setText(QString::fromStdString(port));
+    if(address.size()){
+        tcp->setIP(address);
+    }
+    if(port.size()){
+        tcp->setPort(port);
     }
 }
 PiWeatherWidget::~PiWeatherWidget()
@@ -28,8 +28,7 @@ PiWeatherWidget::~PiWeatherWidget()
 }
 
 void PiWeatherWidget::connectSignals(){
-    connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
+    AbstractWidget::connectSignals();
     connect(controller,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
     connect(controller,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(controller,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
@@ -51,26 +50,8 @@ void PiWeatherWidget::updateStatus(void* data){
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
-        ui->connect->setEnabled(false);
-        ui->disconnect->setEnabled(true);
-        ui->connectionStatus->setText("CONNECTED");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::darkGreen);
-        ui->connectionStatus->setPalette(palette);
-        ui->connectionIP->setEnabled(false);
-        ui->connectionPort->setEnabled(false);
     }
     else{
-        ui->connect->setEnabled(true);
-        ui->disconnect->setEnabled(false);
-        ui->connectionStatus->setText("DISCONNECTED");
-     //   ui->statusLabel->setText("...");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::red);
-        ui->connectionStatus->setPalette(palette);
-        ui->connectionIP->setEnabled(true);
-        ui->connectionPort->setEnabled(true);
-
         ui->tempDisplay1->display(0);
         ui->tempDisplay2->display(0);
         ui->tempDisplay3->display(0);
@@ -96,35 +77,30 @@ void PiWeatherWidget::updateConfiguration(void* data){
 
 void PiWeatherWidget::deviceConnect()
 {
-    std::string IPaddress = ui->connectionIP->text().toStdString();
-    int port = ui->connectionPort->text().toInt();
+    std::string IPaddress = tcp->getIP();
+    int port = tcp->getPort();
     controller->callConnect(IPaddress,port);
 }
 void PiWeatherWidget::deviceDisconnect(){
     controller->callDisconnect();
 }
 
-
-void PiWeatherWidget::closeEvent(QCloseEvent* e)
-{
-    QSettings().setValue("PiWeatherIP",ui->connectionIP->text());
-    QSettings().setValue("PiWeatherPort",ui->connectionPort->text());
-    saveConfig();
-    QWidget::closeEvent(e);
-}
-
 void PiWeatherWidget::loadConfig(){
+    AbstractWidget::loadConfig();
+
     QString configkey;
     for(int i=0; i!=4;++i){
-        configkey=tr("PiWeatherCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         customName[i]= QSettings().value(configkey).toString();
     }
 }
 
 void PiWeatherWidget::saveConfig(){
+    AbstractWidget::saveConfig();
+    
     QString configkey;
     for(int i=0; i!=4;++i){
-        configkey=tr("PiWeatherCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         QSettings().setValue(configkey,customName[i]);
     }
 }

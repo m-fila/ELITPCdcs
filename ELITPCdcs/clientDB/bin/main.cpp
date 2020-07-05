@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
   json config = ConfigLoader::getMasterConfig(argc, argv);
 
   eli_client client(config.at("address").get<std::string>(),
-                    config.at("port").get<std::string>());
+                    config.at("port").get<int>());
   std::string databasePath;
   try {
     databasePath = config.at("databasePath").get<std::string>();
-  } catch (nlohmann::detail::out_of_range) {
+  } catch (nlohmann::detail::out_of_range &) {
     auto now = std::chrono::system_clock::now();
     auto in_time_t = std::chrono::system_clock::to_time_t(now);
     std::stringstream ss;

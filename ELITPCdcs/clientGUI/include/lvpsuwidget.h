@@ -36,8 +36,7 @@ private:
     void saveConfig();
     void setChannelsNames();
     void setChannelName(int channelno);
-protected:
-    void closeEvent(QCloseEvent* e);
+
 public slots:
 
     void deviceConnect();

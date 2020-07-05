@@ -8,6 +8,8 @@ PiWeatherm_Encoding_DefaultBinary,31404,Object
 PiWeatherc_Encoding_DefaultBinary,31414,Object
 MKS910m_Encoding_DefaultBinary,9104,Object
 MKS910c_Encoding_DefaultBinary,9114,Object
+ParametersTCP_Encoding_DefaultBinary,32004,Object
+Relay_Encoding_DefaultBinary,32104,Object
 HMPm,20201,DataType
 HMPc,20211,DataType
 DT1415m,14151,DataType
@@ -18,3 +20,5 @@ PiWeatherm,31401,DataType
 PiWeatherc,31411,DataType
 MKS910m,9101,DataType
 MKS910c,9111,DataType
+ParametersTCP,32001,DataType
+Relay,32101,DataType

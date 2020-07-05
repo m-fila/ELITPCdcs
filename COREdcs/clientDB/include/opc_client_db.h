@@ -14,7 +14,7 @@
 class opc_client_db
 {
 public:
-    opc_client_db(std::string address,std::string port);
+    opc_client_db(std::string address,int port);
     ~opc_client_db();
     opc_client_db(opc_client_db const&) = delete;
     void operator=(opc_client_db const&)  = delete;
@@ -30,10 +30,13 @@ public:
 protected:
 
     std::string address;
-    std::string port;
+    int port;
     std::vector<abstract_variable*> variables;
     database dbase;
-    static void stateCallback (UA_Client *client, UA_ClientState clientState);
+  static void stateCallback(UA_Client *client,
+                            UA_SecureChannelState channelState,
+                            UA_SessionState sessionState,
+                            UA_StatusCode recoveryStatus);
     static UA_Boolean running;
     static void stopHandler(int sig) {
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c. Shutting down may take a few seconds");

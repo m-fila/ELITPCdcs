@@ -2,7 +2,6 @@
 
 GenericDevice::GenericDevice(): connected(false)
 {
-
 }
 
 GenericDevice::~GenericDevice()
@@ -28,6 +27,7 @@ void GenericDevice::sendCommand(std::string command)
     {
         connectionStream->send(command);
     }
+    
 }
 
 std::string GenericDevice::receiveResponse(){
@@ -35,6 +35,9 @@ std::string GenericDevice::receiveResponse(){
     {
         return connectionStream->receive();
     } 
+        else{
+        return "";
+    }
 }
 
 std::string GenericDevice::sendWithResponse(std::string command)
@@ -42,6 +45,9 @@ std::string GenericDevice::sendWithResponse(std::string command)
     if(isConnected())
     {
         return connectionStream->sendWithResponse(command);
+    }
+    else{
+        return "";
     }
 }
 
@@ -53,5 +59,8 @@ std::string GenericDevice::sendWithDelayedResponse(std::string command,uint dela
         connectionStream->send(command);
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
         return connectionStream->receive();
+    }
+    else{
+        return "";
     }
 }

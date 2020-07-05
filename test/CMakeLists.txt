@@ -5,9 +5,13 @@ include_directories(${CMAKE_BINARY_DIR}/src_generated)
 include_directories(${PROJECT_SOURCE_DIR}/test)
 include_directories(${PROJECT_SOURCE_DIR}/ELITPCdcs/server/include)
 include_directories(${PROJECT_SOURCE_DIR}/ELITPCdcs/shared)
-add_executable(test_protocol mks910protocol.cpp)
+add_executable(test_protocol influx.cpp)
+add_executable(DCS DCS.cpp)
+add_executable(db db.cpp)
 
 target_link_libraries(test_protocol COREdcs_server ELITPCdcs_server)
+target_link_libraries(DCS COREdcs_server ELITPCdcs_server)
+target_link_libraries(db COREdcs_server ELITPCdcs_server)
 
 
 

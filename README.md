@@ -2,20 +2,22 @@
 
 Detector Control System for ELITPC detector using OPC UA protocol.
 Provides server, operational gui client and database client. Server is
-compatible with other clients such as UaExpert by Unified Automation.
+compatible with other OPC UA clients such as UaExpert by Unified Automation.
 
 ## Getting Started
 
 ### Prerequisites
 C++11 compiler and cmake>3.1
 
-This project requires open62541 (open source C implementation of OPC UA)
-build with enabled methodcalls, subscriptions (enabled by default) and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation (in that case you should also edit env.sh with same path):
+This project requires open62541 (open source C implementation of OPC UA) version 1.1 or newer
+build with enabled methodcalls, subscriptions (enabled by default), events, historizing, multithread-safety and full namespace 0. You may change `-DCMAKE_INSTALL_PREFIX` for custom installation (in that case you should also edit env.sh with the same path):
 ```
 git clone https://github.com/open62541/open62541
-mkdir open62541/build && cd open62541/build
+cd open62541
+git checkout v1.1
 git submodule update --init --recursive
-cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/open62541 ..
+mkdir build && cd build
+cmake -DUA_NAMESPACE_ZERO=FULL  -DBUILD_SHARED_LIBS=ON -DUA_ENABLE_HISTORIZING=ON -DUA_ENABLE_SUBSCRIPTIONS_EVENTS=ON -DUA_MULTITHREADING=150 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/open62541 ..
 make
 sudo make install
 ```
@@ -47,34 +49,33 @@ At startup server and clients look for dcs.json file with list of
 devices used in experimental setup and address of a server. So far known devices are:
 * HMP2020 - 2 channel lv psu
 * HMP4040 - 4 channel lv psu
-* DT1415ET - hv psu
+* DT1415ET - 8 channel hv psu
+* N1471 - 4 channel NIM hv psu
 * TPG362 - vacuum gauge
+* MKS910 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
 
 A path to config file should be given in first argument for server or client application. Otherwise a shared config can be placed at `${HOME}/.dcs/dcs.json`.
-You may consider installing `sqlitebrowser` for reading database files:
-```
-sudo apt-get install sqlitebrowser
-```
+
 
 ### Adding new devices
-The project is split into two catalogs COREdcs with framework and ELITPCdcs implementing handling specific devices. Ideally you shouldn't have to edit anything in COREdcs.
+The project is split into two catalogs COREdcs with framework and ELITPCdcs implementing specific devices. Ideally you shouldn't have to edit anything in COREdcs.
 #### Server
 * `bin/main.cpp` create specific device controller if found in config file
 * `${device}` hardware communication with device
-* `${device}controller`  device specific methods and update routines for
-variables of OPC object
-#### Database client
-* `bin/main.cpp` create specific device controller if found in config file
-* `${device}variable` logging specific parameters of variables provided by server
+* `${device}controller`  device specific methods and update routines for variables of OPC object
 #### GUI client
 * `mainwindow.cpp` create specific device controller if found in config file
 * `${device}controller` slots for calling device specific methods
 * `${device}widget` device specific gui
 ### Roadmap
 - [ ] new devices (MKS 946) 
-- [ ] events
-- [ ] historizing
-- [ ] more efficient server side
+- [ ] interlock support 
+- [x] events
+- [x] historizing
+- [x] more efficient server side
+- [ ] device register
+- [ ] device profiles
+- [ ] higher level client
 ## Authors
 * __Mateusz Fila__ basing on ELITPCdcsPanel by __Marcin Zaremba__

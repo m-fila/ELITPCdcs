@@ -12,6 +12,7 @@
 #include <QLCDNumber>
 #include <QTabWidget>
 #include <vector>
+#include "DCSRelayWidget.h"
 #include "tpgcontroller.h"
 #include "tpg362codes.h"
 #include "open62541/types_dcsnodeset_generated.h"
@@ -35,9 +36,6 @@ public slots:
 
     void changeNamePressed();
     void updateStatusLabel(QString info);
-
-protected:
-    void closeEvent(QCloseEvent* e);
 
 private:
 //    std::string instanceName;
@@ -63,10 +61,10 @@ private:
 
     void createLayout();
     void drawLine();
-    void createConnectionSection();
     void createMTab();
     void createCTab();
     void createHTab();
+    void createRTab();
     void setChannelName(int channelno);
     void setChannelsNames();
     void connectSignals();

@@ -8,19 +8,18 @@
 LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent), ui(new Ui::LVpsuWidget)
 {
     ui->setupUi(this);
+    ui->tcpLayout->addWidget(tcp);
     loadConfig();
     setChannelsNames();
-    ui->connectionIP->setText(QSettings().value("LVpsuIP").toString());
-    ui->connectionPort->setText(QSettings().value("LVpsuPort").toString());
     LVController=new lv_controller(instanceName);
     connectSignals();
 }
 LVpsuWidget::LVpsuWidget(std::string name, std::string address, std::string port, QWidget *parent): LVpsuWidget(name,parent){
     if(address.size()){
-        ui->connectionIP->setText(QString::fromStdString(address)); 
+        tcp->setIP(address); 
     }
     if(port.size()){
-        ui->connectionPort->setText(QString::fromStdString(port));
+        tcp->setPort(port);
     }
 }
 LVpsuWidget::~LVpsuWidget()
@@ -30,8 +29,7 @@ LVpsuWidget::~LVpsuWidget()
 }
 
 void LVpsuWidget::connectSignals(){
-    connect(ui->connect, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
-    connect(ui->disconnect, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
+    AbstractWidget::connectSignals();
     connect(LVController,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
     connect(LVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
     connect(LVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
@@ -63,14 +61,6 @@ void LVpsuWidget::updateStatus(void* data){
     bool isConnected=*static_cast<bool*>(data);
     connectionState=isConnected;
     if(isConnected){
-        ui->connect->setEnabled(false);
-        ui->disconnect->setEnabled(true);
-        ui->connectionStatus->setText("CONNECTED");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::darkGreen);
-        ui->connectionStatus->setPalette(palette);
-        ui->connectionIP->setEnabled(false);
-        ui->connectionPort->setEnabled(false);
         ui->CH1on->setEnabled(!deviceSettings.CH1);
         ui->CH1off->setEnabled(deviceSettings.CH1);
         ui->CH2on->setEnabled(!deviceSettings.CH2);
@@ -83,16 +73,6 @@ void LVpsuWidget::updateStatus(void* data){
         ui->CH2confISet->setEnabled(true);
     }
     else{
-        ui->connect->setEnabled(true);
-        ui->disconnect->setEnabled(false);
-        ui->connectionStatus->setText("DISCONNECTED");
-     //   ui->statusLabel->setText("...");
-        QPalette palette = ui->connectionStatus->palette();
-        palette.setColor(QPalette::WindowText, Qt::red);
-        ui->connectionStatus->setPalette(palette);
-
-        ui->connectionIP->setEnabled(true);
-        ui->connectionPort->setEnabled(true);
 
         ui->CH1on->setEnabled(false);
         ui->CH1off->setEnabled(false);
@@ -153,8 +133,8 @@ void LVpsuWidget::updateConfiguration(void* data){
 
 void LVpsuWidget::deviceConnect()
 {
-    std::string IPaddress = ui->connectionIP->text().toStdString();
-    int port = ui->connectionPort->text().toInt();
+    std::string IPaddress = tcp->getIP();
+    int port = tcp->getPort();
     LVController->callConnect(IPaddress,port);
 }
 void LVpsuWidget::deviceDisconnect(){
@@ -180,27 +160,20 @@ void LVpsuWidget::setOutputOFF(){
     LVController->callSetOutput(false);
 }
 
-
-void LVpsuWidget::closeEvent(QCloseEvent* e)
-{
-    QSettings().setValue("LVpsuIP",ui->connectionIP->text());
-    QSettings().setValue("LVpsuPort",ui->connectionPort->text());
-    saveConfig();
-    QWidget::closeEvent(e);
-}
-
 void LVpsuWidget::loadConfig(){
+    AbstractWidget::loadConfig();
     QString configkey;
     for(int i=0; i!=2;++i){
-        configkey=tr("LVpsuCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         customName[i]= QSettings().value(configkey).toString();
     }
 }
 
 void LVpsuWidget::saveConfig(){
+    AbstractWidget::saveConfig();
     QString configkey;
     for(int i=0; i!=2;++i){
-        configkey=tr("LVpsuCH%1/CustomName").arg(i);
+        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
         QSettings().setValue(configkey,customName[i]);
     }
 }

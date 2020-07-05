@@ -11,13 +11,13 @@ public:
     GenericDevice();
     virtual ~GenericDevice();
 
-    void setConnectionStream(ConnectionStream* stream);
+    virtual void setConnectionStream(ConnectionStream* stream);
     void resetConnectionStream();
     bool isConnected() {return connected;}
     void sendCommand(std::string command);
     std::string receiveResponse();
     std::string sendWithResponse(std::string command);
-    std::string sendWithDelayedResponse(std::string command, uint delay);
+    std::string sendWithDelayedResponse(std::string command, uint delay_ms);
     ConnectionType getActiveConnectionType() {return activeConnectionType;}
 
 protected:

@@ -43,5 +43,9 @@ private:
     void loadWidgets(json &items);
     void connectSignals();
     void buildStateBox();
+private slots:
+    void connectionStatusChanged(bool);
+signals:
+    void closeConnectionAlert();
 };
 #endif // MAINWINDOW_H

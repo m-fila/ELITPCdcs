@@ -19,10 +19,9 @@ public:
     DT1415ET();
     virtual ~DT1415ET();
     std::string sendDT1415ETcommand(CMD command, CHANNEL channel, std::string function, std::string value);
-
+    void setConnectionStream(ConnectionStream* stream) override;
     std::string getModuleName();
     std::string getFirmwareVersion();
-    void setFirmwareVersion();
     std::string getSerialNumber();
     std::string getControlMode();
     bool isRemote();
@@ -53,6 +52,7 @@ private:
 
     std::string extractCommandStatus(std::string command);
     std::string extractCommandValue(std::string command);
+    void setFirmwareVersion();
     Version firmwareVersion;
 };
 

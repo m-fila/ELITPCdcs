@@ -1,6 +1,10 @@
 <RCC>
     <qresource prefix="/images">
         <file>res/hv_gui_pic.png</file>
+        <file>res/hvcombo_gui_pic.png</file>
+        <file>res/hvotpc_gui_pic.png</file>
         <file>res/dcs_64x64_bw.png</file>
+        <file>res/relay_below.png</file>
+        <file>res/relay_above.png</file>
     </qresource>
 </RCC>

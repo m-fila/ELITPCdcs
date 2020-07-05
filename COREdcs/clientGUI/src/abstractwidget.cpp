@@ -1,25 +1,32 @@
 #include "abstractwidget.h"
 
-AbstractWidget::AbstractWidget(QWidget *parent) : QWidget(parent)
-{
-}
-AbstractWidget::AbstractWidget(std::string name,QWidget *parent): QWidget(parent), instanceName(name){
-}
-
-void AbstractWidget::startup(){
-    this->show();
+AbstractWidget::AbstractWidget(std::string name,bool horizontalTcpPanel, QWidget *parent): BaseWidget(name,parent) {
+    tcp=new TCPWidget(horizontalTcpPanel);
+    loadConfig();
 }
 
 void AbstractWidget::updateStatus(void *data){
-    if(externalLed!=nullptr){
-    auto status=static_cast<bool*>(data);
-    if (*status){
-        externalLed->setColor(Qt::darkGreen);
-        externalLed->setState(KLed::State::On);
-    }
-    else{
-        externalLed->setColor(Qt::red);
-        externalLed->setState(KLed::State::Off);
-    }
-    }
+    BaseWidget::updateStatus(data);
+    tcp->setStatus(*static_cast<bool*>(data));
+}
+
+void AbstractWidget::saveConfig(){
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    QSettings().setValue(IP.c_str(),tcp->getIPText());
+    QSettings().setValue(Port.c_str(),tcp->getPortText());
+}
+void AbstractWidget::loadConfig(){
+    std::string IP(instanceName);
+    IP.append("/IP");
+    std::string Port(instanceName);
+    Port.append("/Port");
+    tcp->setIP( QSettings().value(IP.c_str()).toString());
+    tcp->setPort(QSettings().value(Port.c_str()).toString());
+}
+void AbstractWidget::connectSignals(){
+    connect(tcp->connectButton, SIGNAL(clicked(bool)), this, SLOT(deviceConnect()));
+    connect(tcp->disconnectButton, SIGNAL(clicked(bool)), this, SLOT(deviceDisconnect()));
 }
