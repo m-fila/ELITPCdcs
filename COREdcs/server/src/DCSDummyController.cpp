@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iomanip>
 
-void DCSDummyController::addChildren() { addProfiles(); }
+void DCSDummyController::addChildren(Options options) { addProfiles(); }
 
 void DCSDummyController::addProfiles() {
   auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);

@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   for (auto &i : config.at("devices")) {
     auto type = i.at("type").get<std::string>();
     auto id = i.at("id").get<std::string>();
-    server.addObject(type, id);
+    server.addObject(type, id, i);
   }
   server.addObject("Dummy", "dummy");
 

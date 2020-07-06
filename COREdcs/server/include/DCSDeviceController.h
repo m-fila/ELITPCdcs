@@ -120,7 +120,7 @@ public:
 
 protected:
   DCSDeviceController() = default;
-  void addChildren() override { addConnection(); }
+  void addChildren(Options options) override { addConnection(); }
   void addConnection() {
     device.resetConnectionStream();
     auto &v = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);

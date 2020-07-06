@@ -12,7 +12,7 @@ class DCSDummyController : public DCSDeviceController<GenericDevice>,
 
 protected:
   void addProfiles();
-  void addChildren() override;
+  void addChildren(Options options) override;
   DCSDummyController(){};
   virtual void parseProfile(const nlohmann::json &profile) {}
 

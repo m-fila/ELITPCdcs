@@ -1,5 +1,5 @@
 #include "DCSMKS910Controller.h"
-void DCSMKS910Controller::addChildren() {
+void DCSMKS910Controller::addChildren(Options options) {
   addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS910M]);

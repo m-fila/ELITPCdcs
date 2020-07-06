@@ -160,11 +160,21 @@ UA_StatusCode DCSObject::methodCallback(
   return UA_STATUSCODE_GOOD;
 }
 
-void DCSObject::init(std::string type, std::string name, UA_Server *host) {
+void DCSObject::init(std::string type, std::string name, UA_Server *host,
+                     Options options) {
   server = host;
   objectName = name;
   objectNodeId = UA_NODEID_STRING_ALLOC(1, name.c_str());
   objectType = type + "Type";
   addObjectNode();
-  addChildren();
+  addChildren(options);
+}
+
+void DCSObject::fastEvent(const std::string &sourceName, uint severity,
+                          const std::string &message) {
+  auto event = createEvent();
+  event.setSourceName(sourceName);
+  event.setMessage(message);
+  event.setSeverity(severity);
+  event.trigger();
 }

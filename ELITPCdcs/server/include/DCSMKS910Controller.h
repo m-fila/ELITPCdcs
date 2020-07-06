@@ -14,7 +14,7 @@ class DCSMKS910Controller
 private:
   static std::string GetType() { return "MKS910"; }
   DCSMKS910Controller(){};
-  void addChildren() override;
+  void addChildren(Options options) override;
 
   void setUnits(const UA_Variant *input, UA_Variant *output);
   void setRelay(const UA_Variant *input, UA_Variant *output);

@@ -33,9 +33,11 @@ public:
     return i != historyBackends.end() ? i->second : nullptr;
   }
 
-  DCSObject *addObject(std::string typeName, std::string name);
+  DCSObject *addObject(std::string typeName, std::string name,
+                       Options options = {});
 
-  template <class T> DCSObject *addObject(std::string name);
+  template <class T>
+  DCSObject *addObject(std::string name, Options options = {});
 
   template <class T> T &addHistoryBackend(std::string name);
   void setDescription(std::string appName, std::string appURI,
@@ -62,10 +64,11 @@ protected:
   static void asyncCallback(UA_Server *server);
 };
 
-template <class T> DCSObject *DCSServer::addObject(std::string name) {
+template <class T>
+DCSObject *DCSServer::addObject(std::string name, Options options) {
   if (objects.find(name) == objects.end()) {
     auto newObject = new T;
-    newObject->init(T::GetType(), name, server);
+    newObject->init(T::GetType(), name, server, options);
     objects[name] = newObject;
     return newObject;
   } else {

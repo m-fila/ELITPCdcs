@@ -13,9 +13,9 @@ class DCSPiWeatherController
   friend DCSObjectFactory;
 
 private:
-  static std ::string GetType() { return "PiWeather"; }
+  static std::string GetType() { return "PiWeather"; }
   DCSPiWeatherController(){};
-  void addChildren() override;
+  void addChildren(Options options) override;
   UA_PiWeatherm getMeasurements();
 };
 // REGISTER_OBJECT(DCSPiWeatherController)

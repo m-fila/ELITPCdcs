@@ -1,5 +1,5 @@
 #include "DCSHMPController.h"
-void DCSHMPController::addChildren() {
+void DCSHMPController::addChildren(Options options) {
   addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);

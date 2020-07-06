@@ -2,8 +2,8 @@
 #define DCS_OBJECT_H
 #include "DCSEvent.h"
 #include "DCSFactory.h"
-//#include "DCSNodeIdMap.h"
 #include "DCSVariable.h"
+#include "json.hpp"
 #include <functional>
 #include <map>
 #include <open62541/plugin/log_stdout.h>
@@ -15,9 +15,12 @@
 class DCSServer;
 class DCSVariable;
 class DCSObject;
-typedef DCSFactory<DCSObject, std::string, UA_Server *> DCSObjectFactory;
+typedef const nlohmann::json &Options;
+typedef DCSFactory<DCSObject, std::string, UA_Server *, Options>
+    DCSObjectFactory;
 class DCSObject : DCSObjectFactory::Register<DCSObject> {
   friend DCSServer;
+  friend DCSObjectFactory;
 
 public:
   class Method {
@@ -46,6 +49,7 @@ public:
 
   std::string getName() { return objectName; }
   std::string getType() { return objectType; }
+
   DCSVariable &addVariable(std::string variableName, UA_DataType variableType);
 
   Method &addMethod(
@@ -57,30 +61,29 @@ public:
   DCSEvent createEvent() { return DCSEvent(server, objectNodeId); }
 
   void fastEvent(const std::string &sourceName, uint severity,
-                 const std::string &message) {
-    auto event = createEvent();
-    event.setSourceName(sourceName);
-    event.setMessage(message);
-    event.setSeverity(severity);
-    event.trigger();
-  }
+                 const std::string &message);
 
-public:
+protected:
   DCSObject() {}
   virtual ~DCSObject();
-
-  void init(std::string objectType, std::string name, UA_Server *server);
-  virtual void addChildren() {}
   static std::string GetType() { return "DCSObject"; }
+
+  virtual void addChildren(Options options) {}
+
   UA_Server *server;
   std::string objectName;
   std::string objectType;
   UA_NodeId objectNodeId;
+
   std::map<const std::string, DCSVariable *> variables;
   std::map<std::string, Method> methods;
 
 private:
+  void init(std::string objectType, std::string name, UA_Server *server,
+            Options options = {});
+
   bool addObjectNode();
+
   static UA_StatusCode
   methodCallback(UA_Server *server, const UA_NodeId *sessionId,
                  void *sessionContext, const UA_NodeId *methodId,

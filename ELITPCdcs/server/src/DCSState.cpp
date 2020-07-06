@@ -1,5 +1,5 @@
 #include "DCSState.h"
-void DCSState::addChildren() {
+void DCSState::addChildren(Options options) {
   auto &v = addVariable("State", UA_TYPES[UA_TYPES_UINT32]);
   v.setValue(0);
   addMethod("setstate", "Changes state of machine",

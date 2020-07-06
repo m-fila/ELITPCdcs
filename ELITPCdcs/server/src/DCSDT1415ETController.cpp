@@ -1,5 +1,5 @@
 #include "DCSDT1415ETController.h"
-void DCSDT1415ETController::addChildren() {
+void DCSDT1415ETController::addChildren(Options options) {
   addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M]);
