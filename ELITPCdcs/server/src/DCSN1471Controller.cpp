@@ -1,7 +1,7 @@
 #include "DCSN1471Controller.h"
 #include <sstream>
-DCSN1471Controller::DCSN1471Controller(UA_Server *server, std::string name)
-    : DCSDeviceController(server, name) {
+void DCSN1471Controller::addChildren() {
+  addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M]);
   addVariableUpdate(m, 1000, &DCSN1471Controller::getMeasurements, this);
@@ -145,7 +145,7 @@ UA_DT1415c DCSN1471Controller::getConfiguration() {
   return dtc;
 }
 
-void DCSN1471Controller::setChannel(const UA_Variant* input,
+void DCSN1471Controller::setChannel(const UA_Variant *input,
                                     UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Boolean state = *(UA_Boolean *)input[1].data;
@@ -156,35 +156,35 @@ void DCSN1471Controller::setChannel(const UA_Variant* input,
     device.setOFF(CH);
   }
 }
-void DCSN1471Controller::setVoltage(const UA_Variant* input,
+void DCSN1471Controller::setVoltage(const UA_Variant *input,
                                     UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setVoltageSet(CH, voltage);
 }
-void DCSN1471Controller::setCurrent(const UA_Variant* input,
+void DCSN1471Controller::setCurrent(const UA_Variant *input,
                                     UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double current = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setCurrentSet(CH, current);
 }
-void DCSN1471Controller::setVoltageMax(const UA_Variant* input,
+void DCSN1471Controller::setVoltageMax(const UA_Variant *input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setVoltageMax(CH, voltage);
 }
-void DCSN1471Controller::setRampUp(const UA_Variant* input,
+void DCSN1471Controller::setRampUp(const UA_Variant *input,
                                    UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;
   N1471::CHANNEL CH = static_cast<N1471::CHANNEL>(channel);
   device.setRampUp(CH, ramp);
 }
-void DCSN1471Controller::setRampDown(const UA_Variant* input,
+void DCSN1471Controller::setRampDown(const UA_Variant *input,
                                      UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;

@@ -1,7 +1,6 @@
 #include "DCSHMPController.h"
-DCSHMPController::DCSHMPController(UA_Server *server, std::string name,
-                                   int size)
-    : DCSDeviceController(server, name), size(size) {
+void DCSHMPController::addChildren() {
+  addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
   addVariableUpdate(m, 1000, &DCSHMPController::getMeasurements, this);
@@ -23,7 +22,8 @@ DCSHMPController::DCSHMPController(UA_Server *server, std::string name,
                       {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
                        {"Current", "Current in A", UA_TYPES[UA_TYPES_DOUBLE]}},
                       {}, &DCSHMPController::setCurrent, this);
-  addControllerMethod("dump","dump",{},{},&DCSHMPController::dumpConfig,this);
+  addControllerMethod("dump", "dump", {}, {}, &DCSHMPController::dumpConfig,
+                      this);
 }
 
 UA_HMPm DCSHMPController::getMeasurements() {
@@ -68,24 +68,24 @@ UA_HMPc DCSHMPController::getConfiguration() {
   return hmp;
 }
 
-void DCSHMPController::setChannel(const UA_Variant* input, UA_Variant *) {
+void DCSHMPController::setChannel(const UA_Variant *input, UA_Variant *) {
   int channel = *static_cast<UA_Int16 *>(input[0].data);
   bool state = *static_cast<UA_Boolean *>(input[1].data);
   device.setOutputSel(channel, state);
 }
 
-void DCSHMPController::setOutput(const UA_Variant* input, UA_Variant *) {
+void DCSHMPController::setOutput(const UA_Variant *input, UA_Variant *) {
   bool state = *static_cast<UA_Boolean *>(input[0].data);
   device.setOutputGen(state);
 }
 
-void DCSHMPController::setVoltage(const UA_Variant* input, UA_Variant *) {
+void DCSHMPController::setVoltage(const UA_Variant *input, UA_Variant *) {
   int channel = *static_cast<UA_Int16 *>(input[0].data);
   double v = *static_cast<UA_Double *>(input[1].data);
   device.setVoltage(channel, v);
 }
 
-void DCSHMPController::setCurrent(const UA_Variant* input, UA_Variant *) {
+void DCSHMPController::setCurrent(const UA_Variant *input, UA_Variant *) {
   int channel = *static_cast<UA_Int16 *>(input[0].data);
   double i = *static_cast<UA_Double *>(input[1].data);
   device.setCurrent(channel, i);

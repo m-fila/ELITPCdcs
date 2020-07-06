@@ -6,7 +6,6 @@
 #include "DCSWorkerThread.h"
 #include "TCPConnector.h"
 #include <iostream>
-using namespace std::placeholders;
 
 template <class Device> class DCSDeviceController : public DCSObject {
 
@@ -16,11 +15,11 @@ public:
   template <class T>
   void addControllerMethod(std::string methodName,
                            std::string methodDescription,
-                           std::vector<methodArgs> inputArgs,
-                           std::vector<methodArgs> outputArgs,
+                           std::vector<DCSObject::MethodArgs> inputArgs,
+                           std::vector<DCSObject::MethodArgs> outputArgs,
                            const T &methodBody, bool threaded = true) {
     // wrap with exception
-    auto newBody = [methodBody, methodName, this](const UA_Variant* input,
+    auto newBody = [methodBody, methodName, this](const UA_Variant *input,
                                                   UA_Variant *output) {
       try {
         methodBody(input, output);
@@ -33,20 +32,9 @@ public:
                   "Device communication error occured. Disconnecting device.");
         this->device.resetConnectionStream();
       }
-      //for (auto &i : input) {
-      //  UA_Variant_deleteMembers(&i);
-     // }
     };
 
     if (threaded) {
-      //  auto newerBody = [newBody, this](UA_Variant* i,
-      //                                   UA_Variant *o) {
-      //    deviceThread.push_front(std::bind(newBody, i, o));
-      //  };
-      //   DCSObject::addMethod(methodName, methodDescription, inputArgs,
-      //   outputArgs,
-      //                        newerBody, &this->deviceThread);
-      // } else {
       DCSObject::addMethod(methodName, methodDescription, inputArgs, outputArgs,
                            newBody, &this->deviceThread);
     } else {
@@ -58,12 +46,12 @@ public:
   template <class T, class B>
   void
   addControllerMethod(std::string methodName, std::string methodDescription,
-                      std::vector<methodArgs> inputArgs,
-                      std::vector<methodArgs> outputArgs, const T &methodBody,
-                      B instance, bool threaded = true) {
+                      std::vector<DCSObject::MethodArgs> inputArgs,
+                      std::vector<DCSObject::MethodArgs> outputArgs,
+                      const T &methodBody, B instance, bool threaded = true) {
 
-    std::function<void(const UA_Variant*, UA_Variant *)> newBody =
-        std::bind(methodBody, instance, _1, _2);
+    std::function<void(const UA_Variant *, UA_Variant *)> newBody = std::bind(
+        methodBody, instance, std::placeholders::_1, std::placeholders::_2);
     addControllerMethod(methodName, methodDescription, inputArgs, outputArgs,
                         newBody, threaded);
   }
@@ -131,8 +119,9 @@ public:
   }
 
 protected:
-  DCSDeviceController(UA_Server *server, std::string name)
-      : DCSObject(server, name) {
+  DCSDeviceController() = default;
+  void addChildren() override { addConnection(); }
+  void addConnection() {
     device.resetConnectionStream();
     auto &v = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);
     addVariableUpdate(v, 1000, [this]() { return getConnectionStatus(); });
@@ -144,7 +133,7 @@ protected:
                         &DCSDeviceController::disconnectDevice, this);
   }
 
-  void dumpConfig(const UA_Variant*, UA_Variant *) {
+  void dumpConfig(const UA_Variant *, UA_Variant *) {
     auto v = variables.at("configuration")->getValueByVariant();
     std::cout << DCSUAJson::toString(&v, &UA_TYPES[UA_TYPES_VARIANT])
               << std::endl;
@@ -153,26 +142,22 @@ protected:
   Device device;
   DCSWorkerThread deviceThread;
 
-private:
-  void disconnectDevice(const UA_Variant*, UA_Variant *) {
+protected:
+  virtual void disconnectDevice(const UA_Variant *, UA_Variant *) {
     device.resetConnectionStream();
   }
 
-  void connectDevice(const UA_Variant* input, UA_Variant *output) {
+  virtual void connectDevice(const UA_Variant *input, UA_Variant *output) {
     UA_String host = *(UA_String *)input[0].data;
     if (host.length == 0) {
       return;
     }
-    std::string address(reinterpret_cast<char *>(host.data),host.length);
-    //const char *address = reinterpret_cast<char *>(host.data);
-    //std::cout<<address<<std::endl;
+    std::string address(reinterpret_cast<char *>(host.data), host.length);
     UA_Int32 port = *(UA_Int32 *)input[1].data;
     try {
       auto stream = TCPConnector::connect(address.c_str(), port);
       device.setConnectionStream(stream);
     } catch (const std::runtime_error &e) {
-      // TODO: return to method or send event informing of connection fail or
-      // success
       UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                      "%s device controller catched: \"%s\"", objectName.c_str(),
                      e.what());

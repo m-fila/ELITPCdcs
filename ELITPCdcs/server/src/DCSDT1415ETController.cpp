@@ -1,7 +1,6 @@
 #include "DCSDT1415ETController.h"
-DCSDT1415ETController::DCSDT1415ETController(UA_Server *server,
-                                             std::string name)
-    : DCSDeviceController(server, name) {
+void DCSDT1415ETController::addChildren() {
+  addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M]);
   addVariableUpdate(m, 1000, &DCSDT1415ETController::getMeasurements, this);
@@ -17,22 +16,25 @@ DCSDT1415ETController::DCSDT1415ETController(UA_Server *server,
                       {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
                        {"Voltage", "Voltage in V", UA_TYPES[UA_TYPES_DOUBLE]}},
                       {}, &DCSDT1415ETController::setVoltage, this);
-  addControllerMethod("setvoltagemax", "Sets maximum voltage",
-                      {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                       {"Maximum voltage", "Maximum voltage in V", UA_TYPES[UA_TYPES_DOUBLE]}},
-                      {}, &DCSDT1415ETController::setVoltageMax, this);
+  addControllerMethod(
+      "setvoltagemax", "Sets maximum voltage",
+      {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
+       {"Maximum voltage", "Maximum voltage in V", UA_TYPES[UA_TYPES_DOUBLE]}},
+      {}, &DCSDT1415ETController::setVoltageMax, this);
   addControllerMethod("setcurrent", "Sets current",
                       {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
                        {"Current", "Current in A", UA_TYPES[UA_TYPES_DOUBLE]}},
                       {}, &DCSDT1415ETController::setCurrent, this);
-  addControllerMethod("setrampup", "Sets ramp up",
-                      {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                       {"Ramp up", "Ramp up in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
-                      {}, &DCSDT1415ETController::setRampUp, this);
- addControllerMethod("setrampdown", "Sets ramp down",
-                      {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                       {"Ramp down", "Ramp down in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
-                      {}, &DCSDT1415ETController::setRampUp, this);
+  addControllerMethod(
+      "setrampup", "Sets ramp up",
+      {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
+       {"Ramp up", "Ramp up in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
+      {}, &DCSDT1415ETController::setRampUp, this);
+  addControllerMethod(
+      "setrampdown", "Sets ramp down",
+      {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
+       {"Ramp down", "Ramp down in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
+      {}, &DCSDT1415ETController::setRampUp, this);
 }
 
 UA_DT1415m DCSDT1415ETController::getMeasurements() {
@@ -142,7 +144,7 @@ UA_DT1415c DCSDT1415ETController::getConfiguration() {
   return dtc;
 }
 
-void DCSDT1415ETController::setChannel(const UA_Variant* input,
+void DCSDT1415ETController::setChannel(const UA_Variant *input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Boolean state = *(UA_Boolean *)input[1].data;
@@ -153,35 +155,35 @@ void DCSDT1415ETController::setChannel(const UA_Variant* input,
     device.setOFF(CH);
   }
 }
-void DCSDT1415ETController::setVoltage(const UA_Variant* input,
+void DCSDT1415ETController::setVoltage(const UA_Variant *input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setVoltageSet(CH, voltage);
 }
-void DCSDT1415ETController::setCurrent(const UA_Variant* input,
+void DCSDT1415ETController::setCurrent(const UA_Variant *input,
                                        UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double current = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setCurrentSet(CH, current);
 }
-void DCSDT1415ETController::setVoltageMax(const UA_Variant* input,
+void DCSDT1415ETController::setVoltageMax(const UA_Variant *input,
                                           UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double voltage = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setVoltageMax(CH, voltage);
 }
-void DCSDT1415ETController::setRampUp(const UA_Variant* input,
+void DCSDT1415ETController::setRampUp(const UA_Variant *input,
                                       UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;
   DT1415ET::CHANNEL CH = static_cast<DT1415ET::CHANNEL>(channel);
   device.setRampUp(CH, ramp);
 }
-void DCSDT1415ETController::setRampDown(const UA_Variant* input,
+void DCSDT1415ETController::setRampDown(const UA_Variant *input,
                                         UA_Variant *output) {
   UA_Int16 channel = *(UA_Int16 *)input[0].data;
   UA_Double ramp = *(UA_Double *)input[1].data;

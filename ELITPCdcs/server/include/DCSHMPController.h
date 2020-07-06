@@ -9,31 +9,38 @@ class DCSHMPController : public DCSDeviceController<HMP2020> {
   friend DCSServer;
 
 protected:
-  DCSHMPController(UA_Server *server, std::string name, int size);
+  DCSHMPController(int size) : size(size) {}
+  virtual ~DCSHMPController() {}
+  void addChildren() override;
 
 private:
-  void setChannel(const UA_Variant* input, UA_Variant *output);
-  void setOutput(const UA_Variant* input, UA_Variant *output);
-  void setVoltage(const UA_Variant* input, UA_Variant *output);
-  void setCurrent(const UA_Variant* input, UA_Variant *output);
+  void setChannel(const UA_Variant *input, UA_Variant *output);
+  void setOutput(const UA_Variant *input, UA_Variant *output);
+  void setVoltage(const UA_Variant *input, UA_Variant *output);
+  void setCurrent(const UA_Variant *input, UA_Variant *output);
   UA_HMPm getMeasurements();
   UA_HMPc getConfiguration();
   const int size;
 };
 
-class DCSHMP2020Controller : public DCSHMPController {
+class DCSHMP2020Controller : public DCSHMPController,
+                             DCSObjectFactory::Register<DCSHMP2020Controller> {
   friend DCSServer;
+  friend DCSObjectFactory;
 
 private:
-  DCSHMP2020Controller(UA_Server *server, std::string name)
-      : DCSHMPController(server, name, 2) {}
+  static std::string GetType() { return "HMP2020"; }
+  DCSHMP2020Controller() : DCSHMPController(2) {}
 };
 
-class DCSHMP4040Controller : public DCSHMPController {
+class DCSHMP4040Controller : public DCSHMPController,
+                             DCSObjectFactory::Register<DCSHMP4040Controller> {
   friend DCSServer;
+  friend DCSObjectFactory;
 
 private:
-  DCSHMP4040Controller(UA_Server *server, std::string name)
-      : DCSHMPController(server, name, 4) {}
+  static std::string GetType() { return "HMP4040"; }
+  DCSHMP4040Controller() : DCSHMPController(4) {}
 };
+
 #endif // DCS_HMP_CONTROLLER_H

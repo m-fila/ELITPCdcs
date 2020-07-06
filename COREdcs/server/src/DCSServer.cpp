@@ -1,5 +1,5 @@
 #include "DCSServer.h"
-
+#include <iostream>
 DCSServer::DCSServer(std::string address, int port) {
   server = UA_Server_new();
   config = UA_Server_getConfig(server);
@@ -16,6 +16,12 @@ DCSServer::DCSServer(std::string address, int port) {
   }
   config->asyncOperationNotifyCallback = asyncCallback;
   addHistorizing();
+  auto objectTypeId = addObjectType("DCSObjectType");
+  addObjectType("DCSStateType", objectTypeId);
+  for (auto i : DCSObjectFactory::allocators()) {
+    std::cout << i.first << std::endl;
+    addObjectType(i.first + "Type", objectTypeId);
+  }
 }
 
 void DCSServer::setDescription(std::string appName, std::string appURI,
@@ -87,4 +93,47 @@ void DCSServer::asyncCallback(UA_Server *server) {
       UA_CallMethodResult_clear(&response);
     });
   });
+}
+
+UA_NodeId DCSServer::addObjectType(std::string typeName,
+                                   UA_NodeId parentTypeId) {
+  UA_NodeId objectTypeId = UA_NODEID_STRING_ALLOC(1, typeName.c_str());
+  UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(1, typeName.c_str());
+  UA_ObjectTypeAttributes dtAttr = UA_ObjectTypeAttributes_default;
+  dtAttr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US", typeName.c_str());
+  dtAttr.description = UA_LOCALIZEDTEXT_ALLOC("en-US", typeName.c_str());
+
+  UA_NodeId resultId;
+  UA_Server_addObjectTypeNode(server, objectTypeId, parentTypeId,
+                              UA_NODEID_NUMERIC(0, UA_NS0ID_HASSUBTYPE), qName,
+                              dtAttr, nullptr, &resultId);
+
+  UA_NodeId_deleteMembers(&objectTypeId);
+  UA_QualifiedName_deleteMembers(&qName);
+  UA_ObjectTypeAttributes_deleteMembers(&dtAttr);
+
+  return resultId;
+  ;
+}
+
+void DCSServer::stopHandler(int sig) {
+  UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+              "Received ctrl-c");
+  running = false;
+}
+
+DCSObject *DCSServer::addObject(std::string typeName, std::string name) {
+  if (objects.find(name) == objects.end()) {
+    auto newObject = DCSObjectFactory::create(typeName, name, server);
+    // auto newObject = DCSObjectFactory::create(typeName, name, server);
+    if (newObject != nullptr) {
+      objects[name] = newObject;
+    } else {
+      UA_LOG_ERROR(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                   "Skipping unknown type %s.", typeName.c_str());
+    }
+    return newObject;
+  } else {
+    throw std::runtime_error("Not unique controller id: " + name);
+  }
 }

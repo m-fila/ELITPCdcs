@@ -1,7 +1,8 @@
 #ifndef DCS_OBJECT_H
 #define DCS_OBJECT_H
 #include "DCSEvent.h"
-#include "DCSNodeIdMap.h"
+#include "DCSFactory.h"
+//#include "DCSNodeIdMap.h"
 #include "DCSVariable.h"
 #include <functional>
 #include <map>
@@ -10,32 +11,46 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-// dataType, name ,description
-// example:  "Status", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]
-struct methodArgs {
-  std::string name;
-  std::string description;
-  UA_DataType dataType;
-};
+
 class DCSServer;
 class DCSVariable;
-
-class DCSObject {
+class DCSObject;
+typedef DCSFactory<DCSObject, std::string, UA_Server *> DCSObjectFactory;
+class DCSObject : DCSObjectFactory::Register<DCSObject> {
   friend DCSServer;
 
 public:
-  struct Method {
+  class Method {
+    friend DCSObject;
+
+  public:
     std::function<void(const UA_Variant *, UA_Variant *)> method;
     std::vector<std::string> inputsNames;
     std::vector<std::string> outputsNames;
     void *context;
+
+  private:
     void operator()(const UA_Variant *in, UA_Variant *out) { method(in, out); }
   };
-  DCSVariable &addVariable(std::string variableName, UA_DataType variableType);
+  /* name ,description, UA_DataType
+ examples:
+    "Status", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]
+    "Voltage", "Voltage in V", UA_TYPES[UA_TYPES_DOUBLE]
+    "Channel", "Device channel", UA_TYPES[UA_TYPES_UINT16]
+*/
+  struct MethodArgs {
+    std::string name;
+    std::string description;
+    UA_DataType dataType;
+  };
+
   std::string getName() { return objectName; }
+  std::string getType() { return objectType; }
+  DCSVariable &addVariable(std::string variableName, UA_DataType variableType);
+
   Method &addMethod(
       std::string methodName, std::string methodDescription,
-      std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
+      std::vector<MethodArgs> inputs, std::vector<MethodArgs> outputs,
       const std::function<void(const UA_Variant *, UA_Variant *)> &methodBody,
       void *context = nullptr);
 
@@ -50,15 +65,22 @@ public:
     event.trigger();
   }
 
-protected:
-  DCSObject(UA_Server *server, std::string name);
+public:
+  DCSObject() {}
   virtual ~DCSObject();
+
+  void init(std::string objectType, std::string name, UA_Server *server);
+  virtual void addChildren() {}
+  static std::string GetType() { return "DCSObject"; }
   UA_Server *server;
-  const std::string objectName;
+  std::string objectName;
+  std::string objectType;
   UA_NodeId objectNodeId;
   std::map<const std::string, DCSVariable *> variables;
-
   std::map<std::string, Method> methods;
+
+private:
+  bool addObjectNode();
   static UA_StatusCode
   methodCallback(UA_Server *server, const UA_NodeId *sessionId,
                  void *sessionContext, const UA_NodeId *methodId,

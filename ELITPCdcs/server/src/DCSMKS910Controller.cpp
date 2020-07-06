@@ -1,6 +1,6 @@
 #include "DCSMKS910Controller.h"
-DCSMKS910Controller::DCSMKS910Controller(UA_Server *server, std::string name)
-    : DCSDeviceController(server, name) {
+void DCSMKS910Controller::addChildren() {
+  addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS910M]);
   addVariableUpdate(m, 1000, &DCSMKS910Controller::getMeasurements, this);
@@ -14,12 +14,13 @@ DCSMKS910Controller::DCSMKS910Controller(UA_Server *server, std::string name)
   addControllerMethod("setunits", "Sets pressure units",
                       {{"Unit", "PASCAL/BAR/TORR", UA_TYPES[UA_TYPES_INT16]}},
                       {}, &DCSMKS910Controller::setUnits, this);
-  addControllerMethod("setrelay", "Sets relay",
-                      {{"Relay number", "1-3", UA_TYPES[UA_TYPES_UINT32]},
-                      {"Enabled", "OFF/ON", UA_TYPES[UA_TYPES_UINT32]},
-                      {"Setpoint", "Current units", UA_TYPES[UA_TYPES_DOUBLE]},
-                      {"Hysteresis", "Current units", UA_TYPES[UA_TYPES_DOUBLE]}},
-                      {}, &DCSMKS910Controller::setRelay, this);
+  addControllerMethod(
+      "setrelay", "Sets relay",
+      {{"Relay number", "1-3", UA_TYPES[UA_TYPES_UINT32]},
+       {"Enabled", "OFF/ON", UA_TYPES[UA_TYPES_UINT32]},
+       {"Setpoint", "Current units", UA_TYPES[UA_TYPES_DOUBLE]},
+       {"Hysteresis", "Current units", UA_TYPES[UA_TYPES_DOUBLE]}},
+      {}, &DCSMKS910Controller::setRelay, this);
 }
 
 UA_MKS910m DCSMKS910Controller::getMeasurements() {
@@ -40,12 +41,10 @@ UA_MKS910c DCSMKS910Controller::getConfiguration() {
   return mks;
 }
 
-void DCSMKS910Controller::setUnits(const UA_Variant* input,
-                                   UA_Variant *) {
+void DCSMKS910Controller::setUnits(const UA_Variant *input, UA_Variant *) {
   int unit = *static_cast<UA_Int16 *>(input[0].data);
   device.setUnits(static_cast<MKS910codes::Units>(unit));
 }
-
 
 UA_Relay DCSMKS910Controller::getRelay() {
   size_t size = 3;
@@ -68,8 +67,8 @@ UA_Relay DCSMKS910Controller::getRelay() {
   relay.status = static_cast<UA_Boolean *>(
       UA_Array_new(size, &UA_TYPES[UA_TYPES_BOOLEAN]));
 
-  for (size_t i = 1; i< size; ++i) {
-    auto no = static_cast<MKS910::RelayNo>(i+1);
+  for (size_t i = 1; i < size; ++i) {
+    auto no = static_cast<MKS910::RelayNo>(i + 1);
     std::string resp;
     resp = device.getRelayDirection(no);
     relay.direction[i] =
@@ -86,7 +85,7 @@ UA_Relay DCSMKS910Controller::getRelay() {
   return relay;
 }
 
-void DCSMKS910Controller::setRelay(const UA_Variant* input,
+void DCSMKS910Controller::setRelay(const UA_Variant *input,
                                    UA_Variant *output) {
   auto no = *static_cast<UA_UInt32 *>(input[0].data);
   auto relayNo = static_cast<MKS910::RelayNo>(no);

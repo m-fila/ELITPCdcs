@@ -1,18 +1,20 @@
 #include "DCSObject.h"
 #include "DCSUAJson.h"
 #include "json.hpp"
-DCSObject::DCSObject(UA_Server *server, std::string name)
-    : server(server), objectName(name),
-      objectNodeId(UA_NODEID_STRING_ALLOC(1, name.c_str())) {
+#include <iostream>
+bool DCSObject::addObjectNode() {
   UA_ObjectAttributes attr = UA_ObjectAttributes_default;
   UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(1, objectName.c_str());
   attr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-US", objectName.c_str());
-  UA_Server_addObjectNode(
+  UA_NodeId objectTypeId = UA_NODEID_STRING_ALLOC(1, objectType.c_str());
+  auto retv = UA_Server_addObjectNode(
       server, objectNodeId, UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER),
-      UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES), qName,
-      UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE), attr, this, nullptr);
+      UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES), qName, objectTypeId, attr, this,
+      nullptr);
   UA_ObjectAttributes_deleteMembers(&attr);
   UA_QualifiedName_deleteMembers(&qName);
+  UA_NodeId_deleteMembers(&objectTypeId);
+  return retv == UA_STATUSCODE_GOOD;
 }
 
 DCSObject::~DCSObject() {
@@ -38,7 +40,8 @@ DCSVariable &DCSObject::addVariable(std::string variableName,
 
 DCSObject::Method &DCSObject::addMethod(
     std::string methodName, std::string methodDescription,
-    std::vector<methodArgs> inputs, std::vector<methodArgs> outputs,
+    std::vector<DCSObject::MethodArgs> inputs,
+    std::vector<DCSObject::MethodArgs> outputs,
     const std::function<void(const UA_Variant *, UA_Variant *)> &methodBody,
     void *context) {
 
@@ -116,10 +119,10 @@ UA_StatusCode DCSObject::methodCallback(
                            methodName.text.length);
   UA_LocalizedText_deleteMembers(&methodName);
   {
-    std::string message = object->objectName + " called method \"" + mName +
-                          "\" with arguments: ";
+    std::string message = object->objectName + " method \"" + mName +
+                          "\" called with arguments: ";
     if (inputSize == 0) {
-      message += "none";
+      message += "void";
     } else {
       for (size_t i = 0; i < inputSize; i++) {
         message +=
@@ -138,7 +141,7 @@ UA_StatusCode DCSObject::methodCallback(
   (*method)(input, output);
 
   std::string message =
-      object->objectName + " called method \"" + mName + "\" with arguments: ";
+      object->objectName + " method \"" + mName + "\" returned: ";
   if (outputSize == 0) {
     message += "void";
   } else {
@@ -151,10 +154,17 @@ UA_StatusCode DCSObject::methodCallback(
               .dump() +
           " ";
     }
-    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "%s",
-                message.c_str());
   }
   UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "%s",
               message.c_str());
   return UA_STATUSCODE_GOOD;
+}
+
+void DCSObject::init(std::string type, std::string name, UA_Server *host) {
+  server = host;
+  objectName = name;
+  objectNodeId = UA_NODEID_STRING_ALLOC(1, name.c_str());
+  objectType = type + "Type";
+  addObjectNode();
+  addChildren();
 }

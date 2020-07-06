@@ -1,7 +1,7 @@
 #include "DCSTPG362Controller.h"
 #include <sstream>
-DCSTPG362Controller::DCSTPG362Controller(UA_Server *server, std::string name)
-    : DCSDeviceController(server, name) {
+void DCSTPG362Controller::addChildren() {
+  addConnection();
   auto &m = addVariable("measurements",
                         UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362M]);
   addVariableUpdate(m, 1000, &DCSTPG362Controller::getMeasurements, this);
@@ -11,12 +11,13 @@ DCSTPG362Controller::DCSTPG362Controller(UA_Server *server, std::string name)
   auto &r =
       addVariable("relay", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_RELAY]);
   addVariableUpdate(r, 1000, &DCSTPG362Controller::getRelay, this);
-    addControllerMethod("setrelay", "Sets relay",
-                      {{"Relay number", "1-4", UA_TYPES[UA_TYPES_UINT32]},
-                      {"Enabled", "OFF/ON/CH1/CH2", UA_TYPES[UA_TYPES_UINT32]},
-                      {"Setpoint", "Current units", UA_TYPES[UA_TYPES_DOUBLE]},
-                      {"Hysteresis", "Current units", UA_TYPES[UA_TYPES_DOUBLE]}},
-                      {}, &DCSTPG362Controller::setRelay, this);
+  addControllerMethod(
+      "setrelay", "Sets relay",
+      {{"Relay number", "1-4", UA_TYPES[UA_TYPES_UINT32]},
+       {"Enabled", "OFF/ON/CH1/CH2", UA_TYPES[UA_TYPES_UINT32]},
+       {"Setpoint", "Current units", UA_TYPES[UA_TYPES_DOUBLE]},
+       {"Hysteresis", "Current units", UA_TYPES[UA_TYPES_DOUBLE]}},
+      {}, &DCSTPG362Controller::setRelay, this);
 }
 
 UA_TPG362m DCSTPG362Controller::getMeasurements() {
@@ -94,7 +95,7 @@ UA_Relay DCSTPG362Controller::getRelay() {
   return relay;
 }
 
-void DCSTPG362Controller::setRelay(const UA_Variant* input,
+void DCSTPG362Controller::setRelay(const UA_Variant *input,
                                    UA_Variant *output) {
   auto function = *static_cast<UA_UInt32 *>(input[0].data);
   auto assignment = *static_cast<UA_UInt32 *>(input[0].data);
