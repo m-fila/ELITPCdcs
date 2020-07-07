@@ -2,10 +2,10 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QSettings>
 #include <QVBoxLayout>
 #include <iostream>
-#include <QMessageBox>
 HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber, QWidget *parent)
     : AbstractWidget(name, true, parent), ui(new Ui::HVpsuWidget),
       channelsNumber(channelsNumber) {
@@ -285,11 +285,11 @@ void HVpsuWidget::setVMAXPressed() {
         QString val;
         val.sprintf("%6.1lf", d);
         QMessageBox msgBox;
-        msgBox.setText(QString::asprintf("Changing CH %i Iset to %.1lf A.\nConfirm?", i, d));
-        msgBox.setStandardButtons(QMessageBox::Ok | 
-                                  QMessageBox::Cancel);
+        msgBox.setText(QString::asprintf(
+            "Changing CH %i Iset to %.1lf A.\nConfirm?", i, d));
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
-        if (msgBox.exec()==QMessageBox::Ok) {
+        if (msgBox.exec() == QMessageBox::Ok) {
           tabCHxVMAX[i]->setText(val);
           HVController->callSetVoltageMax(i, d);
         }
@@ -317,11 +317,11 @@ void HVpsuWidget::setCurrentPressed() {
         QString val;
         val.sprintf("%6.1lf", d);
         QMessageBox msgBox;
-        msgBox.setText(QString::asprintf("Changing CH %i Iset to %.1lf A.\nConfirm?", i, d));
-        msgBox.setStandardButtons(QMessageBox::Ok | 
-                                  QMessageBox::Cancel);
+        msgBox.setText(QString::asprintf(
+            "Changing CH %i Iset to %.1lf A.\nConfirm?", i, d));
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
-        if (msgBox.exec()==QMessageBox::Ok) {
+        if (msgBox.exec() == QMessageBox::Ok) {
           tabCHxIset[i]->setText(val);
           HVController->callSetCurrent(i, d);
         }
@@ -886,7 +886,8 @@ N1471Widget::N1471Widget(std::string name, std::string address,
                          std::string port, int enabledChannels, QWidget *parent)
     : HVpsuWidget(name, address, port, enabledChannels, parent) {
   ui->HVGUI->setPixmap(
-      QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png")).scaled(10,10,Qt::KeepAspectRatio));
+      QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png"))
+          .scaled(10, 10, Qt::KeepAspectRatio));
 }
 
 void N1471Widget::updateConfiguration(void *data) {
