@@ -14,7 +14,9 @@ protected:
   // void addProfiles(Options options);
   void addChildren(Options options) override {
     addConnection();
-    addProfiles(options);
+    auto t = addVariable("testV", UA_TYPES[UA_TYPES_BOOLEAN]);
+    t.setValue(true);
+    addProfiles(t, options);
   };
   DCSDummyController(){};
   // virtual void parseProfile(const nlohmann::json &profile) {}

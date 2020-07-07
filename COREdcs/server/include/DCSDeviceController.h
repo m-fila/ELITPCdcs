@@ -50,7 +50,7 @@ protected:
 
   virtual void addChildren(Options options) override { addConnection(); }
   void addConnection();
-  void addProfiles(Options options);
+  void addProfiles(DCSVariable &configVariable, Options options);
   virtual void parseProfile(const nlohmann::json &profile) {}
 
   Device device;
@@ -65,8 +65,8 @@ private:
 
   bool getConnectionStatus() { return device.isConnected(); }
 
-  void dumpProfile(DCSVariable &profiles, const UA_Variant *input,
-                   UA_Variant *output);
+  void dumpProfile(DCSVariable &profiles, DCSVariable &configVariable,
+                   const UA_Variant *input, UA_Variant *output);
   void setProfile(DCSVariable &profile, const UA_Variant *input,
                   UA_Variant *output);
   void applyProfile(const DCSVariable &profile, const DCSVariable &profiles,
@@ -220,7 +220,8 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
 }
 
 template <class Device>
-void DCSDeviceController<Device>::addProfiles(Options options) {
+void DCSDeviceController<Device>::addProfiles(DCSVariable &configVariable,
+                                              Options options) {
   auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);
   updateProfiles(profiles);
   auto activeProfile = addVariable("activeProfile", UA_TYPES[UA_TYPES_STRING]);
@@ -234,7 +235,8 @@ void DCSDeviceController<Device>::addProfiles(Options options) {
   addMethod("dumpProfile", "dump profile",
             {{"name", "current profile name", UA_TYPES[UA_TYPES_STRING]}}, {},
             std::bind(&DCSDeviceController<Device>::dumpProfile, this, profiles,
-                      std::placeholders::_1, std::placeholders::_2));
+                      configVariable, std::placeholders::_1,
+                      std::placeholders::_2));
   addMethod("setProfile", "set active profile",
             {{"key", "key", UA_TYPES[UA_TYPES_STRING]}}, {},
             std::bind(&DCSDeviceController<Device>::setProfile, this,
@@ -249,8 +251,22 @@ void DCSDeviceController<Device>::addProfiles(Options options) {
 
 template <class Device>
 void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
+                                              DCSVariable &configVariable,
                                               const UA_Variant *input,
                                               UA_Variant *output) {
+
+  auto val = configVariable.getValueByVariant();
+  auto value = nlohmann::json::parse(
+      DCSUAJson::toString(&val, &UA_TYPES[UA_TYPES_VARIANT]));
+  if (!value.contains("Body")) {
+    UA_LOG_WARNING(
+        DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+        "%s config variable %s is empty. Skipping dumping current profile",
+        objectName.c_str(), configVariable.getName().c_str());
+    return;
+  } else {
+    value = value.at("Body");
+  }
   std::string name;
   {
     auto nameTmp = static_cast<UA_String *>(input[0].data);
@@ -259,14 +275,12 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
   }
   auto configPath =
       std::string(getenv("HOME")) + "/.dcs/" + objectType + ".json";
-  std::ifstream fs(configPath);
-  if (fs.is_open()) {
+  std::ifstream ifs(configPath);
+  if (ifs.is_open()) {
     nlohmann::json config;
-    fs >> config;
-    config[name] = {{"myVal", 6}};
-    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "%s",
-                config.dump().c_str());
-    fs.close();
+    ifs >> config;
+    config[name] = value;
+    ifs.close();
     std::ofstream ofs(configPath);
     if (ofs.is_open()) {
       ofs << std::setw(4) << config;
@@ -310,8 +324,18 @@ void DCSDeviceController<Device>::applyProfile(const DCSVariable &profile,
                                                const DCSVariable &profiles,
                                                const UA_Variant *input,
                                                UA_Variant *output) {
-  auto profileTmp = profile.getValue<UA_String>();
-  auto profilesTmp = profiles.getValue<UA_String>();
+  UA_String profileTmp = profile.getValue<UA_String>();
+  UA_String profilesTmp = profiles.getValue<UA_String>();
+  try {
+    profileTmp = profile.getValue<UA_String>();
+    profilesTmp = profiles.getValue<UA_String>();
+  } catch (std::runtime_error &e) {
+    UA_LOG_ERROR(
+        DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+        "%s encountered error when reading profile. Skipping applying profile",
+        objectName.c_str());
+    return;
+  }
   std::string profileStr(reinterpret_cast<char *>(profileTmp.data),
                          profileTmp.length);
   nlohmann::json profilesJson = nlohmann::json::parse(std::string(
