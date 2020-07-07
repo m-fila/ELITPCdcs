@@ -11,7 +11,7 @@ class DCSDummyController : public DCSDeviceController<GenericDevice>,
   friend DCSObjectFactory;
 
 protected:
-  void addProfiles();
+  void addProfiles(Options options);
   void addChildren(Options options) override;
   DCSDummyController(){};
   virtual void parseProfile(const nlohmann::json &profile) {}

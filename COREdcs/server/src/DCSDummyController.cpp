@@ -3,13 +3,16 @@
 #include <fstream>
 #include <iomanip>
 
-void DCSDummyController::addChildren(Options options) { addProfiles(); }
+void DCSDummyController::addChildren(Options options) { addProfiles(options); }
 
-void DCSDummyController::addProfiles() {
+void DCSDummyController::addProfiles(Options options) {
   auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);
   updateProfiles(profiles);
   auto activeProfile = addVariable("activeProfile", UA_TYPES[UA_TYPES_STRING]);
-  auto initProfile = UA_STRING_ALLOC("None");
+  auto initProfile =
+      options.contains("profile")
+          ? UA_STRING_ALLOC(options.at("profile").get<std::string>().c_str())
+          : UA_STRING_ALLOC("None");
   activeProfile.setValue(initProfile);
   UA_String_deleteMembers(&initProfile);
 
