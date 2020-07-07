@@ -11,21 +11,24 @@ class DCSDummyController : public DCSDeviceController<GenericDevice>,
   friend DCSObjectFactory;
 
 protected:
-  void addProfiles(Options options);
-  void addChildren(Options options) override;
+  // void addProfiles(Options options);
+  void addChildren(Options options) override {
+    addConnection();
+    addProfiles(options);
+  };
   DCSDummyController(){};
-  virtual void parseProfile(const nlohmann::json &profile) {}
+  // virtual void parseProfile(const nlohmann::json &profile) {}
 
 private:
   static std::string GetType() { return "Dummy"; }
-
-  void dumpProfile(DCSVariable &profiles, const UA_Variant *input,
-                   UA_Variant *output);
-  void setProfile(DCSVariable &profile, const UA_Variant *input,
-                  UA_Variant *output);
-  void applyProfile(const DCSVariable &profile, const DCSVariable &profiles,
-                    const UA_Variant *input, UA_Variant *output);
-  void updateProfiles(DCSVariable &profiles);
+  /*
+    void dumpProfile(DCSVariable &profiles, const UA_Variant *input,
+                     UA_Variant *output);
+    void setProfile(DCSVariable &profile, const UA_Variant *input,
+                    UA_Variant *output);
+    void applyProfile(const DCSVariable &profile, const DCSVariable &profiles,
+                      const UA_Variant *input, UA_Variant *output);
+    void updateProfiles(DCSVariable &profiles);*/
 };
 // REGISTER_OBJECT(DCSDummyController)
 #endif

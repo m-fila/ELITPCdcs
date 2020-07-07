@@ -2,9 +2,7 @@
 #include "json.hpp"
 #include <fstream>
 #include <iomanip>
-
-void DCSDummyController::addChildren(Options options) { addProfiles(options); }
-
+/*
 void DCSDummyController::addProfiles(Options options) {
   auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);
   updateProfiles(profiles);
@@ -109,3 +107,4 @@ void DCSDummyController::applyProfile(const DCSVariable &profile,
                  profileStr.c_str());
   }
 }
+*/
