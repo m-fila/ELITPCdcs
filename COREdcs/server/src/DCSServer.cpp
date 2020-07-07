@@ -18,11 +18,10 @@ DCSServer::DCSServer(std::string address, int port) {
   config->asyncOperationNotifyCallback = asyncCallback;
 
   addHistorizing();
-  auto objectTypeId = addObjectType("DCSObjectType");
-  addObjectType("DCSStateType", objectTypeId);
+  auto objectTypeId = addObjectType("DCSObject");
+  addObjectType("DCSState", objectTypeId);
   for (auto i : DCSObjectFactory::allocators()) {
-    std::cout << i.first << std::endl;
-    addObjectType(i.first + "Type", objectTypeId);
+    addObjectType(i.first, objectTypeId);
   }
 }
 

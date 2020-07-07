@@ -165,7 +165,7 @@ void DCSObject::init(std::string type, std::string name, UA_Server *host,
   server = host;
   objectName = name;
   objectNodeId = UA_NODEID_STRING_ALLOC(1, name.c_str());
-  objectType = type + "Type";
+  objectType = type;
   addObjectNode();
   addChildren(options);
 }

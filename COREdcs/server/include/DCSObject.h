@@ -18,21 +18,16 @@ class DCSObject;
 typedef const nlohmann::json &Options;
 typedef DCSFactory<DCSObject, std::string, UA_Server *, Options>
     DCSObjectFactory;
-class DCSObject : DCSObjectFactory::Register<DCSObject> {
+class DCSObject {
   friend DCSServer;
   friend DCSObjectFactory;
 
 public:
-  class Method {
-    friend DCSObject;
-
-  public:
+  struct Method {
     std::function<void(const UA_Variant *, UA_Variant *)> method;
     std::vector<std::string> inputsNames;
     std::vector<std::string> outputsNames;
     void *context;
-
-  private:
     void operator()(const UA_Variant *in, UA_Variant *out) { method(in, out); }
   };
   /* name ,description, UA_DataType
