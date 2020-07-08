@@ -7,6 +7,7 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
       "In-source builds are not allowed. mkdir build && cd build, then run cmake!\n"
   )
 endif()
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS
@@ -17,8 +18,10 @@ set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib:${open62541_LIB})
 message(STATUS "CMAKE_INSTALL_PREFIX:\t\t" ${CMAKE_INSTALL_PREFIX})
 message(STATUS "CMAKE_INSTALL_RPATH:\t\t" ${CMAKE_INSTALL_RPATH})
 option(BUILD_DOCS "build doxygen documentation" OFF)
+add_subdirectory(docs)
+
 find_package(open62541 REQUIRED)
-include(cmake/Doxygen.cmake)
+
 if(open62541_FOUND AND open62541_LIB)
   option(BUILD_SERVER "build server" ON)
   option(BUILD_DB "build database client" OFF)

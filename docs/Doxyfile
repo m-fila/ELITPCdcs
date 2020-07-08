@@ -1,0 +1,25 @@
+# Configuration for Doxygen for use with CMake
+# Only options that deviate from the default are included
+# To create a new Doxyfile containing all available options, call `doxygen -g`
+
+# Get Project name and version from CMake
+PROJECT_NAME = ELITPC dcs
+PROJECT_NUMBER = @CMAKE_PROJECT_VERSION@
+PROJECT_LOGO   = @CMAKE_SOURCE_DIR@/docs/img/dcs_64x64.png
+# Add sources
+INPUT = @CMAKE_SOURCE_DIR@/README.md @CMAKE_SOURCE_DIR@/COREdcs @CMAKE_SOURCE_DIR@/ELITPCdcs
+EXTRACT_ALL = YES
+RECURSIVE = YES
+
+# We don't want local paths in the documentation
+FULL_PATH_NAMES = NO
+
+# Use the README as a main page
+USE_MDFILE_AS_MAINPAGE = @CMAKE_SOURCE_DIR@/README.md
+
+# Create nicer looking HTML
+HTML_DYNAMIC_SECTIONS = YES
+GENERATE_TREEVIEW = YES
+
+# We don't need LaTeX generation
+GENERATE_LATEX = NO
