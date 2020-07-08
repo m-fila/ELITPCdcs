@@ -286,7 +286,7 @@ void HVpsuWidget::setVMAXPressed() {
         val.sprintf("%6.1lf", d);
         QMessageBox msgBox;
         msgBox.setText(QString::asprintf(
-            "Changing CH %i Iset to %.1lf A.\nConfirm?", i, d));
+            "Changing CH %i Vmax to %.1lf V.\nConfirm?", i, d));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
         if (msgBox.exec() == QMessageBox::Ok) {
@@ -306,9 +306,9 @@ void HVpsuWidget::setCurrentPressed() {
     if (tabCHxSetIset[i] == obj) {
       QString label;
       if (CHxCustomName[i].isEmpty())
-        label = tr("CH %1  [Ampers]:").arg(i);
+        label = tr("CH %1  [uAmpers]:").arg(i);
       else
-        label = tr("CH %1  \"%2\"  [Ampers]:").arg(i).arg(CHxCustomName[i]);
+        label = tr("CH %1  \"%2\"  [uAmpers]:").arg(i).arg(CHxCustomName[i]);
 
       double d = QInputDialog::getDouble(
           this, tr("Set CH %1 ISet").arg(i), label,
@@ -318,7 +318,7 @@ void HVpsuWidget::setCurrentPressed() {
         val.sprintf("%6.1lf", d);
         QMessageBox msgBox;
         msgBox.setText(QString::asprintf(
-            "Changing CH %i Iset to %.1lf A.\nConfirm?", i, d));
+            "Changing CH %i Iset to %.1lf uA.\nConfirm?", i, d)); // thx Magda
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
         if (msgBox.exec() == QMessageBox::Ok) {
@@ -777,7 +777,7 @@ void HVpsuWidget::createChannelTabs() {
     // end setRUP
     // begin Iset
     QLabel *IsetLabel;
-    IsetLabel = new QLabel("Iset [A]:\t ");
+    IsetLabel = new QLabel("Iset [uA]:\t ");
     qhbSettings2->addWidget(IsetLabel);
     tabCHxIset[i] = new QLabel();
     tabCHxIset[i]->setFixedWidth(50);
