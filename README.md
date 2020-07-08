@@ -27,6 +27,7 @@ sudo apt-get install qt5-default
 ```
 ### Building
 ```
+git clone --recursive ssh://git@dracula.hep.fuw.edu.pl:8822/mfila/dcs.git
 . env.sh
 mkdir build && cd build
 cmake ..
@@ -35,7 +36,7 @@ make install
 ```
 
 CMake flags `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
-`-DCMAKE_INSTALL_PREFIX=your_path` can be used to specify custom installation path.
+`cmake -DCMAKE_INSTALL_PREFIX=your_path ..` can be used to specify custom installation path.
 
 
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available:
