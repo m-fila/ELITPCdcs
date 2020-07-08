@@ -1,7 +1,6 @@
 #include "DCSObject.h"
 #include "DCSUAJson.h"
-#include "json.hpp"
-#include <iostream>
+
 bool DCSObject::addObjectNode() {
   UA_ObjectAttributes attr = UA_ObjectAttributes_default;
   UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(1, objectName.c_str());

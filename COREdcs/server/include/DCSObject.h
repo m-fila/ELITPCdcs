@@ -18,6 +18,7 @@ class DCSObject;
 typedef const nlohmann::json &Options;
 typedef DCSFactory<DCSObject, std::string, UA_Server *, Options>
     DCSObjectFactory;
+
 class DCSObject {
   friend DCSServer;
   friend DCSObjectFactory;

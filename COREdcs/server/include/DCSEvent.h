@@ -1,6 +1,5 @@
 #ifndef DCS_EVENT_H
 #define DCS_EVENT_H
-#include <iostream>
 #include <open62541/server.h>
 #include <open62541/types.h>
 #include <string>

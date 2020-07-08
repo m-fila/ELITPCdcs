@@ -1,5 +1,4 @@
 #include "DCSServer.h"
-#include <iostream>
 DCSServer::DCSServer(std::string address, int port) {
   server = UA_Server_new();
   config = UA_Server_getConfig(server);

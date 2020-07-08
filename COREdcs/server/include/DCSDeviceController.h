@@ -305,8 +305,8 @@ void DCSDeviceController<Device>::updateProfiles(DCSVariable &profiles) {
     auto str = UA_STRING_ALLOC(config.dump().c_str());
     profiles.setValue(str);
   } else {
-    UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
-                   "%s config \"%s\"not found", objectName.c_str(),
+    UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                   "%s config \"%s\" not found", objectName.c_str(),
                    configPath.c_str());
   }
 }
