@@ -5,26 +5,21 @@
 #include "TCPConnector.h"
 #include <iostream>
 
-template<class T>
-class AbstractDeviceController
-{
+template <class T> class AbstractDeviceController {
 
-protected:
-    AbstractDeviceController() {device.reset(new T); device->resetConnectionStream();}
-
-    //default connect and disconnect implementations
-    void disconnect() {device->resetConnectionStream();}
-    void connect(ConnectionParameters* parameters)
-    {
-        //TODO: use dedicated factory based on device activeConnectionType ?
-        //if(device->getActiveConnectionType()==ConnectionType::TCP){
-            auto cp = static_cast<TCPConnectionParameters*>(parameters);
-            std::cout << cp->IPaddress  << ":" << cp->port << std::endl;
-            device->setConnectionStream(TCPConnector::connect(cp->IPaddress.c_str(), cp->port));
-       // }
+  protected:
+    AbstractDeviceController() {
+        device.reset(new T);
+        device->resetConnectionStream();
     }
-
-        std::unique_ptr<T> device;
+    void disconnect() { device->resetConnectionStream(); }
+    void connect(ConnectionParameters *parameters) {
+        auto cp = static_cast<TCPConnectionParameters *>(parameters);
+        std::cout << cp->IPaddress << ":" << cp->port << std::endl;
+        device->setConnectionStream(
+            TCPConnector::connect(cp->IPaddress.c_str(), cp->port));
+    }
+    std::unique_ptr<T> device;
 };
 
-#endif // DEVICECONTROLLER_H
+#endif  // DEVICECONTROLLER_H
