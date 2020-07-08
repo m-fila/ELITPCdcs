@@ -2,6 +2,7 @@
 #define DCS_DEVICE_CONTROLLER_H
 #include "DCSLogger.h"
 #include "DCSObject.h"
+#include "DCSServer.h"
 #include "DCSUAJson.h"
 #include "DCSWorkerThread.h"
 #include "TCPConnector.h"
@@ -273,8 +274,8 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
     name =
         std::string(reinterpret_cast<char *>(nameTmp->data), nameTmp->length);
   }
-  auto configPath =
-      std::string(getenv("HOME")) + "/.dcs/" + objectType + ".json";
+  auto configPath = DCSServer::getServerContext(server)->getProfileDir() +
+                    objectType + ".json";
   std::ifstream ifs(configPath);
   if (ifs.is_open()) {
     nlohmann::json config;
@@ -296,8 +297,8 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
 
 template <class Device>
 void DCSDeviceController<Device>::updateProfiles(DCSVariable &profiles) {
-  auto configPath =
-      std::string(getenv("HOME")) + "/.dcs/" + objectType + ".json";
+  auto configPath = DCSServer::getServerContext(server)->getProfileDir() +
+                    objectType + ".json";
   std::ifstream ifs(configPath);
   if (ifs.is_open()) {
     nlohmann::json config;

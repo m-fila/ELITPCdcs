@@ -1,5 +1,12 @@
 #include "DCSServer.h"
+
 DCSServer::DCSServer(std::string address, int port) {
+  auto envProfile = getenv("DCS_PROFILE_DIR");
+  profileDir = envProfile != nullptr ? envProfile
+                                     : std::string(getenv("HOME")) + "/.dcs/";
+  if (profileDir.back() != '/') {
+    profileDir.push_back('/');
+  }
   server = UA_Server_new();
   config = UA_Server_getConfig(server);
   UA_ServerConfig_setMinimal(config, port, nullptr);

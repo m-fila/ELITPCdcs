@@ -43,13 +43,15 @@ public:
   void setDescription(std::string appName, std::string appURI,
                       std::string productURI);
 
-  void setProfileDir(const std::string &path) { profileDir = path; }
+  void setProfileDir(const std::string &path) {
+    profileDir = path;
+    if (profileDir.back() != '/') {
+      profileDir.push_back('/');
+    }
+  }
   std::string getProfileDir() { return profileDir; }
 
 protected:
-  static UA_Boolean running;
-  static void stopHandler(int sig);
-
   std::map<std::string, DCSObject *> objects;
   std::map<std::string, DCSHistoryBackend *> historyBackends;
 
@@ -63,10 +65,13 @@ protected:
   UA_Server *server;
   UA_ServerConfig *config;
 
+private:
+  static UA_Boolean running;
+  static void stopHandler(int sig);
+
+  std::string profileDir;
   DCSWorkerThread dispatcherThread;
   static void asyncCallback(UA_Server *server);
-
-  std::string profileDir = std::string(getenv("HOME")) + "/.dcs/";
 };
 
 template <class T>
