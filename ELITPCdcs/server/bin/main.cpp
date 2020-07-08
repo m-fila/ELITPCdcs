@@ -11,6 +11,7 @@
 //#include "DCSTPG362Controller.h"
 #include "ELITPCServer.h"
 #include "configloader.h"
+#include <iostream>
 using json = nlohmann::json;
 int main(int argc, char *argv[]) {
   std::cout << DCSArt::ascii << std::endl;
@@ -20,6 +21,13 @@ int main(int argc, char *argv[]) {
   ELITPCServer server(config.at("server").at("address").get<std::string>(),
                       config.at("server").at("port").get<int>());
 
+  if (config.contains("profileDir")) {
+    server.setProfileDir(config.at("profile").get<std::string>());
+  } else {
+    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                "Using default profile dir: %s",
+                server.getProfileDir().c_str());
+  }
   if (config.contains("database")) {
     auto database = config.at("database");
     auto type = database.at("type").get<std::string>();

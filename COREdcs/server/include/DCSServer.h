@@ -43,6 +43,9 @@ public:
   void setDescription(std::string appName, std::string appURI,
                       std::string productURI);
 
+  void setProfileDir(const std::string &path) { profileDir = path; }
+  std::string getProfileDir() { return profileDir; }
+
 protected:
   static UA_Boolean running;
   static void stopHandler(int sig);
@@ -62,6 +65,8 @@ protected:
 
   DCSWorkerThread dispatcherThread;
   static void asyncCallback(UA_Server *server);
+
+  std::string profileDir = std::string(getenv("HOME")) + "/.dcs/";
 };
 
 template <class T>
