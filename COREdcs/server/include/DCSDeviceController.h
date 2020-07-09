@@ -45,7 +45,7 @@ template <class Device> class DCSDeviceController : public DCSObject {
     // Non trivial constructor
     DCSDeviceController(){};
 
-    virtual void addChildren(Options options) override { addConnection(); }
+    void addChildren(Options options) override { addConnection(); }
     void addConnection();
     void addProfiles(DCSVariable &configVariable, Options options);
     virtual void parseProfile(const nlohmann::json &profile) {}
@@ -54,7 +54,7 @@ template <class Device> class DCSDeviceController : public DCSObject {
     DCSWorkerThread deviceThread;
 
   private:
-    virtual void disconnectDevice(const UA_Variant *, UA_Variant *) {
+    virtual void disconnectDevice(const UA_Variant *in, UA_Variant *out) {
         device.resetConnectionStream();
     }
 
@@ -73,12 +73,12 @@ template <class Device> class DCSDeviceController : public DCSObject {
 template <class Device>
 void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
                                                 UA_Variant *output) {
-    UA_String host = *(UA_String *)input[0].data;
-    if(host.length == 0) {
+    auto *host = static_cast<UA_String *>(input[0].data);
+    if(host->length == 0) {
         return;
     }
-    std::string address(reinterpret_cast<char *>(host.data), host.length);
-    UA_Int32 port = *(UA_Int32 *)input[1].data;
+    std::string address(reinterpret_cast<char *>(host->data), host->length);
+    auto port = *static_cast<UA_Int32 *>(input[1].data);
     try {
         auto stream = TCPConnector::connect(address.c_str(), port);
         device.setConnectionStream(stream);
@@ -170,7 +170,7 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
                 }
             } else {
                 //  variable.setNull();
-                void *fallback;
+                void *fallback = nullptr;
                 UA_init(&fallback, variable.getDataType());
                 variable.setValueByPointer(&fallback);
             }
@@ -258,28 +258,28 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
     }
     std::string name;
     {
-        auto nameTmp = static_cast<UA_String *>(input[0].data);
+        auto *nameTmp = static_cast<UA_String *>(input[0].data);
         name = std::string(reinterpret_cast<char *>(nameTmp->data), nameTmp->length);
     }
     auto configPath =
         DCSServer::getServerContext(server)->getProfileDir() + objectType + ".json";
     std::ifstream ifs(configPath);
+    nlohmann::json config = {};
     if(ifs.is_open()) {
-        nlohmann::json config;
         ifs >> config;
-        config[name] = value;
         ifs.close();
-        std::ofstream ofs(configPath);
-        if(ofs.is_open()) {
-            ofs << std::setw(4) << config;
-        }
-        auto str = UA_STRING_ALLOC(config.dump().c_str());
-        profiles.setValue(str);
     } else {
         UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
-                       "%s config \"%s\"not found", objectName.c_str(),
-                       configPath.c_str());
+                       "%s config \"%s\" not found. Creating new file",
+                       objectName.c_str(), configPath.c_str());
     }
+    std::ofstream ofs(configPath);
+    if(ofs.is_open()) {
+        config[name] = value;
+        ofs << std::setw(4) << config;
+    }
+    auto str = UA_STRING_ALLOC(config.dump().c_str());
+    profiles.setValue(str);
 }
 
 template <class Device>
@@ -303,7 +303,7 @@ template <class Device>
 void DCSDeviceController<Device>::setProfile(DCSVariable &profile,
                                              const UA_Variant *input,
                                              UA_Variant *output) {
-    auto str = static_cast<UA_String *>(input[0].data);
+    auto *str = static_cast<UA_String *>(input[0].data);
     profile.setValueByPointer(str);
 }
 
