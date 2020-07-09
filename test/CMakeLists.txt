@@ -2,7 +2,7 @@ set(MODULE_NAME "test")
 
 message(STATUS "Adding CMake fragment for module:\t\t" ${MODULE_NAME})
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/test/deps/googletest)
+add_subdirectory(${PROJECT_SOURCE_DIR}/test/googletest)
 
 mark_as_advanced(
   BUILD_GMOCK
