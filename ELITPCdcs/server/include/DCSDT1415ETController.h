@@ -13,7 +13,7 @@ class DCSDT1415ETController : public DCSDeviceController<DT1415ET>,
   private:
     DCSDT1415ETController(){};
     static std::string GetType() { return "DT1415ET"; }
-    void addChildren(Options options) final;
+    void addChildren(const Options &options) final;
 
     void setChannel(const UA_Variant *input, UA_Variant *output);
     void setVoltage(const UA_Variant *input, UA_Variant *output);

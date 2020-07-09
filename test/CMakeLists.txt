@@ -34,5 +34,6 @@ macro(add_server_test NAME)
 endmacro()
 
 if(BUILD_SERVER)
-  add_server_test(DCSPiWeather_test)
+  add_server_test(DCSPiWeatherTest)
+  add_server_test(DCSServerTest)
 endif()

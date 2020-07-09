@@ -11,7 +11,7 @@ class DCSN1471Controller : public DCSDeviceController<N1471>,
     friend DCSObjectFactory;
 
   private:
-    void addChildren(Options options) override;
+    void addChildren(const Options &options) override;
     DCSN1471Controller(){};
     static std::string GetType() { return "N1471"; }
 

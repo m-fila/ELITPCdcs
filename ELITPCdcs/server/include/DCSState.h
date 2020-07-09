@@ -8,7 +8,7 @@ class DCSState : public DCSObject {
 
   private:
     DCSState() = default;
-    void addChildren(Options options) override;
+    void addChildren(const Options &options) override;
     void setState(const UA_Variant *input, UA_Variant *output);
 
     enum MachineState : UA_Int32 {

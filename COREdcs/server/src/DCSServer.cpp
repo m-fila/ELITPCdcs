@@ -127,7 +127,8 @@ void DCSServer::stopHandler(int sig) {
     running = false;
 }
 
-DCSObject *DCSServer::addObject(std::string typeName, std::string name, Options options) {
+DCSObject *DCSServer::addObject(std::string typeName, std::string name,
+                                const Options &options) {
     if(objects.find(name) == objects.end()) {
         auto newObject = DCSObjectFactory::create(typeName, name, server, options);
         // auto newObject = DCSObjectFactory::create(typeName, name, server);

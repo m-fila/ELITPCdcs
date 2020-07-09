@@ -15,8 +15,8 @@
 class DCSServer;
 class DCSVariable;
 class DCSObject;
-typedef const nlohmann::json &Options;
-typedef DCSFactory<DCSObject, std::string, UA_Server *, Options> DCSObjectFactory;
+typedef nlohmann::json Options;
+typedef DCSFactory<DCSObject, std::string, UA_Server *, const Options &> DCSObjectFactory;
 
 class DCSObject {
     friend DCSServer;
@@ -63,7 +63,7 @@ class DCSObject {
     virtual ~DCSObject();
     static std::string GetType() { return "DCSObject"; }
 
-    virtual void addChildren(Options options) {}
+    virtual void addChildren(const Options &options) {}
 
     UA_Server *server;
     std::string objectName;
@@ -75,7 +75,7 @@ class DCSObject {
 
   private:
     void init(std::string objectType, std::string name, UA_Server *server,
-              Options options = {});
+              const Options &options = {});
 
     bool addObjectNode();
 

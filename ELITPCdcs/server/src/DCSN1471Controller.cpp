@@ -1,6 +1,6 @@
 #include "DCSN1471Controller.h"
 #include <sstream>
-void DCSN1471Controller::addChildren(Options options) {
+void DCSN1471Controller::addChildren(const Options &options) {
     addConnection();
     auto &m =
         addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M]);

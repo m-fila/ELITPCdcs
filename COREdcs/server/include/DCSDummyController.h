@@ -11,8 +11,8 @@ class DCSDummyController : public DCSDeviceController<GenericDevice>,
     friend DCSObjectFactory;
 
   protected:
-    // void addProfiles(Options options);
-    void addChildren(Options options) override {
+    // void addProfiles(const Options & options);
+    void addChildren(const Options &options) override {
         addConnection();
         auto t = addVariable("testV", UA_TYPES[UA_TYPES_BOOLEAN]);
         t.setValue(true);

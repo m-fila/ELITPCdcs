@@ -45,9 +45,9 @@ template <class Device> class DCSDeviceController : public DCSObject {
     // Non trivial constructor
     DCSDeviceController(){};
 
-    void addChildren(Options options) override { addConnection(); }
+    void addChildren(const Options &options) override { addConnection(); }
     void addConnection();
-    void addProfiles(DCSVariable &configVariable, Options options);
+    void addProfiles(DCSVariable &configVariable, const Options &options);
     virtual void parseProfile(const nlohmann::json &profile) {}
 
     Device device;
@@ -212,7 +212,7 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
 
 template <class Device>
 void DCSDeviceController<Device>::addProfiles(DCSVariable &configVariable,
-                                              Options options) {
+                                              const Options &options) {
     auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);
     updateProfiles(profiles);
     auto activeProfile = addVariable("activeProfile", UA_TYPES[UA_TYPES_STRING]);

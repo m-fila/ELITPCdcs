@@ -28,14 +28,16 @@ class DCSServer {
                                             UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER));
     }
 
-    DCSHistoryBackend *getHistoryBackend(std::string backendName) {
+    DCSHistoryBackend *getHistoryBackend(const std::string &backendName) {
         auto i = historyBackends.find(backendName);
         return i != historyBackends.end() ? i->second : nullptr;
     }
 
-    DCSObject *addObject(std::string typeName, std::string name, Options options = {});
+    DCSObject *addObject(std::string typeName, std::string name,
+                         const Options &options = {});
 
-    template <class T> DCSObject *addObject(std::string name, Options options = {});
+    template <class T>
+    DCSObject *addObject(std::string name, const Options &options = {});
 
     template <class T> T &addHistoryBackend(std::string name);
     void setDescription(std::string appName, std::string appURI, std::string productURI);
@@ -71,7 +73,8 @@ class DCSServer {
     static void asyncCallback(UA_Server *server);
 };
 
-template <class T> DCSObject *DCSServer::addObject(std::string name, Options options) {
+template <class T>
+DCSObject *DCSServer::addObject(std::string name, const Options &options) {
     if(objects.find(name) == objects.end()) {
         auto newObject = new T;
         newObject->init(T::GetType(), name, server, options);

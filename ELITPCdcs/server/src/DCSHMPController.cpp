@@ -1,5 +1,5 @@
 #include "DCSHMPController.h"
-void DCSHMPController::addChildren(Options options) {
+void DCSHMPController::addChildren(const Options &options) {
     addConnection();
     auto &m = addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
     addVariableUpdate(m, 1000, &DCSHMPController::getMeasurements, this);
@@ -87,7 +87,7 @@ void DCSHMPController::setCurrent(const UA_Variant *input, UA_Variant *) {
     device.setCurrent(channel, i);
 }
 
-void DCSHMPController::parseProfile(Options options) {
+void DCSHMPController::parseProfile(const Options &options) {
     if(options.contains("CurrentSet")) {
         auto o = options.at("CurrentSet");
         for(int i = 0; i < o.size(); ++i) {

@@ -1,6 +1,6 @@
 #include "DCSTPG362Controller.h"
 #include <sstream>
-void DCSTPG362Controller::addChildren(Options options) {
+void DCSTPG362Controller::addChildren(const Options &options) {
     addConnection();
     auto &m =
         addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362M]);

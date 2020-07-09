@@ -1,7 +1,7 @@
 #include "DCSPiWeatherController.h"
 #include <sstream>
 
-void DCSPiWeatherController::addChildren(Options options) {
+void DCSPiWeatherController::addChildren(const Options &options) {
     addConnection();
     auto &m =
         addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PIWEATHERM]);

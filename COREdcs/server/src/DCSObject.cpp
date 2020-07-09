@@ -154,7 +154,7 @@ UA_StatusCode DCSObject::methodCallback(UA_Server *server, const UA_NodeId *sess
 }
 
 void DCSObject::init(std::string type, std::string name, UA_Server *host,
-                     Options options) {
+                     const Options &options) {
     server = host;
     objectName = name;
     objectNodeId = UA_NODEID_STRING_ALLOC(1, name.c_str());

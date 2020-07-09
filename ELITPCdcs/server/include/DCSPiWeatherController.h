@@ -14,7 +14,7 @@ class DCSPiWeatherController : public DCSDeviceController<PiWeather>,
   private:
     static std::string GetType() { return "PiWeather"; }
     DCSPiWeatherController(){};
-    void addChildren(Options options) override;
+    void addChildren(const Options &options) override;
     UA_PiWeatherm getMeasurements();
 };
 // REGISTER_OBJECT(DCSPiWeatherController)
