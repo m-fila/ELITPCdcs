@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
                         config.at("server").at("port").get<int>());
 
     if(config.contains("profileDir")) {
-        server.setProfileDir(config.at("profile").get<std::string>());
+        server.setProfileDir(config.at("profileDir").get<std::string>());
     } else {
         UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
                     "Using default profile dir: %s", server.getProfileDir().c_str());

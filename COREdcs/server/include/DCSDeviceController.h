@@ -252,7 +252,8 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
                        "%s config variable %s is empty. Skipping dumping current profile",
                        objectName.c_str(), configVariable.getName().c_str());
         return;
-    } else {
+    }
+    while(value.contains("Body")) {
         value = value.at("Body");
     }
     std::string name;
@@ -311,8 +312,8 @@ void DCSDeviceController<Device>::applyProfile(const DCSVariable &profile,
                                                const DCSVariable &profiles,
                                                const UA_Variant *input,
                                                UA_Variant *output) {
-    UA_String profileTmp = profile.getValue<UA_String>();
-    UA_String profilesTmp = profiles.getValue<UA_String>();
+    UA_String profileTmp;
+    UA_String profilesTmp;
     try {
         profileTmp = profile.getValue<UA_String>();
         profilesTmp = profiles.getValue<UA_String>();

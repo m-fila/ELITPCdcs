@@ -20,6 +20,7 @@ void DCSHMPController::addChildren(Options options) {
                         {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
                          {"Current", "Current in A", UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSHMPController::setCurrent, this);
+    addProfiles(c,options);
 }
 
 UA_HMPm DCSHMPController::getMeasurements() {
