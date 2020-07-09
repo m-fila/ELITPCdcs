@@ -219,7 +219,7 @@ void DCSDeviceController<Device>::addProfiles(DCSVariable &configVariable,
     auto initProfile =
         options.contains("profile")
             ? UA_STRING_ALLOC(options.at("profile").get<std::string>().c_str())
-            : UA_STRING_ALLOC("None");
+            : UA_STRING_ALLOC("Default");
     activeProfile.setValue(initProfile);
     UA_String_deleteMembers(&initProfile);
 

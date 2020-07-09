@@ -10,8 +10,8 @@ class DCSHMPController : public DCSDeviceController<HMP2020> {
 
   protected:
     DCSHMPController(int size) : size(size) {}
-    virtual ~DCSHMPController() {}
     void addChildren(Options options) override;
+    void parseProfile(Options options) override;
 
   private:
     void setChannel(const UA_Variant *input, UA_Variant *output);

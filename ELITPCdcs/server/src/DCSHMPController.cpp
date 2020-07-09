@@ -20,7 +20,7 @@ void DCSHMPController::addChildren(Options options) {
                         {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
                          {"Current", "Current in A", UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSHMPController::setCurrent, this);
-    addProfiles(c,options);
+    addProfiles(c, options);
 }
 
 UA_HMPm DCSHMPController::getMeasurements() {
@@ -85,4 +85,20 @@ void DCSHMPController::setCurrent(const UA_Variant *input, UA_Variant *) {
     int channel = *static_cast<UA_Int16 *>(input[0].data);
     double i = *static_cast<UA_Double *>(input[1].data);
     device.setCurrent(channel, i);
+}
+
+void DCSHMPController::parseProfile(Options options) {
+    if(options.contains("CurrentSet")) {
+        auto o = options.at("CurrentSet");
+        for(int i = 0; i < o.size(); ++i) {
+            device.setCurrent(i + 1, o.at(i).get<double>());
+        }
+    }
+
+    if(options.contains("VoltageSet")) {
+        auto o = options.at("VoltageSet");
+        for(int i = 0; i < o.size(); ++i) {
+            device.setVoltage(i + 1, o.at(i).get<double>());
+        }
+    }
 }
