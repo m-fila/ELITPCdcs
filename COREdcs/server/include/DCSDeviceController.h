@@ -266,7 +266,14 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
     std::ifstream ifs(configPath);
     nlohmann::json config = {};
     if(ifs.is_open()) {
-        ifs >> config;
+        try {
+            ifs >> config;
+        } catch(const std::runtime_error &e) {
+            UA_LOG_ERROR(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                         "%s config \"%s\" is corrupted. Skipping and overwriting",
+                         objectName.c_str(), configPath.c_str());
+            config = {};
+        }
         ifs.close();
     } else {
         UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
