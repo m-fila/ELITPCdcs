@@ -6,4 +6,6 @@ env.sh
 *.pro.user
 *.autosave
 .vscode/
+.clangd
+compile_commands.json
 workspace.code-workspace
