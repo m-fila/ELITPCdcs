@@ -1,10 +1,32 @@
 {
-    "type":"HMP2020",
-    "profiles":[
-        {
-            "id":"default",
-            "voltage":[12,12],
-            "current":[2,2]
-        }
-    ]
+    "12V": {
+        "voltage": [
+            12,
+            12
+        ],
+        "current": [
+            2,
+            2
+        ]
+    },
+    "6V": {
+        "voltage": [
+            6,
+            6
+        ],
+        "current": [
+            2,
+            2
+        ]
+    },
+    "3.6V": {
+        "voltage": [
+            3.6,
+            3.6
+        ],
+        "current": [
+            2,
+            2
+        ]
+    }
 }

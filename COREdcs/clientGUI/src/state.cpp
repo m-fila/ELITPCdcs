@@ -1,43 +1,42 @@
 #include "state.h"
 #include <iostream>
-stateMachine::stateMachine( std::string OName,QObject *parent): opcQObject(OName,parent),
-    variableName("State"),
-    methodBrowseName("setstate")
-{
+stateMachine::stateMachine(std::string OName, QObject *parent)
+    : opcQObject(OName, parent), variableName("State"), methodBrowseName("setstate") {
     // VariableName="State";
-//    VariableNodeId=UA_NODEID_STRING_ALLOC(1,VariableName.c_str());
-//    MethodNodeId =UA_NODEID_STRING(1,const_cast<char*>("SetState"));
+    //    VariableNodeId=UA_NODEID_STRING_ALLOC(1,VariableName.c_str());
+    //    MethodNodeId =UA_NODEID_STRING(1,const_cast<char*>("SetState"));
 }
 
-stateMachine::~stateMachine(){
-  //  UA_NodeId_deleteMembers(&VariableNodeId);
+stateMachine::~stateMachine() {
+    //  UA_NodeId_deleteMembers(&VariableNodeId);
 }
 
-void stateMachine::changeState(int index){
-//std::cout<<index<<std::endl;
+void stateMachine::changeState(int index) {
+    // std::cout<<index<<std::endl;
 
     UA_Variant input;
     UA_Variant_init(&input);
     UA_Variant_setScalarCopy(&input, &index, &UA_TYPES[UA_TYPES_INT32]);
-    UA_StatusCode retval= UA_Client_call(client, ObjectNodeId,
-                                browsedIds[methodBrowseName], 1, &input, nullptr,nullptr);
-//   std::cout<<UA_StatusCode_name(retval)<<std::endl;
+    UA_StatusCode retval = UA_Client_call(
+        client, ObjectNodeId, browsedIds[methodBrowseName], 1, &input, nullptr, nullptr);
+    //   std::cout<<UA_StatusCode_name(retval)<<std::endl;
     UA_Variant_clear(&input);
 }
 
-void stateMachine::StateChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext, UA_UInt32 monId, void *monContext, UA_DataValue *value){
-    int index=*static_cast<int*>(value->value.data);
-    stateMachine* context=static_cast<stateMachine*>(monContext);
+void stateMachine::StateChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                        void *subContext, UA_UInt32 monId,
+                                        void *monContext, UA_DataValue *value) {
+    int index = *static_cast<int *>(value->value.data);
+    stateMachine *context = static_cast<stateMachine *>(monContext);
     emit context->stateChanged(index);
-
 }
 
-void stateMachine::opcInit(UA_Client *Client, UA_ClientConfig *Config, UA_CreateSubscriptionResponse response){
-    client=Client;
-    config=Config;
+void stateMachine::opcInit(UA_Client *Client, UA_ClientConfig *Config,
+                           UA_CreateSubscriptionResponse response) {
+    client = Client;
+    config = Config;
     browseIds();
-    addMonitoredItem(browsedIds[variableName],response,StateChangedCallback);
-
+    addMonitoredItem(browsedIds[variableName], response, StateChangedCallback);
 }
 
 /*void stateMachine::browseIds(){
@@ -54,7 +53,8 @@ void stateMachine::opcInit(UA_Client *Client, UA_ClientConfig *Config, UA_Create
     for(size_t i = 0; i < bResp.resultsSize; ++i) {
             for(size_t j = 0; j < bResp.results[i].referencesSize; ++j) {
                 UA_ReferenceDescription ref = (bResp.results[i].references[j]);
-                std::string str =std::string(reinterpret_cast<char*>(ref.browseName.name.data));
+                std::string str
+=std::string(reinterpret_cast<char*>(ref.browseName.name.data));
                 if(!str.compare(VariableName))
                     VariableNodeId=ref.nodeId.nodeId;
                 if(!str.compare(MethodBrowseName))

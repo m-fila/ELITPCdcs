@@ -1,16 +1,16 @@
 #ifndef MKS910_CONTROLLER_H
 #define MKS910_CONTROLLER_H
 #include "opc_controller.h"
-class MKS910_controller : public opc_controller
-{
+class MKS910_controller : public opc_controller {
     Q_OBJECT
-public:
-    MKS910_controller(std::string OName,QObject *parent=0);
+  public:
+    MKS910_controller(std::string OName, QObject *parent = 0);
     void callSetUnits(int units);
-private:
+
+  private:
     const std::string setUnitsBrowseName;
 
-//    void browseIds();
+    //    void browseIds();
 };
 
-#endif // HV_CONTROLLER_H
+#endif  // HV_CONTROLLER_H

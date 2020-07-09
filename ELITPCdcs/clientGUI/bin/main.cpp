@@ -1,22 +1,22 @@
-#include "mainwindow.h"
+#include "DCSArt.h"
 #include "configloader.h"
+#include "mainwindow.h"
 #include <QApplication>
 #include <QStyleFactory>
-#include <signal.h>
-#include "DCSArt.h"
 #include <iostream>
+#include <signal.h>
 using json = nlohmann::json;
 void stopHandler(int sig) {
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
     QApplication::exit();
-    }
+}
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
     signal(SIGINT, stopHandler);
     signal(SIGTERM, stopHandler);
-    std::cout<<DCSArt::ascii<<std::endl;
+    std::cout << DCSArt::ascii << std::endl;
 
-  json config=ConfigLoader::getMasterConfig(argc,argv);
+    json config = ConfigLoader::getMasterConfig(argc, argv);
 
     QApplication a(argc, argv);
     a.setStyle(QStyleFactory::create("Fusion"));

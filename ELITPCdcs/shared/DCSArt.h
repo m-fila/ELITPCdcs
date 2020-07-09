@@ -1,9 +1,9 @@
 #ifndef DCS_ART_H
 #define DCS_ART_H
-//ASCII Arts
+// ASCII Arts
 namespace DCSArt {
 // ASCII Art logo. Jazmine font
-constexpr char ascii[]=R"(
+constexpr char ascii[] = R"(
 .oPYo. o     o ooooo  .oPYo. .oPYo.        8               
 8.     8     8   8    8    8 8    8        8               
 `boo   8     8   8   o8YooP' 8        .oPYo8 .oPYo. .oPYo. 
@@ -12,6 +12,6 @@ constexpr char ascii[]=R"(
 `YooP' 8oooo 8   8    8      `YooP'   `YooP' `YooP' `YooP'
 )";
 
-} // namespace DCSArt
+}  // namespace DCSArt
 
-#endif // DCS_ART_H
+#endif  // DCS_ART_H

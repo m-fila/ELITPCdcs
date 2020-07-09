@@ -4,19 +4,19 @@
 #include "DCSObject.h"
 
 class DCSState : public DCSObject {
-  friend DCSServer;
+    friend DCSServer;
 
-private:
-  DCSState() = default;
-  void addChildren(Options options) override;
-  void setState(const UA_Variant *input, UA_Variant *output);
+  private:
+    DCSState() = default;
+    void addChildren(Options options) override;
+    void setState(const UA_Variant *input, UA_Variant *output);
 
-  enum MachineState : UA_Int32 {
-    Idle,
-    Pumping,
-    Ready,
-  } state;
-  static std::string GetType() { return "DCSState"; }
+    enum MachineState : UA_Int32 {
+        Idle,
+        Pumping,
+        Ready,
+    } state;
+    static std::string GetType() { return "DCSState"; }
 };
 
-#endif // DCS_State_CONTROLLER_H
+#endif  // DCS_State_CONTROLLER_H

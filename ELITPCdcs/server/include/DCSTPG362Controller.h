@@ -7,19 +7,19 @@
 #include "open62541/types_dcsnodeset_generated_handling.h"
 class DCSTPG362Controller : public DCSDeviceController<TPG362>,
                             DCSObjectFactory::Register<DCSTPG362Controller> {
-  friend DCSServer;
-  friend DCSObjectFactory;
+    friend DCSServer;
+    friend DCSObjectFactory;
 
-private:
-  static std::string GetType() { return "TPG362"; }
-  DCSTPG362Controller(){};
-  void addChildren(Options options) override;
+  private:
+    static std::string GetType() { return "TPG362"; }
+    DCSTPG362Controller(){};
+    void addChildren(Options options) override;
 
-  void setRelay(const UA_Variant *, UA_Variant *);
+    void setRelay(const UA_Variant *, UA_Variant *);
 
-  UA_TPG362m getMeasurements();
-  UA_TPG362c getConfiguration();
-  UA_Relay getRelay();
+    UA_TPG362m getMeasurements();
+    UA_TPG362c getConfiguration();
+    UA_Relay getRelay();
 };
 
-#endif // DCS_TPG362_CONTROLLER_H
+#endif  // DCS_TPG362_CONTROLLER_H

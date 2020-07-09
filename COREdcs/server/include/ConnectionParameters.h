@@ -3,15 +3,11 @@
 
 #include <string>
 
-struct ConnectionParameters
-{
+struct ConnectionParameters {};
 
-};
-
-struct TCPConnectionParameters : ConnectionParameters
-{
+struct TCPConnectionParameters : ConnectionParameters {
     std::string IPaddress;
     int port;
 };
 
-#endif // CONNECTIONPARAMETERS_H
+#endif  // CONNECTIONPARAMETERS_H

@@ -3,13 +3,12 @@
 
 #include "GenericDevice.h"
 
-class HMP2020 : public GenericDevice
-{
-public:
+class HMP2020 : public GenericDevice {
+  public:
     HMP2020();
     virtual ~HMP2020();
 
-    //device specific commands
+    // device specific commands
     std::string getIdentifier();
     void setActiveChannel(int channel);
     std::string getVoltageSet();
@@ -24,4 +23,4 @@ public:
     void setCurrent(int channel, double i);
 };
 
-#endif // HMP2020_H
+#endif  // HMP2020_H

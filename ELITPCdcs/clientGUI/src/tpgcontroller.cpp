@@ -1,9 +1,7 @@
 #include "tpgcontroller.h"
 #include <iostream>
-tpg_controller::tpg_controller(std::string OName, QObject *parent):
-    opc_controller(OName, parent)
-{
-}
+tpg_controller::tpg_controller(std::string OName, QObject *parent)
+    : opc_controller(OName, parent) {}
 /*
 void lv_controller::callSetOutput(bool state){
        UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetOutput"));
