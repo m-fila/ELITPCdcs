@@ -9,3 +9,4 @@ env.sh
 .clangd
 compile_commands.json
 workspace.code-workspace
+/docs/api/*

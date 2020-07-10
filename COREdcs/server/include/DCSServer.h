@@ -18,6 +18,12 @@
 class DCSServer {
 
   public:
+    /**
+     * @brief Construct a new DCSServer object
+     *
+     * @param address
+     * @param port
+     */
     DCSServer(std::string address, int port);
     ~DCSServer();
 
