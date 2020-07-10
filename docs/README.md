@@ -10,5 +10,5 @@ cd build
 cmake ..
 make docs
 ```
-Documentation will be available at `build/docs/html/index/html` . 
+Documentation will be available at `build/docs/html/index.html` . 
 
