@@ -1,9 +1,3 @@
-.. doxygenclass :: DCSServer
- :members:
-
-
-
-
 Introduction
 ============
 ELITPC dcs is an `open source <https://dracula.hep.fuw.edu.pl:8888/mfila/dcs>`_ Detector Control System for ELITPC detector.
