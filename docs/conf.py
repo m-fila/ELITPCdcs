@@ -20,7 +20,7 @@
 project = 'ELITPC dcs'
 copyright = '2020, Mateusz Fila'
 author = 'Mateusz Fila'
-
+html_logo = 'img/logo_text.svg'
 
 # -- General configuration ---------------------------------------------------
 
@@ -54,8 +54,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_logo = 'img/logo_text.svg'
+
 html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
