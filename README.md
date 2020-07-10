@@ -1,5 +1,4 @@
-# ![ELITPCS dcs](docs/img/dcs_logo.png "ELITPC dcs")
-
+# ![ELITPCS dcs](docs/icons/dcs_logo.png "ELITPC dcs")
 Detector Control System for ELITPC detector using OPC UA protocol.
 Provides server, operational gui client and database client. Server is
 compatible with other OPC UA clients such as UaExpert by Unified Automation.
