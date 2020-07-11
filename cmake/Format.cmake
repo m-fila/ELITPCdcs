@@ -3,8 +3,13 @@ include(FindPackageHandleStandardArgs)
 
 find_program(
   CLANG_FORMAT_EXECUTABLE
-  NAMES clang-format clang-format-3.9 clang-format-3.8 clang-format-3.7
+  NAMES clang-format-10
+        clang-format-8
+        clang-format-3.9
+        clang-format-3.8
+        clang-format-3.7
         clang-format-3.6
+        clang-format
   HINTS $ENV{CLANG_FORMAT_DIR}
   PATH_SUFFIXES bin
   DOC "Clang c/c++ files formatter")
