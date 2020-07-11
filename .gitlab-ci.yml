@@ -1,10 +1,15 @@
+image: mfila/open62541
 stages:
     - format
+    - build
+    - lint
 
 cmake-check:
     stage: format
     allow_failure: true
-    image: mfila/alpine-format
+    image: mfila/open62541
+    before_script: 
+    - pip install cmake-format
     script:
     - cmake-format --version
     - cmake-format -i $(find . -name "*.cmake")
@@ -14,7 +19,9 @@ cmake-check:
 clang-check:
     stage: format
     allow_failure: true
-    image: mfila/alpine-format
+    image: mfila/open62541
+    before_script: 
+    - apt-get install clang-format-8
     script:
     - clang-format --version
     - clang-format -i $(find COREdcs -name "*.cpp")
@@ -22,3 +29,55 @@ clang-check:
     - clang-format -i $(find ELITPCdcs -name "*.cpp")
     - clang-format -i $(find ELITPCdcs -name "*.h")
     - git diff --exit-code
+    
+build_release:
+  stage: build
+  script:
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+    - cmake --build build 
+  artifacts:
+    paths:
+      - build
+      
+build_debug:
+  stage: build
+  script:
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_EXE_LINKER_FLAGS="-coverage"
+    - cmake --build build 
+  artifacts:
+    paths:
+      - build
+
+export_commands:
+ stage: build
+ script:
+    - rm -rf build
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++
+ artifacts:
+    paths:
+      - build
+
+
+lint_clang_tidy:
+  stage: lint
+  dependencies:
+    - export_commands
+  script:
+    - cd build
+    - run-clang-tidy
+
+lint_iwyu:
+  stage: lint
+  dependencies:
+    - export_commands
+  script:
+    - cd build
+    - iwyu_tool -p .
+
+lint_cppcheck:
+  stage: lint
+  dependencies:
+    - export_commands
+  script:
+    - cd build
+    - cppcheck --error-exitcode=1 --project=compile_commands.json -i $PWD/../deps -i $PWD/../test
