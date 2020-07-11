@@ -9,4 +9,5 @@ before_script:
 format:
     stage: build
     script:
+        - cmake -H. -Bbuild
         - cmake --build build --target format
