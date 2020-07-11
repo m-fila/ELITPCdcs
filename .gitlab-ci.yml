@@ -1,13 +1,24 @@
 stages:
-    - build
+    - format
 
-image: mfila/open62541
-before_script:
-    - apt-get update
-    - apt-get install --yes cmake
-
-format:
-    stage: build
+cmake-check:
+    stage: format
+    allow_failure: true
+    image: mfila/alpine-format
     script:
-        - cmake -H. -Bbuild
-        - cmake --build build --target format
+    - cmake-format --version
+    - cmake-format -i $(find . -name "*.cmake")
+    - cmake-format -i $(find . -name "CMakeLists.txt")
+    - git diff --exit-code
+        
+clang-check:
+    stage: format
+    allow_failure: true
+    image: mfila/alpine-format
+    script:
+    - clang-format --version
+    - clang-format -i $(find COREdcs -name "*.cpp")
+    - clang-format -i $(find COREdcs -name "*.h")
+    - clang-format -i $(find ELITPCdcs -name "*.cpp")
+    - clang-format -i $(find ELITPCdcs -name "*.h")
+    - git diff --exit-code
