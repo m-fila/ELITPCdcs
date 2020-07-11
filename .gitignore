@@ -1,4 +1,6 @@
 Makefile
+CMakeFiles/
+CMakeCache.txt
 build/
 env.sh
 *~

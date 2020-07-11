@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(ELITPC_DCS)
-
+project(
+  ELITPC_DCS
+  VERSION 1.4
+  LANGUAGES CXX C)
+message("\nStarted CMake for ${PROJECT_NAME} v${PROJECT_VERSION}")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(Utils)
 
@@ -33,6 +36,9 @@ option(BUILD_TEST "build simple tests" OFF)
 add_subdirectory(deps)
 add_subdirectory(COREdcs)
 add_subdirectory(ELITPCdcs)
+
+configure_file(${CMAKE_SOURCE_DIR}/cmake/ProjectVersion.h.in
+               ${CMAKE_SOURCE_DIR}/deps/include/ProjectVersion.h @ONLY)
 
 option(BUILD_TEST "build simple tests" OFF)
 if(BUILD_TEST)

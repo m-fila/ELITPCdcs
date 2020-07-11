@@ -30,7 +30,8 @@ add_custom_command(
   OUTPUT ${SPHINX_INDEX_FILE}
   COMMAND
     ${SPHINX_EXECUTABLE} -b html
-    -Dbreathe_projects.default=${DOXYGEN_OUTPUT_DIR}/xml ${SPHINX_SOURCE}
+    -Dbreathe_projects.default=${DOXYGEN_OUTPUT_DIR}/xml
+    -Dproject=${PROJECT_NAME} -Dversion=${PROJECT_VERSION} ${SPHINX_SOURCE}
     ${SPHINX_BUILD}
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   DEPENDS ${DOXYGEN_INDEX_FILE} ${SPHINX_SOURCE}/*.rst

@@ -3,11 +3,12 @@
 #include "DCSLogger.h"
 #include "DCSState.h"
 #include "ELITPCServer.h"
+#include "ProjectVersion.h"
 #include "configloader.h"
 #include <iostream>
 using json = nlohmann::json;
 int main(int argc, char *argv[]) {
-    std::cout << DCSArt::ascii << std::endl;
+    std::cout << DCSArt::ascii << "v" << ELITPC_DCS_VERSION << std::endl;
     json config = ConfigLoader::getMasterConfig(argc, argv);
 
     DCSLogger::setFile(config.at("logFile").get<std::string>());

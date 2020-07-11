@@ -17,7 +17,8 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'ELITPC dcs'
+#project = 'ELITPC dcs'
+#version = '1.0.0'
 copyright = '2020, Mateusz Fila'
 author = 'Mateusz Fila'
 html_logo = 'img/logo_text.svg'
@@ -62,7 +63,7 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['static']
 html_theme_options = {
-    'logo_only': True,
+    'logo_only': False,
     'display_version': True,
     'style_nav_header_background': '#5e81ac',
 }

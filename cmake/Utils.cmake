@@ -7,6 +7,9 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
+string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
+
 include(FindPackageHandleStandardArgs)
 
 find_program(CCACHE_EXECUTABLE ccache)
