@@ -1,0 +1,12 @@
+stages:
+    - build
+
+image: gcc
+before_script:
+    - apt-get update
+    - apt-get install --yes cmake
+
+format:
+    stage: build
+    script:
+        - cmake --build build --target format
