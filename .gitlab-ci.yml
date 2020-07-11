@@ -47,9 +47,9 @@ export_commands:
  script:
     - rm -rf build
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++-8
-# artifacts:
-#    paths:
-#      - build
+ artifacts:
+    paths:
+      - build
 
 
 lint_clang_tidy:
