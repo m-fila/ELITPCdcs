@@ -47,5 +47,4 @@ endif()
 install(FILES $<1:${PROJECT_SOURCE_DIR}/docs/icons> DESTINATION icons)
 install(DIRECTORY DESTINATION $ENV{HOME}/.dcs)
 
-include(cmake/ClangFormat.cmake)
-add_clang_format_target()
+include(Format)
