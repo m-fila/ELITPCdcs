@@ -7,9 +7,6 @@ stages:
 cmake-check:
     stage: format
     allow_failure: true
-    image: mfila/open62541
-    before_script: 
-    - pip install cmake-format
     script:
     - cmake-format --version
     - cmake-format -i $(find . -name "*.cmake")
@@ -19,43 +16,40 @@ cmake-check:
 clang-check:
     stage: format
     allow_failure: true
-    image: mfila/open62541
-    before_script: 
-    - apt-get install clang-format-8
     script:
-    - clang-format --version
-    - clang-format -i $(find COREdcs -name "*.cpp")
-    - clang-format -i $(find COREdcs -name "*.h")
-    - clang-format -i $(find ELITPCdcs -name "*.cpp")
-    - clang-format -i $(find ELITPCdcs -name "*.h")
+    - clang-format-8 --version
+    - clang-format-8 -i $(find COREdcs -name "*.cpp")
+    - clang-format-8 -i $(find COREdcs -name "*.h")
+    - clang-format-8 -i $(find ELITPCdcs -name "*.cpp")
+    - clang-format-8 -i $(find ELITPCdcs -name "*.h")
     - git diff --exit-code
     
-build_release:
-  stage: build
-  script:
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
-    - cmake --build build 
-  artifacts:
-    paths:
-      - build
+#build_release:
+#  stage: build
+#  script:
+#    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+#    - cmake --build build 
+#  artifacts:
+#    paths:
+#      - build
       
 build_debug:
   stage: build
   script:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_EXE_LINKER_FLAGS="-coverage"
     - cmake --build build 
-  artifacts:
-    paths:
-      - build
+#  artifacts:
+#    paths:
+#      - build
 
 export_commands:
  stage: build
  script:
     - rm -rf build
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++
- artifacts:
-    paths:
-      - build
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++-8
+# artifacts:
+#    paths:
+#      - build
 
 
 lint_clang_tidy:
@@ -64,7 +58,7 @@ lint_clang_tidy:
     - export_commands
   script:
     - cd build
-    - run-clang-tidy
+    - run-clang-tidy-8
 
 lint_iwyu:
   stage: lint
@@ -72,7 +66,7 @@ lint_iwyu:
     - export_commands
   script:
     - cd build
-    - iwyu_tool -p .
+    - iwyu_tool.py -p .
 
 lint_cppcheck:
   stage: lint
@@ -81,3 +75,4 @@ lint_cppcheck:
   script:
     - cd build
     - cppcheck --error-exitcode=1 --project=compile_commands.json -i $PWD/../deps -i $PWD/../test
+    
