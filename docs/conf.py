@@ -41,8 +41,8 @@ breathe_default_project = "default"
 templates_path = ['_templates']
 
 
-def setup(app):
-    app.add_css_file('css/custom.css')
+#def setup(app):
+#    app.add_css_file('css/custom.css')
 
 
 # List of patterns, relative to source directory, that match files and
@@ -55,17 +55,22 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
+html_static_path = ['static']
 
+#html_css_files = [
+#    'css/custom.css',
+#]
+html_style = 'css/custom.css'
 html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['static']
+
 html_theme_options = {
-    'logo_only': False,
+    'logo_only': True,
     'display_version': True,
-    'style_nav_header_background': '#5e81ac',
+   # 'style_nav_header_background': '#5e81ac',
 }
 
 #html_show_sourcelink = False
