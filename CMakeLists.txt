@@ -1,15 +1,8 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(ELITPC_DCS)
 
-if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
-  message(
-    FATAL_ERROR
-      "In-source builds are not allowed. mkdir build && cd build, then run cmake!\n"
-  )
-endif()
-
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(Utils)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS
@@ -24,10 +17,13 @@ if(NOT open62541_LIB)
   message(WARNING "Missing parts of open62541. Try '. env.sh'")
 endif()
 
-add_subdirectory(docs)
+option(BUILD_DOCS "build documentation" OFF)
+if(BUILD_DOCS)
+  add_subdirectory(docs)
+endif()
 
 option(ANALYSE "do static analysis" OFF)
-include(${CMAKE_SOURCE_DIR}/cmake/StaticAnalysis.cmake)
+include(StaticAnalysis)
 
 option(BUILD_SERVER "build server" ON)
 option(BUILD_DB "build database client" OFF)
