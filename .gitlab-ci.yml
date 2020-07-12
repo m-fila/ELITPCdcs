@@ -25,24 +25,23 @@ clang-check:
     - clang-format-8 -i $(find ELITPCdcs -name "*.h")
     - git diff --exit-code
 
-build_ssh:
-  stage: build
+#build_ssh:
+#  stage: build
+#  tags:
+#  - ssh
+#  script:
+#    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/dcs-install
+#    - cmake --build build
+#  artifacts:
+#     paths:
+#     - build
+
+staging_ssh:
+  stage: deploy
   tags:
   - ssh
   script:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/dcs-install
-    - cmake --build build
-  artifacts:
-     paths:
-     - build
-
-staging_ssh:
-  stage: deploy
-  dependencies:
-    - build_ssh
-  tags:
-  - ssh
-  script:
     - cmake --build build --target --install
   artifacts:
      paths:
