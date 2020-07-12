@@ -3,6 +3,7 @@ stages:
     - format
     - build
     - lint
+    - deploy
 
 cmake-check:
     stage: format
@@ -29,13 +30,24 @@ build_ssh:
   tags:
   - ssh
   script:
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/dcs-install
     - cmake --build build
   artifacts:
      paths:
      - build
 
-    
+staging_ssh:
+  stage: deploy
+  dependencies:
+    - build_ssh
+  tags:
+  - ssh
+  script:
+    - cmake --build build --target --install
+  artifacts:
+     paths:
+     - build
+
 #build_release:
 #  stage: build
 #  script:
