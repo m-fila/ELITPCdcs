@@ -2,9 +2,9 @@ image: mfila/open62541
 stages:
     - format
     - build
-    - lint
     - deploy
-
+    - lint
+    
 cmake-check:
     stage: format
     allow_failure: true
@@ -78,6 +78,7 @@ export_commands:
 
 lint_clang_tidy:
   stage: lint
+  allow_failure: true
   dependencies:
     - export_commands
   script:
@@ -86,6 +87,7 @@ lint_clang_tidy:
 
 lint_iwyu:
   stage: lint
+  allow_failure: true
   dependencies:
     - export_commands
   script:
@@ -93,6 +95,7 @@ lint_iwyu:
     - iwyu_tool.py -p .
 
 lint_cppcheck:
+  allow_failure: true
   stage: lint
   dependencies:
     - export_commands
