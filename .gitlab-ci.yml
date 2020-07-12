@@ -42,7 +42,7 @@ staging_ssh:
   - ssh
   script:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/dcs-install
-    - cmake --build build --target --install
+    - cmake --build build --target install
   artifacts:
      paths:
      - build
@@ -100,5 +100,5 @@ lint_cppcheck:
     - export_commands
   script:
     - cd build
-    - cppcheck --error-exitcode=1 --project=compile_commands.json -i $PWD/../deps -i $PWD/../test
+    - cppcheck --error-exitcode=1 -i $PWD/../deps -i $PWD/../test ..
     
