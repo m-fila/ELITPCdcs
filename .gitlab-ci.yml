@@ -25,23 +25,13 @@ clang-check:
     - clang-format-8 -i $(find ELITPCdcs -name "*.h")
     - git diff --exit-code
 
-#build_ssh:
-#  stage: build
-#  tags:
-#  - ssh
-#  script:
-#    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/dcs-install
-#    - cmake --build build
-#  artifacts:
-#     paths:
-#     - build
-
 staging_ssh:
   stage: deploy
   tags:
   - ssh
+  environment: daqu-staging
   script:
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/dcs-install
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
     - cmake --build build --target install
   artifacts:
      paths:
@@ -83,7 +73,8 @@ lint_clang_tidy:
   script:
     - cd build
     - run-clang-tidy-8
-
+  when: manual
+  
 lint_iwyu:
   stage: lint
   allow_failure: true
@@ -92,6 +83,7 @@ lint_iwyu:
   script:
     - cd build
     - iwyu_tool.py -p .
+  when: manual
 
 lint_cppcheck:
   allow_failure: true
@@ -101,4 +93,4 @@ lint_cppcheck:
   script:
     - cd build
     - cppcheck --error-exitcode=1 -i $PWD/../deps -i $PWD/../test ..
-    
+  when: manual
