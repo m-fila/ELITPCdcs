@@ -20,7 +20,7 @@ if(NOT open62541_LIB)
   message(WARNING "Missing parts of open62541. Try '. env.sh'")
 endif()
 
-                        add_subdirectory(docs)
+add_subdirectory(docs)
 
 option(ANALYSE "do static analysis" OFF)
 include(StaticAnalysis)
