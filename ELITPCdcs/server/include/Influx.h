@@ -32,7 +32,7 @@ class Influx : public HTTPDevice {
         return request(HTTPDevice::Method::GET, "/debug/vars").body;
     }
 
-    inline std::string debugRequests(uint time_s = 10) {
+    inline std::string debugRequests(size_t time_s = 10) {
         return request(HTTPDevice::Method::GET,
                        "/debug/requests?seconds=" + std::to_string(time_s))
             .body;

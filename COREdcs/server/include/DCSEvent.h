@@ -11,8 +11,8 @@ class DCSEvent {
     friend DCSObject;
 
   public:
-    void setSeverity(uint severity);
-    //  uint getSeverity();
+    void setSeverity(size_t severity);
+    //  size_t getSeverity();
     void setMessage(const std::string &message);
     //   std::string getMessage();
     void setTime(const UA_DateTime &time);

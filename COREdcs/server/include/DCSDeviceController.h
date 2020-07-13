@@ -34,11 +34,11 @@ template <class Device> class DCSDeviceController : public DCSObject {
                              const T &methodBody, B instance, bool threaded = true);
 
     template <class T>
-    void addVariableUpdate(DCSVariable &variable, uint interval_ms, T updateMethod,
+    void addVariableUpdate(DCSVariable &variable, size_t interval_ms, T updateMethod,
                            bool threaded = true, bool deviceProtected = true);
 
     template <class T, class B>
-    void addVariableUpdate(DCSVariable &variable, uint interval_ms, T updateMethod,
+    void addVariableUpdate(DCSVariable &variable, size_t interval_ms, T updateMethod,
                            B instance, bool threaded = true, bool deviceProtected = true);
 
   protected:
@@ -150,7 +150,7 @@ void DCSDeviceController<Device>::addControllerMethod(
 template <class Device>
 template <class T>
 void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
-                                                    uint interval_ms, T updateMethod,
+                                                    size_t interval_ms, T updateMethod,
                                                     bool threaded, bool deviceProtected) {
     std::function<void()> callback;
     if(deviceProtected) {
@@ -203,7 +203,7 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
 template <class Device>
 template <class T, class B>
 void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
-                                                    uint interval_ms, T updateMethod,
+                                                    size_t interval_ms, T updateMethod,
                                                     B instance, bool threaded,
                                                     bool deviceProtected) {
     auto callback = std::bind(updateMethod, instance);

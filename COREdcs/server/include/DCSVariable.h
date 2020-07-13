@@ -79,7 +79,7 @@ class DCSVariable {
         setAccessLevel(UA_ACCESSLEVELMASK_TIMESTAMPWRITE, access);
     }
 
-    void addUpdate(uint interval_ms, std::function<void()> callback) {
+    void addUpdate(size_t interval_ms, std::function<void()> callback) {
         updateInterval_ms = interval_ms;
         updateCallback = callback;
         updateActive = true;
@@ -116,7 +116,7 @@ class DCSVariable {
     UA_NodeId variableNodeId;
     UA_DataType dataType;
     bool updateActive = false;
-    uint updateInterval_ms;
+    size_t updateInterval_ms;
     std::function<void()> updateCallback;
 };
 

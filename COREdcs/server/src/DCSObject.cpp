@@ -163,7 +163,7 @@ void DCSObject::init(std::string type, std::string name, UA_Server *host,
     addChildren(options);
 }
 
-void DCSObject::fastEvent(const std::string &sourceName, uint severity,
+void DCSObject::fastEvent(const std::string &sourceName, size_t severity,
                           const std::string &message) {
     auto event = createEvent();
     event.setSourceName(sourceName);

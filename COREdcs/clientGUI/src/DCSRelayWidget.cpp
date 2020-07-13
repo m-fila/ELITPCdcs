@@ -1,6 +1,6 @@
 #include "DCSRelayWidget.h"
 
-DCSRelayWidget::DCSRelayWidget(uint nr, RelayDirectionPolicy directionPolicy,
+DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
                                QWidget *parent)
     : QWidget(parent), number(nr), directionPolicy(directionPolicy) {
     auto mainLayout = new QVBoxLayout(this);
@@ -95,7 +95,7 @@ void DCSRelayWidget::connectSignals() {
     connect(setButton, SIGNAL(pressed()), this, SLOT(showDialog()));
 }
 
-RelayDialog::RelayDialog(uint number, RelayStruct init,
+RelayDialog::RelayDialog(size_t number, RelayStruct init,
                          const std::map<int, std::string> &labels,
                          RelayDirectionPolicy directionPolicy, QWidget *parent)
     : QDialog(parent), directionPolicy(directionPolicy), unit(init.unit) {

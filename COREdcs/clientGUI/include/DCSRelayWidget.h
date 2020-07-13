@@ -33,7 +33,7 @@ class DCSRelayWidget : public QWidget {
     Q_OBJECT
   public:
     explicit DCSRelayWidget(
-        uint nr, RelayDirectionPolicy directionPolicy = RelayDirectionPolicy::Auto,
+        size_t nr, RelayDirectionPolicy directionPolicy = RelayDirectionPolicy::Auto,
         QWidget *parent = nullptr);
     void setValues(const RelayStruct &newVal);
     void setEnabledLabels(const std::map<int, std::string> &labels) {
@@ -42,7 +42,7 @@ class DCSRelayWidget : public QWidget {
     }
 
   protected:
-    const uint number;
+    const size_t number;
     const RelayDirectionPolicy directionPolicy;
     std::map<int, std::string> enabledLabels = {{0, "OFF"}, {1, "ON"}};
     QLabel *hysteresis;
@@ -62,7 +62,7 @@ class DCSRelayWidget : public QWidget {
 class RelayDialog : public QDialog {
     Q_OBJECT
   public:
-    explicit RelayDialog(uint number, RelayStruct init,
+    explicit RelayDialog(size_t number, RelayStruct init,
                          const std::map<int, std::string> &labels,
                          RelayDirectionPolicy directionPolicy, QWidget *parent = nullptr);
     RelayStruct getValue();

@@ -36,7 +36,7 @@ std::string GenericDevice::sendWithResponse(std::string command) {
     }
 }
 
-std::string GenericDevice::sendWithDelayedResponse(std::string command, uint delay) {
+std::string GenericDevice::sendWithDelayedResponse(std::string command, size_t delay) {
     if(isConnected()) {
         connectionStream->send(command);
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));

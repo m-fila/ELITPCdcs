@@ -55,7 +55,7 @@ class DCSObject {
 
     DCSEvent createEvent() { return DCSEvent(server, objectNodeId); }
 
-    void fastEvent(const std::string &sourceName, uint severity,
+    void fastEvent(const std::string &sourceName, size_t severity,
                    const std::string &message);
 
   protected:

@@ -1,5 +1,5 @@
 #include "DCSEvent.h"
-void DCSEvent::setSeverity(uint severity) {
+void DCSEvent::setSeverity(size_t severity) {
     auto s = severity > 1000 ? 1000 : severity;
     UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(0, "Severity");
     UA_Server_writeObjectProperty_scalar(server, eventId, qName, &s,

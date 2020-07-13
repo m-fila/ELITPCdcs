@@ -16,7 +16,7 @@ class GenericDevice {
     void sendCommand(std::string command);
     std::string receiveResponse();
     std::string sendWithResponse(std::string command);
-    std::string sendWithDelayedResponse(std::string command, uint delay_ms);
+    std::string sendWithDelayedResponse(std::string command, size_t delay_ms);
     ConnectionType getActiveConnectionType() { return activeConnectionType; }
 
   protected:
