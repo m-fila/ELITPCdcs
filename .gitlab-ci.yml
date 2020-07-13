@@ -1,4 +1,4 @@
-image: mfila/open62541
+image: mfila/open62541:1.1.1-fat
 stages:
     - format
     - build
@@ -18,11 +18,11 @@ clang-check:
     stage: format
     allow_failure: true
     script:
-    - clang-format-8 --version
-    - clang-format-8 -i $(find COREdcs -name "*.cpp")
-    - clang-format-8 -i $(find COREdcs -name "*.h")
-    - clang-format-8 -i $(find ELITPCdcs -name "*.cpp")
-    - clang-format-8 -i $(find ELITPCdcs -name "*.h")
+    - clang-format --version
+    - clang-format -i $(find COREdcs -name "*.cpp")
+    - clang-format -i $(find COREdcs -name "*.h")
+    - clang-format -i $(find ELITPCdcs -name "*.cpp")
+    - clang-format -i $(find ELITPCdcs -name "*.h")
     - git diff --exit-code
 
 staging_ssh:
@@ -61,7 +61,7 @@ export_commands:
  stage: build
  script:
     - rm -rf build
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++-8
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++
  artifacts:
     paths:
       - build
@@ -74,7 +74,7 @@ lint_clang_tidy:
     - export_commands
   script:
     - cd build
-    - run-clang-tidy-8
+    - run-clang-tidy
   when: manual
   
 lint_iwyu:
