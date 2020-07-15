@@ -5,24 +5,63 @@
 #include "DCSWorkerThread.h"
 #include "Influx.h"
 #include <json.hpp>
+#include <mutex>
 class DCSServer;
 
+/**
+ * @brief Interface for historizing collected data in InfluxDb database.
+ * This class doesn't start InfluxDb, only accesses it - you have to setup and start
+ * InfluxDb externally
+ *
+ */
 class DCSHistoryBackendInflux : public DCSHistoryBackend {
     friend DCSServer;
 
   public:
+    /**
+     * @brief Get the open62541 UA_HistoryData_Backend object
+     *
+     * @return UA_HistoryDataBackend open62541 struct populated with pointers to this
+     */
     UA_HistoryDataBackend getUaBackend() override;
+    /**
+     * @brief Set the address of InfluxDb
+     *
+     * @param address ip address, eg. localhost, 127.0.0.1, 192.168.168.2
+     * @param port port, eg. 8086
+     */
     void setConnetionAddress(std::string address, int port) {
         db.setConnectionParameters(address, port);
     }
+    /**
+     * @brief Set the username and password for accessing InfluxDb
+     *
+     * @param userName
+     * @param password
+     */
     void setUser(std::string userName, std::string password) {
         db.setUser(userName);
         db.setPassword(password);
     }
+    /**
+     * @brief Set the name of database in InfluxDb
+     *
+     * @param databaseName
+     */
     void setDatabase(std::string databaseName) { db.setDatabase(databaseName); }
+    /**
+     * @brief Set the time interval at which points will be uploaded to database.
+     * According to Influxdb documentation sending multiple points in one request instead
+     * of multiple requests with one point is the prefered method.
+     *
+     * @param interval_ms interval in ms
+     */
+    void setInterval(size_t interval_ms = 2000) { this->interval_ms = interval_ms; }
 
   private:
-    DCSHistoryBackendInflux(UA_Server *server) : DCSHistoryBackend(server, "influxdb") {}
+    DCSHistoryBackendInflux(UA_Server *server) : DCSHistoryBackend(server, "influxdb") {
+        write();
+    }
 
     static UA_StatusCode
     serverSetHistoryData(UA_Server *server, void *context, const UA_NodeId *sessionId,
@@ -96,7 +135,12 @@ class DCSHistoryBackendInflux : public DCSHistoryBackend {
 
     std::string toInflux(nlohmann::json j);
 
-    void write(const std::string &str);
+    void write();
+    static void writeCallback(UA_Server *server, void *context);
+
+    std::mutex bucketMutex;
+    std::string bucket;
+    size_t interval_ms = 2000;
 
     Influx db;
     DCSWorkerThread worker;

@@ -1,41 +1,33 @@
 #ifndef DCS_INFLUX_H
 #define DCS_INFLUX_H
 #include "HTTPDevice.h"
-
 class Influx : public HTTPDevice {
   public:
     Influx(std::string database = "", std::string user = "", std::string password = "",
            std::string time = "ms")
         : HTTPDevice(), database(database), user(user), password(password), time(time) {}
 
-    inline void write(std::string command) {
-        request(HTTPDevice::Method::POST, "/write?" + auth() + "&precision=" + time,
-                command);
+    inline HTTPResponse write(const std::string &command) {
+        return request(HTTPDevice::Method::POST,
+                       "/write?" + auth() + "&precision=" + time, command);
     }
 
-    inline std::string query(std::string q) {
+    inline HTTPResponse query(std::string q) {
         std::replace(q.begin(), q.end(), ' ', '+');
         return request(HTTPDevice::Method::GET,
-                       "/query?" + auth() + "&epoch=" + time + "&q=" + q)
-            .body;
+                       "/query?" + auth() + "&epoch=" + time + "&q=" + q);
     }
-    inline int ping() {
-        auto r = request(HTTPDevice::Method::GET, "/ping?verbose=true");
-        int code;
-        std::string http, msg;
-        std::stringstream ss(r.headers.at("status"));
-        ss >> http >> code >> msg;
-        return code;
+    inline HTTPResponse ping() {
+        return request(HTTPDevice::Method::GET, "/ping?verbose=true");
     }
 
-    inline std::string debugVars() {
-        return request(HTTPDevice::Method::GET, "/debug/vars").body;
+    inline HTTPResponse debugVars() {
+        return request(HTTPDevice::Method::GET, "/debug/vars");
     }
 
-    inline std::string debugRequests(size_t time_s = 10) {
+    inline HTTPResponse debugRequests(size_t time_s = 10) {
         return request(HTTPDevice::Method::GET,
-                       "/debug/requests?seconds=" + std::to_string(time_s))
-            .body;
+                       "/debug/requests?seconds=" + std::to_string(time_s));
     }
 
     inline void setDatabase(std::string i) { database = i; }

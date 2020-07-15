@@ -2,7 +2,6 @@
 #include "DCSContext.h"
 #include "DCSUAJson.h"
 #include "DCSVariable.h"
-
 using namespace nlohmann;
 
 UA_HistoryDataBackend DCSHistoryBackendInflux::getUaBackend() {
@@ -53,9 +52,11 @@ UA_StatusCode DCSHistoryBackendInflux::serverSetHistoryData(
     } catch(const std::runtime_error &e) {
         return UA_STATUSCODE_BADINTERNALERROR;
     }
-    instance->write(
+    std::unique_lock<std::mutex> lock(instance->bucketMutex);
+    instance->bucket.append(
         measurement + " " + cmd + " " +
-        (time ? std::to_string((time - UA_DATETIME_UNIX_EPOCH) / UA_DATETIME_MSEC) : ""));
+        (time ? std::to_string((time - UA_DATETIME_UNIX_EPOCH) / UA_DATETIME_MSEC) : "") +
+        "\n");
     return UA_STATUSCODE_GOOD;
 }
 
@@ -169,13 +170,35 @@ std::string DCSHistoryBackendInflux::toInflux(json j) {
     return s;
 }
 
-void DCSHistoryBackendInflux::write(const std::string &str) {
-    worker.push_front([str, this]() {
-        try {
-            db.write(str);
-        } catch(std::runtime_error &e) {
-            UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_NETWORK,
-                           "Influxdb error: %s", e.what());
-        };
+void DCSHistoryBackendInflux::write() {
+    std::string messages;
+    {
+        std::unique_lock<std::mutex> lock(bucketMutex);
+        messages = bucket;
+        bucket.clear();
+    }
+    worker.push_back([this, messages]() mutable {
+        if(!messages.empty()) {
+            messages.pop_back();
+            try {
+                const auto &response = db.write(messages);
+                if(response.statusCode / 100 != 2) {  // status not ok -> code !=2xx
+                    UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_NETWORK,
+                                   "Influxdb HTTP error, reponse: %i %s",
+                                   response.statusCode, response.statusPhrase.c_str());
+                }
+            } catch(std::runtime_error &e) {
+                UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_NETWORK,
+                               "Influxdb error: %s", e.what());
+            }
+        }
+        UA_Server_addTimedCallback(
+            server, writeCallback, this,
+            UA_DateTime_nowMonotonic() + interval_ms * UA_DATETIME_MSEC, nullptr);
     });
+}
+
+void DCSHistoryBackendInflux::writeCallback(UA_Server *server, void *context) {
+    auto *backend = static_cast<DCSHistoryBackendInflux *>(context);
+    backend->write();
 }

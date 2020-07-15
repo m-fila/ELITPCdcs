@@ -82,7 +82,6 @@ class DCSVariable {
     void addUpdate(size_t interval_ms, std::function<void()> callback) {
         updateInterval_ms = interval_ms;
         updateCallback = callback;
-        updateActive = true;
         timedCallback(server, this);
     }
 
@@ -115,8 +114,7 @@ class DCSVariable {
     const std::string variableName;
     UA_NodeId variableNodeId;
     UA_DataType dataType;
-    bool updateActive = false;
-    size_t updateInterval_ms;
+    size_t updateInterval_ms = 2000;
     std::function<void()> updateCallback;
 };
 

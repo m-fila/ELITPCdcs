@@ -15,10 +15,50 @@ class HTTPDevice : public GenericDevice {
   public:
     enum class Method { GET, POST, PUT, HEAD, DELETE, PATCH, OPTIONS };
 
+    /**
+     * @brief HTTP response:
+     *  HTTP version, status code, phrase
+     *  header: header info
+     *  response body
+     */
     struct HTTPResponse {
-        std::map<std::string, std::string> headers;
-        std::string body;
+        /**
+         * @brief Construct a new HTTPResponse object
+         *
+         * @param resp HTTP string to be parsed
+         */
         HTTPResponse(std::string resp);
+        /**
+         * @brief map of response headers
+         * eg. Date, Server, Content-Length, Content-Type, ...
+         */
+        std::map<std::string, std::string> headers;
+        /**
+         * @brief response content
+         *
+         */
+        std::string body;
+        /**
+         * @brief HTTP version
+         * HTTP/1.0 or HTTP/1.1
+         *
+         */
+        std::string httpVersion;
+        /**
+         * @brief HTTP response status code
+         * 1xx information
+         * 2xx ok
+         * 3xx redirection
+         * 4xx client error
+         * 5xx server error
+         *
+         */
+        int statusCode = 0;
+        /**
+         * @brief status information
+         *
+         */
+        std::string statusPhrase;
     };
 
     HTTPDevice();

@@ -4,8 +4,11 @@ HTTPDevice::HTTPResponse::HTTPResponse(std::string resp) {
     std::string s;
     if(!getline(ss, s)) {
         throw std::runtime_error("Parsing empty http response");
+    } else {
+        stringstream statusStream(s);
+        statusStream >> httpVersion >> statusCode >> std::ws;
+        getline(statusStream, statusPhrase);
     }
-    headers.insert({"status", s});
     while(std::getline(ss, s)) {
         // new line between headers and body
         if(s.size() < 2) {
