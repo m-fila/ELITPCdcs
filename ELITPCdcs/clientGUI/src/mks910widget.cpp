@@ -39,6 +39,7 @@ void MKS910Widget::connectSignals() {
             SLOT(updateMeasurements(void *)));
     connect(controller, SIGNAL(configurationChanged(void *)), this,
             SLOT(updateConfiguration(void *)));
+    connect(controller, SIGNAL(relayChanged(void *)), this, SLOT(updateRelay(void *)));
     connect(unitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeUnits(int)));
 }
 void MKS910Widget::controllerInit(UA_Client *client, UA_ClientConfig *config,
@@ -90,6 +91,21 @@ void MKS910Widget::updateMeasurements(void *data) {
 
 void MKS910Widget::updateConfiguration(void *data) {}
 
+void MKS910Widget::updateRelay(void *data) {
+    auto r = *static_cast<UA_Relay *>(data);
+    for(size_t i = 0; i < r.statusSize; i++) {
+        RelayStruct rStruct;
+        rStruct.status = r.status[i];
+        rStruct.direction = r.direction[i];
+        rStruct.enabled = r.enabled[i];
+        rStruct.setpoint = r.setpoint[i];
+        rStruct.hysteresis = r.hysteresis[i];
+        relayWidgets.at(i)->setValues(rStruct);
+    }
+}
+void MKS910Widget::changeRelay(int nr, RelayStruct values) {
+    controller->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
+}
 void MKS910Widget::updateStatusLabel(QString info) { statusLabel->setText(info); }
 
 void MKS910Widget::createLayout() {
@@ -215,6 +231,9 @@ void MKS910Widget::createRTab() {
         auto relayPanel = new DCSRelayWidget(i);
         relayPanel->setEnabledLabels(enabledLabels);
         rLayout->addWidget(relayPanel);
+        connect(relayPanel, SIGNAL(changeValues(int, RelayStruct)), this,
+                SLOT(changeRelay(int, RelayStruct)));
+        relayWidgets.push_back(relayPanel);
     }
 }
 

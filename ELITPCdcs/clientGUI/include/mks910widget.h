@@ -33,15 +33,17 @@ class MKS910Widget : public AbstractWidget {
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
+    void updateRelay(void *data);
     void controllerInit(UA_Client *client, UA_ClientConfig *config,
                         UA_CreateSubscriptionResponse resp) override;
 
     void changeNamePressed();
     void updateStatusLabel(QString info);
-
+    void changeRelay(int nr, RelayStruct values);
     void changeUnits(int u);
 
   private:
+    std::vector<DCSRelayWidget *> relayWidgets;
     //    std::string instanceName;
     MKS910_controller *controller;
     bool connectionState;

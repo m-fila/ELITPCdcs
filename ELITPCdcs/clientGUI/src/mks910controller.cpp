@@ -13,3 +13,24 @@ void MKS910_controller::callSetUnits(int unit) {
                        nullptr, nullptr);
     UA_Variant_clear(&input);
 }
+
+void MKS910_controller::RelayChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                             void *subContext, UA_UInt32 monId,
+                                             void *monContext, UA_DataValue *value) {
+    void *data = value->value.data;
+    auto *context = static_cast<MKS910_controller *>(monContext);
+    emit context->relayChanged(data);
+}
+
+void MKS910_controller::callSetRelay(int nr, int enabled, double setpoint,
+                                     double hysteresis) {
+    UA_Variant input[4];
+    UA_Variant_init(input);
+    UA_Variant_setScalarCopy(&input[0], &nr, &UA_TYPES[UA_TYPES_UINT32]);
+    UA_Variant_setScalarCopy(&input[1], &enabled, &UA_TYPES[UA_TYPES_UINT32]);
+    UA_Variant_setScalarCopy(&input[2], &setpoint, &UA_TYPES[UA_TYPES_DOUBLE]);
+    UA_Variant_setScalarCopy(&input[3], &hysteresis, &UA_TYPES[UA_TYPES_DOUBLE]);
+    UA_Client_call(client, ObjectNodeId, browsedIds["setrelay"], 4, input, nullptr,
+                   nullptr);
+    UA_Variant_clear(input);
+}
