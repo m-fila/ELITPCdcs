@@ -7,16 +7,16 @@ class opc_controller : public opcQObject {
   public:
     opc_controller(std::string OName, QObject *parent = 0);
     void opcInit(UA_Client *client, UA_ClientConfig *config,
-                 UA_CreateSubscriptionResponse response);
+                 UA_CreateSubscriptionResponse response) override;
     void callConnect(std::string IPAddress, int port);
     void callDisconnect();
 
   protected:
-    const std::string statusVariableName;
-    const std::string measurementsVariableName;
-    const std::string configurationVariableName;
-    const std::string connectBrowseName;
-    const std::string disconnectBrowseName;
+    const std::string statusVariableName = "status";
+    const std::string measurementsVariableName = "measurements";
+    const std::string configurationVariableName = "configuration";
+    const std::string connectBrowseName = "connect";
+    const std::string disconnectBrowseName = "disconnect";
     //    UA_NodeId StatusNodeId;
     //    UA_NodeId MeasurementsNodeId;
     //    UA_NodeId ConfigurationNodeId;

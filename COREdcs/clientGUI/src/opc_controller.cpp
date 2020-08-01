@@ -2,46 +2,11 @@
 #include <iostream>
 #include <open62541/client_highlevel_async.h>
 opc_controller::opc_controller(std::string OName, QObject *parent)
-    : opcQObject(OName, parent), statusVariableName("status"),
-      measurementsVariableName("measurements"),
-      configurationVariableName("configuration"), connectBrowseName("connect"),
-      disconnectBrowseName("disconnect") {}
+    : opcQObject(OName, parent) {}
 
-/*
-void opc_controller::browseIds(){
-    std::string connectBrowseName="connect";
-    std::string disconnectBrowseName="disconnect";
-    UA_BrowseRequest bReq;
-    UA_BrowseRequest_init(&bReq);
-    bReq.requestedMaxReferencesPerNode = 0;
-    bReq.nodesToBrowse = UA_BrowseDescription_new();
-    bReq.nodesToBrowseSize = 1;
-    bReq.nodesToBrowse[0].nodeId =ObjectNodeId;// UA_NODEID_NUMERIC(0, UA_NS0ID_OBJE
-    bReq.nodesToBrowse[0].resultMask = UA_BROWSERESULTMASK_BROWSENAME;
-    UA_BrowseResponse bResp = UA_Client_Service_browse(client, bReq);
-    for(size_t i = 0; i < bResp.resultsSize; ++i) {
-            for(size_t j = 0; j < bResp.results[i].referencesSize; ++j) {
-                UA_ReferenceDescription ref = (bResp.results[i].references[j]);
-                std::string str
-=std::string(reinterpret_cast<char*>(ref.browseName.name.data));
-                if(!str.compare(MeasurementsVariableName))
-                    MeasurementsNodeId=ref.nodeId.nodeId;
-                if(!str.compare(ConfigurationVariableName))
-                    ConfigurationNodeId=ref.nodeId.nodeId;
-                if(!str.compare(StatusVariableName))
-                    StatusNodeId=ref.nodeId.nodeId;
-                if(!str.compare(connectBrowseName))
-                    connectNodeId=ref.nodeId.nodeId;
-                if(!str.compare(disconnectBrowseName))
-                    disconnectNodeId=ref.nodeId.nodeId;
-            }
-    }
-}
-*/
 void opc_controller::opcInit(UA_Client *Client, UA_ClientConfig *Config,
                              UA_CreateSubscriptionResponse response) {
-    client = Client;
-    config = Config;
+    opcQObject::opcInit(Client, Config, response);
     browseIds();
     addMonitoredItem(browsedIds[statusVariableName], response, StatusChangedCallback);
     addMonitoredItem(browsedIds[measurementsVariableName], response,

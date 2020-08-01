@@ -9,7 +9,7 @@ void DCSMKS910Controller::addChildren(const Options &options) {
     addVariableUpdate(c, 1000, &DCSMKS910Controller::getConfiguration, this);
 
     auto &r = addVariable("relay", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_RELAY]);
-    addVariableUpdate(r, 1000, &DCSMKS910Controller::getRelay, this);
+    addVariableUpdate(r, 5000, &DCSMKS910Controller::getRelay, this);
     addControllerMethod("setunits", "Sets pressure units",
                         {{"Unit", "PASCAL/BAR/TORR", UA_TYPES[UA_TYPES_INT16]}}, {},
                         &DCSMKS910Controller::setUnits, this);
@@ -63,7 +63,7 @@ UA_Relay DCSMKS910Controller::getRelay() {
     relay.status =
         static_cast<UA_Boolean *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_BOOLEAN]));
 
-    for(size_t i = 1; i < size; ++i) {
+    for(size_t i = 0; i < size; ++i) {
         auto no = static_cast<MKS910::RelayNo>(i + 1);
         std::string resp;
         resp = device.getRelayDirection(no);

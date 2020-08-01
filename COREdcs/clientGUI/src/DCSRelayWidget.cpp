@@ -76,10 +76,11 @@ void DCSRelayWidget::showDialog() {
     if(retv) {
         auto r = dialog.getValue();
         QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Question);
         msgBox.setText(QString::asprintf("Changing Relay %u to:", number));
         msgBox.setInformativeText(QString::asprintf(
             "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%.2f %s\nHysteresis:\t%.2f "
-            "%s\n\nConfirm?",
+            "%s\n\nDo you confirm?",
             enabledLabels.at(r.enabled).c_str(), r.direction ? "BELOW" : "ABOVE",
             r.setpoint, r.unit.c_str(), r.hysteresis, r.unit.c_str()));
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
@@ -87,6 +88,7 @@ void DCSRelayWidget::showDialog() {
         if(msgBox.exec() == QMessageBox::Ok) {
             std::cout << r.enabled << " " << r.setpoint << " " << r.hysteresis
                       << std::endl;
+            emit changeValues(number, r);
         }
     }
 }

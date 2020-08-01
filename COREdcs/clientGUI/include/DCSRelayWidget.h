@@ -57,6 +57,8 @@ class DCSRelayWidget : public QWidget {
     void connectSignals();
   public slots:
     void showDialog();
+  signals:
+    void changeValues(int number, RelayStruct values);
 };
 
 class RelayDialog : public QDialog {
