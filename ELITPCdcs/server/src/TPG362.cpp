@@ -64,8 +64,9 @@ std::string TPG362::setSwitchingFunction(SWITCHING_FUNCTION f, SWITCHING_STATUS 
 
     auto function = static_cast<int>(f);
     auto status = static_cast<int>(s);
-    std::stringstream ss("SP");
-    ss << function << "," << status << "," << lowThreshold << "," << highThreshold;
+    std::stringstream ss;
+    ss << "SP" << function << "," << status << "," << lowThreshold << ","
+       << highThreshold;
     return sendWithEnquiry(ss.str());
 }
 

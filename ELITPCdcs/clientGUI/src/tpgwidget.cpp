@@ -97,6 +97,7 @@ void TPGWidget::updateRelay(void *data) {
         rStruct.enabled = r.enabled[i];
         rStruct.setpoint = r.setpoint[i];
         rStruct.hysteresis = r.hysteresis[i];
+        rStruct.unit = "mbar";
         relayWidgets.at(i)->setValues(rStruct);
     }
 }

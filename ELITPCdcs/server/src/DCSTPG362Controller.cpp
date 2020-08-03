@@ -51,7 +51,7 @@ UA_TPG362c DCSTPG362Controller::getConfiguration() {
 }
 
 UA_Relay DCSTPG362Controller::getRelay() {
-    size_t size = 3;
+    size_t size = 4;
     UA_Relay relay;
     UA_Relay_init(&relay);
     relay.directionSize = size;
@@ -93,9 +93,9 @@ UA_Relay DCSTPG362Controller::getRelay() {
 
 void DCSTPG362Controller::setRelay(const UA_Variant *input, UA_Variant *output) {
     auto function = *static_cast<UA_UInt32 *>(input[0].data);
-    auto assignment = *static_cast<UA_UInt32 *>(input[0].data);
-    auto setpoint = *static_cast<UA_Double *>(input[0].data);
-    auto hysteresis = *static_cast<UA_Double *>(input[0].data);
+    auto assignment = *static_cast<UA_UInt32 *>(input[1].data);
+    auto setpoint = *static_cast<UA_Double *>(input[2].data);
+    auto hysteresis = *static_cast<UA_Double *>(input[3].data);
     device.setSwitchingFunction(static_cast<TPG362::SWITCHING_FUNCTION>(function),
                                 static_cast<TPG362::SWITCHING_STATUS>(assignment),
                                 setpoint, hysteresis);

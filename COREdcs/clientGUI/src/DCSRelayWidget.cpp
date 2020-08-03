@@ -30,16 +30,16 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
     firstRow->addWidget(direction);
     auto setpointLabel = new QLabel("Setpoint:", this);
     setpoint = new QLabel("", this);
-    setpoint->setFixedWidth(40);
+    setpoint->setFixedWidth(50);
     secondRow->addWidget(setpointLabel);
     secondRow->addWidget(setpoint);
     auto hysteresisLabel = new QLabel("Hysteresis:", this);
     hysteresis = new QLabel("", this);
-    hysteresis->setFixedWidth(40);
+    hysteresis->setFixedWidth(50);
     secondRow->addWidget(hysteresisLabel);
     secondRow->addWidget(hysteresis);
     units = new QLabel("");
-    units->setFixedWidth(40);
+    units->setFixedWidth(50);
     secondRow->addWidget(units);
     setButton = new QPushButton("Set relay", this);
     secondRow->addWidget(setButton);
@@ -79,7 +79,7 @@ void DCSRelayWidget::showDialog() {
         msgBox.setIcon(QMessageBox::Question);
         msgBox.setText(QString::asprintf("Changing Relay %u to:", number));
         msgBox.setInformativeText(QString::asprintf(
-            "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%.2f %s\nHysteresis:\t%.2f "
+            "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%f %s\nHysteresis:\t%f "
             "%s\n\nDo you confirm?",
             enabledLabels.at(r.enabled).c_str(), r.direction ? "BELOW" : "ABOVE",
             r.setpoint, r.unit.c_str(), r.hysteresis, r.unit.c_str()));
@@ -110,15 +110,18 @@ RelayDialog::RelayDialog(size_t number, RelayStruct init,
     for(auto i : labels) {
         enabled.addItem(QString::fromStdString(i.second));
     }
-    int precision = 2;
+    int precision = 6;
     double step = 0.1;
+    double maximum = 9999;
     enabled.setCurrentIndex(init.enabled);
-    setpoint.setValue(init.setpoint);
-    hysteresis.setValue(init.hysteresis);
     setpoint.setDecimals(precision);
     hysteresis.setDecimals(precision);
     setpoint.setSingleStep(step);
     hysteresis.setSingleStep(step);
+    setpoint.setMaximum(maximum);
+    hysteresis.setMaximum(maximum);
+    setpoint.setValue(init.setpoint);
+    hysteresis.setValue(init.hysteresis);
     // setpoint.setButtonSymbols(QAbstractSpinBox::NoButtons);
     // hysteresis.setButtonSymbols(QAbstractSpinBox::NoButtons);
     direction.setReadOnly(true);
