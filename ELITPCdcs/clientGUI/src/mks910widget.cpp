@@ -103,9 +103,11 @@ void MKS910Widget::updateRelay(void *data) {
         relayWidgets.at(i)->setValues(rStruct);
     }
 }
+
 void MKS910Widget::changeRelay(int nr, RelayStruct values) {
     controller->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
 }
+
 void MKS910Widget::updateStatusLabel(QString info) { statusLabel->setText(info); }
 
 void MKS910Widget::createLayout() {
