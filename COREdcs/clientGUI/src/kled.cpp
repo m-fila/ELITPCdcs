@@ -21,19 +21,14 @@
 #include "kled.h"
 
 #include <QApplication>
-#include <QPainter>
 #include <QImage>
+#include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
 
-class Q_DECL_HIDDEN KLed::Private
-{
-public:
-    Private()
-        : darkFactor(300),
-          state(On), look(Raised), shape(Circular)
-    {
-    }
+class Q_DECL_HIDDEN KLed::Private {
+  public:
+    Private() : darkFactor(300), state(On), look(Raised), shape(Circular) {}
 
     int darkFactor;
     QColor color;
@@ -41,30 +36,21 @@ public:
     Look look;
     Shape shape;
 
-    QPixmap cachedPixmap[2]; // for both states
+    QPixmap cachedPixmap[2];  // for both states
 };
 
-KLed::KLed(QWidget *parent)
-    : QWidget(parent),
-      d(new Private)
-{
+KLed::KLed(QWidget *parent) : QWidget(parent), d(new Private) {
     setColor(Qt::green);
     updateAccessibleName();
 }
 
-KLed::KLed(const QColor &color, QWidget *parent)
-    : QWidget(parent),
-      d(new Private)
-{
+KLed::KLed(const QColor &color, QWidget *parent) : QWidget(parent), d(new Private) {
     setColor(color);
     updateAccessibleName();
 }
 
-KLed::KLed(const QColor &color, State state, Look look, Shape shape,
-           QWidget *parent)
-    : QWidget(parent),
-      d(new Private)
-{
+KLed::KLed(const QColor &color, State state, Look look, Shape shape, QWidget *parent)
+    : QWidget(parent), d(new Private) {
     d->state = (state == Off ? Off : On);
     d->look = look;
     d->shape = shape;
@@ -73,34 +59,18 @@ KLed::KLed(const QColor &color, State state, Look look, Shape shape,
     updateAccessibleName();
 }
 
-KLed::~KLed()
-{
-    delete d;
-}
+KLed::~KLed() { delete d; }
 
-KLed::State KLed::state() const
-{
-    return d->state;
-}
+KLed::State KLed::state() const { return d->state; }
 
-KLed::Shape KLed::shape() const
-{
-    return d->shape;
-}
+KLed::Shape KLed::shape() const { return d->shape; }
 
-QColor KLed::color() const
-{
-    return d->color;
-}
+QColor KLed::color() const { return d->color; }
 
-KLed::Look KLed::look() const
-{
-    return d->look;
-}
+KLed::Look KLed::look() const { return d->look; }
 
-void KLed::setState(State state)
-{
-    if (d->state == state) {
+void KLed::setState(State state) {
+    if(d->state == state) {
         return;
     }
 
@@ -109,9 +79,8 @@ void KLed::setState(State state)
     updateAccessibleName();
 }
 
-void KLed::setShape(Shape shape)
-{
-    if (d->shape == shape) {
+void KLed::setShape(Shape shape) {
+    if(d->shape == shape) {
         return;
     }
 
@@ -119,9 +88,8 @@ void KLed::setShape(Shape shape)
     updateCachedPixmap();
 }
 
-void KLed::setColor(const QColor &color)
-{
-    if (d->color == color) {
+void KLed::setColor(const QColor &color) {
+    if(d->color == color) {
         return;
     }
 
@@ -129,9 +97,8 @@ void KLed::setColor(const QColor &color)
     updateCachedPixmap();
 }
 
-void KLed::setDarkFactor(int darkFactor)
-{
-    if (d->darkFactor == darkFactor) {
+void KLed::setDarkFactor(int darkFactor) {
+    if(d->darkFactor == darkFactor) {
         return;
     }
 
@@ -139,14 +106,10 @@ void KLed::setDarkFactor(int darkFactor)
     updateCachedPixmap();
 }
 
-int KLed::darkFactor() const
-{
-    return d->darkFactor;
-}
+int KLed::darkFactor() const { return d->darkFactor; }
 
-void KLed::setLook(Look look)
-{
-    if (d->look == look) {
+void KLed::setLook(Look look) {
+    if(d->look == look) {
         return;
     }
 
@@ -154,73 +117,56 @@ void KLed::setLook(Look look)
     updateCachedPixmap();
 }
 
-void KLed::toggle()
-{
+void KLed::toggle() {
     d->state = (d->state == On ? Off : On);
     updateCachedPixmap();
     updateAccessibleName();
 }
 
-void KLed::on()
-{
-    setState(On);
-}
+void KLed::on() { setState(On); }
 
-void KLed::off()
-{
-    setState(Off);
-}
+void KLed::off() { setState(Off); }
 
-void KLed::resizeEvent(QResizeEvent *)
-{
-    updateCachedPixmap();
-}
+void KLed::resizeEvent(QResizeEvent *) { updateCachedPixmap(); }
 
-QSize KLed::sizeHint() const
-{
+QSize KLed::sizeHint() const {
     QStyleOption option;
     option.initFrom(this);
     int iconSize = style()->pixelMetric(QStyle::PM_SmallIconSize, &option, this);
-    return QSize(iconSize,  iconSize);
+    return QSize(iconSize, iconSize);
 }
 
-QSize KLed::minimumSizeHint() const
-{
-    return QSize(16, 16);
-}
+QSize KLed::minimumSizeHint() const { return QSize(16, 16); }
 
-void KLed::updateAccessibleName()
-{
+void KLed::updateAccessibleName() {
 #ifndef QT_NO_ACCESSIBILITY
     QString onName = tr("LED on", "Accessible name of a Led whose state is on");
     QString offName = tr("LED off", "Accessible name of a Led whose state is off");
     QString lastName = accessibleName();
 
-    if (lastName.isEmpty() || lastName == onName || lastName == offName) {
-        //Accessible name has not been manually set.
+    if(lastName.isEmpty() || lastName == onName || lastName == offName) {
+        // Accessible name has not been manually set.
 
         setAccessibleName(d->state == On ? onName : offName);
     }
 #endif
 }
 
-void KLed::updateCachedPixmap()
-{
+void KLed::updateCachedPixmap() {
     d->cachedPixmap[Off] = QPixmap();
     d->cachedPixmap[On] = QPixmap();
     update();
 }
 
-void KLed::paintEvent(QPaintEvent *)
-{
-    if (!d->cachedPixmap[d->state].isNull()) {
+void KLed::paintEvent(QPaintEvent *) {
+    if(!d->cachedPixmap[d->state].isNull()) {
         QPainter painter(this);
         painter.drawPixmap(1, 1, d->cachedPixmap[d->state]);
         return;
     }
 
     QSize size(width() - 2, height() - 2);
-    if (d->shape == Circular) {
+    if(d->shape == Circular) {
         // Make sure the LED is round
         const int dim = qMin(width(), height()) - 2;
         size = QSize(dim, dim);
@@ -232,7 +178,8 @@ void KLed::paintEvent(QPaintEvent *)
     QImage image(size, QImage::Format_ARGB32_Premultiplied);
     image.fill(0);
 
-    QRadialGradient fillGradient(center, smallestSize / 2.0, QPointF(center.x(), size.height() / 3.0));
+    QRadialGradient fillGradient(center, smallestSize / 2.0,
+                                 QPointF(center.x(), size.height() / 3.0));
     const QColor fillColor = d->state != Off ? d->color : d->color.dark(d->darkFactor);
     fillGradient.setColorAt(0.0, fillColor.light(250));
     fillGradient.setColorAt(0.5, fillColor.light(130));
@@ -240,7 +187,7 @@ void KLed::paintEvent(QPaintEvent *)
 
     QConicalGradient borderGradient(center, d->look == Sunken ? 90 : -90);
     QColor borderColor = palette().color(QPalette::Dark);
-    if (d->state == On) {
+    if(d->state == On) {
         QColor glowOverlay = fillColor;
         glowOverlay.setAlpha(80);
 
@@ -249,7 +196,7 @@ void KLed::paintEvent(QPaintEvent *)
         QImage img(1, 1, QImage::Format_ARGB32_Premultiplied);
         QPainter p(&img);
         QColor start = borderColor;
-        start.setAlpha(255); // opaque
+        start.setAlpha(255);  // opaque
         p.fillRect(0, 0, 1, 1, start);
         p.setCompositionMode(QPainter::CompositionMode_SourceOver);
         p.fillRect(0, 0, 1, 1, glowOverlay);
@@ -264,11 +211,13 @@ void KLed::paintEvent(QPaintEvent *)
     painter.begin(&image);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(d->look == Flat ? QBrush(fillColor) : QBrush(fillGradient));
-    const QBrush penBrush = (d->look == Flat) ? QBrush(borderColor) : QBrush(borderGradient);
+    const QBrush penBrush =
+        (d->look == Flat) ? QBrush(borderColor) : QBrush(borderGradient);
     const qreal penWidth = smallestSize / 8.0;
     painter.setPen(QPen(penBrush, penWidth));
-    QRectF r(penWidth / 2.0, penWidth / 2.0, size.width() - penWidth, size.height() - penWidth);
-    if (d->shape == Rectangular) {
+    QRectF r(penWidth / 2.0, penWidth / 2.0, size.width() - penWidth,
+             size.height() - penWidth);
+    if(d->shape == Rectangular) {
         painter.drawRect(r);
     } else {
         painter.drawEllipse(r);
@@ -280,4 +229,3 @@ void KLed::paintEvent(QPaintEvent *)
     painter.drawPixmap(1, 1, d->cachedPixmap[d->state]);
     painter.end();
 }
-

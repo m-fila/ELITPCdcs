@@ -1,0 +1,36 @@
+@import 'theme.css';
+.wy-side-nav-search {
+    background-color: #5e81ac;
+}
+
+.wy-side-nav-search input[type=text] {
+    border-color: #5e81ac
+}
+
+.wy-dropdown-menu>dd>a:hover {
+    background: #5e81ac;
+}
+
+.wy-dropdown.wy-dropdown-bubble .wy-dropdown-menu a:hover {
+    background: #5e81ac;
+}
+
+.wy-inline-validate.wy-inline-validate-info .wy-input-context {
+    color: #5e81ac
+}
+
+.wy-menu-vertical a:active {
+    background-color: #5e81ac;
+}
+
+.wy-nav .wy-menu-vertical header {
+    color: #5e81ac
+}
+
+.wy-nav .wy-menu-vertical a:hover {
+    background-color: #5e81ac;
+}
+
+.wy-nav-top {
+    background: #5e81ac;
+}

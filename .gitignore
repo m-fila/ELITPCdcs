@@ -1,4 +1,6 @@
 Makefile
+CMakeFiles/
+CMakeCache.txt
 build/
 env.sh
 *~
@@ -6,4 +8,7 @@ env.sh
 *.pro.user
 *.autosave
 .vscode/
+.clangd
+compile_commands.json
 workspace.code-workspace
+/docs/api/*

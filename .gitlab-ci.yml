@@ -1,0 +1,98 @@
+image: mfila/open62541:1.1.1-fat
+stages:
+    - format
+    - build
+    - deploy
+    - lint
+    
+cmake-check:
+    stage: format
+    allow_failure: true
+    script:
+    - cmake-format --version
+    - cmake-format -i $(find . -name "*.cmake")
+    - cmake-format -i $(find . -name "CMakeLists.txt")
+    - git diff --exit-code
+        
+clang-check:
+    stage: format
+    allow_failure: true
+    script:
+    - clang-format --version
+    - clang-format -i $(find COREdcs -name "*.cpp")
+    - clang-format -i $(find COREdcs -name "*.h")
+    - clang-format -i $(find ELITPCdcs -name "*.cpp")
+    - clang-format -i $(find ELITPCdcs -name "*.h")
+    - git diff --exit-code
+
+staging_ssh:
+  stage: deploy
+  tags:
+  - ssh
+  environment: daq-$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
+  script:
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
+    - cmake --build build
+    - rm -rf $HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
+    - cmake --build build --target install
+  artifacts:
+     paths:
+     - build
+
+#build_release:
+#  stage: build
+#  script:
+#    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
+#    - cmake --build build 
+#  artifacts:
+#    paths:
+#      - build
+      
+build_debug:
+  stage: build
+  script:
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_EXE_LINKER_FLAGS="-coverage"
+    - cmake --build build 
+#  artifacts:
+#    paths:
+#      - build
+
+export_commands:
+ stage: build
+ script:
+    - rm -rf build
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++
+ artifacts:
+    paths:
+      - build
+
+
+lint_clang_tidy:
+  stage: lint
+  allow_failure: true
+  dependencies:
+    - export_commands
+  script:
+    - cd build
+    - run-clang-tidy
+  when: manual
+  
+lint_iwyu:
+  stage: lint
+  allow_failure: true
+  dependencies:
+    - export_commands
+  script:
+    - cd build
+    - iwyu_tool.py -p .
+  when: manual
+
+lint_cppcheck:
+  allow_failure: true
+  stage: lint
+  dependencies:
+    - export_commands
+  script:
+    - cd build
+    - cppcheck --error-exitcode=1 -i $PWD/../deps -i $PWD/../test ..
+  when: manual

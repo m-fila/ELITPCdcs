@@ -1,5 +1,4 @@
-# ![ELITPCS dcs](docs/img/dcs_logo.png "ELITPC dcs")
-
+# ![ELITPCS dcs](docs/icons/dcs_logo.png "ELITPC dcs")
 Detector Control System for ELITPC detector using OPC UA protocol.
 Provides server, operational gui client and database client. Server is
 compatible with other OPC UA clients such as UaExpert by Unified Automation.
@@ -27,6 +26,7 @@ sudo apt-get install qt5-default
 ```
 ### Building
 ```
+git clone --recursive ssh://git@dracula.hep.fuw.edu.pl:8822/mfila/dcs.git
 . env.sh
 mkdir build && cd build
 cmake ..
@@ -35,17 +35,29 @@ make install
 ```
 
 CMake flags `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
-`-DCMAKE_INSTALL_PREFIX=your_path` can be used to specify custom installation path.
+`cmake -DCMAKE_INSTALL_PREFIX=your_path ..` can be used to specify custom installation path.
 
 
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available:
 * dcsServer - provides OPC server and device controllers. Should be run on a computer with access to devices.
-* dcsGui - GUI client. Provides graphic interface for utilies exposed to user by server such as monitoring and manipulating devices.
-* dcsDb - data logger client . Connects to server and loggs states and measurements into local SQLite database.
+* dcsGui - GUI client. Provides graphic interface for operator user of services exposed by server such as monitoring and manipulating devices.
+* dcsDb - data logger client . Connects to server and loggs states and measurements into local SQLite database (obsolete if you use historizing on server)
 
 ## Usage
+* to run server:
+  ```
+  ./dcsServer (path_to_config_file)
+  ```
+* to run gui client:
+  ```
+  ./dcsGUI (path_to_config_file)
+  ```
+* to run database client:
+    ```
+  ./dcsDB (path_to_config_file)
+  ```
 
-At startup server and clients look for dcs.json file with list of
+At startup server and clients look for configuration file with list of
 devices used in experimental setup and address of a server. So far known devices are:
 * HMP2020 - 2 channel lv psu
 * HMP4040 - 4 channel lv psu
@@ -55,10 +67,14 @@ devices used in experimental setup and address of a server. So far known devices
 * MKS910 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
 
-A path to config file should be given in first argument for server or client application. Otherwise a shared config can be placed at `${HOME}/.dcs/dcs.json`.
+A path to config file should be given in first argument for server or client application. Otherwise an enviromental variable will be looked for.
 
+#### Enviromental variables
+During initialisation dcsServer looks for enviromental variables. 
+* `${DCS_CONFIG_FILE}` - path to server configuration (currently json) file. Default value is `${HOME}/.dcs/dcs.json`.First argument given to `dcsServer` has higher priority than this enviromental variable 
+* `${DCS_PROFILE_DIR}` - path to directory with device profiles. Default value is `${HOME}/.dcs/`. Config field `profileDir` has higher priority than this enviromental variable 
 
-### Adding new devices
+#### Adding new devices (old)
 The project is split into two catalogs COREdcs with framework and ELITPCdcs implementing specific devices. Ideally you shouldn't have to edit anything in COREdcs.
 #### Server
 * `bin/main.cpp` create specific device controller if found in config file
@@ -71,11 +87,16 @@ The project is split into two catalogs COREdcs with framework and ELITPCdcs impl
 ### Roadmap
 - [ ] new devices (MKS 946) 
 - [ ] interlock support 
-- [x] events
+- [x] server events
 - [x] historizing
-- [x] more efficient server side
-- [ ] device register
-- [ ] device profiles
-- [ ] higher level client
+- [x] refactorized server
+- [x] server device register 
+- [x] server device profiles
+- [ ] refactorized client
+- [ ] client events, profiles display
+## License
+This work is distributed under [MIT license](LICENSE).
+
+`deps/` are distributed under their own licenses (see information in header files)
 ## Authors
 * __Mateusz Fila__ basing on ELITPCdcsPanel by __Marcin Zaremba__

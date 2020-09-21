@@ -41,8 +41,7 @@ class QColor;
  *
  * @author Joerg Habenicht, Richard J. Moore (rich@kde.org) 1998, 1999
  */
-class KLed : public QWidget
-{
+class KLed : public QWidget {
     Q_OBJECT
     Q_PROPERTY(State state READ state WRITE setState)
     Q_PROPERTY(Shape shape READ shape WRITE setShape)
@@ -50,8 +49,7 @@ class KLed : public QWidget
     Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(int darkFactor READ darkFactor WRITE setDarkFactor)
 
-public:
-
+  public:
     /**
      * Status of the light is on/off.
      * @short LED on/off.
@@ -71,7 +69,7 @@ public:
      *
      * @short LED look.
      */
-    enum Look  { Flat, Raised, Sunken };
+    enum Look { Flat, Raised, Sunken };
     Q_ENUM(Look)
 
     /**
@@ -216,7 +214,7 @@ public:
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
-public Q_SLOTS:
+  public Q_SLOTS:
 
     /**
      * Toggles the state of the led from Off to On or vice versa.
@@ -237,7 +235,7 @@ public Q_SLOTS:
      */
     void off();
 
-protected:
+  protected:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *) override;
 
@@ -247,7 +245,7 @@ protected:
      */
     void updateCachedPixmap();
 
-private:
+  private:
     class Private;
     Private *const d;
 

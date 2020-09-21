@@ -5,7 +5,7 @@
 #include "lvcontroller.h"
 #include "open62541/types_dcsnodeset_generated.h"
 
-struct device4Outputs{
+struct device4Outputs {
     bool CH1;
     bool CH2;
     bool CH3;
@@ -17,17 +17,18 @@ namespace Ui {
 class LV4psuWidget;
 }
 
-class LV4psuWidget : public AbstractWidget
-{
+class LV4psuWidget : public AbstractWidget {
     Q_OBJECT
 
-public:
-    explicit LV4psuWidget(std::string name,QWidget *parent = 0);
-    explicit LV4psuWidget(std::string name, std::string address, std::string port, QWidget* parent=0);
-//    LV4psuWidget(std::string name);
+  public:
+    explicit LV4psuWidget(std::string name, QWidget *parent = 0);
+    explicit LV4psuWidget(std::string name, std::string address, std::string port,
+                          QWidget *parent = 0);
+    //    LV4psuWidget(std::string name);
     ~LV4psuWidget();
     lv_controller *LVController;
-private:
+
+  private:
     Ui::LV4psuWidget *ui;
     void connectSignals();
     device4Outputs deviceSettings;
@@ -39,14 +40,15 @@ private:
     void setChannelsNames();
     void setChannelName(int channelno);
 
-public slots:
+  public slots:
 
     void deviceConnect();
     void deviceDisconnect();
-    void updateStatus(void* data) override;
-    void updateMeasurements(void* data);
-    void updateConfiguration(void* data);
-    void controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp) override;
+    void updateStatus(void *data) override;
+    void updateMeasurements(void *data);
+    void updateConfiguration(void *data);
+    void controllerInit(UA_Client *client, UA_ClientConfig *config,
+                        UA_CreateSubscriptionResponse resp) override;
 
     void setCH1ON();
     void setCH1OFF();
@@ -58,10 +60,10 @@ public slots:
     void setCH4OFF();
     void setOutputON();
     void setOutputOFF();
-    
+
     void changeNamePressed();
     void setVPressed();
     void setIPressed();
 };
 
-#endif // LV4PSUWIDGET_H
+#endif  // LV4PSUWIDGET_H

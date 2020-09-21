@@ -4,11 +4,11 @@
 #include "GenericDevice.h"
 
 class PiWeather : public GenericDevice {
-public:
-  PiWeather();
+  public:
+    PiWeather();
 
-  // device specific commands
-  std::string getMeasurements();
+    // device specific commands
+    std::string getMeasurements();
 };
 
-#endif // PIWEATHER_H
+#endif  // PIWEATHER_H

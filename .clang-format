@@ -1,0 +1,10 @@
+Language:        Cpp
+BasedOnStyle:    llvm
+IndentWidth:     4
+ColumnLimit:     90
+SpacesBeforeTrailingComments: 2
+DisableFormat:   false
+SpaceBeforeParens: Never
+BinPackParameters: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AlignAfterOpenBracket: Align

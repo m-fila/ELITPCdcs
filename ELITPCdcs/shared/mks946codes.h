@@ -13,59 +13,56 @@ static std::map<Units, std::string> unitsToString = {
     {Units::MICRON, "MICRON"},
 };
 
-static std::map<std::string, Units> unitsFromString = {
-    {"PASCAL", Units::PASCAL},
-    {"MBAR", Units::MBAR},
-    {"TORR", Units::TORR},
-    {"MICRON", Units::MICRON}};
+static std::map<std::string, Units> unitsFromString = {{"PASCAL", Units::PASCAL},
+                                                       {"MBAR", Units::MBAR},
+                                                       {"TORR", Units::TORR},
+                                                       {"MICRON", Units::MICRON}};
 
 enum class Mode { OPEN, CLOSE, SETPOINT, PCTRL, RATIO, RESET };
 
 static std::map<Mode, std::string> modeToString = {
-    {Mode::CLOSE, "CLOSE"},       {Mode::OPEN, "OPEN"},
-    {Mode::SETPOINT, "SETPOINT"}, {Mode::PCTRL, "PCTRL"},
-    {Mode::RATIO, "RATIO"},       {Mode::RESET, "RESET"},
+    {Mode::CLOSE, "CLOSE"}, {Mode::OPEN, "OPEN"},   {Mode::SETPOINT, "SETPOINT"},
+    {Mode::PCTRL, "PCTRL"}, {Mode::RATIO, "RATIO"}, {Mode::RESET, "RESET"},
 };
 
 static std::map<std::string, Mode> modeFromString = {
-    {"CLOSE", Mode::CLOSE},       {"OPEN", Mode::OPEN},
-    {"SETPOINT", Mode::SETPOINT}, {"PCTRL", Mode::PCTRL},
-    {"RATIO", Mode::RATIO},       {"RESET", Mode::RESET}};
+    {"CLOSE", Mode::CLOSE}, {"OPEN", Mode::OPEN},   {"SETPOINT", Mode::SETPOINT},
+    {"PCTRL", Mode::PCTRL}, {"RATIO", Mode::RATIO}, {"RESET", Mode::RESET}};
 
 enum class Error {
-  WRONG_GAUGE = 150,
-  NO_GAUGE = 151,
-  NOT_IONGAUGE = 152,
-  NOT_HOTCATHODE = 153,
-  NOT_COLDCATHODE = 154,
-  NOT_CAPACITANCE_MANOMETER = 155,
-  NOT_PIRANI_OR_CTP = 156,
-  NOT_PR_OR_CM = 157,
-  NOT_MFC = 158,
-  NOT_VLV = 159,
-  UNRECOGNIZED_MSG = 160,
-  SET_CMD_LOCK = 161,
-  RLY_DIR_FIX_FOR_ION = 162,
-  INVALID_CHANNEL = 163,
-  DIFF_CM = 164,
-  INVALID_PID_PARAM = 165,
-  PID_IN_PROGRESS = 166,
-  INVALID_RATIO_PARAM = 167,
-  NOT_IN_DEGAS = 168,
-  INVALID_ARGUMENT = 169,
-  VALUE_OUT_OF_RANGE = 172,
-  INVALID_CTRL_CHAN = 173,
-  CMD_QUERY_BYTE_INVALID = 175,
-  NO_GAS_TYPE = 176,
-  NOT_485 = 177,
-  CAL_DISABLED = 178,
-  SET_POINT_NOT_ENABLED = 179,
-  COMBINATION_DISABLED = 181,
-  INTERNATIONAL_UNIT_ONLY = 182,
-  GAS_TYPE_DEFINED = 183,
-  NOT_RATIO_MODE = 191,
-  CONTROL_SET_POINT_ENABLED = 195,
-  PRESSURE_TOO_HIGH_FOR_DEGAS = 199
+    WRONG_GAUGE = 150,
+    NO_GAUGE = 151,
+    NOT_IONGAUGE = 152,
+    NOT_HOTCATHODE = 153,
+    NOT_COLDCATHODE = 154,
+    NOT_CAPACITANCE_MANOMETER = 155,
+    NOT_PIRANI_OR_CTP = 156,
+    NOT_PR_OR_CM = 157,
+    NOT_MFC = 158,
+    NOT_VLV = 159,
+    UNRECOGNIZED_MSG = 160,
+    SET_CMD_LOCK = 161,
+    RLY_DIR_FIX_FOR_ION = 162,
+    INVALID_CHANNEL = 163,
+    DIFF_CM = 164,
+    INVALID_PID_PARAM = 165,
+    PID_IN_PROGRESS = 166,
+    INVALID_RATIO_PARAM = 167,
+    NOT_IN_DEGAS = 168,
+    INVALID_ARGUMENT = 169,
+    VALUE_OUT_OF_RANGE = 172,
+    INVALID_CTRL_CHAN = 173,
+    CMD_QUERY_BYTE_INVALID = 175,
+    NO_GAS_TYPE = 176,
+    NOT_485 = 177,
+    CAL_DISABLED = 178,
+    SET_POINT_NOT_ENABLED = 179,
+    COMBINATION_DISABLED = 181,
+    INTERNATIONAL_UNIT_ONLY = 182,
+    GAS_TYPE_DEFINED = 183,
+    NOT_RATIO_MODE = 191,
+    CONTROL_SET_POINT_ENABLED = 195,
+    PRESSURE_TOO_HIGH_FOR_DEGAS = 199
 };
 
 static std::map<Error, std::string> errorToString = {
@@ -125,11 +122,11 @@ static std::map<RelayEnabled, std::string> relayEnabledToString = {
 
 enum class RelaySet { Clear, Set };
 
-static std::map<std::string, RelaySet> relaySetFromString = {
-    {"CLEAR", RelaySet::Clear}, {"SET", RelaySet::Set}};
+static std::map<std::string, RelaySet> relaySetFromString = {{"CLEAR", RelaySet::Clear},
+                                                             {"SET", RelaySet::Set}};
 
-static std::map<RelaySet, std::string> relaySetToString = {
-    {RelaySet::Clear, "CLEAR"}, {RelaySet::Set, "SET"}};
+static std::map<RelaySet, std::string> relaySetToString = {{RelaySet::Clear, "CLEAR"},
+                                                           {RelaySet::Set, "SET"}};
 
-} // namespace MKS946codes
-#endif // MKS946CODES_H
+}  // namespace MKS946codes
+#endif  // MKS946CODES_H

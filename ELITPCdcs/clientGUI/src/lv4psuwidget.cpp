@@ -1,50 +1,54 @@
 #include "lv4psuwidget.h"
 #include "ui_lv4psuwidget.h"
 //#include "src/ConnectionParameters.h"
-#include <iostream>
-#include <QSettings>
 #include <QInputDialog>
+#include <QSettings>
+#include <iostream>
 
-LV4psuWidget::LV4psuWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent), ui(new Ui::LV4psuWidget)
-{
+LV4psuWidget::LV4psuWidget(std::string name, QWidget *parent)
+    : AbstractWidget(name, parent), ui(new Ui::LV4psuWidget) {
     ui->setupUi(this);
     ui->tcpLayout->addWidget(tcp);
     loadConfig();
     setChannelsNames();
-    LVController=new lv_controller(instanceName);
+    LVController = new lv_controller(instanceName);
     connectSignals();
 }
-LV4psuWidget::LV4psuWidget(std::string name, std::string address, std::string port, QWidget *parent): LV4psuWidget(name,parent){
-    if(address.size()){
+LV4psuWidget::LV4psuWidget(std::string name, std::string address, std::string port,
+                           QWidget *parent)
+    : LV4psuWidget(name, parent) {
+    if(address.size()) {
         tcp->setIP(address);
     }
-    if(port.size()){
+    if(port.size()) {
         tcp->setPort(port);
     }
 }
-LV4psuWidget::~LV4psuWidget()
-{
+LV4psuWidget::~LV4psuWidget() {
     delete ui;
     delete LVController;
 }
 
-void LV4psuWidget::connectSignals(){
+void LV4psuWidget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(LVController,SIGNAL(statusChanged(void*)),this,SLOT(updateStatus(void*)));
-    connect(LVController,SIGNAL(measurementsChanged(void*)),this,SLOT(updateMeasurements(void*)));
-    connect(LVController,SIGNAL(configurationChanged(void*)),this,SLOT(updateConfiguration(void*)));
+    connect(LVController, SIGNAL(statusChanged(void *)), this,
+            SLOT(updateStatus(void *)));
+    connect(LVController, SIGNAL(measurementsChanged(void *)), this,
+            SLOT(updateMeasurements(void *)));
+    connect(LVController, SIGNAL(configurationChanged(void *)), this,
+            SLOT(updateConfiguration(void *)));
 
-    connect(ui->CH1on,SIGNAL(clicked(bool)),this, SLOT(setCH1ON()));
-    connect(ui->CH2on,SIGNAL(clicked(bool)),this, SLOT(setCH2ON()));
-    connect(ui->CH3on,SIGNAL(clicked(bool)),this, SLOT(setCH3ON()));
-    connect(ui->CH4on,SIGNAL(clicked(bool)),this, SLOT(setCH4ON()));
-    connect(ui->CH1off,SIGNAL(clicked(bool)),this, SLOT(setCH1OFF()));
-    connect(ui->CH2off,SIGNAL(clicked(bool)),this, SLOT(setCH2OFF()));
-    connect(ui->CH3off,SIGNAL(clicked(bool)),this, SLOT(setCH3OFF()));
-    connect(ui->CH4off,SIGNAL(clicked(bool)),this, SLOT(setCH4OFF()));
-    connect(ui->outputON,SIGNAL(clicked(bool)),this, SLOT(setOutputON()));
-    connect(ui->outputOFF,SIGNAL(clicked(bool)),this, SLOT(setOutputOFF()));
-    
+    connect(ui->CH1on, SIGNAL(clicked(bool)), this, SLOT(setCH1ON()));
+    connect(ui->CH2on, SIGNAL(clicked(bool)), this, SLOT(setCH2ON()));
+    connect(ui->CH3on, SIGNAL(clicked(bool)), this, SLOT(setCH3ON()));
+    connect(ui->CH4on, SIGNAL(clicked(bool)), this, SLOT(setCH4ON()));
+    connect(ui->CH1off, SIGNAL(clicked(bool)), this, SLOT(setCH1OFF()));
+    connect(ui->CH2off, SIGNAL(clicked(bool)), this, SLOT(setCH2OFF()));
+    connect(ui->CH3off, SIGNAL(clicked(bool)), this, SLOT(setCH3OFF()));
+    connect(ui->CH4off, SIGNAL(clicked(bool)), this, SLOT(setCH4OFF()));
+    connect(ui->outputON, SIGNAL(clicked(bool)), this, SLOT(setOutputON()));
+    connect(ui->outputOFF, SIGNAL(clicked(bool)), this, SLOT(setOutputOFF()));
+
     connect(ui->setName1, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
     connect(ui->setName2, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
     connect(ui->setName3, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
@@ -58,19 +62,18 @@ void LV4psuWidget::connectSignals(){
     connect(ui->CH2confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
     connect(ui->CH3confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
     connect(ui->CH4confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
-
 }
 
-void LV4psuWidget::controllerInit(UA_Client* client,UA_ClientConfig* config ,UA_CreateSubscriptionResponse resp){
-     LVController->opcInit(client,config,resp);
+void LV4psuWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
+                                  UA_CreateSubscriptionResponse resp) {
+    LVController->opcInit(client, config, resp);
 }
 
-
-void LV4psuWidget::updateStatus(void* data){
+void LV4psuWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected=*static_cast<bool*>(data);
-    connectionState=isConnected;
-    if(isConnected){
+    bool isConnected = *static_cast<bool *>(data);
+    connectionState = isConnected;
+    if(isConnected) {
         ui->CH1on->setEnabled(!deviceSettings.CH1);
         ui->CH1off->setEnabled(deviceSettings.CH1);
         ui->CH2on->setEnabled(!deviceSettings.CH2);
@@ -91,8 +94,7 @@ void LV4psuWidget::updateStatus(void* data){
         ui->CH2confISet->setEnabled(true);
         ui->CH3confISet->setEnabled(true);
         ui->CH4confISet->setEnabled(true);
-    }
-    else{
+    } else {
         ui->CH1on->setEnabled(false);
         ui->CH1off->setEnabled(false);
         ui->CH2on->setEnabled(false);
@@ -107,7 +109,7 @@ void LV4psuWidget::updateStatus(void* data){
         ui->CH1voltage->display(0);
         ui->CH1current->display(0);
         ui->CH2voltage->display(0);
-        ui->CH2current->display(0);        
+        ui->CH2current->display(0);
         ui->CH3voltage->display(0);
         ui->CH3current->display(0);
         ui->CH4voltage->display(0);
@@ -130,12 +132,11 @@ void LV4psuWidget::updateStatus(void* data){
         ui->CH4confV->display(0);
         ui->CH4confI->display(0);
     }
-
 }
 
-void LV4psuWidget::updateMeasurements(void* data){
-    UA_HMPm measurements=*static_cast<UA_HMPm*>(data);
-    if(measurements.voltageSize){
+void LV4psuWidget::updateMeasurements(void *data) {
+    UA_HMPm measurements = *static_cast<UA_HMPm *>(data);
+    if(measurements.voltageSize) {
         ui->CH1voltage->display(measurements.voltage[0]);
         ui->CH1current->display(measurements.current[0]);
         ui->CH1on->setEnabled(!measurements.ch[0] && connectionState);
@@ -154,16 +155,16 @@ void LV4psuWidget::updateMeasurements(void* data){
         ui->CH4off->setEnabled(measurements.ch[3] && connectionState);
         ui->outputON->setEnabled(!measurements.output && connectionState);
         ui->outputOFF->setEnabled(measurements.output && connectionState);
-        deviceSettings.CH1=measurements.ch[0];
-        deviceSettings.CH2=measurements.ch[1];
-        deviceSettings.CH3=measurements.ch[2];
-        deviceSettings.CH4=measurements.ch[3];
-        deviceSettings.Output=measurements.output;
+        deviceSettings.CH1 = measurements.ch[0];
+        deviceSettings.CH2 = measurements.ch[1];
+        deviceSettings.CH3 = measurements.ch[2];
+        deviceSettings.CH4 = measurements.ch[3];
+        deviceSettings.Output = measurements.output;
     }
 }
-void LV4psuWidget::updateConfiguration(void* data){
-    UA_HMPc configuration=*static_cast<UA_HMPc*>(data);
-    if(configuration.voltageSetSize){
+void LV4psuWidget::updateConfiguration(void *data) {
+    UA_HMPc configuration = *static_cast<UA_HMPc *>(data);
+    if(configuration.voltageSetSize) {
         ui->CH1voltageSet->display(configuration.voltageSet[0]);
         ui->CH1currentSet->display(configuration.currentSet[0]);
         ui->CH2voltageSet->display(configuration.voltageSet[1]);
@@ -183,82 +184,57 @@ void LV4psuWidget::updateConfiguration(void* data){
     }
 }
 
-void LV4psuWidget::deviceConnect()
-{
+void LV4psuWidget::deviceConnect() {
     std::string IPaddress = tcp->getIP();
     int port = tcp->getPort();
-    LVController->callConnect(IPaddress,port);
+    LVController->callConnect(IPaddress, port);
 }
-void LV4psuWidget::deviceDisconnect(){
-    LVController->callDisconnect();
-}
+void LV4psuWidget::deviceDisconnect() { LVController->callDisconnect(); }
 
-void LV4psuWidget::setCH1ON(){
-    LVController->callSetChannel(1,true);
-}
-void LV4psuWidget::setCH2ON(){
-    LVController->callSetChannel(2,true);
-}
-void LV4psuWidget::setCH3ON(){
-    LVController->callSetChannel(3,true);
-}
-void LV4psuWidget::setCH4ON(){
-    LVController->callSetChannel(4,true);
-}
-void LV4psuWidget::setCH1OFF(){
-    LVController->callSetChannel(1,false);
-}
-void LV4psuWidget::setCH2OFF(){
-    LVController->callSetChannel(2,false);
-}
-void LV4psuWidget::setCH3OFF(){
-    LVController->callSetChannel(3,false);
-}
-void LV4psuWidget::setCH4OFF(){
-    LVController->callSetChannel(4,false);
-}
-void LV4psuWidget::setOutputON(){
-    LVController->callSetOutput(true);
-}
-void LV4psuWidget::setOutputOFF(){
-    LVController->callSetOutput(false);
-}
+void LV4psuWidget::setCH1ON() { LVController->callSetChannel(1, true); }
+void LV4psuWidget::setCH2ON() { LVController->callSetChannel(2, true); }
+void LV4psuWidget::setCH3ON() { LVController->callSetChannel(3, true); }
+void LV4psuWidget::setCH4ON() { LVController->callSetChannel(4, true); }
+void LV4psuWidget::setCH1OFF() { LVController->callSetChannel(1, false); }
+void LV4psuWidget::setCH2OFF() { LVController->callSetChannel(2, false); }
+void LV4psuWidget::setCH3OFF() { LVController->callSetChannel(3, false); }
+void LV4psuWidget::setCH4OFF() { LVController->callSetChannel(4, false); }
+void LV4psuWidget::setOutputON() { LVController->callSetOutput(true); }
+void LV4psuWidget::setOutputOFF() { LVController->callSetOutput(false); }
 
-void LV4psuWidget::loadConfig(){
+void LV4psuWidget::loadConfig() {
     AbstractWidget::loadConfig();
 
     QString configkey;
-    for(int i=0; i!=4;++i){
-        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
-        customName[i]= QSettings().value(configkey).toString();
+    for(int i = 0; i != 4; ++i) {
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
+        customName[i] = QSettings().value(configkey).toString();
     }
 }
 
-void LV4psuWidget::saveConfig(){
+void LV4psuWidget::saveConfig() {
     AbstractWidget::saveConfig();
 
     QString configkey;
-    for(int i=0; i!=4;++i){
-        configkey.sprintf("%s/CustomName%i",instanceName.c_str(),i);
-        QSettings().setValue(configkey,customName[i]);
+    for(int i = 0; i != 4; ++i) {
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
+        QSettings().setValue(configkey, customName[i]);
     }
 }
 
-void LV4psuWidget::setChannelName(int channelno)
-{
-    //QString title= tr("CH %1        ").arg(channelno+1);
-    //title.append(customName[channelno]);
-    QString title=customName[channelno];
-    //set name on ALL Channles Tab
-    
+void LV4psuWidget::setChannelName(int channelno) {
+    // QString title= tr("CH %1        ").arg(channelno+1);
+    // title.append(customName[channelno]);
+    QString title = customName[channelno];
+    // set name on ALL Channles Tab
+
     QString label;
-    //set name on CH x tab (... if empty)
+    // set name on CH x tab (... if empty)
     if(customName[channelno].isEmpty())
-        label=QString("...");
+        label = QString("...");
     else
-        label=customName[channelno];
-    switch (channelno)
-    {
+        label = customName[channelno];
+    switch(channelno) {
     case 0:
         ui->groupBox1->setTitle(title);
         ui->customNameLabel1->setText(label);
@@ -274,102 +250,94 @@ void LV4psuWidget::setChannelName(int channelno)
     case 3:
         ui->groupBox4->setTitle(title);
         ui->customNameLabel4->setText(label);
-        break;   
+        break;
     default:
         break;
     }
 }
-void LV4psuWidget::setChannelsNames(){
-    for(int i=0; i<4; i++){
+void LV4psuWidget::setChannelsNames() {
+    for(int i = 0; i < 4; i++) {
         setChannelName(i);
     }
 }
-void LV4psuWidget::changeNamePressed(){
-    QObject* obj = sender();
+void LV4psuWidget::changeNamePressed() {
+    QObject *obj = sender();
     bool ok;
     int i;
-    if(ui->setName1==obj){
-        i=0;
+    if(ui->setName1 == obj) {
+        i = 0;
+    } else if(ui->setName2 == obj) {
+        i = 1;
+    } else if(ui->setName3 == obj) {
+        i = 2;
+    } else if(ui->setName4 == obj) {
+        i = 3;
     }
-    else if(ui->setName2==obj){
-        i=1;
-    }
-    else if(ui->setName3==obj){
-        i=2;
-    }
-    else if(ui->setName4==obj){
-        i=3;
-    }
-    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i+1),
-                                                     tr("CH %1 name:").arg(i+1), QLineEdit::Normal, customName[i], &ok);
-    if(ok){
+    QString newName = QInputDialog::getText(this, tr("Set CH %1 name").arg(i + 1),
+                                            tr("CH %1 name:").arg(i + 1),
+                                            QLineEdit::Normal, customName[i], &ok);
+    if(ok) {
         customName[i] = newName;
         setChannelName(i);
     }
 }
-void LV4psuWidget::setVPressed(){
-    QObject* obj = sender();
+void LV4psuWidget::setVPressed() {
+    QObject *obj = sender();
     bool ok;
     int i;
     double val;
-    if(ui->CH1confVSet==obj){
-        i=0;
-        val=ui->CH1voltageSet->value();
+    if(ui->CH1confVSet == obj) {
+        i = 0;
+        val = ui->CH1voltageSet->value();
 
-    }
-    else if(ui->CH2confVSet==obj){
-        i=1;
-        val=ui->CH2voltageSet->value();
-    }
-    else if(ui->CH3confVSet==obj){
-        i=2;
-        val=ui->CH3voltageSet->value();
-    }
-    else if(ui->CH4confVSet==obj){
-        i=3;
-        val=ui->CH4voltageSet->value();
+    } else if(ui->CH2confVSet == obj) {
+        i = 1;
+        val = ui->CH2voltageSet->value();
+    } else if(ui->CH3confVSet == obj) {
+        i = 2;
+        val = ui->CH3voltageSet->value();
+    } else if(ui->CH4confVSet == obj) {
+        i = 3;
+        val = ui->CH4voltageSet->value();
     }
     QString label;
     if(customName[i].isEmpty())
-        label = tr("CH %1  [Volts]:").arg(i+1);
+        label = tr("CH %1  [Volts]:").arg(i + 1);
     else
-        label = tr("CH %1  \"%2\"  [Volts]:").arg(i+1).arg(customName[i]);
-    double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i+1),
-                                          label, val, 0, 20, 1, &ok);
-    if(ok){
-        LVController->callSetVoltage(i+1,d);
+        label = tr("CH %1  \"%2\"  [Volts]:").arg(i + 1).arg(customName[i]);
+    double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i + 1), label, val, 0,
+                                       20, 1, &ok);
+    if(ok) {
+        LVController->callSetVoltage(i + 1, d);
     }
 }
 
-void LV4psuWidget::setIPressed(){
-    QObject* obj = sender();
+void LV4psuWidget::setIPressed() {
+    QObject *obj = sender();
     bool ok;
     int i;
     double val;
-    if(ui->CH1confISet==obj){
-        i=0;
-        val=ui->CH1currentSet->value();
-    }
-    else if(ui->CH2confISet==obj){
-        i=1;
-        val=ui->CH2currentSet->value();
-    }
-        else if(ui->CH3confISet==obj){
-        i=2;
-        val=ui->CH3currentSet->value();
-    }
-        else if(ui->CH4confISet==obj){
-        i=3;
-        val=ui->CH4currentSet->value();
+    if(ui->CH1confISet == obj) {
+        i = 0;
+        val = ui->CH1currentSet->value();
+    } else if(ui->CH2confISet == obj) {
+        i = 1;
+        val = ui->CH2currentSet->value();
+    } else if(ui->CH3confISet == obj) {
+        i = 2;
+        val = ui->CH3currentSet->value();
+    } else if(ui->CH4confISet == obj) {
+        i = 3;
+        val = ui->CH4currentSet->value();
     }
     QString label;
     if(customName[i].isEmpty())
-        label = tr("CH %1  [Ampers]:").arg(i+1);
+        label = tr("CH %1  [Ampers]:").arg(i + 1);
     else
-        label = tr("CH %1  \"%2\"  [Ampers]:").arg(i+1).arg(customName[i]);
-    double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i+1),
-                                          label, val, 0, 10, 1, &ok);
-    if(ok){
-        LVController->callSetCurrent(i+1,d);
+        label = tr("CH %1  \"%2\"  [Ampers]:").arg(i + 1).arg(customName[i]);
+    double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i + 1), label, val, 0,
+                                       10, 1, &ok);
+    if(ok) {
+        LVController->callSetCurrent(i + 1, d);
     }
 }

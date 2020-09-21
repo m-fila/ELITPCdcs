@@ -9,30 +9,30 @@
 #define TCPSTREAM_H_
 
 #include "ConnectionStream.h"
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include <string>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 using namespace std;
 
-class TCPStream : public ConnectionStream
-{
-	string  m_peerIP;
-	int     m_peerPort;
-public:
+class TCPStream : public ConnectionStream {
+    string m_peerIP;
+    int m_peerPort;
+
+  public:
     friend class TCPAcceptor;
-	friend class TCPConnector;
+    friend class TCPConnector;
 
-	virtual ~TCPStream();
+    virtual ~TCPStream();
 
-	string getPeerIP();
+    string getPeerIP();
     int getPeerPort();
 
-private:
-    TCPStream(int sd, struct sockaddr_in* address);
+  private:
+    TCPStream(int sd, struct sockaddr_in *address);
     TCPStream();
-    TCPStream(const TCPStream& stream);
+    TCPStream(const TCPStream &stream);
 };
 
 #endif /* TCPSTREAM_H_ */

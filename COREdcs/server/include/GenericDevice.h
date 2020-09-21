@@ -2,30 +2,30 @@
 #define GENERICDEVICE_H
 
 #include "ConnectionStream.h"
-#include <memory>
 #include <chrono>
+#include <memory>
 #include <thread>
-class GenericDevice
-{
-public:
+class GenericDevice {
+  public:
     GenericDevice();
     virtual ~GenericDevice();
 
-    virtual void setConnectionStream(ConnectionStream* stream);
+    virtual void setConnectionStream(ConnectionStream *stream);
     void resetConnectionStream();
-    bool isConnected() {return connected;}
+    bool isConnected() { return connected; }
     void sendCommand(std::string command);
     std::string receiveResponse();
     std::string sendWithResponse(std::string command);
-    std::string sendWithDelayedResponse(std::string command, uint delay_ms);
-    ConnectionType getActiveConnectionType() {return activeConnectionType;}
+    std::string sendWithDelayedResponse(std::string command, size_t delay_ms);
+    ConnectionType getActiveConnectionType() { return activeConnectionType; }
 
-protected:
-    GenericDevice(ConnectionType allowed, ConnectionType active): connectionTypeAllowed(allowed), activeConnectionType(active) {}
+  protected:
+    GenericDevice(ConnectionType allowed, ConnectionType active)
+        : connectionTypeAllowed(allowed), activeConnectionType(active) {}
     ConnectionType connectionTypeAllowed;
     ConnectionType activeConnectionType;
     ConnectionStreamPtr connectionStream;
-    bool connected;
+    bool connected = false;
 };
 
-#endif // GENERICDEVICE_H
+#endif  // GENERICDEVICE_H

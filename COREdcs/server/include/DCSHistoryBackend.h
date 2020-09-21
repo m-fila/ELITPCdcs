@@ -11,27 +11,26 @@
 class DCSServer;
 
 typedef struct {
-  UA_HistoryDataGathering gathering;
+    UA_HistoryDataGathering gathering;
 } UA_HistoryDatabaseContext_default;
 
 class DCSHistoryBackend {
 
-  friend DCSServer;
+    friend DCSServer;
 
-public:
-  virtual ~DCSHistoryBackend() = default;
-  virtual UA_HistoryDataBackend getUaBackend() = 0;
-  UA_HistoryDataGathering getGathering() {
-    return static_cast<UA_HistoryDatabaseContext_default *>(
-               UA_Server_getConfig(server)->historyDatabase.context)
-        ->gathering;
-  }
+  public:
+    virtual ~DCSHistoryBackend() = default;
+    virtual UA_HistoryDataBackend getUaBackend() = 0;
+    UA_HistoryDataGathering getGathering() {
+        return static_cast<UA_HistoryDatabaseContext_default *>(
+                   UA_Server_getConfig(server)->historyDatabase.context)
+            ->gathering;
+    }
 
-protected:
-  DCSHistoryBackend(UA_Server *server, std::string name)
-      : server(server), name(name) {}
+  protected:
+    DCSHistoryBackend(UA_Server *server, std::string name) : server(server), name(name) {}
 
-  UA_Server *server;
-  std::string name;
+    UA_Server *server;
+    std::string name;
 };
-#endif // DCS_HISTORY_H
+#endif  // DCS_HISTORY_H

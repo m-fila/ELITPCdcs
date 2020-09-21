@@ -6,34 +6,41 @@
 #include "open62541/types_dcsnodeset_generated.h"
 #include "open62541/types_dcsnodeset_generated_handling.h"
 class DCSHMPController : public DCSDeviceController<HMP2020> {
-  friend DCSServer;
+    friend DCSServer;
 
-protected:
-  DCSHMPController(UA_Server *server, std::string name, int size);
+  protected:
+    DCSHMPController(int size) : size(size) {}
+    void addChildren(const Options &options) override;
+    void parseProfile(const Options &options) override;
 
-private:
-  void setChannel(const UA_Variant* input, UA_Variant *output);
-  void setOutput(const UA_Variant* input, UA_Variant *output);
-  void setVoltage(const UA_Variant* input, UA_Variant *output);
-  void setCurrent(const UA_Variant* input, UA_Variant *output);
-  UA_HMPm getMeasurements();
-  UA_HMPc getConfiguration();
-  const int size;
+  private:
+    void setChannel(const UA_Variant *input, UA_Variant *output);
+    void setOutput(const UA_Variant *input, UA_Variant *output);
+    void setVoltage(const UA_Variant *input, UA_Variant *output);
+    void setCurrent(const UA_Variant *input, UA_Variant *output);
+    UA_HMPm getMeasurements();
+    UA_HMPc getConfiguration();
+    const int size;
 };
 
-class DCSHMP2020Controller : public DCSHMPController {
-  friend DCSServer;
+class DCSHMP2020Controller : public DCSHMPController,
+                             DCSObjectFactory::Register<DCSHMP2020Controller> {
+    friend DCSServer;
+    friend DCSObjectFactory;
 
-private:
-  DCSHMP2020Controller(UA_Server *server, std::string name)
-      : DCSHMPController(server, name, 2) {}
+  private:
+    static std::string GetType() { return "HMP2020"; }
+    DCSHMP2020Controller() : DCSHMPController(2) {}
 };
 
-class DCSHMP4040Controller : public DCSHMPController {
-  friend DCSServer;
+class DCSHMP4040Controller : public DCSHMPController,
+                             DCSObjectFactory::Register<DCSHMP4040Controller> {
+    friend DCSServer;
+    friend DCSObjectFactory;
 
-private:
-  DCSHMP4040Controller(UA_Server *server, std::string name)
-      : DCSHMPController(server, name, 4) {}
+  private:
+    static std::string GetType() { return "HMP4040"; }
+    DCSHMP4040Controller() : DCSHMPController(4) {}
 };
-#endif // DCS_HMP_CONTROLLER_H
+
+#endif  // DCS_HMP_CONTROLLER_H

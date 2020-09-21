@@ -37,19 +37,19 @@ static std::map<RelayEnabled, std::string> relayEnabledToString = {
 
 enum class RelaySet { Clear, Set };
 
-static std::map<std::string, RelaySet> relaySetFromString = {
-    {"CLEAR", RelaySet::Clear}, {"SET", RelaySet::Set}};
+static std::map<std::string, RelaySet> relaySetFromString = {{"CLEAR", RelaySet::Clear},
+                                                             {"SET", RelaySet::Set}};
 
-static std::map<RelaySet, std::string> relaySetToString = {
-    {RelaySet::Clear, "CLEAR"}, {RelaySet::Set, "SET"}};
+static std::map<RelaySet, std::string> relaySetToString = {{RelaySet::Clear, "CLEAR"},
+                                                           {RelaySet::Set, "SET"}};
 
 enum class RelayDelay { Off, On };
 
 static std::map<std::string, RelayDelay> relayDelayFromString = {
     {"ON", RelayDelay::On}, {"OFF", RelayDelay::Off}};
 
-static std::map<RelayDelay, std::string> relayDelayToString = {
-    {RelayDelay::On, "ON"}, {RelayDelay::Off, "OFF"}};
+static std::map<RelayDelay, std::string> relayDelayToString = {{RelayDelay::On, "ON"},
+                                                               {RelayDelay::Off, "OFF"}};
 
-} // namespace MKS910codes
-#endif // MKS910CODES_H
+}  // namespace MKS910codes
+#endif  // MKS910CODES_H

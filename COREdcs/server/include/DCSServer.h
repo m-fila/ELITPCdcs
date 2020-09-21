@@ -1,79 +1,104 @@
 #ifndef DCS_SERVER_H
 #define DCS_SERVER_H
+#include "DCSContext.h"
+#include "DCSHistoryBackend.h"
+#include "DCSLogger.h"
+#include "DCSObject.h"
+#include "DCSWorkerThread.h"
 #include <map>
 #include <memory>
-#include <open62541/server.h>
-#include <open62541/server_config_default.h>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
 #include <open62541/plugin/historydata/history_database_default.h>
+#include <open62541/server.h>
+#include <open62541/server_config_default.h>
 #include <signal.h>
 #include <stdexcept>
 #include <string>
-#include "DCSWorkerThread.h"
-#include "DCSHistoryBackend.h"
-#include "DCSObject.h"
-#include "DCSLogger.h"
-#include "DCSContext.h"
 
 class DCSServer {
 
-public:
-  DCSServer(std::string address, int port);
-  ~DCSServer();
- std::map<std::string,DCSHistoryBackend*> historyBackends;
-  static DCSServer* getServerContext(UA_Server* server){return DCS::getContext<DCSServer*>(server,UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER));}
-  DCSHistoryBackend* getHistoryBackend(std::string backendName){
-    auto i=historyBackends.find(backendName);
-    return i!=historyBackends.end() ? i->second  : nullptr;
-  }
+  public:
+    /**
+     * @brief Construct a new DCSServer object
+     *
+     * @param address
+     * @param port
+     */
+    DCSServer(std::string address, int port);
+    ~DCSServer();
 
-  int run();
+    int run();
 
-  template <class T> T &addController(std::string name) {
-    if (objects.find(name) == objects.end()) {
-      return *static_cast<T *>(
-          objects.insert({name, new T(server, name)}).first->second);
-    } else {
-      throw std::runtime_error("Not unique controller id: " + name);
+    static DCSServer *getServerContext(UA_Server *server) {
+        return DCS::getContext<DCSServer *>(server,
+                                            UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER));
     }
-  }
 
-  DCSObject &addObject(std::string name) {
-    return addController<DCSObject>(name);
-  }
-
-  template < class T>
-  T& addHistoryBackend(std::string name){
-
-   if (historyBackends.find(name) == historyBackends.end()) {
-      return *static_cast<T *>(
-          historyBackends.insert({name, new T(server)}).first->second);
-    } else {
-      throw std::runtime_error("Not unique backend id: " + name);
+    DCSHistoryBackend *getHistoryBackend(const std::string &backendName) {
+        auto i = historyBackends.find(backendName);
+        return i != historyBackends.end() ? i->second : nullptr;
     }
-    
-  }
 
-  void setDescription(std::string appName, std::string appURI,
-                      std::string productURI);
+    DCSObject *addObject(std::string typeName, std::string name,
+                         const Options &options = {});
 
-protected:
-  std::map<std::string, DCSObject *> objects;
- 
-  static UA_Boolean running;
+    template <class T>
+    DCSObject *addObject(std::string name, const Options &options = {});
 
-  static void stopHandler(int sig) {
-    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND, "Received ctrl-c");
-    running = false;
-  }
+    template <class T> T &addHistoryBackend(std::string name);
+    void setDescription(std::string appName, std::string appURI, std::string productURI);
 
-  void addCustomTypes(UA_DataTypeArray *custom);
-  
-  void addHistorizing();
-  UA_Server *server;
-  UA_ServerConfig *config;
-  DCSWorkerThread dispatcherThread;
-  static void asyncCallback(UA_Server* server);
+    void setProfileDir(const std::string &path) {
+        profileDir = path;
+        if(profileDir.back() != '/') {
+            profileDir.push_back('/');
+        }
+    }
+    std::string getProfileDir() { return profileDir; }
+
+  protected:
+    std::map<std::string, DCSObject *> objects;
+    std::map<std::string, DCSHistoryBackend *> historyBackends;
+
+    void addCustomTypes(UA_DataTypeArray *custom);
+    void addHistorizing();
+
+    UA_NodeId
+    addObjectType(std::string typeName,
+                  UA_NodeId parentTypeId = UA_NODEID_NUMERIC(0, UA_NS0ID_BASEOBJECTTYPE));
+
+    UA_Server *server;
+    UA_ServerConfig *config;
+
+  private:
+    static UA_Boolean running;
+    static void stopHandler(int sig);
+
+    std::string profileDir;
+    DCSWorkerThread dispatcherThread;
+    static void asyncCallback(UA_Server *server);
 };
 
-#endif // DCS_SERVER_H
+template <class T>
+DCSObject *DCSServer::addObject(std::string name, const Options &options) {
+    if(objects.find(name) == objects.end()) {
+        auto newObject = new T;
+        newObject->init(T::GetType(), name, server, options);
+        objects[name] = newObject;
+        return newObject;
+    } else {
+        throw std::runtime_error("Not unique controller id: " + name);
+    }
+}
+
+template <class T> T &DCSServer::addHistoryBackend(std::string name) {
+
+    if(historyBackends.find(name) == historyBackends.end()) {
+        return *static_cast<T *>(
+            historyBackends.insert({name, new T(server)}).first->second);
+    } else {
+        throw std::runtime_error("Not unique backend id: " + name);
+    }
+}
+
+#endif  // DCS_SERVER_H
