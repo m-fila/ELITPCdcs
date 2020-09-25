@@ -44,6 +44,13 @@
             "enabledChannels": 6
         },
         {
+            "id": "DT1470",
+            "type": "DT1470ET",
+            "address": "192.168.168.42",
+            "port": "1470",
+            "enabledChannels": 4
+        },
+        {
             "id": "N1471",
             "type": "N1471",
             "address": "192.168.168.103",

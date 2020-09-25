@@ -118,6 +118,13 @@ class DT1415Widget : public HVpsuWidget {
                  int enabledChannels = 8, QWidget *parent = 0);
 };
 
+class DT1470Widget : public HVpsuWidget {
+    Q_OBJECT
+  public:
+    DT1470Widget(std::string name, std::string address, std::string port,
+                 int enabledChannels = 4, QWidget *parent = 0);
+};
+
 class N1471Widget : public HVpsuWidget {
     Q_OBJECT
   public:
