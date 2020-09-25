@@ -6,6 +6,7 @@
 #include <vector>
 class Version {
   public:
+    Version() : digits(0) {}
     Version(const std::string &v) : digits(0) { parse(v); }
 
     Version &operator=(const std::string &v) {

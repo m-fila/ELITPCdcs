@@ -3,11 +3,11 @@
 
 #include "ConnectionParameters.h"
 #include "TCPConnector.h"
-#include <iostream>
+//#include <iostream>
 
 template <class T> class AbstractDeviceController {
 
-  protected:
+  public:
     AbstractDeviceController() {
         device.reset(new T);
         device->resetConnectionStream();
@@ -15,7 +15,7 @@ template <class T> class AbstractDeviceController {
     void disconnect() { device->resetConnectionStream(); }
     void connect(ConnectionParameters *parameters) {
         auto cp = static_cast<TCPConnectionParameters *>(parameters);
-        std::cout << cp->IPaddress << ":" << cp->port << std::endl;
+        //    std::cout << cp->IPaddress << ":" << cp->port << std::endl;
         device->setConnectionStream(
             TCPConnector::connect(cp->IPaddress.c_str(), cp->port));
     }
