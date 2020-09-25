@@ -33,7 +33,7 @@ void DCSN1471Controller::addChildren(const Options &options) {
     addControllerMethod("setrampdown", "Sets ramp down",
                         {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
                          {"Ramp down", "Ramp down in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
-                        {}, &DCSN1471Controller::setRampUp, this);
+                        {}, &DCSN1471Controller::setRampDown, this);
 }
 
 UA_DT1415m DCSN1471Controller::getMeasurements() {
