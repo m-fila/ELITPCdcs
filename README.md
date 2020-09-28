@@ -62,6 +62,7 @@ devices used in experimental setup and address of a server. So far known devices
 * HMP2020 - 2 channel lv psu
 * HMP4040 - 4 channel lv psu
 * DT1415ET - 8 channel hv psu
+* DT1740ET - 4 channel hv psu
 * N1471 - 4 channel NIM hv psu
 * TPG362 - vacuum gauge
 * MKS910 - vacuum gauge
