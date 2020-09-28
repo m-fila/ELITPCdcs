@@ -941,3 +941,61 @@ void N1471Widget::updateConfiguration(void *data) {
         isRemote = channelStatus.isRemote;
     }
 }
+
+void DT1470Widget::updateConfiguration(void *data) {
+    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data);
+    if(channelStatus.statusSize) {
+        // bool ON;//, enabled;
+        QString val;
+        double totalVoltageSet = 0;
+        for(int i = 0; i < channelsNumber; ++i) {
+            DT1470ETcodes::ChannelStatus chanStat =
+                static_cast<DT1470ETcodes::ChannelStatus>(channelStatus.status[i]);
+            enabled[i] = channelStatus.isRemote &&
+                         !static_cast<bool>(chanStat & DT1470ETcodes::ChannelStatus::DIS);
+            ON[i] = static_cast<bool>(chanStat & DT1470ETcodes::ChannelStatus::ON);
+            tabCHxLed[i]->setState(static_cast<KLed::State>(ON[i] && connectionState));
+            allTabOn[i]->setEnabled(enabled[i] && connectionState);
+            allTabOff[i]->setEnabled(enabled[i] && connectionState);
+            // allTabKill[i]->setEnabled(enabled[i] && connectionState);
+            allTabSetV[i]->setEnabled(enabled[i] && connectionState);
+            allTabLed[i]->setState(static_cast<KLed::State>(ON[i] && connectionState));
+            allTabOn[i]->setChecked(ON[i] && connectionState);
+            allTabOff[i]->setChecked((!ON[i]) && connectionState);
+
+            val = QString::fromStdString(DT1470ETcodes::translateChannelStatus(chanStat));
+            tabCHxSTATUS[i]->setText(val);
+            tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxSetIset[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxSetVMAX[i]->setEnabled(enabled[i] && connectionState);
+
+            tabCHxOn[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxOff[i]->setEnabled(enabled[i] && connectionState);
+            // tabCHxKill[i]->setEnabled(enabled[i] && connectionState);
+            tabCHxSetV[i]->setEnabled(enabled[i] && connectionState);
+
+            tabCHxOn[i]->setChecked(ON[i] && connectionState);
+            tabCHxOff[i]->setChecked((!ON[i]) && connectionState);
+
+            totalVoltageSet += channelStatus.voltageSet[i];
+            val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
+            allTabVset[i]->setText(val);
+            tabCHxVset[i]->setText(val);
+            val.sprintf("%3.1lf", channelStatus.rup[i]);
+            tabCHxRUP[i]->setText(val);
+            val.sprintf("%3.1lf", channelStatus.rdown[i]);
+            tabCHxRDWN[i]->setText(val);
+            val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
+            tabCHxVMAX[i]->setText(val);
+            val.sprintf("%3.1lf", channelStatus.currentSet[i]);
+            tabCHxIset[i]->setText(val);
+        }
+        val.sprintf("%6.1lf", totalVoltageSet);
+        allTabVset[channelsNumber]->setText(val);
+        allOn->setEnabled(channelStatus.isRemote && connectionState);
+        allOff->setEnabled(channelStatus.isRemote && connectionState);
+        // allTabKill[channelsNumber]->setEnabled(channelStatus.isRemote);
+        isRemote = channelStatus.isRemote;
+    }
+}
