@@ -5,6 +5,7 @@ void DCSTPG362Controller::addChildren(const Options &options) {
     auto &m =
         addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362M]);
     addVariableUpdate(m, 1000, &DCSTPG362Controller::getMeasurements, this);
+    m.setHistorizing();
     auto &c =
         addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362C]);
     addVariableUpdate(c, 1000, &DCSTPG362Controller::getConfiguration, this);
