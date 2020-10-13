@@ -2,6 +2,7 @@
 #include "DCSContext.h"
 #include "DCSUAJson.h"
 #include "DCSVariable.h"
+
 using namespace nlohmann;
 
 UA_HistoryDataBackend DCSHistoryBackendInflux::getUaBackend() {
@@ -46,6 +47,9 @@ UA_StatusCode DCSHistoryBackendInflux::serverSetHistoryData(
         time = value->serverTimestamp;
     }
     auto cmd = instance->toInflux(j.at("Body"));
+    if(cmd.empty()){
+        return UA_STATUSCODE_GOOD;
+    }
     std::string measurement;
     try {
         measurement = DCS::getContext<DCSVariable *>(server, *nodeId)->getFullName();
@@ -166,7 +170,9 @@ std::string DCSHistoryBackendInflux::toInflux(json j) {
         }
     }
     auto s = ss.str();
-    s.pop_back();
+    if(!s.empty()) {
+        s.pop_back();
+    }
     return s;
 }
 
