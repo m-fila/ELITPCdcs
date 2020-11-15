@@ -47,7 +47,7 @@ UA_StatusCode DCSHistoryBackendInflux::serverSetHistoryData(
         time = value->serverTimestamp;
     }
     auto cmd = instance->toInflux(j.at("Body"));
-    if(cmd.empty()){
+    if(cmd.empty()) {
         return UA_STATUSCODE_GOOD;
     }
     std::string measurement;
