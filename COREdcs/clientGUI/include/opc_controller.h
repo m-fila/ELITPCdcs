@@ -17,11 +17,13 @@ class opc_controller : public opcQObject {
     const std::string configurationVariableName = "configuration";
     const std::string connectBrowseName = "connect";
     const std::string disconnectBrowseName = "disconnect";
-    //    UA_NodeId StatusNodeId;
-    //    UA_NodeId MeasurementsNodeId;
-    //    UA_NodeId ConfigurationNodeId;
-    //    UA_NodeId connectNodeId;
-    //    UA_NodeId disconnectNodeId;
+
+    const std::string activeProfileBrowseName = "activeProfile";
+    const std::string enabledProfilesBrowseName = "enabledProfiles";
+    const std::string dumpProfileBrowseName = "dumpProfile";
+    const std::string applyProfileBrowseName = "applyProfile";
+    const std::string setProfileBrowseName = "setProfile";
+
     static void StatusChangedCallback(UA_Client *client, UA_UInt32 subId,
                                       void *subContext, UA_UInt32 monId, void *monContext,
                                       UA_DataValue *value);
@@ -31,13 +33,25 @@ class opc_controller : public opcQObject {
     static void ConfigurationChangedCallback(UA_Client *client, UA_UInt32 subId,
                                              void *subContext, UA_UInt32 monId,
                                              void *monContext, UA_DataValue *value);
+    static void ActiveProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                             void *subContext, UA_UInt32 monId,
+                                             void *monContext, UA_DataValue *value);
+    static void EnabledProfilesChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                               void *subContext, UA_UInt32 monId,
+                                               void *monContext, UA_DataValue *value);
     //    virtual void browseIds();
   public slots:
+    void callSetProfile(std::string key);
+    void callDumpProfile(std::string key);
+    void callApplyProfile();
 
   signals:
     void statusChanged(void *);
     void measurementsChanged(void *);
     void configurationChanged(void *);
+
+    void activeProfileChanged(void *);
+    void enabledProfilesChanged(void *);
 };
 
 #endif  // OPC_CONTROLLER_H

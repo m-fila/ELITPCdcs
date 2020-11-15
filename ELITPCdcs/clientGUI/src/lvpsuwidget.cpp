@@ -1,14 +1,14 @@
 #include "lvpsuwidget.h"
 #include "ui_lvpsuwidget.h"
-//#include "src/ConnectionParameters.h"
 #include <QInputDialog>
 #include <QSettings>
-#include <iostream>
 
 LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent)
     : AbstractWidget(name, parent), ui(new Ui::LVpsuWidget) {
     ui->setupUi(this);
     ui->tcpLayout->addWidget(tcp);
+    profile = new DCSProfileWidget(this);
+    ui->profileLayout->addWidget(profile);
     loadConfig();
     setChannelsNames();
     LVController = new lv_controller(instanceName);
@@ -52,6 +52,16 @@ void LVpsuWidget::connectSignals() {
     connect(ui->CH2confVSet, SIGNAL(pressed()), this, SLOT(setVPressed()));
     connect(ui->CH1confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
     connect(ui->CH2confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
+
+    connect(profile, SIGNAL(applyProfile()), LVController, SLOT(callApplyProfile()));
+    connect(profile, SIGNAL(dumpProfile(std::string)), LVController,
+            SLOT(callDumpProfile(std::string)));
+    connect(profile, SIGNAL(setProfile(std::string)), LVController,
+            SLOT(callSetProfile(std::string)));
+    connect(LVController, SIGNAL(activeProfileChanged(void *)), profile,
+            SLOT(updateActiveProfile(void *)));
+    connect(LVController, SIGNAL(enabledProfilesChanged(void *)), profile,
+            SLOT(updateEnabledProfiles(void *)));
 }
 
 void LVpsuWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
