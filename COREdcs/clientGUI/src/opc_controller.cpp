@@ -22,25 +22,37 @@ void opc_controller::opcInit(UA_Client *Client, UA_ClientConfig *Config,
 void opc_controller::StatusChangedCallback(UA_Client *client, UA_UInt32 subId,
                                            void *subContext, UA_UInt32 monId,
                                            void *monContext, UA_DataValue *value) {
-    void *data = value->value.data;
-    opc_controller *context = static_cast<opc_controller *>(monContext);
-    emit context->statusChanged(data);
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            opc_controller *context = static_cast<opc_controller *>(monContext);
+            emit context->statusChanged(data);
+        }
+    }
 }
 
 void opc_controller::MeasurementsChangedCallback(UA_Client *client, UA_UInt32 subId,
                                                  void *subContext, UA_UInt32 monId,
                                                  void *monContext, UA_DataValue *value) {
-    void *data = value->value.data;
-    opc_controller *context = static_cast<opc_controller *>(monContext);
-    emit context->measurementsChanged(data);
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            opc_controller *context = static_cast<opc_controller *>(monContext);
+            emit context->measurementsChanged(data);
+        }
+    }
 }
 
 void opc_controller::ConfigurationChangedCallback(UA_Client *client, UA_UInt32 subId,
                                                   void *subContext, UA_UInt32 monId,
                                                   void *monContext, UA_DataValue *value) {
-    void *data = value->value.data;
-    opc_controller *context = static_cast<opc_controller *>(monContext);
-    emit context->configurationChanged(data);
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            opc_controller *context = static_cast<opc_controller *>(monContext);
+            emit context->configurationChanged(data);
+        }
+    }
 }
 
 void opc_controller::callConnect(std::string IPAddress, int port) {
@@ -92,16 +104,24 @@ void opc_controller::callDumpProfile(std::string key) {
 void opc_controller::ActiveProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
                                                   void *subContext, UA_UInt32 monId,
                                                   void *monContext, UA_DataValue *value) {
-    void *data = value->value.data;
-    opc_controller *context = static_cast<opc_controller *>(monContext);
-    emit context->activeProfileChanged(data);
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            opc_controller *context = static_cast<opc_controller *>(monContext);
+            emit context->activeProfileChanged(data);
+        }
+    }
 }
 
 void opc_controller::EnabledProfilesChangedCallback(UA_Client *client, UA_UInt32 subId,
                                                     void *subContext, UA_UInt32 monId,
                                                     void *monContext,
                                                     UA_DataValue *value) {
-    void *data = value->value.data;
-    opc_controller *context = static_cast<opc_controller *>(monContext);
-    emit context->enabledProfilesChanged(data);
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            opc_controller *context = static_cast<opc_controller *>(monContext);
+            emit context->enabledProfilesChanged(data);
+        }
+    }
 }
