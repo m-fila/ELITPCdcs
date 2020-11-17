@@ -17,9 +17,13 @@ void MKS910_controller::callSetUnits(int unit) {
 void MKS910_controller::RelayChangedCallback(UA_Client *client, UA_UInt32 subId,
                                              void *subContext, UA_UInt32 monId,
                                              void *monContext, UA_DataValue *value) {
-    void *data = value->value.data;
-    auto *context = static_cast<MKS910_controller *>(monContext);
-    emit context->relayChanged(data);
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            auto *context = static_cast<MKS910_controller *>(monContext);
+            emit context->relayChanged(data);
+        }
+    }
 }
 
 void MKS910_controller::callSetRelay(int nr, int enabled, double setpoint,

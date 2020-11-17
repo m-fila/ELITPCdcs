@@ -97,7 +97,8 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
 template <class Device> void DCSDeviceController<Device>::addConnection() {
     device.resetConnectionStream();
     auto &v = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(v, 1000, [this]() { return getConnectionStatus(); });
+    addVariableUpdate(
+        v, 1000, [this]() { return getConnectionStatus(); }, true, false);
     addControllerMethod("connect", "Connects device",
                         {{"Address", "Host address", UA_TYPES[UA_TYPES_STRING]},
                          {"Port", "Host port", UA_TYPES[UA_TYPES_INT32]}},
@@ -169,10 +170,10 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
                     this->device.resetConnectionStream();
                 }
             } else {
-                //  variable.setNull();
-                void *fallback = nullptr;
-                UA_init(&fallback, variable.getDataType());
-                variable.setValueByPointer(&fallback);
+                variable.setNull();
+                // void *fallback = nullptr;
+                // UA_init(&fallback, variable.getDataType());
+                // variable.setValueByPointer(&fallback);
             }
         };
     } else {
