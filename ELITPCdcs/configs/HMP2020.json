@@ -1,32 +1,22 @@
 {
     "12V": {
-        "voltage": [
-            12,
-            12
-        ],
-        "current": [
+        "CurrentSet": [
             2,
             2
+        ],
+        "VoltageSet": [
+            3.6,
+            12
         ]
     },
     "6V": {
-        "voltage": [
+        "CurrentSet": [
+            2,
+            2
+        ],
+        "VoltageSet": [
             6,
             6
-        ],
-        "current": [
-            2,
-            2
-        ]
-    },
-    "3.6V": {
-        "voltage": [
-            3.6,
-            3.6
-        ],
-        "current": [
-            2,
-            2
         ]
     }
 }
