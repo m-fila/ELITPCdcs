@@ -23,8 +23,8 @@ class DCSProfileWidget : public QWidget {
     explicit DCSProfileWidget(QWidget *parent = nullptr);
 
   signals:
-    void dumpProfile(std::string key);
-    void activeProfileChanged(std::string key);
+    void saveProfile(std::string key);
+    void selectedProfileChanged(std::string key);
     void applyProfile();
 
   private:
@@ -33,15 +33,15 @@ class DCSProfileWidget : public QWidget {
     QLabel *key;
     QPushButton *selectButton;
     QPushButton *applyButton;
-    QPushButton *dumpButton;
+    QPushButton *saveButton;
     bool connected = false;
     QString enabledProfiles;
   private slots:
-    void showDumpDialog();
+    void showSaveDialog();
     void showSelectDialog();
 
   public slots:
-    void updateActiveProfile(void *data);
+    void updateSelectedProfile(void *data);
     void updateEnabledProfiles(void *data);
     void updateStatus(bool status);
   signals:

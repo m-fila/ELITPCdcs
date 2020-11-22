@@ -18,9 +18,9 @@ class opc_controller : public opcQObject {
     const std::string connectBrowseName = "connect";
     const std::string disconnectBrowseName = "disconnect";
 
-    const std::string activeProfileBrowseName = "activeProfile";
+    const std::string selectedProfileBrowseName = "selectedProfile";
     const std::string enabledProfilesBrowseName = "enabledProfiles";
-    const std::string dumpProfileBrowseName = "dumpProfile";
+    const std::string saveProfileBrowseName = "saveProfile";
     const std::string applyProfileBrowseName = "applyProfile";
     const std::string setProfileBrowseName = "setProfile";
 
@@ -33,16 +33,16 @@ class opc_controller : public opcQObject {
     static void ConfigurationChangedCallback(UA_Client *client, UA_UInt32 subId,
                                              void *subContext, UA_UInt32 monId,
                                              void *monContext, UA_DataValue *value);
-    static void ActiveProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                             void *subContext, UA_UInt32 monId,
-                                             void *monContext, UA_DataValue *value);
+    static void SelectedProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                               void *subContext, UA_UInt32 monId,
+                                               void *monContext, UA_DataValue *value);
     static void EnabledProfilesChangedCallback(UA_Client *client, UA_UInt32 subId,
                                                void *subContext, UA_UInt32 monId,
                                                void *monContext, UA_DataValue *value);
     //    virtual void browseIds();
   public slots:
     void callSetProfile(std::string key);
-    void callDumpProfile(std::string key);
+    void callSaveProfile(std::string key);
     void callApplyProfile();
 
   signals:
@@ -50,7 +50,7 @@ class opc_controller : public opcQObject {
     void measurementsChanged(void *);
     void configurationChanged(void *);
 
-    void activeProfileChanged(void *);
+    void selectedProfileChanged(void *);
     void enabledProfilesChanged(void *);
 };
 

@@ -7,33 +7,40 @@ DCSProfileWidget::DCSProfileWidget(QWidget *parent) : QWidget(parent) {
     setLayout(mainLayout);
     auto *innerLayout = new QHBoxLayout(this);
     box->setLayout(innerLayout);
-    text = new QLabel("Active:");
+    text = new QLabel("Selected:");
     innerLayout->addWidget(text);
     key = new QLabel("none");
     innerLayout->addWidget(key);
-    selectButton = new QPushButton("Change", this);
+    selectButton = new QPushButton("Select", this);
     innerLayout->addWidget(selectButton);
     applyButton = new QPushButton("Apply", this);
     innerLayout->addWidget(applyButton);
-    dumpButton = new QPushButton("Dump", this);
-    innerLayout->addWidget(dumpButton);
+    saveButton = new QPushButton("Save active", this);
+    innerLayout->addWidget(saveButton);
     connectSignals();
 }
 
 void DCSProfileWidget::connectSignals() {
     connect(applyButton, SIGNAL(pressed()), this, SIGNAL(applyProfile()));
-    connect(dumpButton, SIGNAL(pressed()), this, SLOT(showDumpDialog()));
+    connect(saveButton, SIGNAL(pressed()), this, SLOT(showSaveDialog()));
     connect(selectButton, SIGNAL(pressed()), this, SLOT(showSelectDialog()));
 }
 
-void DCSProfileWidget::showDumpDialog() {
+void DCSProfileWidget::showSaveDialog() {
 
     bool ok;
-    QString text = QInputDialog::getText(
-        this, "Profile dump key", "Key for dumped configuration:", QLineEdit::Normal,
-        "new", &ok);
+    QString text =
+        QInputDialog::getText(this, "Save active profile",
+                              "Name for new profile:", QLineEdit::Normal, "new", &ok);
     if(ok && !text.isEmpty()) {
-        emit dumpProfile(text.toStdString());
+        if(text == "None") {
+            QMessageBox msgBox;
+            msgBox.setText(
+                "\"None\" is a reserved name. Choose other name for a profile.");
+            msgBox.exec();
+        } else {
+            emit saveProfile(text.toStdString());
+        }
     }
 }
 
@@ -50,7 +57,7 @@ void DCSProfileWidget::showSelectDialog() {
     }
 }
 
-void DCSProfileWidget::updateActiveProfile(void *data) {
+void DCSProfileWidget::updateSelectedProfile(void *data) {
 
     auto *keyUA = static_cast<UA_String *>(data);
     std::string keyStr(reinterpret_cast<char *>(keyUA->data), keyUA->length);
@@ -67,7 +74,7 @@ void DCSProfileWidget::updateEnabledProfiles(void *data) {
 
 void DCSProfileWidget::updateStatus(bool status) {
     applyButton->setEnabled(status);
-    dumpButton->setEnabled(status);
+    saveButton->setEnabled(status);
     connected = status;
 }
 
@@ -82,7 +89,8 @@ DCSProfileDialog::DCSProfileDialog(const QJsonObject &json, QString activeKey,
     outerLayout->addLayout(innerLayout);
     innerLayout->addWidget(&list);
     innerLayout->addWidget(&body);
-    list.insertItems(0, json.keys());
+    list.insertItem(1, "None");
+    list.insertItems(1, json.keys());
     body.setReadOnly(true);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(
         QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
