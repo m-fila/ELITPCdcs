@@ -54,12 +54,12 @@ void LVpsuWidget::connectSignals() {
     connect(ui->CH2confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
 
     connect(profile, SIGNAL(applyProfile()), LVController, SLOT(callApplyProfile()));
-    connect(profile, SIGNAL(dumpProfile(std::string)), LVController,
-            SLOT(callDumpProfile(std::string)));
+    connect(profile, SIGNAL(saveProfile(std::string)), LVController,
+            SLOT(callSaveProfile(std::string)));
     connect(profile, SIGNAL(setProfile(std::string)), LVController,
             SLOT(callSetProfile(std::string)));
-    connect(LVController, SIGNAL(activeProfileChanged(void *)), profile,
-            SLOT(updateActiveProfile(void *)));
+    connect(LVController, SIGNAL(selectedProfileChanged(void *)), profile,
+            SLOT(updateSelectedProfile(void *)));
     connect(LVController, SIGNAL(enabledProfilesChanged(void *)), profile,
             SLOT(updateEnabledProfiles(void *)));
 }

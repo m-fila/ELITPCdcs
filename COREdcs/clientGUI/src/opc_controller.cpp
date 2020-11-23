@@ -15,8 +15,8 @@ void opc_controller::opcInit(UA_Client *Client, UA_ClientConfig *Config,
                      ConfigurationChangedCallback);
     addMonitoredItem(browsedIds[enabledProfilesBrowseName], response,
                      EnabledProfilesChangedCallback);
-    addMonitoredItem(browsedIds[activeProfileBrowseName], response,
-                     ActiveProfileChangedCallback);
+    addMonitoredItem(browsedIds[selectedProfileBrowseName], response,
+                     SelectedProfileChangedCallback);
 }
 
 void opc_controller::StatusChangedCallback(UA_Client *client, UA_UInt32 subId,
@@ -91,24 +91,25 @@ void opc_controller::callSetProfile(std::string key) {
     UA_Variant_clear(input);
 }
 
-void opc_controller::callDumpProfile(std::string key) {
+void opc_controller::callSaveProfile(std::string key) {
     UA_Variant input[1];
     UA_Variant_init(input);
     UA_String keyStr = UA_String_fromChars(key.c_str());
     UA_Variant_setScalarCopy(&input[0], &keyStr, &UA_TYPES[UA_TYPES_STRING]);
-    UA_Client_call_async(client, ObjectNodeId, browsedIds[dumpProfileBrowseName], 1,
+    UA_Client_call_async(client, ObjectNodeId, browsedIds[saveProfileBrowseName], 1,
                          input, nullptr, nullptr, nullptr);
     UA_Variant_clear(input);
 }
 
-void opc_controller::ActiveProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                                  void *subContext, UA_UInt32 monId,
-                                                  void *monContext, UA_DataValue *value) {
+void opc_controller::SelectedProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                                    void *subContext, UA_UInt32 monId,
+                                                    void *monContext,
+                                                    UA_DataValue *value) {
     if(value->hasValue) {
         if(!UA_Variant_isEmpty(&value->value)) {
             void *data = value->value.data;
             opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->activeProfileChanged(data);
+            emit context->selectedProfileChanged(data);
         }
     }
 }
