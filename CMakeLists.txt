@@ -28,6 +28,7 @@ include(StaticAnalysis)
 option(BUILD_SERVER "build server" ON)
 option(BUILD_DB "build database client" OFF)
 option(BUILD_GUI "build operational client with gui" ON)
+option(BUILD_CHECKS "build service checks" ON)
 option(BUILD_TEST "build simple tests" OFF)
 
 add_subdirectory(deps)

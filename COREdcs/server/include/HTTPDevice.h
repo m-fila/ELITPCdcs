@@ -28,6 +28,8 @@ class HTTPDevice : public GenericDevice {
          * @param resp HTTP string to be parsed
          */
         HTTPResponse(std::string resp);
+        HTTPResponse() = default;
+        HTTPResponse(const HTTPResponse &response) = default;
         /**
          * @brief map of response headers
          * eg. Date, Server, Content-Length, Content-Type, ...

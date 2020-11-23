@@ -41,7 +41,7 @@ CMake flags `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF
 Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available:
 * dcsServer - provides OPC server and device controllers. Should be run on a computer with access to devices.
 * dcsGui - GUI client. Provides graphic interface for operator user of services exposed by server such as monitoring and manipulating devices.
-* dcsDb - data logger client . Connects to server and loggs states and measurements into local SQLite database (obsolete if you use historizing on server)
+* dcsChecks - checks status of services running in ELITPC dcs stack: dcsServer, InfluxDb, Grafana.
 
 ## Usage
 * to run server:
@@ -52,9 +52,9 @@ Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb
   ```
   ./dcsGUI (path_to_config_file)
   ```
-* to run database client:
+* to run service checks :
     ```
-  ./dcsDB (path_to_config_file)
+  ./dcsChecks (path_to_config_file)
   ```
 
 At startup server and clients look for configuration file with list of
@@ -92,9 +92,9 @@ The project is split into two catalogs COREdcs with framework and ELITPCdcs impl
 - [x] historizing
 - [x] refactorized server
 - [x] server device register 
-- [x] server device profiles
+- [x] server device profiles/presets
 - [ ] refactorized client
-- [ ] client events, profiles display
+- [ ] client events
 ## License
 This work is distributed under [MIT license](LICENSE).
 
