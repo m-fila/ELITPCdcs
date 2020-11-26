@@ -70,18 +70,23 @@ void TPGWidget::updateMeasurements(void *data) {
         QString val;
         std::string s;
         for(int i = 0; i != 2; ++i) {
-            std::ostringstream os;
-            os << std::scientific << std::setprecision(5) << std::uppercase
-               << measurements.vacuum[i];
-            s = os.str();
-            s.insert(s.size() - 4, " ");
-            s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
-            val = QString::fromStdString(s);
-            mVacuum[i]->display(val);
             TPG362codes::Status stat =
                 static_cast<TPG362codes::Status>(measurements.status[i]);
             val = QString::fromStdString(TPG362codes::statusToString.at(stat));
             mStatus[i]->setText(val);
+            if(stat == TPG362codes::Status::NoSensor ||
+               stat == TPG362codes::Status::SensorOff) {
+                mVacuum[i]->display("OFF");
+            } else {
+                std::ostringstream os;
+                os << std::scientific << std::setprecision(5) << std::uppercase
+                   << measurements.vacuum[i];
+                s = os.str();
+                s.insert(s.size() - 4, " ");
+                s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
+                val = QString::fromStdString(s);
+                mVacuum[i]->display(val);
+            }
         }
     }
 }
