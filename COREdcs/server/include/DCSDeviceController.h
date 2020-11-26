@@ -82,7 +82,7 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
     try {
         auto stream = TCPConnector::connect(address.c_str(), port);
         device.setConnectionStream(stream);
-    } catch(const std::runtime_error &e) {
+    } catch(const std::exception &e) {
         UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                        "%s device controller catched: \"%s\"", objectName.c_str(),
                        e.what());
@@ -274,7 +274,7 @@ void DCSDeviceController<Device>::saveProfile(DCSVariable &profiles,
     if(ifs.is_open()) {
         try {
             ifs >> config;
-        } catch(const std::runtime_error &e) {
+        } catch(const std::exception &e) {
             UA_LOG_ERROR(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                          "%s config \"%s\" is corrupted. Skipping and overwriting",
                          objectName.c_str(), configPath.c_str());

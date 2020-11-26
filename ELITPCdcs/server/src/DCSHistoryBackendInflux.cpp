@@ -53,7 +53,7 @@ UA_StatusCode DCSHistoryBackendInflux::serverSetHistoryData(
     std::string measurement;
     try {
         measurement = DCS::getContext<DCSVariable *>(server, *nodeId)->getFullName();
-    } catch(const std::runtime_error &e) {
+    } catch(const exception &e) {
         return UA_STATUSCODE_BADINTERNALERROR;
     }
     std::unique_lock<std::mutex> lock(instance->bucketMutex);

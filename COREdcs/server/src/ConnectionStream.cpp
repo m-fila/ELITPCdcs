@@ -1,6 +1,5 @@
 #include "ConnectionStream.h"
 #include <stdexcept>
-
 ConnectionStream::ConnectionStream() {}
 
 ConnectionStream::~ConnectionStream() { close(m_sd); }
@@ -40,8 +39,5 @@ std::string ConnectionStream::receive() {
 
 std::string ConnectionStream::sendWithResponse(std::string s) {
     send(s);
-    //    std::string r=receive();
-    //    std::cout<<s<<std::endl;
-    //   std::cout<<r<<std::endl;
     return receive();
 }
