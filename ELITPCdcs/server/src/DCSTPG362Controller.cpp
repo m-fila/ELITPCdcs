@@ -20,6 +20,7 @@ void DCSTPG362Controller::addChildren(const Options &options) {
 }
 
 UA_TPG362m DCSTPG362Controller::getMeasurements() {
+
     int size = 2;
     UA_TPG362m tpg;
     UA_TPG362m_init(&tpg);
@@ -27,15 +28,27 @@ UA_TPG362m DCSTPG362Controller::getMeasurements() {
     tpg.vacuum = static_cast<UA_Double *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     tpg.statusSize = size;
     tpg.status = static_cast<UA_UInt32 *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_UINT32]));
-    std::string response = device.getGaugesData(TPG362::CH::ALL);
-    std::istringstream iss(response);
-    for(int i = 0; i < size; i++) {
-        std::string value;
-        std::string status;
-        std::getline(iss, status, ',');
-        std::getline(iss, value, ',');
-        tpg.vacuum[i] = std::stod(value);
-        tpg.status[i] = std::stoi(status);
+    size_t tries = 10;
+    while(tries) {
+        try {
+            std::string response = device.getGaugesData(TPG362::CH::ALL);
+            std::istringstream iss(response);
+            for(int i = 0; i < size; i++) {
+                std::string value;
+                std::string status;
+                std::getline(iss, status, ',');
+                std::getline(iss, value, ',');
+                tpg.vacuum[i] = std::stod(value);
+                tpg.status[i] = std::stoi(status);
+            }
+            break;
+        } catch(const std::exception &e) {
+            --tries;
+            if(tries == 0) {
+                throw std::runtime_error(e.what());
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
     }
     return tpg;
 }
@@ -71,23 +84,34 @@ UA_Relay DCSTPG362Controller::getRelay() {
         static_cast<UA_Double *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     relay.status =
         static_cast<UA_Boolean *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_BOOLEAN]));
-
-    auto statusResponse = device.getSwitchingFunctionStatus();
-    std::istringstream statusStream(statusResponse);
-    for(size_t i = 0; i < size; ++i) {
-        relay.direction[i] = false;
-        std::string val;
-        std::getline(statusStream, val, ',');
-        relay.status[i] = std::stoi(val);
-        auto function =
-            device.getSwitchingFunction(static_cast<TPG362::SWITCHING_FUNCTION>(i + 1));
-        std::istringstream functionStream(function);
-        std::getline(functionStream, val, ',');
-        relay.enabled[i] = std::stoi(val);
-        std::getline(functionStream, val, ',');
-        relay.setpoint[i] = std::stod(val);
-        std::getline(functionStream, val, ',');
-        relay.hysteresis[i] = std::stod(val);
+    size_t tries = 10;
+    while(tries) {
+        try {
+            auto statusResponse = device.getSwitchingFunctionStatus();
+            std::istringstream statusStream(statusResponse);
+            for(size_t i = 0; i < size; ++i) {
+                relay.direction[i] = false;
+                std::string val;
+                std::getline(statusStream, val, ',');
+                relay.status[i] = std::stoi(val);
+                auto function = device.getSwitchingFunction(
+                    static_cast<TPG362::SWITCHING_FUNCTION>(i + 1));
+                std::istringstream functionStream(function);
+                std::getline(functionStream, val, ',');
+                relay.enabled[i] = std::stoi(val);
+                std::getline(functionStream, val, ',');
+                relay.setpoint[i] = std::stod(val);
+                std::getline(functionStream, val, ',');
+                relay.hysteresis[i] = std::stod(val);
+            }
+            break;
+        } catch(const std::exception &e) {
+            --tries;
+            if(tries == 0) {
+                throw std::runtime_error(e.what());
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
     }
     return relay;
 }
