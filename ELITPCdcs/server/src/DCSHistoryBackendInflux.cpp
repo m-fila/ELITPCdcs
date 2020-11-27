@@ -163,9 +163,11 @@ std::string DCSHistoryBackendInflux::toInflux(json j) {
         auto v = it.value();
         if(v.is_array()) {
             for(size_t i = 0; i < v.size(); ++i) {
-                ss << k << i + 1 << "=" << v.at(i) << ",";
+                if(!v.at(i).is_null() && v.at(i) != "NaN") {
+                    ss << k << i + 1 << "=" << v.at(i) << ",";
+                }
             }
-        } else {
+        } else if(!v.is_null() && v != "NaN") {
             ss << k << "=" << v << ",";
         }
     }
