@@ -1,5 +1,8 @@
 #include "DCSTPG362Controller.h"
+#include "tpg362codes.h"
+#include <regex>
 #include <sstream>
+
 void DCSTPG362Controller::addChildren(const Options &options) {
     addConnection();
     auto &m =
@@ -32,20 +35,35 @@ UA_TPG362m DCSTPG362Controller::getMeasurements() {
     while(tries) {
         try {
             std::string response = device.getGaugesData(TPG362::CH::ALL);
+            std::regex reg(
+                "^[0-9][,][+-][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][,][+-][0-"
+                "9][.][0-9]{4}[E][+-][0-9]{2}$");
+            if(!std::regex_match(response, reg)) {
+                throw std::runtime_error(std::string("received invalid response: ") +
+                                         response.c_str());
+            }
             std::istringstream iss(response);
             for(int i = 0; i < size; i++) {
                 std::string value;
                 std::string status;
                 std::getline(iss, status, ',');
-                std::getline(iss, value, ',');
-                tpg.vacuum[i] = std::stod(value);
                 tpg.status[i] = std::stoi(status);
+                std::getline(iss, value, ',');
+                if(static_cast<TPG362codes::Status>(tpg.status[i]) ==
+                   TPG362codes::Status::SensorOff) {
+                    tpg.vacuum[i] = nan("NAN");
+                } else {
+                    tpg.vacuum[i] = std::stod(value);
+                }
             }
             break;
         } catch(const std::exception &e) {
             --tries;
+            UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                           " %s  communication error: %s Repeating. %lu tries left",
+                           getName().c_str(), e.what(), tries);
             if(tries == 0) {
-                throw std::runtime_error(e.what());
+                throw std::runtime_error("looped communication error");
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
@@ -94,9 +112,15 @@ UA_Relay DCSTPG362Controller::getRelay() {
                 std::string val;
                 std::getline(statusStream, val, ',');
                 relay.status[i] = std::stoi(val);
-                auto function = device.getSwitchingFunction(
+                auto functionResponse = device.getSwitchingFunction(
                     static_cast<TPG362::SWITCHING_FUNCTION>(i + 1));
-                std::istringstream functionStream(function);
+                std::regex reg("^[0-9][,][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][.][0-9]{"
+                               "4}[E][+-][0-9]{2}$");
+                if(!std::regex_match(functionResponse, reg)) {
+                    throw std::runtime_error(std::string("received invalid response: ") +
+                                             functionResponse.c_str());
+                }
+                std::istringstream functionStream(functionResponse);
                 std::getline(functionStream, val, ',');
                 relay.enabled[i] = std::stoi(val);
                 std::getline(functionStream, val, ',');
@@ -107,8 +131,11 @@ UA_Relay DCSTPG362Controller::getRelay() {
             break;
         } catch(const std::exception &e) {
             --tries;
+            UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                           " %s  communication error: %s Repeating. %lu tries left",
+                           getName().c_str(), e.what(), tries);
             if(tries == 0) {
-                throw std::runtime_error(e.what());
+                throw std::runtime_error("looped communication error");
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
