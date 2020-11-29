@@ -37,7 +37,9 @@ add_subdirectory(ELITPCdcs)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/ProjectVersion.h.in
                ${CMAKE_SOURCE_DIR}/deps/include/ProjectVersion.h @ONLY)
-
+configure_file(${CMAKE_SOURCE_DIR}/tools/dcsDbDump.py.in
+               ${CMAKE_BINARY_DIR}/bin/dcsDbDump @ONLY)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/dcsDbDump DESTINATION bin)
 option(BUILD_TEST "build simple tests" OFF)
 if(BUILD_TEST)
   enable_testing()

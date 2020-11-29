@@ -1,0 +1,102 @@
+#!/usr/bin/python3
+import argparse
+from influxdb import DataFrameClient
+from pandas import DataFrame
+import numpy as np
+from sys import stderr
+
+
+def parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-ip", "--hostname",
+                        help="Database address", default="localhost", nargs='?')
+    parser.add_argument("-p", "--port", help="Database port",
+                        default="8086", nargs='?')
+    parser.add_argument("-u", "--username", help="Database user name",
+                        default="", nargs='?')
+    parser.add_argument("-pw", "--password",
+                        help="Database user password", default="", nargs='?')
+    parser.add_argument("-db", "--database",
+                        help="Database name", nargs='?', required=True)
+    parser.add_argument("-m", "--measurements",
+                        help="List of measurements to dump. If not specified then every measurment in the database will be dumped", default="ALL", nargs='+')
+    parser.add_argument("-tl", "--timelength",
+                        help="Length of time for dump with postfix u, ms, s, m, h, d, w", nargs='?')
+    parser.add_argument("-st", "--starttime",
+                        help="Start time in rfc3389, e.g. 2020-11-27T13:19:11.4527Z", nargs='?')
+    parser.add_argument("-et", "--endtime",
+                        help="End time as now or in rfc3389, e.g. 2020-11-27T13:19:11.4527Z", default="now", nargs='?')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s @PROJECT_VERSION@')
+    args = parser.parse_args()
+    return args
+
+
+def getNames(client, measurements):
+    def helper(i):
+        if i not in found:
+            stderr.write("WARNING: Measurement {} not found\n".format(i))
+            return False
+        return True
+    query = 'show measurements'
+    results = client.query(query)
+    found = [i[0]['name'] for i in zip(*results)]
+    if measurements == 'ALL':
+        return found
+    return list(filter(helper, measurements))
+
+
+def getMeasurements(client, measurements, startTime, endTime, timeLength):
+    if timeLength and endTime:
+        if endTime != "now":
+            endTime = "'"+endTime+"'"
+        else:
+            endTime = "now()"
+        whereClause = " where time > {} - {} AND time < {}".format(
+            endTime, timeLength, endTime)
+    elif timeLength and startTime:
+        whereClause = " where time > {}  AND time < {} + {}".format(
+            endTime, startTime, startTime, timeLength)
+    elif startTime and endTime:
+        if endTime != "now":
+            endTime = "'"+endTime+"'"
+        else:
+            endTime = "now()"
+        whereClause = " where time > {}  AND time < {}".format(
+            startTime, endTime)
+    else:
+        print(
+            "You must specify two from {starttime | stoptime | timelength}")
+        exit()
+    for m in measurements:
+        query = 'select * from "{}"'.format(m)+whereClause
+        results = client.query(query)
+        try:
+            df = DataFrame(results[m])
+        except KeyError:
+            stderr.write(
+                "WARNING: Measurement {} has no values in chosen time period\n".format(m))
+            query = 'show FIELD KEYS from "{}" '.format(m)
+            results = client.query(query, epoch='ms')
+            df = DataFrame(columns=[i['fieldKey'] for i in results[m]])
+            df.index.name = 'timestamp'
+        df.index = df.index.astype(np.int64)
+        df.index.name = 'timestamp'
+        df.to_csv('{}.csv'.format(m))
+
+
+if __name__ == "__main__":
+    args = parser()
+    host = args.hostname
+    port = args.port
+    username = args.username
+    password = args.password
+    dbname = args.database
+    measurements = args.measurements
+    timeLength = args.timelength
+    startTime = args.starttime
+    endTime = args.endtime
+
+    client = DataFrameClient(host, port, username, password, dbname)
+    measurements = getNames(client, measurements)
+    getMeasurements(client, measurements, startTime, endTime, timeLength)
