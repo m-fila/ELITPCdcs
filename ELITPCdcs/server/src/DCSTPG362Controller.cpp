@@ -31,7 +31,7 @@ UA_TPG362m DCSTPG362Controller::getMeasurements() {
     tpg.vacuum = static_cast<UA_Double *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     tpg.statusSize = size;
     tpg.status = static_cast<UA_UInt32 *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_UINT32]));
-    size_t tries = 10;
+    size_t tries = 15;
     while(tries) {
         try {
             std::string response = device.getGaugesData(TPG362::CH::ALL);
@@ -65,7 +65,7 @@ UA_TPG362m DCSTPG362Controller::getMeasurements() {
             if(tries == 0) {
                 throw std::runtime_error("looped communication error");
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
     }
     return tpg;
@@ -102,7 +102,7 @@ UA_Relay DCSTPG362Controller::getRelay() {
         static_cast<UA_Double *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_DOUBLE]));
     relay.status =
         static_cast<UA_Boolean *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_BOOLEAN]));
-    size_t tries = 10;
+    size_t tries = 15;
     while(tries) {
         try {
             auto statusResponse = device.getSwitchingFunctionStatus();
@@ -137,7 +137,7 @@ UA_Relay DCSTPG362Controller::getRelay() {
             if(tries == 0) {
                 throw std::runtime_error("looped communication error");
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
     }
     return relay;
