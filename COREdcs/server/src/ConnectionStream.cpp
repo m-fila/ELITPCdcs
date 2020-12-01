@@ -42,10 +42,7 @@ std::string ConnectionStream::receive() {
     if(!response.empty() && response[response.length() - 1] == '\n') {
         response.erase(response.length() - 1);
     }
-    // remove new carriage return from answer
-    if(!response.empty() && response[response.length() - 1] == '\r') {
-        response.erase(response.length() - 1);
-    }
+
 #ifdef DEBUG_COMMUNICATION
     std::cout << "R: " << response << std::endl;
 #endif
