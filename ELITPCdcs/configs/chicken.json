@@ -1,0 +1,42 @@
+{
+    "logFile": "/data/edaq/dcs/chicken.log",
+    "configDir": "/home/edaq/.dcs",
+    "server": {
+        "id": "Chicken",
+        "address": "localhost",
+        "port": 6667
+    },
+    "database": {
+        "type": "influxdb",
+        "address": "10.15.4.67",
+        "port": 8086,
+        "db": "test"
+    },
+    "devices": [
+        {
+            "id": "LV PSU",
+            "type": "HMP2020",
+            "address": "192.168.168.20",
+            "port": "5025",
+            "profile": "6V"
+        },
+        {
+            "id": "HiVolta",
+            "type": "DT1415ET",
+            "address": "192.168.168.31",
+            "port": "1470"
+        },
+        {
+            "id": "PM1",
+            "type": "TPG362",
+            "address": "192.168.168.103",
+            "port": "5300"
+        },
+        {
+            "id": "PM2",
+            "type": "TPG362",
+            "address": "192.168.168.103",
+            "port": "5301"
+        }
+    ]
+}
