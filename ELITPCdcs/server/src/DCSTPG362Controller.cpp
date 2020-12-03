@@ -39,8 +39,9 @@ UA_TPG362m DCSTPG362Controller::getMeasurements() {
                 "^[0-9][,][+-][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][,][+-][0-"
                 "9][.][0-9]{4}[E][+-][0-9]{2}\r$");
             if(!std::regex_match(response, reg)) {
-                throw std::runtime_error(std::string("received invalid response: ") +
-                                         response.c_str());
+                throw std::runtime_error(
+                    std::string("received invalid  pressure response: ") +
+                    response.c_str());
             }
             std::istringstream iss(response);
             for(int i = 0; i < size; i++) {
@@ -106,6 +107,12 @@ UA_Relay DCSTPG362Controller::getRelay() {
     while(tries) {
         try {
             auto statusResponse = device.getSwitchingFunctionStatus();
+            std::regex regex("^[01][,][01][,][01][,][01]\r$");
+            if(!std::regex_match(statusResponse, regex)) {
+                throw std::runtime_error(
+                    std::string("received invalid switching function status response: ") +
+                    statusResponse.c_str());
+            }
             std::istringstream statusStream(statusResponse);
             for(size_t i = 0; i < size; ++i) {
                 relay.direction[i] = false;
@@ -117,8 +124,9 @@ UA_Relay DCSTPG362Controller::getRelay() {
                 std::regex reg("^[0-9][,][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][.][0-9]{"
                                "4}[E][+-][0-9]{2}\r$");
                 if(!std::regex_match(functionResponse, reg)) {
-                    throw std::runtime_error(std::string("received invalid response: ") +
-                                             functionResponse.c_str());
+                    throw std::runtime_error(
+                        std::string("received invalid switching function response: ") +
+                        functionResponse.c_str());
                 }
                 std::istringstream functionStream(functionResponse);
                 std::getline(functionStream, val, ',');
