@@ -10,5 +10,8 @@ endif(BUILD_DB)
 if(BUILD_GUI)
   add_subdirectory(clientGUI)
 endif(BUILD_GUI)
+if(BUILD_CHECKS)
+  add_subdirectory(clientCheck)
+endif(BUILD_CHECKS)
 install(FILES $<1:${PROJECT_SOURCE_DIR}/${MODULE_NAME}/configs/>
         DESTINATION config)

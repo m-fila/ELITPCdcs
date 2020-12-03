@@ -4,6 +4,7 @@ void DCSDT1415ETController::addChildren(const Options &options) {
     auto &m =
         addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M]);
     addVariableUpdate(m, 1000, &DCSDT1415ETController::getMeasurements, this);
+    m.setHistorizing();
     auto &c =
         addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C]);
     addVariableUpdate(c, 1000, &DCSDT1415ETController::getConfiguration, this);
@@ -32,7 +33,7 @@ void DCSDT1415ETController::addChildren(const Options &options) {
     addControllerMethod("setrampdown", "Sets ramp down",
                         {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
                          {"Ramp down", "Ramp down in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
-                        {}, &DCSDT1415ETController::setRampUp, this);
+                        {}, &DCSDT1415ETController::setRampDown, this);
 }
 
 UA_DT1415m DCSDT1415ETController::getMeasurements() {

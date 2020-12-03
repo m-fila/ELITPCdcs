@@ -6,9 +6,13 @@ tpg_controller::tpg_controller(std::string OName, QObject *parent)
 void tpg_controller::RelayChangedCallback(UA_Client *client, UA_UInt32 subId,
                                           void *subContext, UA_UInt32 monId,
                                           void *monContext, UA_DataValue *value) {
-    void *data = value->value.data;
-    auto *context = static_cast<tpg_controller *>(monContext);
-    emit context->relayChanged(data);
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            auto *context = static_cast<tpg_controller *>(monContext);
+            emit context->relayChanged(data);
+        }
+    }
 }
 
 void tpg_controller::callSetRelay(int nr, int enabled, double setpoint,

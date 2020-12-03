@@ -29,6 +29,13 @@ class Influx : public HTTPDevice {
         return request(HTTPDevice::Method::GET,
                        "/debug/requests?seconds=" + std::to_string(time_s));
     }
+    /**
+     * @brief InfluxDB v 2.0 API only.
+     * Checks health of instance
+     *
+     * @return HTTPResponse
+     */
+    inline HTTPResponse health() { return request(HTTPDevice::Method::GET, "/health"); }
 
     inline void setDatabase(std::string i) { database = i; }
     inline void setUser(std::string i) { user = i; }

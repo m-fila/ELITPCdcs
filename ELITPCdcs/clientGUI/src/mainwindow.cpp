@@ -94,6 +94,8 @@ void MainWindow::loadWidgets(json &items) {
             } catch(const nlohmann::detail::out_of_range &) {
                 new_widget = new N1471Widget(id, address, port);
             }
+        } else if(type == "DT1470ET") {
+            new_widget = new DT1470Widget(id, address, port);
         } else if(type == "TPG362") {
             new_widget = new TPGWidget(id, address, port);
         } else if(type == "PiWeather") {

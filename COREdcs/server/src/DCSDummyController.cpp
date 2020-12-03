@@ -6,12 +6,12 @@
 void DCSDummyController::addProfiles(const Options & options) {
   auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);
   updateProfiles(profiles);
-  auto activeProfile = addVariable("activeProfile", UA_TYPES[UA_TYPES_STRING]);
+  auto selectedProfile = addVariable("selectedProfile", UA_TYPES[UA_TYPES_STRING]);
   auto initProfile =
       options.contains("profile")
           ? UA_STRING_ALLOC(options.at("profile").get<std::string>().c_str())
           : UA_STRING_ALLOC("None");
-  activeProfile.setValue(initProfile);
+  selectedProfile.setValue(initProfile);
   UA_String_deleteMembers(&initProfile);
 
   addMethod("dumpProfile", "dump profile",
@@ -20,12 +20,12 @@ void DCSDummyController::addProfiles(const Options & options) {
                       std::placeholders::_1, std::placeholders::_2));
   addMethod("setProfile", "set active profile",
             {{"key", "key", UA_TYPES[UA_TYPES_STRING]}}, {},
-            std::bind(&DCSDummyController::setProfile, this, activeProfile,
+            std::bind(&DCSDummyController::setProfile, this, selectedProfile,
                       std::placeholders::_1, std::placeholders::_2));
   addControllerMethod(
       "applyProfile", "apply active profile", {}, {},
-      [this, activeProfile, profiles](const UA_Variant *in, UA_Variant *out) {
-        applyProfile(activeProfile, profiles, in, out);
+      [this, selectedProfile, profiles](const UA_Variant *in, UA_Variant *out) {
+        applyProfile(selectedProfile, profiles, in, out);
       });
 }
 

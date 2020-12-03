@@ -3,6 +3,7 @@
 
 #include "abstractwidget.h"
 #include "dt1415etcodes.h"
+#include "dt1470etcodes.h"
 #include "hvcontroller.h"
 #include "kled.h"
 #include "n1471codes.h"
@@ -116,6 +117,14 @@ class DT1415Widget : public HVpsuWidget {
   public:
     DT1415Widget(std::string name, std::string address, std::string port,
                  int enabledChannels = 8, QWidget *parent = 0);
+};
+
+class DT1470Widget : public HVpsuWidget {
+    Q_OBJECT
+  public:
+    DT1470Widget(std::string name, std::string address, std::string port,
+                 int enabledChannels = 4, QWidget *parent = 0);
+    void updateConfiguration(void *data) final;
 };
 
 class N1471Widget : public HVpsuWidget {

@@ -5,7 +5,10 @@ BaseWidget::BaseWidget(std::string name, QWidget *parent)
     // loadConfig();
 }
 
-void BaseWidget::startup() { this->show(); }
+void BaseWidget::startup() {
+    this->show();
+    this->activateWindow();
+}
 
 void BaseWidget::updateStatus(void *data) {
     if(externalLed != nullptr) {

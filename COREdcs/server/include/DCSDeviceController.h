@@ -62,7 +62,7 @@ template <class Device> class DCSDeviceController : public DCSObject {
 
     bool getConnectionStatus() { return device.isConnected(); }
 
-    void dumpProfile(DCSVariable &profiles, DCSVariable &configVariable,
+    void saveProfile(DCSVariable &profiles, DCSVariable &configVariable,
                      const UA_Variant *input, UA_Variant *output);
     void setProfile(DCSVariable &profile, const UA_Variant *input, UA_Variant *output);
     void applyProfile(const DCSVariable &profile, const DCSVariable &profiles,
@@ -82,7 +82,7 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
     try {
         auto stream = TCPConnector::connect(address.c_str(), port);
         device.setConnectionStream(stream);
-    } catch(const std::runtime_error &e) {
+    } catch(const std::exception &e) {
         UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                        "%s device controller catched: \"%s\"", objectName.c_str(),
                        e.what());
@@ -97,7 +97,7 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
 template <class Device> void DCSDeviceController<Device>::addConnection() {
     device.resetConnectionStream();
     auto &v = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(v, 1000, [this]() { return getConnectionStatus(); });
+    addVariableUpdate(v, 1000, [this]() { return getConnectionStatus(); }, true, false);
     addControllerMethod("connect", "Connects device",
                         {{"Address", "Host address", UA_TYPES[UA_TYPES_STRING]},
                          {"Port", "Host port", UA_TYPES[UA_TYPES_INT32]}},
@@ -169,10 +169,10 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
                     this->device.resetConnectionStream();
                 }
             } else {
-                //  variable.setNull();
-                void *fallback = nullptr;
-                UA_init(&fallback, variable.getDataType());
-                variable.setValueByPointer(&fallback);
+                variable.setNull();
+                // void *fallback = nullptr;
+                // UA_init(&fallback, variable.getDataType());
+                // variable.setValueByPointer(&fallback);
             }
         };
     } else {
@@ -215,31 +215,31 @@ void DCSDeviceController<Device>::addProfiles(DCSVariable &configVariable,
                                               const Options &options) {
     auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);
     updateProfiles(profiles);
-    auto activeProfile = addVariable("activeProfile", UA_TYPES[UA_TYPES_STRING]);
+    auto selectedProfile = addVariable("selectedProfile", UA_TYPES[UA_TYPES_STRING]);
     auto initProfile =
         options.contains("profile")
             ? UA_STRING_ALLOC(options.at("profile").get<std::string>().c_str())
-            : UA_STRING_ALLOC("Default");
-    activeProfile.setValue(initProfile);
+            : UA_STRING_ALLOC("None");
+    selectedProfile.setValue(initProfile);
     UA_String_deleteMembers(&initProfile);
 
-    addMethod("dumpProfile", "dump profile",
+    addMethod("saveProfile", "save profile",
               {{"name", "current profile name", UA_TYPES[UA_TYPES_STRING]}}, {},
-              std::bind(&DCSDeviceController<Device>::dumpProfile, this, profiles,
+              std::bind(&DCSDeviceController<Device>::saveProfile, this, profiles,
                         configVariable, std::placeholders::_1, std::placeholders::_2));
     addMethod("setProfile", "set active profile",
               {{"key", "key", UA_TYPES[UA_TYPES_STRING]}}, {},
-              std::bind(&DCSDeviceController<Device>::setProfile, this, activeProfile,
+              std::bind(&DCSDeviceController<Device>::setProfile, this, selectedProfile,
                         std::placeholders::_1, std::placeholders::_2));
     addControllerMethod(
         "applyProfile", "apply active profile", {}, {},
-        [this, activeProfile, profiles](const UA_Variant *in, UA_Variant *out) {
-            applyProfile(activeProfile, profiles, in, out);
+        [this, selectedProfile, profiles](const UA_Variant *in, UA_Variant *out) {
+            applyProfile(selectedProfile, profiles, in, out);
         });
 }
 
 template <class Device>
-void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
+void DCSDeviceController<Device>::saveProfile(DCSVariable &profiles,
                                               DCSVariable &configVariable,
                                               const UA_Variant *input,
                                               UA_Variant *output) {
@@ -261,6 +261,11 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
         auto *nameTmp = static_cast<UA_String *>(input[0].data);
         name = std::string(reinterpret_cast<char *>(nameTmp->data), nameTmp->length);
     }
+    if(name == "None") {
+        UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                       "%s : \"None\" reserved name for a profile", objectName.c_str());
+        return;
+    }
     auto configPath =
         DCSServer::getServerContext(server)->getProfileDir() + objectType + ".json";
     std::ifstream ifs(configPath);
@@ -268,7 +273,7 @@ void DCSDeviceController<Device>::dumpProfile(DCSVariable &profiles,
     if(ifs.is_open()) {
         try {
             ifs >> config;
-        } catch(const std::runtime_error &e) {
+        } catch(const std::exception &e) {
             UA_LOG_ERROR(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                          "%s config \"%s\" is corrupted. Skipping and overwriting",
                          objectName.c_str(), configPath.c_str());
@@ -332,6 +337,12 @@ void DCSDeviceController<Device>::applyProfile(const DCSVariable &profile,
         return;
     }
     std::string profileStr(reinterpret_cast<char *>(profileTmp.data), profileTmp.length);
+    if(profileStr == "None") {
+        UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                       "%s requested applying special profile \"None\". Skipping",
+                       objectName.c_str());
+        return;
+    }
     nlohmann::json profilesJson = nlohmann::json::parse(
         std::string(reinterpret_cast<char *>(profilesTmp.data), profilesTmp.length));
     if(profilesJson.contains(profileStr)) {

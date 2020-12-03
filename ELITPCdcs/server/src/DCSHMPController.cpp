@@ -3,6 +3,7 @@ void DCSHMPController::addChildren(const Options &options) {
     addConnection();
     auto &m = addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
     addVariableUpdate(m, 1000, &DCSHMPController::getMeasurements, this);
+    m.setHistorizing();
     auto &c = addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC]);
     addVariableUpdate(c, 1000, &DCSHMPController::getConfiguration, this);
     addControllerMethod("setchannel", "Sets channel ON/OFF",

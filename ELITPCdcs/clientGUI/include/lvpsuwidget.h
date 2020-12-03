@@ -1,6 +1,7 @@
 #ifndef LVPSUWIDGET_H
 #define LVPSUWIDGET_H
 
+#include "DCSProfileWidget.h"
 #include "abstractwidget.h"
 #include "lvcontroller.h"
 #include "open62541/types_dcsnodeset_generated.h"
@@ -32,6 +33,7 @@ class LVpsuWidget : public AbstractWidget {
     deviceOutputs deviceSettings;
     bool connectionState;
     QString customName[2];
+    DCSProfileWidget *profile;
 
     void loadConfig();
     void saveConfig();

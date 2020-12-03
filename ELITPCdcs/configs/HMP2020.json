@@ -1,0 +1,22 @@
+{
+    "12V": {
+        "CurrentSet": [
+            2,
+            2
+        ],
+        "VoltageSet": [
+            3.6,
+            12
+        ]
+    },
+    "6V": {
+        "CurrentSet": [
+            2,
+            2
+        ],
+        "VoltageSet": [
+            6,
+            6
+        ]
+    }
+}

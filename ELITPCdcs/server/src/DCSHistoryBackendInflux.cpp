@@ -2,6 +2,7 @@
 #include "DCSContext.h"
 #include "DCSUAJson.h"
 #include "DCSVariable.h"
+
 using namespace nlohmann;
 
 UA_HistoryDataBackend DCSHistoryBackendInflux::getUaBackend() {
@@ -46,10 +47,13 @@ UA_StatusCode DCSHistoryBackendInflux::serverSetHistoryData(
         time = value->serverTimestamp;
     }
     auto cmd = instance->toInflux(j.at("Body"));
+    if(cmd.empty()) {
+        return UA_STATUSCODE_GOOD;
+    }
     std::string measurement;
     try {
         measurement = DCS::getContext<DCSVariable *>(server, *nodeId)->getFullName();
-    } catch(const std::runtime_error &e) {
+    } catch(const exception &e) {
         return UA_STATUSCODE_BADINTERNALERROR;
     }
     std::unique_lock<std::mutex> lock(instance->bucketMutex);
@@ -159,14 +163,18 @@ std::string DCSHistoryBackendInflux::toInflux(json j) {
         auto v = it.value();
         if(v.is_array()) {
             for(size_t i = 0; i < v.size(); ++i) {
-                ss << k << i + 1 << "=" << v.at(i) << ",";
+                if(!v.at(i).is_null() && v.at(i) != "NaN") {
+                    ss << k << i + 1 << "=" << v.at(i) << ",";
+                }
             }
-        } else {
+        } else if(!v.is_null() && v != "NaN") {
             ss << k << "=" << v << ",";
         }
     }
     auto s = ss.str();
-    s.pop_back();
+    if(!s.empty()) {
+        s.pop_back();
+    }
     return s;
 }
 
