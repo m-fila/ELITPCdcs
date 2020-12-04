@@ -45,3 +45,11 @@ std::string GenericDevice::sendWithDelayedResponse(std::string command, size_t d
         return "";
     }
 }
+
+void GenericDevice::validate(const std::string &response, const std::string &pattern) {
+    std::regex rgex(pattern);
+    if(!std::regex_match(response, std::regex(pattern))) {
+        throw std::runtime_error(std::string("received invalid response: ") +
+                                 response.c_str());
+    }
+}

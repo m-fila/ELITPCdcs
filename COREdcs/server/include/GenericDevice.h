@@ -4,6 +4,7 @@
 #include "ConnectionStream.h"
 #include <chrono>
 #include <memory>
+#include <regex>
 #include <thread>
 class GenericDevice {
   public:
@@ -20,6 +21,7 @@ class GenericDevice {
     ConnectionType getActiveConnectionType() { return activeConnectionType; }
 
   protected:
+    void validate(const std::string &response, const std::string &regex);
     GenericDevice(ConnectionType allowed, ConnectionType active)
         : connectionTypeAllowed(allowed), activeConnectionType(active) {}
     ConnectionType connectionTypeAllowed;
