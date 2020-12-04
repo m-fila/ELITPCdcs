@@ -66,7 +66,7 @@ void MKS910Widget::updateMeasurements(void *data) {
     std::string s;
     std::ostringstream os;
     os << std::scientific << std::setprecision(5) << std::uppercase
-       << measurements.vacuum;
+       << measurements.combined;
     s = os.str();
     s.insert(s.size() - 4, " ");
     s.erase(std::remove(s.begin(), s.end(), '+'), s.end());

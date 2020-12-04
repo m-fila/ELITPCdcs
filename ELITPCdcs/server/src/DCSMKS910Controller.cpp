@@ -4,6 +4,7 @@ void DCSMKS910Controller::addChildren(const Options &options) {
     auto &m =
         addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS910M]);
     addVariableUpdate(m, 1000, &DCSMKS910Controller::getMeasurements, this);
+    m.setHistorizing();
     auto &c =
         addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS910C]);
     addVariableUpdate(c, 1000, &DCSMKS910Controller::getConfiguration, this);
@@ -24,7 +25,9 @@ void DCSMKS910Controller::addChildren(const Options &options) {
 UA_MKS910m DCSMKS910Controller::getMeasurements() {
     UA_MKS910m mks;
     UA_MKS910m_init(&mks);
-    mks.vacuum = std::stod(device.getPCombinedLong());
+    mks.combined = std::stod(device.getPCombinedLong());
+    mks.piezo = std::stod(device.getPPirani());
+    mks.pirani = std::stod(device.getPPirani());
     mks.temperature = std::stod(device.getTemp());
     mks.status = static_cast<int>(MKS910codes::statusFromString.at(device.getStatus()));
     mks.units = static_cast<int>(MKS910codes::unitsFromString.at(device.getUnits()));
