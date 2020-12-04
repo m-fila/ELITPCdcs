@@ -8,7 +8,7 @@ class MKS : public GenericDevice {
     MKS();
 
     inline void setDeviceDelay(int d) { delay = d; }
-    inline void setDeviceChannel(int ch) { channel = ch; }
+    inline void setDeviceAddress(int ad) { address = ad; }
 
     std::string getUnits();
 
@@ -17,7 +17,7 @@ class MKS : public GenericDevice {
     std::string extract(std::string content);
     std::string sendWithDelayedResponse(std::string command);
     int delay;
-    int channel;
+    int address;
 };
 
 #endif  // MKS_H

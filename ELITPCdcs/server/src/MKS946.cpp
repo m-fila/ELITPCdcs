@@ -68,7 +68,12 @@ std::string MKS946::getSensorType(MODULE m) {
     return sendWithDelayedResponse(cmd);
 }
 
-std::string MKS946::getFirmware() { return sendWithDelayedResponse("FV?"); }
+std::string MKS946::getFirmware(CH ch) {
+    return sendWithDelayedResponse("FV" + std::to_string(static_cast<int>(ch)) + "?");
+}
+std::string MKS946::getSerialNumber(CH ch) {
+    return sendWithDelayedResponse("SN" + std::to_string(static_cast<int>(ch)) + "?");
+}
 std::string MKS946::getHardware() { return sendWithDelayedResponse("HV?"); }
 std::string MKS946::getName() { return sendWithDelayedResponse("DT?"); }
 std::string MKS946::getModel() { return sendWithDelayedResponse("MD?"); }

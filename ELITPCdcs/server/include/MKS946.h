@@ -36,18 +36,20 @@ class MKS946 : public MKS {
     std::string getActiveRatioRecipe();
     void setActiveRatioRecipe(RATIO recipe);
 
-    // moduels commands
+    // modules commands
     std::string getModuleType();
     std::string getSensorType(MODULE m);
-
+    std::string getFirmware(CH ch);
+    std::string getSerialNumber(CH ch);
     // unit commands
-    std::string getFirmware();
+
     std::string getHardware();
     std::string getName();
     std::string getModel();
     std::string getSerialNumber();
     std::string getPartNumer();
     std::string getUptime();
+
     // TORR, PASCAL, MBAR
     void setUnits(MKS946codes::Units u);
 };
