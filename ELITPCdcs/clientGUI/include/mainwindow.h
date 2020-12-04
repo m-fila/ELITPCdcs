@@ -7,6 +7,7 @@
 #include "lv4psuwidget.h"
 #include "lvpsuwidget.h"
 #include "mks910widget.h"
+#include "mks946widget.h"
 #include "piweatherwidget.h"
 #include "state.h"
 #include "tpgwidget.h"
