@@ -35,30 +35,6 @@ void opc_client::stateCallback(UA_Client *client, UA_SecureChannelState channelS
         static_cast<opc_client *>(UA_Client_getConfig(client)->clientContext);
     if(sessionState == UA_SESSIONSTATE_ACTIVATED) {
         context->addSubscription();
-        UA_BrowseRequest bReq;
-        UA_BrowseRequest_init(&bReq);
-        bReq.requestedMaxReferencesPerNode = 0;
-        bReq.nodesToBrowse = UA_BrowseDescription_new();
-        bReq.nodesToBrowseSize = 1;
-        bReq.nodesToBrowse[0].nodeId = UA_NODEID_NUMERIC(0, UA_NS0ID_OBJECTSFOLDER);
-        bReq.nodesToBrowse[0].resultMask = UA_BROWSERESULTMASK_ALL;
-        UA_BrowseResponse bResp = UA_Client_Service_browse(client, bReq);
-        std::cout << bResp.resultsSize << std::endl;
-        std::cout << "!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-        for(size_t i = 0; i < bResp.resultsSize; ++i) {
-            for(size_t j = 0; j < bResp.results[i].referencesSize; ++j) {
-                UA_ReferenceDescription ref = (bResp.results[i].references[j]);
-                std::string str =
-                    std::string(reinterpret_cast<char *>(ref.browseName.name.data));
-                std::cout << str << " " << (ref.nodeClass == UA_NODECLASS_OBJECT) << " "
-                          << (ref.typeDefinition.nodeId.identifierType ==
-                                      UA_NODEIDTYPE_STRING
-                                  ? std::string(reinterpret_cast<char *>(
-                                        ref.typeDefinition.nodeId.identifier.string.data))
-                                  : " ")
-                          << std::endl;
-            }
-        }
     }
     if(channelState == UA_SECURECHANNELSTATE_OPEN &&
        context->connection != Connection::Opened) {
