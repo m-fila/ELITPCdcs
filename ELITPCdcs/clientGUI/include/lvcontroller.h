@@ -12,9 +12,6 @@ class lv_controller : public opc_controller {
     void callSetCurrent(int nr, double i);
 
   private:
-    //    UA_NodeId setChannelNodeId;
-    //    UA_NodeId setOutputNodeId;
-    //  void browseIds();
     const std::string setChannelBrowseName;
     const std::string setOutputBrowseName;
     const std::string setVoltageBrowseName;

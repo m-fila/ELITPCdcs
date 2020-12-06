@@ -3,8 +3,8 @@
 #define DCS_N1471_CONTROLLER
 #include "DCSDeviceController.h"
 #include "N1471.h"
-#include "open62541/types_dcsnodeset_generated.h"
-#include "open62541/types_dcsnodeset_generated_handling.h"
+#include "open62541/types_elitpcnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated_handling.h"
 class DCSN1471Controller : public DCSDeviceController<N1471>,
                            DCSObjectFactory::Register<DCSN1471Controller> {
     friend DCSServer;

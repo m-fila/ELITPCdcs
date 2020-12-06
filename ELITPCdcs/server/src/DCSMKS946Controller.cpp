@@ -1,8 +1,9 @@
 #include "DCSMKS946Controller.h"
 void DCSMKS946Controller::addChildren(const Options &options) {
-    addConnection();
-    auto &m =
-        addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS946M]);
+    addConnection(options);
+    auto &m = addVariable("measurements",
+                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS946M]);
+    addVariable("configuration", UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS946M]);
     addVariableUpdate(m, 1000, &DCSMKS946Controller::getMeasurements, this);
     m.setHistorizing();
 }

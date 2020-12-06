@@ -14,9 +14,12 @@ TCPWidget::TCPWidget(bool horizontal, QWidget *parent) {
     QLabel *connectionPortLabel = new QLabel("Port:");
     connectionPort = new QLineEdit();
     QVBoxLayout *vbConnect = new QVBoxLayout();
+    changeButton = new QPushButton("Change");
     connectButton = new QPushButton("Connect");
     disconnectButton = new QPushButton("Disconnect");
     disconnectButton->setEnabled(false);
+    connectionIP->setEnabled(false);
+    connectionPort->setEnabled(false);
     if(!horizontal) {
         QHBoxLayout *hb1 = new QHBoxLayout;
         hb1->addWidget(connectionStatusLabel);
@@ -29,6 +32,7 @@ TCPWidget::TCPWidget(bool horizontal, QWidget *parent) {
         vbPort->addWidget(connectionPortLabel);
         vbPort->addWidget(connectionPort);
 
+        vbConnect->addWidget(changeButton);
         vbConnect->addWidget(connectButton);
         vbConnect->addWidget(disconnectButton);
 
@@ -47,8 +51,11 @@ TCPWidget::TCPWidget(bool horizontal, QWidget *parent) {
         hb->addWidget(connectionIP);
         hb->addWidget(connectionPortLabel);
         hb->addWidget(connectionPort);
-        hb->addWidget(connectButton);
-        hb->addWidget(disconnectButton);
+        auto *vb = new QVBoxLayout();
+        hb->addLayout(vb);
+        vb->addWidget(changeButton);
+        vb->addWidget(connectButton);
+        vb->addWidget(disconnectButton);
     }
     setLayout(mainLayout);
 }
@@ -61,8 +68,6 @@ void TCPWidget::setStatus(bool status) {
         QPalette palette = connectionStatus->palette();
         palette.setColor(QPalette::WindowText, Qt::darkGreen);
         connectionStatus->setPalette(palette);
-        connectionIP->setEnabled(false);
-        connectionPort->setEnabled(false);
     } else {
         connectButton->setEnabled(true);
         disconnectButton->setEnabled(false);
@@ -70,14 +75,5 @@ void TCPWidget::setStatus(bool status) {
         QPalette palette = connectionStatus->palette();
         palette.setColor(QPalette::WindowText, Qt::red);
         connectionStatus->setPalette(palette);
-        connectionIP->setEnabled(true);
-        connectionPort->setEnabled(true);
     }
 }
-/*
-void TCPWidget::connectSignals() {
-  connect(connectButton, SIGNAL(clicked(bool)), this,
-          SLOT(connectButtonClicked(bool)));
-  connect(disconnectButton, SIGNAL(clicked(bool)), this,
-          SLOT(disconnectButtonClicked(bool)));
-}*/

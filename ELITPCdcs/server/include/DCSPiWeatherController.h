@@ -3,8 +3,8 @@
 
 #include "DCSDeviceController.h"
 #include "PiWeather.h"
-#include "open62541/types_dcsnodeset_generated.h"
-#include "open62541/types_dcsnodeset_generated_handling.h"
+#include "open62541/types_elitpcnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated_handling.h"
 
 class DCSPiWeatherController : public DCSDeviceController<PiWeather>,
                                DCSObjectFactory::Register<DCSPiWeatherController> {

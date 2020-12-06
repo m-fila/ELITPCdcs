@@ -1,15 +1,15 @@
 #include "DCSMKS910Controller.h"
 void DCSMKS910Controller::addChildren(const Options &options) {
-    addConnection();
-    auto &m =
-        addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS910M]);
+    addConnection(options);
+    auto &m = addVariable("measurements",
+                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910M]);
     addVariableUpdate(m, 1000, &DCSMKS910Controller::getMeasurements, this);
     m.setHistorizing();
-    auto &c =
-        addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_MKS910C]);
+    auto &c = addVariable("configuration",
+                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910C]);
     addVariableUpdate(c, 1000, &DCSMKS910Controller::getConfiguration, this);
 
-    auto &r = addVariable("relay", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_RELAY]);
+    auto &r = addVariable("relay", UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
     addVariableUpdate(r, 5000, &DCSMKS910Controller::getRelay, this);
     addControllerMethod("setunits", "Sets pressure units",
                         {{"Unit", "PASCAL/BAR/TORR", UA_TYPES[UA_TYPES_INT16]}}, {},

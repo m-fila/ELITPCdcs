@@ -5,7 +5,7 @@
 #include "abstractwidget.h"
 #include "mks946codes.h"
 #include "mks946controller.h"
-#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated.h"
 #include <QComboBox>
 #include <QFrame>
 #include <QGroupBox>
@@ -22,27 +22,20 @@ class MKS946Widget : public AbstractWidget {
 
   public:
     explicit MKS946Widget(std::string name, QWidget *parent = 0);
-    explicit MKS946Widget(std::string name, std::string address, std::string port,
-                          QWidget *parent = 0);
     ~MKS946Widget();
 
   public slots:
-    void deviceConnect();
-    void deviceDisconnect();
-
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
-    void controllerInit(UA_Client *client, UA_ClientConfig *config,
-                        UA_CreateSubscriptionResponse resp) override;
+    //   void controllerInit(UA_Client *client, UA_ClientConfig *config,
+    //                       UA_CreateSubscriptionResponse resp) override;
 
     void changeNamePressed();
     void updateStatusLabel(QString info);
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
-    //    std::string instanceName;
-    MKS946_controller *controller;
     bool connectionState;
     // create layout procedures and variables
     QVBoxLayout *mainLayout;

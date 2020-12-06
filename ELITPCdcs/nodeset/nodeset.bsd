@@ -2,9 +2,9 @@
   xmlns:opc="http://opcfoundation.org/BinarySchema/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:ua="http://opcfoundation.org/UA/"
-  xmlns:tns="http://fuw.edu.pl/dcs/"
+  xmlns:tns="urn:dcs.elitpc"
   DefaultByteOrder="LittleEndian"
-  TargetNamespace="http://hep.fuw.edu.pl/dcs/"
+  TargetNamespace="urn:dcs.elitpc"
 >
   <opc:Import Namespace="http://opcfoundation.org/UA/" Location="Opc.Ua.BinarySchema.bsd"/>
 
@@ -86,10 +86,6 @@
     <opc:Field Name="dummy" TypeName="opc:UInt32" />
   </opc:StructuredType>
 
-  <opc:StructuredType Name="ParametersTCP" BaseType="ua:ExtensionObject">
-    <opc:Field Name="address" TypeName="opc:String" />
-    <opc:Field Name="port" TypeName="opc:UInt32" />
-  </opc:StructuredType>
 
   <opc:StructuredType Name="Relay" BaseType="ua:ExtensionObject">
   <opc:Field Name="relayNumber" TypeName="opc:UInt32"/>

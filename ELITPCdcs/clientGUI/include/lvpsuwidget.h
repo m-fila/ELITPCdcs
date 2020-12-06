@@ -4,7 +4,7 @@
 #include "DCSProfileWidget.h"
 #include "abstractwidget.h"
 #include "lvcontroller.h"
-#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated.h"
 
 struct deviceOutputs {
     bool CH1;
@@ -21,9 +21,6 @@ class LVpsuWidget : public AbstractWidget {
 
   public:
     explicit LVpsuWidget(std::string name, QWidget *parent = 0);
-    explicit LVpsuWidget(std::string name, std::string address, std::string port,
-                         QWidget *parent = 0);
-    //    LVpsuWidget(std::string name);
     ~LVpsuWidget();
     lv_controller *LVController;
 
@@ -42,13 +39,11 @@ class LVpsuWidget : public AbstractWidget {
 
   public slots:
 
-    void deviceConnect();
-    void deviceDisconnect();
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
-    void controllerInit(UA_Client *client, UA_ClientConfig *config,
-                        UA_CreateSubscriptionResponse resp) override;
+    //   void controllerInit(UA_Client *client, UA_ClientConfig *config,
+    //                       UA_CreateSubscriptionResponse resp) override;
 
     void setCH1ON();
     void setCH1OFF();

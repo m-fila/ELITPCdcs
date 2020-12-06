@@ -19,12 +19,6 @@ class hv_controller : public opc_controller {
     const std::string setRampUpBrowseName;
     const std::string setRampDownBrowseName;
     const std::string setCurrentBrowseName;
-    //    UA_NodeId setChannelNodeId;
-    //    UA_NodeId setVoltageNodeId;
-    //    UA_NodeId setVoltageMaxNodeId;
-    //    UA_NodeId setRampUpNodeId;
-    //    UA_NodeId setRampDownNodeId;
-    //    void browseIds();
 };
 
 #endif  // HV_CONTROLLER_H

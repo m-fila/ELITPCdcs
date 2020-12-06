@@ -10,8 +10,7 @@
 #include <open62541/client_subscriptions.h>
 #include <open62541/plugin/log_stdout.h>
 class MainWindow;
-class opc_client : public QObject  // QThread
-{
+class opc_client : public QObject {
     Q_OBJECT
     friend MainWindow;
 

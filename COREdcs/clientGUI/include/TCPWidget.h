@@ -14,6 +14,7 @@ class TCPWidget : public QWidget {
   public:
     explicit TCPWidget(bool horizontal, QWidget *parent = 0);
     QPushButton *connectButton;
+    QPushButton *changeButton;
     QPushButton *disconnectButton;
     inline void setIP(QString address) { connectionIP->setText(address); }
     inline void setPort(QString address) { connectionPort->setText(address); }

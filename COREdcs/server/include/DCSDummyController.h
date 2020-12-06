@@ -13,7 +13,7 @@ class DCSDummyController : public DCSDeviceController<GenericDevice>,
   protected:
     // void addProfiles(const Options & options);
     void addChildren(const Options &options) override {
-        addConnection();
+        addConnection(options);
         auto t = addVariable("testV", UA_TYPES[UA_TYPES_BOOLEAN]);
         t.setValue(true);
         addProfiles(t, options);

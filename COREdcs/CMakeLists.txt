@@ -1,5 +1,6 @@
 set(MODULE_NAME "COREdcs")
 message(STATUS "Adding CMake fragment for module:\t\t" ${MODULE_NAME})
+add_subdirectory(nodeset)
 if(BUILD_SERVER)
   add_subdirectory(server)
 endif(BUILD_SERVER)

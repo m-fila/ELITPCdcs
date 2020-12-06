@@ -1,0 +1,16 @@
+<opc:TypeDictionary
+  xmlns:opc="http://opcfoundation.org/BinarySchema/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ua="http://opcfoundation.org/UA/"
+  xmlns:tns="urn:dcs.core"
+  DefaultByteOrder="LittleEndian"
+  TargetNamespace="urn:dcs.core"
+>
+  <opc:Import Namespace="http://opcfoundation.org/UA/" Location="Opc.Ua.BinarySchema.bsd"/>
+
+  <opc:StructuredType Name="ParametersTCP" BaseType="ua:ExtensionObject">
+    <opc:Field Name="address" TypeName="opc:String" />
+    <opc:Field Name="port" TypeName="opc:UInt32" />
+  </opc:StructuredType>
+
+</opc:TypeDictionary>

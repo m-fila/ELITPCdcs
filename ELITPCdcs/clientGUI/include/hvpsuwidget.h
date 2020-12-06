@@ -7,7 +7,7 @@
 #include "hvcontroller.h"
 #include "kled.h"
 #include "n1471codes.h"
-#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated.h"
 #include "ui_hvpsuwidget.h"
 #include <QGroupBox>
 #include <QLCDNumber>
@@ -25,21 +25,16 @@ class HVpsuWidget : public AbstractWidget {
     Q_OBJECT
 
   public:
-    explicit HVpsuWidget(std::string name, int channelsNumber, QWidget *parent = 0);
-    explicit HVpsuWidget(std::string name, std::string address, std::string port,
-                         int channelsNumber = 9, QWidget *parent = 0);
+    explicit HVpsuWidget(std::string name, int channelsNumber = 9, QWidget *parent = 0);
     ~HVpsuWidget();
-    hv_controller *HVController;
     Ui::HVpsuWidget *ui;
   public slots:
-    void deviceConnect();
-    void deviceDisconnect();
 
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     virtual void updateConfiguration(void *data);
-    void controllerInit(UA_Client *, UA_ClientConfig *,
-                        UA_CreateSubscriptionResponse) override;
+    //   void controllerInit(UA_Client *, UA_ClientConfig *,
+    //                       UA_CreateSubscriptionResponse) override;
 
     void allOnPressed();
     void allOffPressed();
@@ -115,23 +110,20 @@ class HVpsuWidget : public AbstractWidget {
 class DT1415Widget : public HVpsuWidget {
     Q_OBJECT
   public:
-    DT1415Widget(std::string name, std::string address, std::string port,
-                 int enabledChannels = 8, QWidget *parent = 0);
+    DT1415Widget(std::string name, int enabledChannels = 8, QWidget *parent = 0);
 };
 
 class DT1470Widget : public HVpsuWidget {
     Q_OBJECT
   public:
-    DT1470Widget(std::string name, std::string address, std::string port,
-                 int enabledChannels = 4, QWidget *parent = 0);
+    DT1470Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
     void updateConfiguration(void *data) final;
 };
 
 class N1471Widget : public HVpsuWidget {
     Q_OBJECT
   public:
-    N1471Widget(std::string name, std::string address, std::string port,
-                int enabledChannels = 4, QWidget *parent = 0);
+    N1471Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
     void updateConfiguration(void *data) final;
 };
 

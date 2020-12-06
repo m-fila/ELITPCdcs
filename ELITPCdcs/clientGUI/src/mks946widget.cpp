@@ -8,50 +8,20 @@
 #include <string>
 
 MKS946Widget::MKS946Widget(std::string name, QWidget *parent)
-    : AbstractWidget(name, parent) {
+    : AbstractWidget(new MKS946_controller(name), name, parent) {
     createLayout();
-    controller = new MKS946_controller(instanceName);
     connectSignals();
     loadConfig();
-    //   setChannelName();
 }
 
-MKS946Widget::MKS946Widget(std::string name, std::string address, std::string port,
-                           QWidget *parent)
-    : MKS946Widget(name, parent) {
-    if(address.size()) {
-        tcp->setIP(address);
-    }
-    if(port.size()) {
-        tcp->setPort(port);
-    }
-}
+MKS946Widget::~MKS946Widget() {}
 
-MKS946Widget::~MKS946Widget() {
-    // delete ui;
-    delete controller;
-}
+void MKS946Widget::connectSignals() { AbstractWidget::connectSignals(); }
 
-void MKS946Widget::connectSignals() {
-    AbstractWidget::connectSignals();
-    connect(controller, SIGNAL(statusChanged(void *)), this, SLOT(updateStatus(void *)));
-    connect(controller, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(controller, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
-}
-void MKS946Widget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-                                  UA_CreateSubscriptionResponse resp) {
-    controller->opcInit(client, config, resp);
-}
-
-void MKS946Widget::deviceConnect() {
-    std::string IPaddress = tcp->getIP();
-    int port = tcp->getPort();
-    controller->callConnect(IPaddress, port);
-}
-
-void MKS946Widget::deviceDisconnect() { controller->callDisconnect(); }
+// void MKS946Widget::controllerInit(UA_Client *client, UA_ClientConfig *config,
+//                                  UA_CreateSubscriptionResponse resp) {
+//    dynamic_cast<MKS946_controller *>(controller)->opcInit(client, config, resp);
+//}
 
 void MKS946Widget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
@@ -206,16 +176,13 @@ void MKS946Widget::setChannelName() {
 }
 
 void MKS946Widget::loadConfig() {
-    AbstractWidget::loadConfig();
-
     QString configkey;
-    configkey.sprintf("%s/CustomName", instanceName.c_str());
+    configkey.asprintf("%s/CustomName", instanceName.c_str());
     cCustomName = QSettings().value(configkey).toString();
 }
 
 void MKS946Widget::saveConfig() {
-    AbstractWidget::saveConfig();
     QString configkey;
-    configkey.sprintf("%s/CustomName", instanceName.c_str());
+    configkey.asprintf("%s/CustomName", instanceName.c_str());
     QSettings().setValue(configkey, cCustomName);
 }

@@ -22,7 +22,7 @@ DCSServer::DCSServer(std::string address, int port) {
         throw std::runtime_error("Can't add context to server node");
     }
     config->asyncOperationNotifyCallback = asyncCallback;
-
+    namespace_dcsnodeset_generated(server);
     addHistorizing();
     auto objectTypeId = addObjectType("DCSObject");
     addObjectType("DCSState", objectTypeId);

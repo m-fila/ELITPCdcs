@@ -4,15 +4,15 @@
 #include <sstream>
 
 void DCSTPG362Controller::addChildren(const Options &options) {
-    addConnection();
-    auto &m =
-        addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362M]);
+    addConnection(options);
+    auto &m = addVariable("measurements",
+                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362M]);
     addVariableUpdate(m, 1000, &DCSTPG362Controller::getMeasurements, this);
     m.setHistorizing();
-    auto &c =
-        addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362C]);
+    auto &c = addVariable("configuration",
+                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362C]);
     addVariableUpdate(c, 1000, &DCSTPG362Controller::getConfiguration, this);
-    auto &r = addVariable("relay", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_RELAY]);
+    auto &r = addVariable("relay", UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
     addVariableUpdate(r, 1000, &DCSTPG362Controller::getRelay, this);
     addControllerMethod("setrelay", "Sets relay",
                         {{"Relay number", "1-4", UA_TYPES[UA_TYPES_UINT32]},

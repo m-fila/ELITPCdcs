@@ -3,7 +3,7 @@
 
 #include "DCSRelayWidget.h"
 #include "abstractwidget.h"
-#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated.h"
 #include "tpg362codes.h"
 #include "tpgcontroller.h"
 #include <QFrame>
@@ -21,20 +21,16 @@ class TPGWidget : public AbstractWidget {
 
   public:
     explicit TPGWidget(std::string name, QWidget *parent = 0);
-    explicit TPGWidget(std::string name, std::string address, std::string port,
-                       QWidget *parent = 0);
     ~TPGWidget();
 
   public slots:
-    void deviceConnect();
-    void deviceDisconnect();
 
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
     void updateRelay(void *data);
-    void controllerInit(UA_Client *client, UA_ClientConfig *config,
-                        UA_CreateSubscriptionResponse resp) override;
+    //   void controllerInit(UA_Client *client, UA_ClientConfig *config,
+    //                       UA_CreateSubscriptionResponse resp) override;
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
@@ -42,8 +38,7 @@ class TPGWidget : public AbstractWidget {
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
-    //    std::string instanceName;
-    tpg_controller *controller;
+
     bool connectionState;
     // create layout procedures and variables
     QVBoxLayout *mainLayout;
