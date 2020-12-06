@@ -27,8 +27,9 @@ ua_generate_nodeset_and_datatypes(
   FILE_NS
   "${FILE_NS_DIRPREFIX}/nodeset.xml"
   INTERNAL)
-add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED
-            ${UA_NODESET_ELITPCNODESET_SOURCES} ${UA_TYPES_ELITPCNODESET_SOURCES})
+add_library(
+  ${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${UA_NODESET_ELITPCNODESET_SOURCES}
+                                          ${UA_TYPES_ELITPCNODESET_SOURCES})
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} open62541::open62541)
 
 install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME} LIBRARY DESTINATION lib)

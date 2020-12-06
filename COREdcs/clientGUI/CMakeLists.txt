@@ -18,8 +18,9 @@ add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${sources})
 
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME}_Qt Qt5::Widgets
                       open62541::open62541)
-target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} open62541::open62541 ${MODULE_NAME}_nodeset
-                      Qt5::Widgets ${MODULE_NAME}_${SUBMODULE_NAME}_Qt)
+target_link_libraries(
+  ${MODULE_NAME}_${SUBMODULE_NAME} open62541::open62541 ${MODULE_NAME}_nodeset
+  Qt5::Widgets ${MODULE_NAME}_${SUBMODULE_NAME}_Qt)
 
 install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME}_Qt LIBRARY DESTINATION lib)
 install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME} LIBRARY DESTINATION lib)
