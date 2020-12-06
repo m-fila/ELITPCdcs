@@ -30,6 +30,8 @@ void AbstractWidget::connectSignals() {
     connect(tcp->connectButton, SIGNAL(clicked(bool)), controller, SLOT(callConnect()));
     connect(tcp->disconnectButton, SIGNAL(clicked(bool)), controller,
             SLOT(callDisconnect()));
+    connect(tcp, SIGNAL(changeTCPParameters(std::string, int)), controller,
+            SLOT(callSetConnectionParameters(std::string, int)));
     connect(controller, SIGNAL(statusChanged(void *)), this, SLOT(updateStatus(void *)));
     connect(controller, SIGNAL(measurementsChanged(void *)), this,
             SLOT(updateMeasurements(void *)));

@@ -79,13 +79,15 @@ void opc_controller::callDisconnect() {
                          nullptr, nullptr, nullptr, nullptr);
 }
 void opc_controller::callSetConnectionParameters(std::string IPAddress, int port) {
+    std::cout << IPAddress << " " << port << std::endl;
     UA_Variant input[2];
     UA_Variant_init(input);
     UA_String address = UA_String_fromChars(IPAddress.c_str());
     UA_Variant_setScalarCopy(&input[0], &address, &UA_TYPES[UA_TYPES_STRING]);
     UA_Variant_setScalarCopy(&input[1], &port, &UA_TYPES[UA_TYPES_INT32]);
-    UA_Client_call_async(client, ObjectNodeId, browsedIds[connectBrowseName], 2, input,
-                         nullptr, nullptr, nullptr);
+    UA_Client_call_async(client, ObjectNodeId,
+                         browsedIds[setConnectionParametersBrowseName], 2, input, nullptr,
+                         nullptr, nullptr);
     UA_Variant_clear(input);
 }
 
