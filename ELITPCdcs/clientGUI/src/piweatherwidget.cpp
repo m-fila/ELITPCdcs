@@ -61,7 +61,7 @@ void PiWeatherWidget::loadConfig() {
 
     QString configkey;
     for(int i = 0; i != 4; ++i) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         customName[i] = QSettings().value(configkey).toString();
     }
 }
@@ -71,7 +71,7 @@ void PiWeatherWidget::saveConfig() {
 
     QString configkey;
     for(int i = 0; i != 4; ++i) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         QSettings().setValue(configkey, customName[i]);
     }
 }

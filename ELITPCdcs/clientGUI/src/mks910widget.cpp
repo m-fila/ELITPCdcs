@@ -58,7 +58,7 @@ void MKS910Widget::updateMeasurements(void *data) {
     mStatus->setText(val);
     unitsBox->setCurrentIndex(static_cast<int>(units));
 
-    val.asprintf("%2.1f ± 3 °C", measurements.temperature);
+    val.sprintf("%2.1f ± 3 °C", measurements.temperature);
     mTemp->setText(val);
 }
 
@@ -251,13 +251,13 @@ void MKS910Widget::loadConfig() {
     AbstractWidget::loadConfig();
 
     QString configkey;
-    configkey.asprintf("%s/CustomName", instanceName.c_str());
+    configkey.sprintf("%s/CustomName", instanceName.c_str());
     cCustomName = QSettings().value(configkey).toString();
 }
 
 void MKS910Widget::saveConfig() {
     AbstractWidget::saveConfig();
     QString configkey;
-    configkey.asprintf("%s/CustomName", instanceName.c_str());
+    configkey.sprintf("%s/CustomName", instanceName.c_str());
     QSettings().setValue(configkey, cCustomName);
 }

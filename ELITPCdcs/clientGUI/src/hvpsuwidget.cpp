@@ -110,14 +110,14 @@ void HVpsuWidget::updateMeasurements(void *data) {
         double totalVoltage = 0;
         for(int i = 0; i < channelsNumber; i++) {
             totalVoltage += measurements.voltage[i];
-            val.asprintf("%.1lf", measurements.voltage[i]);
+            val.sprintf("%.1lf", measurements.voltage[i]);
             allTabCHvoltage[i]->display(val);
             tabCHxvoltage[i]->display(val);
-            val.asprintf("%.3lf", measurements.current[i]);
+            val.sprintf("%.3lf", measurements.current[i]);
             allTabImon[i]->setText(val);
             tabCHxImon[i]->setText(val);
         }
-        val.asprintf("%.1lf", totalVoltage);
+        val.sprintf("%.1lf", totalVoltage);
         allTabCHvoltage[channelsNumber]->display(val);
     }
 }
@@ -159,19 +159,19 @@ void HVpsuWidget::updateConfiguration(void *data) {
             tabCHxOff[i]->setChecked((!ON[i]) && connectionState);
 
             totalVoltageSet += channelStatus.voltageSet[i];
-            val.asprintf("%6.1lf", channelStatus.voltageSet[i]);
+            val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
             tabCHxVset[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.rup[i]);
+            val.sprintf("%3.1lf", channelStatus.rup[i]);
             tabCHxRUP[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.rdown[i]);
+            val.sprintf("%3.1lf", channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
-            val.asprintf("%4.1lf", channelStatus.voltageMax[i]);
+            val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
             tabCHxVMAX[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.currentSet[i]);
+            val.sprintf("%3.1lf", channelStatus.currentSet[i]);
             tabCHxIset[i]->setText(val);
         }
-        val.asprintf("%6.1lf", totalVoltageSet);
+        val.sprintf("%6.1lf", totalVoltageSet);
         allTabVset[channelsNumber]->setText(val);
         allOn->setEnabled(channelStatus.isRemote && connectionState);
         allOff->setEnabled(channelStatus.isRemote && connectionState);
@@ -223,7 +223,7 @@ void HVpsuWidget::setVPressed() {
                                                1000, 1, &ok);
             if(ok) {
                 QString val;
-                val.asprintf("%6.1lf", d);
+                val.sprintf("%6.1lf", d);
                 // allTabVset[i]->setText(val);
                 // TODO: check VtotalMax (software treshold). if sum > thr, drop input
                 // and show message or set max mallowed and show message?
@@ -249,7 +249,7 @@ void HVpsuWidget::setVMAXPressed() {
                                                1, &ok);
             if(ok) {
                 QString val;
-                val.asprintf("%6.1lf", d);
+                val.sprintf("%6.1lf", d);
                 QMessageBox msgBox;
                 msgBox.setText(
                     QString::asprintf("Changing CH %i Vmax to %.1lf V.\nConfirm?", i, d));
@@ -281,7 +281,7 @@ void HVpsuWidget::setCurrentPressed() {
                                                1, &ok);
             if(ok) {
                 QString val;
-                val.asprintf("%6.1lf", d);
+                val.sprintf("%6.1lf", d);
                 QMessageBox msgBox;
                 msgBox.setText(QString::asprintf(
                     "Changing CH %i Iset to %.1lf uA.\nConfirm?", i, d));  // thx Magda
@@ -313,7 +313,7 @@ void HVpsuWidget::setRUPPressed() {
                                         tabCHxRUP[i]->text().toDouble(), 0, 1000, 1, &ok);
             if(ok) {
                 QString val;
-                val.asprintf("%6.1lf", d);
+                val.sprintf("%6.1lf", d);
                 tabCHxRUP[i]->setText(val);
                 dynamic_cast<hv_controller *>(controller)->callSetRampUp(i, d);
             }
@@ -337,7 +337,7 @@ void HVpsuWidget::setRDWNPressed() {
                                                1, &ok);
             if(ok) {
                 QString val;
-                val.asprintf("%6.1lf", d);
+                val.sprintf("%6.1lf", d);
                 tabCHxRDWN[i]->setText(val);
                 dynamic_cast<hv_controller *>(controller)->callSetRampDown(i, d);
             }
@@ -369,7 +369,7 @@ void HVpsuWidget::loadConfig() {
     int i;
     QString configkey;
     for(i = 0; i < channelsNumber + 1; i++) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         CHxCustomName[i] = QSettings().value(configkey).toString();
     }
 }
@@ -380,7 +380,7 @@ void HVpsuWidget::saveConfig() {
     int i;
     QString configkey;
     for(i = 0; i < channelsNumber + 1; i++) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         QSettings().setValue(configkey, CHxCustomName[i]);
     }
 }
@@ -491,7 +491,7 @@ void HVpsuWidget::createAllChannelsTab() {
         allTabVset[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
         QString val;
-        val.asprintf("  %6.1lf", 0.0);
+        val.sprintf("  %6.1lf", 0.0);
         allTabVset[i]->setText(val);
 
         hbox->addWidget(allTabVset[i]);
@@ -516,18 +516,9 @@ void HVpsuWidget::createAllChannelsTab() {
 
         allTabImon[i] = new QLabel("");
         allTabImon[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        val.asprintf("%7.3lf", 0.0);
+        val.sprintf("%7.3lf", 0.0);
         allTabImon[i]->setText(val);
         Igrid->addWidget(allTabImon[i], 0, 1, 1, 1);
-
-        /*QLabel *IsetLabel = new QLabel("ISET [uA]: ");
-        Igrid->addWidget(IsetLabel, 1, 0, 1, 1);
-
-        allTabIset[i] = new QLabel("");
-        allTabIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-        val.asprintf("%7.3lf", 0.0);
-        allTabIset[i]->setText(val);
-        Igrid->addWidget(allTabIset[i], 1, 1, 1, 1);*/
 
         if(i != channelsNumber)
             hbox->addLayout(Igrid);
@@ -637,7 +628,7 @@ void HVpsuWidget::createChannelTabs() {
         tabCHxVset[i]->setFont(font);
         tabCHxVset[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QString val;
-        val.asprintf("%6.1lf", 0.0);
+        val.sprintf("%6.1lf", 0.0);
         tabCHxVset[i]->setText(val);
         qhbMeasurements->addWidget(tabCHxVset[i]);
         // end VSet
@@ -654,16 +645,9 @@ void HVpsuWidget::createChannelTabs() {
         Igrid->addWidget(ImonLabel, 0, 0, 1, 1);
         tabCHxImon[i] = new QLabel("");
         tabCHxImon[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        val.asprintf("%7.3lf", 0.0);
+        val.sprintf("%7.3lf", 0.0);
         tabCHxImon[i]->setText(val);
         Igrid->addWidget(tabCHxImon[i], 0, 1, 1, 1);
-        /*QLabel *IsetLabel = new QLabel("ISET [uA]: ");
-        Igrid->addWidget(IsetLabel, 1, 0, 1, 1);
-        tabCHxIset[i] = new QLabel("");
-        tabCHxIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-        val.asprintf("%7.3lf", 0.0);
-        tabCHxIset[i]->setText(val);
-        Igrid->addWidget(tabCHxIset[i], 1, 1, 1, 1);*/
         qhbMeasurements->addLayout(Igrid);
         // end IMON and ISET
         qhbMeasurements->addStretch();
@@ -703,7 +687,7 @@ void HVpsuWidget::createChannelTabs() {
         tabCHxVMAX[i]->setFont(fontMAX);
         tabCHxVMAX[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QString valMAX;
-        valMAX.asprintf("%6.1lf", 0.0);
+        valMAX.sprintf("%6.1lf", 0.0);
         tabCHxVMAX[i]->setText(valMAX);
         qhbSettings1->addWidget(tabCHxVMAX[i]);
         tabCHxVMAX[i]->setEnabled(true);
@@ -728,7 +712,7 @@ void HVpsuWidget::createChannelTabs() {
         tabCHxRUP[i]->setFont(fontRUP);
         tabCHxRUP[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QString valRUP;
-        valRUP.asprintf("%6.1lf", 0.0);
+        valRUP.sprintf("%6.1lf", 0.0);
         tabCHxRUP[i]->setText(valRUP);
         qhbSettings1->addWidget(tabCHxRUP[i]);
         tabCHxRUP[i]->setEnabled(true);
@@ -752,7 +736,7 @@ void HVpsuWidget::createChannelTabs() {
         tabCHxIset[i]->setFont(fontMAX);
         tabCHxIset[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QString valIset;
-        valIset.asprintf("%6.1lf", 0.0);
+        valIset.sprintf("%6.1lf", 0.0);
         tabCHxIset[i]->setText(valIset);
         qhbSettings2->addWidget(tabCHxIset[i]);
         tabCHxIset[i]->setEnabled(true);
@@ -778,7 +762,7 @@ void HVpsuWidget::createChannelTabs() {
         tabCHxRDWN[i]->setFont(fontRDWN);
         tabCHxRDWN[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         QString valRDWN;
-        valRDWN.asprintf("%6.1lf", 0.0);
+        valRDWN.sprintf("%6.1lf", 0.0);
         tabCHxRDWN[i]->setText(valRDWN);
         qhbSettings2->addWidget(tabCHxRDWN[i]);
         tabCHxRDWN[i]->setEnabled(true);
@@ -893,19 +877,19 @@ void N1471Widget::updateConfiguration(void *data) {
             tabCHxOff[i]->setChecked((!ON[i]) && connectionState);
 
             totalVoltageSet += channelStatus.voltageSet[i];
-            val.asprintf("%6.1lf", channelStatus.voltageSet[i]);
+            val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
             tabCHxVset[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.rup[i]);
+            val.sprintf("%3.1lf", channelStatus.rup[i]);
             tabCHxRUP[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.rdown[i]);
+            val.sprintf("%3.1lf", channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
-            val.asprintf("%4.1lf", channelStatus.voltageMax[i]);
+            val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
             tabCHxVMAX[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.currentSet[i]);
+            val.sprintf("%3.1lf", channelStatus.currentSet[i]);
             tabCHxIset[i]->setText(val);
         }
-        val.asprintf("%6.1lf", totalVoltageSet);
+        val.sprintf("%6.1lf", totalVoltageSet);
         allTabVset[channelsNumber]->setText(val);
         allOn->setEnabled(channelStatus.isRemote && connectionState);
         allOff->setEnabled(channelStatus.isRemote && connectionState);
@@ -951,19 +935,19 @@ void DT1470Widget::updateConfiguration(void *data) {
             tabCHxOff[i]->setChecked((!ON[i]) && connectionState);
 
             totalVoltageSet += channelStatus.voltageSet[i];
-            val.asprintf("%6.1lf", channelStatus.voltageSet[i]);
+            val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
             tabCHxVset[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.rup[i]);
+            val.sprintf("%3.1lf", channelStatus.rup[i]);
             tabCHxRUP[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.rdown[i]);
+            val.sprintf("%3.1lf", channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
-            val.asprintf("%4.1lf", channelStatus.voltageMax[i]);
+            val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
             tabCHxVMAX[i]->setText(val);
-            val.asprintf("%3.1lf", channelStatus.currentSet[i]);
+            val.sprintf("%3.1lf", channelStatus.currentSet[i]);
             tabCHxIset[i]->setText(val);
         }
-        val.asprintf("%6.1lf", totalVoltageSet);
+        val.sprintf("%6.1lf", totalVoltageSet);
         allTabVset[channelsNumber]->setText(val);
         allOn->setEnabled(channelStatus.isRemote && connectionState);
         allOff->setEnabled(channelStatus.isRemote && connectionState);

@@ -240,7 +240,7 @@ void TPGWidget::loadConfig() {
     int i;
     QString configkey;
     for(i = 0; i != 2; ++i) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         cCustomName[i] = QSettings().value(configkey).toString();
     }
 }
@@ -249,7 +249,7 @@ void TPGWidget::saveConfig() {
     int i;
     QString configkey;
     for(i = 0; i != 2; ++i) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         QSettings().setValue(configkey, cCustomName[i]);
     }
 }

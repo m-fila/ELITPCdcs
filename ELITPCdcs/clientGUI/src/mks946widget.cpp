@@ -177,12 +177,12 @@ void MKS946Widget::setChannelName() {
 
 void MKS946Widget::loadConfig() {
     QString configkey;
-    configkey.asprintf("%s/CustomName", instanceName.c_str());
+    configkey.sprintf("%s/CustomName", instanceName.c_str());
     cCustomName = QSettings().value(configkey).toString();
 }
 
 void MKS946Widget::saveConfig() {
     QString configkey;
-    configkey.asprintf("%s/CustomName", instanceName.c_str());
+    configkey.sprintf("%s/CustomName", instanceName.c_str());
     QSettings().setValue(configkey, cCustomName);
 }

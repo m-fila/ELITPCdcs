@@ -99,7 +99,7 @@ TCPParametersDialog::TCPParametersDialog(QString address, int port, QWidget *par
     setLayout(outerLayout);
     outerLayout->addLayout(headerLayout);
     outerLayout->addLayout(mainLayout);
-    text.setText(QString::asprintf("Set connection parameters:"));
+    text.setText("Set connection parameters:");
     headerLayout->addStretch();
     headerLayout->addWidget(&text);
     headerLayout->addStretch();

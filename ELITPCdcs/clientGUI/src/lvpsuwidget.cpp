@@ -98,15 +98,15 @@ void LVpsuWidget::updateMeasurements(void *data) {
     UA_HMPm measurements = *static_cast<UA_HMPm *>(data);
     if(measurements.voltageSize) {
         QString val;
-        val.asprintf("%.3f", measurements.voltage[0]);
+        val.sprintf("%.3f", measurements.voltage[0]);
         ui->CH1voltage->display(val);
-        val.asprintf("%.4f", measurements.current[0]);
+        val.sprintf("%.4f", measurements.current[0]);
         ui->CH1current->display(val);
         ui->CH1on->setEnabled(!measurements.ch[0] && connectionState);
         ui->CH1off->setEnabled(measurements.ch[0] && connectionState);
-        val.asprintf("%.3f", measurements.voltage[1]);
+        val.sprintf("%.3f", measurements.voltage[1]);
         ui->CH2voltage->display(val);
-        val.asprintf("%.4f", measurements.current[1]);
+        val.sprintf("%.4f", measurements.current[1]);
         ui->CH2current->display(val);
         ui->CH2on->setEnabled(!measurements.ch[1] && connectionState);
         ui->CH2off->setEnabled(measurements.ch[1] && connectionState);
@@ -123,16 +123,16 @@ void LVpsuWidget::updateConfiguration(void *data) {
     UA_HMPc configuration = *static_cast<UA_HMPc *>(data);
     if(configuration.voltageSetSize) {
         QString val;
-        val.asprintf("%.2f", configuration.voltageSet[0]);
+        val.sprintf("%.2f", configuration.voltageSet[0]);
         ui->CH1volatgeSet->display(val);
         ui->CH1confV->display(val);
-        val.asprintf("%.2f", configuration.currentSet[0]);
+        val.sprintf("%.2f", configuration.currentSet[0]);
         ui->CH1currentSet->display(val);
         ui->CH1confI->display(val);
-        val.asprintf("%.2f", configuration.voltageSet[1]);
+        val.sprintf("%.2f", configuration.voltageSet[1]);
         ui->CH2voltageSet->display(val);
         ui->CH2confV->display(val);
-        val.asprintf("%.2f", configuration.currentSet[1]);
+        val.sprintf("%.2f", configuration.currentSet[1]);
         ui->CH2currentSet->display(val);
         ui->CH2confI->display(val);
     }
@@ -161,7 +161,7 @@ void LVpsuWidget::loadConfig() {
     AbstractWidget::loadConfig();
     QString configkey;
     for(int i = 0; i != 2; ++i) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         customName[i] = QSettings().value(configkey).toString();
     }
 }
@@ -170,7 +170,7 @@ void LVpsuWidget::saveConfig() {
     AbstractWidget::saveConfig();
     QString configkey;
     for(int i = 0; i != 2; ++i) {
-        configkey.asprintf("%s/CustomName%i", instanceName.c_str(), i);
+        configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         QSettings().setValue(configkey, customName[i]);
     }
 }
