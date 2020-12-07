@@ -49,11 +49,6 @@ void LVpsuWidget::connectSignals() {
             SLOT(updateEnabledProfiles(void *)));
 }
 
-// void LVpsuWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-//                                 UA_CreateSubscriptionResponse resp) {
-//    dynamic_cast<lv_controller *>(controller)->opcInit(client, config, resp);
-//}
-
 void LVpsuWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
     bool isConnected = *static_cast<bool *>(data);

@@ -45,11 +45,6 @@ void LV4psuWidget::connectSignals() {
     connect(ui->CH4confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
 }
 
-// void LV4psuWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-//                                  UA_CreateSubscriptionResponse resp) {
-//    dynamic_cast<lv_controller *>(controller)->opcInit(client, config, resp);
-//}
-
 void LV4psuWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
     bool isConnected = *static_cast<bool *>(data);

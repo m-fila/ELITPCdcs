@@ -33,8 +33,6 @@ class HVpsuWidget : public AbstractWidget {
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     virtual void updateConfiguration(void *data);
-    //   void controllerInit(UA_Client *, UA_ClientConfig *,
-    //                       UA_CreateSubscriptionResponse) override;
 
     void allOnPressed();
     void allOffPressed();

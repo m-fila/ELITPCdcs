@@ -23,10 +23,6 @@ void MKS910Widget::connectSignals() {
             this, SLOT(updateRelay(void *)));
     connect(unitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeUnits(int)));
 }
-// void MKS910Widget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-//                                  UA_CreateSubscriptionResponse resp) {
-//    dynamic_cast<MKS910_controller *>(controller)->opcInit(client, config, resp);
-//}
 
 void MKS910Widget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);

@@ -31,8 +31,7 @@ class PiWeatherWidget : public AbstractWidget {
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
-    //   void controllerInit(UA_Client *client, UA_ClientConfig *config,
-    //                       UA_CreateSubscriptionResponse resp) override;
+
     void changeNamePressed();
 };
 

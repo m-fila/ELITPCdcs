@@ -25,11 +25,6 @@ void PiWeatherWidget::connectSignals() {
     connect(ui->setName4, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
 }
 
-// void PiWeatherWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-//                                     UA_CreateSubscriptionResponse resp) {
-//    dynamic_cast<piweather_controller *>(controller)->opcInit(client, config, resp);
-//}
-
 void PiWeatherWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
     bool isConnected = *static_cast<bool *>(data);

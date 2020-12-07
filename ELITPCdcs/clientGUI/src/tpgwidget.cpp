@@ -23,11 +23,6 @@ void TPGWidget::connectSignals() {
             this, SLOT(updateRelay(void *)));
 }
 
-// void TPGWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-//                               UA_CreateSubscriptionResponse resp) {
-//    dynamic_cast<tpg_controller *>(controller)->opcInit(client, config, resp);
-//}
-
 void TPGWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
     bool isConnected = *static_cast<bool *>(data);

@@ -18,11 +18,6 @@ MKS946Widget::~MKS946Widget() {}
 
 void MKS946Widget::connectSignals() { AbstractWidget::connectSignals(); }
 
-// void MKS946Widget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-//                                  UA_CreateSubscriptionResponse resp) {
-//    dynamic_cast<MKS946_controller *>(controller)->opcInit(client, config, resp);
-//}
-
 void MKS946Widget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
     bool isConnected = *static_cast<bool *>(data);

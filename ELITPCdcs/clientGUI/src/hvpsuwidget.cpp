@@ -23,11 +23,6 @@ HVpsuWidget::~HVpsuWidget() { delete ui; }
 
 void HVpsuWidget::connectSignals() { AbstractWidget::connectSignals(); }
 
-// void HVpsuWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-//                                 UA_CreateSubscriptionResponse resp) {
-//    dynamic_cast<hv_controller *>(controller)->opcInit(client, config, resp);
-//}
-
 void HVpsuWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
     bool isConnected = *static_cast<bool *>(data);
