@@ -26,8 +26,12 @@ void MKS910Widget::connectSignals() {
 
 void MKS910Widget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
-    connectionState = isConnected;
+    connectionState = *static_cast<bool *>(data);
+    if(!connectionState) {
+        mVacuum->display(0);
+        mTemp->setText("");
+        mStatus->setText("");
+    }
 }
 void MKS910Widget::updateMeasurements(void *data) {
     UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data);
@@ -43,7 +47,7 @@ void MKS910Widget::updateMeasurements(void *data) {
     mVacuum->display(val);
 
     MKS910codes::Units units = static_cast<MKS910codes::Units>(measurements.units);
-    val = QString::fromStdString(MKS910codes::unitsToString.at(units));
+    val = QString::fromStdString(MKS910codes::unitsToString.at(units)).toLower();
     mUnitLabel->setText(val);
     MKS910codes::Status status = static_cast<MKS910codes::Status>(measurements.status);
     if(status == MKS910codes::Status::O) {
@@ -132,7 +136,7 @@ void MKS910Widget::createMTab() {
 
     QHBoxLayout *mhUnitLayout = new QHBoxLayout();
     mvLayout->addLayout(mhUnitLayout);
-    mUnitLabel = new QLabel("MBAR");
+    mUnitLabel = new QLabel("mbar");
     mUnitLabel->setAlignment(Qt::AlignRight);
     mhUnitLayout->addWidget(mUnitLabel);
 
@@ -179,7 +183,7 @@ void MKS910Widget::createCTab() {
     unitsBox = new QComboBox();
     cuLayout->addWidget(unitsBox);
     for(auto &i : MKS910codes::unitsToString) {
-        unitsBox->addItem(QString::fromStdString(i.second));
+        unitsBox->addItem(QString::fromStdString(i.second).toLower());
     }
     unitsBox->setCurrentIndex(static_cast<int>(MKS910codes::Units::MBAR));
 }

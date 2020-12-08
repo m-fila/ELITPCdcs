@@ -20,8 +20,13 @@ void MKS946Widget::connectSignals() { AbstractWidget::connectSignals(); }
 
 void MKS946Widget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
-    connectionState = isConnected;
+    connectionState = *static_cast<bool *>(data);
+    if(!connectionState) {
+        mVacuum->display(0);
+        mFlow->display(0);
+        mTemp->setText("");
+        mStatus->setText("");
+    }
 }
 void MKS946Widget::updateMeasurements(void *data) {
     UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data);
@@ -94,7 +99,7 @@ void MKS946Widget::createMTab() {
 
     QHBoxLayout *mhUnitLayout = new QHBoxLayout();
     mvLayout->addLayout(mhUnitLayout);
-    mUnitLabel = new QLabel("MBAR");
+    mUnitLabel = new QLabel("mbar");
     mUnitLabel->setAlignment(Qt::AlignRight);
     mhUnitLayout->addWidget(mUnitLabel);
 
@@ -115,6 +120,10 @@ void MKS946Widget::createMTab() {
     mFlow->setMinimumSize(QSize(200, 50));
     auto paletteFlow = mFlow->palette();
     paletteFlow.setColor(QPalette::WindowText, Qt::darkGreen);
+
+    auto flowUnitLabel = new QLabel("sccm");
+    flowUnitLabel->setAlignment(Qt::AlignRight);
+    mvLayout->addWidget(flowUnitLabel);
     mFlow->setPalette(paletteFlow);
     mFlow->display(0.00);
     mvLayout->addWidget(mFlow);
