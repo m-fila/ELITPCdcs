@@ -11,7 +11,12 @@ void DCSMKS946Controller::addChildren(const Options &options) {
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
     UA_MKS946m mks;
     UA_MKS946m_init(&mks);
-    mks.flow = std::stod(device.getFlow(MKS946::CH::CH1));
-    mks.pressure = std::stod(device.getPressure(MKS946::CH::CH3));
+    auto flowCH = MKS946::CH::CH1;
+    auto pressureCH = MKS946::CH::CH3;
+    mks.flow = std::stod(device.getFlow(flowCH));
+    mks.pressure = std::stod(device.getPressure(pressureCH));
+    mks.flowSetPoint = std::stod(device.getFlowSetPoint(flowCH));
+    mks.flowMode =
+        static_cast<int>(MKS946codes::modeFromString.at(device.getFlowMode(flowCH)));
     return mks;
 }

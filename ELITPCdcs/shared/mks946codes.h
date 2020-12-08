@@ -18,16 +18,16 @@ static std::map<std::string, Units> unitsFromString = {{"PASCAL", Units::PASCAL}
                                                        {"TORR", Units::TORR},
                                                        {"MICRON", Units::MICRON}};
 
-enum class Mode { OPEN, CLOSE, SETPOINT, PCTRL, RATIO, RESET };
+enum class Mode { OPEN, CLOSE, SETPOINT, PCTRL, RATIO, PRESET };
 
 static std::map<Mode, std::string> modeToString = {
     {Mode::CLOSE, "CLOSE"}, {Mode::OPEN, "OPEN"},   {Mode::SETPOINT, "SETPOINT"},
-    {Mode::PCTRL, "PCTRL"}, {Mode::RATIO, "RATIO"}, {Mode::RESET, "RESET"},
+    {Mode::PCTRL, "PCTRL"}, {Mode::RATIO, "RATIO"}, {Mode::PRESET, "PRESET"},
 };
 
 static std::map<std::string, Mode> modeFromString = {
     {"CLOSE", Mode::CLOSE}, {"OPEN", Mode::OPEN},   {"SETPOINT", Mode::SETPOINT},
-    {"PCTRL", Mode::PCTRL}, {"RATIO", Mode::RATIO}, {"RESET", Mode::RESET}};
+    {"PCTRL", Mode::PCTRL}, {"RATIO", Mode::RATIO}, {"PRESET", Mode::PRESET}};
 
 enum class Error {
     WRONG_GAUGE = 150,

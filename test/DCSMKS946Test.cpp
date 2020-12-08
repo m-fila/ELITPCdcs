@@ -42,4 +42,6 @@ TEST(MKS946, monitorFlow) {
     auto &device = controller.device;
     ASSERT_TRUE(device->isConnected());
     std::cout << device->getFlow(MKS946::CH::CH1) << std::endl;
+    std::cout << device->getFlowSetPoint(MKS946::CH::CH1) << std::endl;
+    std::cout << device->getFlowMode(MKS946::CH::CH1) << std::endl;
 }

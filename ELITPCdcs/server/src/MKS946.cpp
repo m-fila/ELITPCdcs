@@ -28,7 +28,7 @@ void MKS946::zeroMFC(CH ch) {
     sendWithDelayedResponse(cmd);
 }
 
-std::string MKS946::getFlowPoint(CH ch) {
+std::string MKS946::getFlowSetPoint(CH ch) {
     std::string cmd = "QSP" + std::to_string(static_cast<int>(ch)) + "?";
     return sendWithDelayedResponse(cmd);
 }

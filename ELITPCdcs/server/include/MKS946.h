@@ -25,7 +25,7 @@ class MKS946 : public MKS {
     std::string getFlowNominalRange(CH ch);
     void setFlowNomialRange(CH ch, double range);
     void zeroMFC(CH ch);
-    std::string getFlowPoint(CH ch);
+    std::string getFlowSetPoint(CH ch);
     void setFlowPoint(CH ch, double range);
     std::string getFlowMode(CH ch);
     void setFlowMode(CH ch, double range);
