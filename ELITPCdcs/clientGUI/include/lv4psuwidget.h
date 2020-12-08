@@ -3,7 +3,7 @@
 
 #include "abstractwidget.h"
 #include "lvcontroller.h"
-#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated.h"
 
 struct device4Outputs {
     bool CH1;
@@ -22,9 +22,6 @@ class LV4psuWidget : public AbstractWidget {
 
   public:
     explicit LV4psuWidget(std::string name, QWidget *parent = 0);
-    explicit LV4psuWidget(std::string name, std::string address, std::string port,
-                          QWidget *parent = 0);
-    //    LV4psuWidget(std::string name);
     ~LV4psuWidget();
     lv_controller *LVController;
 
@@ -42,13 +39,9 @@ class LV4psuWidget : public AbstractWidget {
 
   public slots:
 
-    void deviceConnect();
-    void deviceDisconnect();
     void updateStatus(void *data) override;
     void updateMeasurements(void *data);
     void updateConfiguration(void *data);
-    void controllerInit(UA_Client *client, UA_ClientConfig *config,
-                        UA_CreateSubscriptionResponse resp) override;
 
     void setCH1ON();
     void setCH1OFF();

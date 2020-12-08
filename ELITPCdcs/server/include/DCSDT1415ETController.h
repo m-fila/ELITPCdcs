@@ -3,8 +3,8 @@
 #define DCS_DT1415ET_CONTROLLER
 #include "DCSDeviceController.h"
 #include "DT1415ET.h"
-#include "open62541/types_dcsnodeset_generated.h"
-#include "open62541/types_dcsnodeset_generated_handling.h"
+#include "open62541/types_elitpcnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated_handling.h"
 class DCSDT1415ETController : public DCSDeviceController<DT1415ET>,
                               DCSObjectFactory::Register<DCSDT1415ETController> {
     friend DCSServer;

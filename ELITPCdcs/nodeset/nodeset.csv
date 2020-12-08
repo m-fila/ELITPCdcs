@@ -21,6 +21,5 @@ PiWeatherm,31401,DataType
 PiWeatherc,31411,DataType
 MKS910m,9101,DataType
 MKS910c,9111,DataType
-ParametersTCP,32001,DataType
 Relay,32101,DataType
 MKS946m,94601,DataType

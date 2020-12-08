@@ -7,8 +7,8 @@
 #include <QVBoxLayout>
 #include <iostream>
 HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber, QWidget *parent)
-    : AbstractWidget(name, true, parent), ui(new Ui::HVpsuWidget),
-      channelsNumber(channelsNumber) {
+    : AbstractWidget(new hv_controller(name), name, true, parent),
+      ui(new Ui::HVpsuWidget), channelsNumber(channelsNumber) {
     ui->setupUi(this);
     ui->tcpLayout->addWidget(tcp);
     loadConfig();  // need to be called first because create functions use some
@@ -16,38 +16,12 @@ HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber, QWidget *parent)
     createAllChannelsTab();
     createChannelTabs();
     setChannelsNames();
-    HVController = new hv_controller(instanceName);
     connectSignals();
 }
-HVpsuWidget::HVpsuWidget(std::string name, std::string address, std::string port,
-                         int channelsNumber, QWidget *parent)
-    : HVpsuWidget(name, channelsNumber, parent) {
-    if(address.size()) {
-        tcp->setIP(address);
-    }
-    if(port.size()) {
-        tcp->setPort(port);
-    }
-}
 
-HVpsuWidget::~HVpsuWidget() {
-    delete ui;
-    delete HVController;
-}
+HVpsuWidget::~HVpsuWidget() { delete ui; }
 
-void HVpsuWidget::connectSignals() {
-    AbstractWidget::connectSignals();
-    connect(HVController, SIGNAL(statusChanged(void *)), this,
-            SLOT(updateStatus(void *)));
-    connect(HVController, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(HVController, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
-}
-void HVpsuWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-                                 UA_CreateSubscriptionResponse resp) {
-    HVController->opcInit(client, config, resp);
-}
+void HVpsuWidget::connectSignals() { AbstractWidget::connectSignals(); }
 
 void HVpsuWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
@@ -203,20 +177,12 @@ void HVpsuWidget::updateConfiguration(void *data) {
 
 void HVpsuWidget::updateStatusLabel(QString info) { ui->statusLabel->setText(info); }
 
-void HVpsuWidget::deviceConnect() {
-    std::string IPaddress = tcp->getIP();
-    int port = tcp->getPort();
-    HVController->callConnect(IPaddress, port);
-}
-
-void HVpsuWidget::deviceDisconnect() { HVController->callDisconnect(); }
-
 void HVpsuWidget::onPressed() {
     QObject *obj = sender();
     int i;
     for(i = 0; i < channelsNumber; i++) {
         if((allTabOn[i] == obj) || (tabCHxOn[i] == obj))
-            HVController->callSetChannel(i, true);
+            dynamic_cast<hv_controller *>(controller)->callSetChannel(i, true);
     }
 }
 
@@ -224,13 +190,17 @@ void HVpsuWidget::offPressed() {
     QObject *obj = sender();
     for(int i = 0; i < channelsNumber; i++) {
         if((allTabOff[i] == obj) || (tabCHxOff[i] == obj))
-            HVController->callSetChannel(i, false);
+            dynamic_cast<hv_controller *>(controller)->callSetChannel(i, false);
     }
 }
 
-void HVpsuWidget::allOnPressed() { HVController->callSetChannel(channelsNumber, true); }
+void HVpsuWidget::allOnPressed() {
+    dynamic_cast<hv_controller *>(controller)->callSetChannel(channelsNumber, true);
+}
 
-void HVpsuWidget::allOffPressed() { HVController->callSetChannel(channelsNumber, false); }
+void HVpsuWidget::allOffPressed() {
+    dynamic_cast<hv_controller *>(controller)->callSetChannel(channelsNumber, false);
+}
 
 void HVpsuWidget::setVPressed() {
     QObject *obj = sender();
@@ -252,7 +222,7 @@ void HVpsuWidget::setVPressed() {
                 // allTabVset[i]->setText(val);
                 // TODO: check VtotalMax (software treshold). if sum > thr, drop input
                 // and show message or set max mallowed and show message?
-                HVController->callSetVoltage(i, d);
+                dynamic_cast<hv_controller *>(controller)->callSetVoltage(i, d);
             }
         }
     }
@@ -282,7 +252,7 @@ void HVpsuWidget::setVMAXPressed() {
                 msgBox.setDefaultButton(QMessageBox::Save);
                 if(msgBox.exec() == QMessageBox::Ok) {
                     tabCHxVMAX[i]->setText(val);
-                    HVController->callSetVoltageMax(i, d);
+                    dynamic_cast<hv_controller *>(controller)->callSetVoltageMax(i, d);
                 }
             }
         }
@@ -314,7 +284,7 @@ void HVpsuWidget::setCurrentPressed() {
                 msgBox.setDefaultButton(QMessageBox::Save);
                 if(msgBox.exec() == QMessageBox::Ok) {
                     tabCHxIset[i]->setText(val);
-                    HVController->callSetCurrent(i, d);
+                    dynamic_cast<hv_controller *>(controller)->callSetCurrent(i, d);
                 }
             }
         }
@@ -340,7 +310,7 @@ void HVpsuWidget::setRUPPressed() {
                 QString val;
                 val.sprintf("%6.1lf", d);
                 tabCHxRUP[i]->setText(val);
-                HVController->callSetRampUp(i, d);
+                dynamic_cast<hv_controller *>(controller)->callSetRampUp(i, d);
             }
         }
     }
@@ -364,7 +334,7 @@ void HVpsuWidget::setRDWNPressed() {
                 QString val;
                 val.sprintf("%6.1lf", d);
                 tabCHxRDWN[i]->setText(val);
-                HVController->callSetRampDown(i, d);
+                dynamic_cast<hv_controller *>(controller)->callSetRampDown(i, d);
             }
         }
     }
@@ -545,15 +515,6 @@ void HVpsuWidget::createAllChannelsTab() {
         allTabImon[i]->setText(val);
         Igrid->addWidget(allTabImon[i], 0, 1, 1, 1);
 
-        /*QLabel *IsetLabel = new QLabel("ISET [uA]: ");
-        Igrid->addWidget(IsetLabel, 1, 0, 1, 1);
-
-        allTabIset[i] = new QLabel("");
-        allTabIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-        val.sprintf("%7.3lf", 0.0);
-        allTabIset[i]->setText(val);
-        Igrid->addWidget(allTabIset[i], 1, 1, 1, 1);*/
-
         if(i != channelsNumber)
             hbox->addLayout(Igrid);
         // end IMON and ISET
@@ -682,13 +643,6 @@ void HVpsuWidget::createChannelTabs() {
         val.sprintf("%7.3lf", 0.0);
         tabCHxImon[i]->setText(val);
         Igrid->addWidget(tabCHxImon[i], 0, 1, 1, 1);
-        /*QLabel *IsetLabel = new QLabel("ISET [uA]: ");
-        Igrid->addWidget(IsetLabel, 1, 0, 1, 1);
-        tabCHxIset[i] = new QLabel("");
-        tabCHxIset[i]->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-        val.sprintf("%7.3lf", 0.0);
-        tabCHxIset[i]->setText(val);
-        Igrid->addWidget(tabCHxIset[i], 1, 1, 1, 1);*/
         qhbMeasurements->addLayout(Igrid);
         // end IMON and ISET
         qhbMeasurements->addStretch();
@@ -860,9 +814,8 @@ void HVpsuWidget::drawLine(QLayout *layout) {
     layout->addWidget(line);
 }
 
-DT1415Widget::DT1415Widget(std::string name, std::string address, std::string port,
-                           int enabledChannels, QWidget *parent)
-    : HVpsuWidget(name, address, port, enabledChannels, parent) {
+DT1415Widget::DT1415Widget(std::string name, int enabledChannels, QWidget *parent)
+    : HVpsuWidget(name, enabledChannels, parent) {
 
     if(enabledChannels < 8) {
         ui->HVGUI->setPixmap(
@@ -870,16 +823,14 @@ DT1415Widget::DT1415Widget(std::string name, std::string address, std::string po
     }
 }
 
-DT1470Widget::DT1470Widget(std::string name, std::string address, std::string port,
-                           int enabledChannels, QWidget *parent)
-    : HVpsuWidget(name, address, port, enabledChannels, parent) {
+DT1470Widget::DT1470Widget(std::string name, int enabledChannels, QWidget *parent)
+    : HVpsuWidget(name, enabledChannels, parent) {
     ui->HVGUI->setPixmap(QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png"))
                              .scaled(10, 10, Qt::KeepAspectRatio));
 }
 
-N1471Widget::N1471Widget(std::string name, std::string address, std::string port,
-                         int enabledChannels, QWidget *parent)
-    : HVpsuWidget(name, address, port, enabledChannels, parent) {
+N1471Widget::N1471Widget(std::string name, int enabledChannels, QWidget *parent)
+    : HVpsuWidget(name, enabledChannels, parent) {
     ui->HVGUI->setPixmap(QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png"))
                              .scaled(10, 10, Qt::KeepAspectRatio));
 }

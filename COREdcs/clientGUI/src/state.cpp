@@ -7,19 +7,14 @@ stateMachine::stateMachine(std::string OName, QObject *parent)
     //    MethodNodeId =UA_NODEID_STRING(1,const_cast<char*>("SetState"));
 }
 
-stateMachine::~stateMachine() {
-    //  UA_NodeId_deleteMembers(&VariableNodeId);
-}
+stateMachine::~stateMachine() {}
 
 void stateMachine::changeState(int index) {
-    // std::cout<<index<<std::endl;
-
     UA_Variant input;
     UA_Variant_init(&input);
     UA_Variant_setScalarCopy(&input, &index, &UA_TYPES[UA_TYPES_INT32]);
-    UA_StatusCode retval = UA_Client_call(
-        client, ObjectNodeId, browsedIds[methodBrowseName], 1, &input, nullptr, nullptr);
-    //   std::cout<<UA_StatusCode_name(retval)<<std::endl;
+    UA_Client_call(client, ObjectNodeId, browsedIds[methodBrowseName], 1, &input, nullptr,
+                   nullptr);
     UA_Variant_clear(&input);
 }
 

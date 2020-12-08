@@ -1,12 +1,12 @@
 #include "DCSDT1415ETController.h"
 void DCSDT1415ETController::addChildren(const Options &options) {
-    addConnection();
-    auto &m =
-        addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415M]);
+    addConnection(options);
+    auto &m = addVariable("measurements",
+                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415M]);
     addVariableUpdate(m, 1000, &DCSDT1415ETController::getMeasurements, this);
     m.setHistorizing();
-    auto &c =
-        addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DT1415C]);
+    auto &c = addVariable("configuration",
+                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415C]);
     addVariableUpdate(c, 1000, &DCSDT1415ETController::getConfiguration, this);
 
     addControllerMethod("setchannel", "Sets channel ON/OFF",

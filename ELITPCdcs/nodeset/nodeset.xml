@@ -2,7 +2,7 @@
 <!-->A more complete example can be found in tools/test/nodeset_compiler<-->
 <UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://fuw.edu.pl/dcs/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <NamespaceUris>
-        <Uri>http://fuw.edu.pl/dcs/</Uri>
+        <Uri>urn:dcs.elitpc</Uri>
     </NamespaceUris>
 
     <Aliases>
@@ -28,7 +28,6 @@
         <Alias Alias="PiWeatherc">ns=1;i=31411</Alias>
         <Alias Alias="MKS910m">ns=1;i=9101</Alias>
         <Alias Alias="MKS910c">ns=1;i=9111</Alias>
-        <Alias Alias="ParametersTCP">ns=1;i=32001</Alias>
         <Alias Alias="Relay">ns=1;i=32101</Alias>
         <Alias Alias="MKS946m">ns=1;i=94601</Alias>
     </Aliases>
@@ -48,6 +47,9 @@
      1: array with one dimension
      n>1: array with with the specified numbers of dimensions
 <-->
+
+<!-- DT1415 -->
+
     <UADataType NodeId="ns=1;i=14151" BrowseName="1:DT1415m">
         <DisplayName>DT1415m</DisplayName>
         <References>
@@ -126,7 +128,7 @@
         </References>
     </UAObject>
 
-
+<!-- HMP -->
 
     <UADataType NodeId="ns=1;i=20201" BrowseName="1:HMPm">
         <DisplayName>HMPm</DisplayName>
@@ -200,8 +202,7 @@
         </References>
     </UAObject>
 
-
-
+<!-- TPG362 -->
 
  <UADataType NodeId="ns=1;i=36211" BrowseName="1:TPG362c">
         <DisplayName>TPG362c</DisplayName>
@@ -266,6 +267,7 @@
             <Reference ReferenceType="HasDescription">ns=1;i=36203</Reference>
         </References>
     </UAObject>
+
 <!-- PiWeather-->
 <UADataType NodeId="ns=1;i=31401" BrowseName="1:PiWeatherm">
         <DisplayName>PiWeatherm</DisplayName>
@@ -329,6 +331,7 @@
             <Reference ReferenceType="HasDescription">ns=1;i=31413</Reference>
         </References>
     </UAObject>
+
 <!-- MKS910-->
 <UADataType NodeId="ns=1;i=9101" BrowseName="1:MKS910m">
         <DisplayName>MKS910m</DisplayName>
@@ -395,37 +398,7 @@
         </References>
     </UAObject>
 
-
-    <UADataType NodeId="ns=1;i=32001" BrowseName="1:ParametersTCP">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:ParametersTCP">
-            <Field DataType="String" Name="address"/>
-            <Field DataType="Int32" Name="port"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=32003" BrowseName="1:ParametersTCP" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">ParametersTCP</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32004" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32001</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=32003</Reference>
-        </References>
-    </UAObject>
+<!-- Relay -->
 
     <UADataType NodeId="ns=1;i=32101" BrowseName="1:Relay">
         <DisplayName>Relay</DisplayName>
@@ -443,7 +416,7 @@
     </UADataType>
 
     <UAVariable NodeId="ns=1;i=32103" BrowseName="1:Relay" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>DT1415m</DisplayName>
+        <DisplayName>Relay</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
@@ -500,8 +473,8 @@
 
 
 <!-- End of device stuff-->
-    <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.Testnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
-        <DisplayName>Opc.Ua.Testnodeset</DisplayName>
+    <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.ELITPCnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
+        <DisplayName>Opc.Ua.ELITPCnodeset</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
@@ -509,7 +482,7 @@
         <Value>
         <!-- This is the Base64 Encoded content of nodeset.bsd -->
             <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-SE1QbV9FbmNvZGluZ19EZWZhdWx0QmluYXJ5LDIwMjA0LE9iamVjdApITVBjX0VuY29kaW5nX0RlZmF1bHRCaW5hcnksMjAyMTQsT2JqZWN0CkRUMTQxNW1fRW5jb2RpbmdfRGVmYXVsdEJpbmFyeSwxNDE1NCxPYmplY3QKRFQxNDE1Y19FbmNvZGluZ19EZWZhdWx0QmluYXJ5LDE0MTU4LE9iamVjdApUUEczNjJtX0VuY29kaW5nX0RlZmF1bHRCaW5hcnksMzYyMDQsT2JqZWN0ClRQRzM2MmNfRW5jb2RpbmdfRGVmYXVsdEJpbmFyeSwzNjIxNCxPYmplY3QKUGlXZWF0aGVybV9FbmNvZGluZ19EZWZhdWx0QmluYXJ5LDMxNDA0LE9iamVjdApQaVdlYXRoZXJjX0VuY29kaW5nX0RlZmF1bHRCaW5hcnksMzE0MTQsT2JqZWN0Ck1LUzkxMG1fRW5jb2RpbmdfRGVmYXVsdEJpbmFyeSw5MTA0LE9iamVjdApNS1M5MTBjX0VuY29kaW5nX0RlZmF1bHRCaW5hcnksOTExNCxPYmplY3QKUGFyYW1ldGVyc1RDUF9FbmNvZGluZ19EZWZhdWx0QmluYXJ5LDMyMDA0LE9iamVjdApSZWxheV9FbmNvZGluZ19EZWZhdWx0QmluYXJ5LDMyMTA0LE9iamVjdApNS1M5NDZtX0VuY29kaW5nX0RlZmF1bHRCaW5hcnksOTQ2MDQsT2JqZWN0CkhNUG0sMjAyMDEsRGF0YVR5cGUKSE1QYywyMDIxMSxEYXRhVHlwZQpEVDE0MTVtLDE0MTUxLERhdGFUeXBlCkRUMTQxNWMsMTQxNTUsRGF0YVR5cGUKVFBHMzYybSwzNjIwMSxEYXRhVHlwZQpUUEczNjJjLDM2MjExLERhdGFUeXBlClBpV2VhdGhlcm0sMzE0MDEsRGF0YVR5cGUKUGlXZWF0aGVyYywzMTQxMSxEYXRhVHlwZQpNS1M5MTBtLDkxMDEsRGF0YVR5cGUKTUtTOTEwYyw5MTExLERhdGFUeXBlClBhcmFtZXRlcnNUQ1AsMzIwMDEsRGF0YVR5cGUKUmVsYXksMzIxMDEsRGF0YVR5cGUKTUtTOTQ2bSw5NDYwMSxEYXRhVHlwZQo=
+PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9InVybjpkY3MuZWxpdHBjIgogIERlZmF1bHRCeXRlT3JkZXI9IkxpdHRsZUVuZGlhbiIKICBUYXJnZXROYW1lc3BhY2U9InVybjpkY3MuZWxpdHBjIgo+CiAgPG9wYzpJbXBvcnQgTmFtZXNwYWNlPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvVUEvIiBMb2NhdGlvbj0iT3BjLlVhLkJpbmFyeVNjaGVtYS5ic2QiLz4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJITVBtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0ib3V0cHV0IiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImNoU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImNoIiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIExlbmd0aEZpZWxkPSJjaFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkhNUGMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNldFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2V0U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTVtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idG90YWxWb2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iRFQxNDE1YyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImlzUmVtb3RlIiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InRvdGFsVm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2V0U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXNTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InN0YXR1c1NpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VNYXhTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlTWF4U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJ1cCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJydXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93blNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93biIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJyZG93blNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYybSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZhY3V1bVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2YWN1dW0iIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idmFjdXVtU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InN0YXR1cyIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIExlbmd0aEZpZWxkPSJzdGF0dXNTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICAgIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYyYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InByZXNzdXJlU2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJQaVdlYXRoZXJtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idGVtcFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InRlbXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wZXJhdHVyZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlBpV2VhdGhlcmMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJkdW1teSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+ICAKCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJNS1M5MTBtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iY29tYmluZWQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJwaWV6byIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InBpcmFuaSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InRlbXBlcmF0dXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idW5pdHMiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9Ik1LUzkxMGMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJkdW1teSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlJlbGF5IiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICA8b3BjOkZpZWxkIE5hbWU9InJlbGF5TnVtYmVyIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIvPgogIDxvcGM6RmllbGQgTmFtZT0iZGlyZWN0aW9uIiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIExlbmd0aEZpZWxkPSJyZWxheU51bWJlciIgLz4KICA8b3BjOkZpZWxkIE5hbWU9InNldHBvaW50IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBOYW1lPSJoeXN0ZXJlc2lzIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBOYW1lPSJlbmFibGVkIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXMiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iTUtTOTQ2bSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iZmxvdyIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+Cgo8L29wYzpUeXBlRGljdGlvbmFyeT4K
             </ByteString>
         </Value>
     </UAVariable>    

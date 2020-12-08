@@ -8,52 +8,21 @@
 #include <string>
 
 MKS910Widget::MKS910Widget(std::string name, QWidget *parent)
-    : AbstractWidget(name, parent) {
+    : AbstractWidget(new MKS910_controller(name), name, parent) {
     createLayout();
-    controller = new MKS910_controller(instanceName);
     connectSignals();
     loadConfig();
     setChannelName();
 }
 
-MKS910Widget::MKS910Widget(std::string name, std::string address, std::string port,
-                           QWidget *parent)
-    : MKS910Widget(name, parent) {
-    if(address.size()) {
-        tcp->setIP(address);
-    }
-    if(port.size()) {
-        tcp->setPort(port);
-    }
-}
-
-MKS910Widget::~MKS910Widget() {
-    // delete ui;
-    delete controller;
-}
+MKS910Widget::~MKS910Widget() {}
 
 void MKS910Widget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(controller, SIGNAL(statusChanged(void *)), this, SLOT(updateStatus(void *)));
-    connect(controller, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(controller, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
-    connect(controller, SIGNAL(relayChanged(void *)), this, SLOT(updateRelay(void *)));
+    connect(dynamic_cast<MKS910_controller *>(controller), SIGNAL(relayChanged(void *)),
+            this, SLOT(updateRelay(void *)));
     connect(unitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeUnits(int)));
 }
-void MKS910Widget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-                                  UA_CreateSubscriptionResponse resp) {
-    controller->opcInit(client, config, resp);
-}
-
-void MKS910Widget::deviceConnect() {
-    std::string IPaddress = tcp->getIP();
-    int port = tcp->getPort();
-    controller->callConnect(IPaddress, port);
-}
-
-void MKS910Widget::deviceDisconnect() { controller->callDisconnect(); }
 
 void MKS910Widget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
@@ -105,7 +74,8 @@ void MKS910Widget::updateRelay(void *data) {
 }
 
 void MKS910Widget::changeRelay(int nr, RelayStruct values) {
-    controller->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
+    dynamic_cast<MKS910_controller *>(controller)
+        ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
 }
 
 void MKS910Widget::updateStatusLabel(QString info) { statusLabel->setText(info); }
@@ -248,7 +218,7 @@ void MKS910Widget::drawLine() {
 
 void MKS910Widget::changeUnits(int u) {
     if(connectionState) {
-        controller->callSetUnits(u);
+        dynamic_cast<MKS910_controller *>(controller)->callSetUnits(u);
     }
 }
 

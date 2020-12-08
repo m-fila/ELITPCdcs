@@ -10,7 +10,7 @@ DCSVariable::DCSVariable(UA_Server *server, UA_NodeId parentNodeId,
     attr.dataType = dataType.typeId;
     attr.valueRank = UA_VALUERANK_SCALAR;
     UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(1, variableName.c_str());
-    UA_Server_addVariableNode(server, UA_NODEID_NULL, parentNodeId,
+    UA_Server_addVariableNode(server, UA_NODEID_NUMERIC(1, 0), parentNodeId,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_ORGANIZES), qName,
                               UA_NODEID_NUMERIC(0, UA_NS0ID_BASEDATAVARIABLETYPE), attr,
                               this, &variableNodeId);

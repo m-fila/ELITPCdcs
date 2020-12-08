@@ -6,6 +6,8 @@
 #include "DCSUAJson.h"
 #include "DCSWorkerThread.h"
 #include "TCPConnector.h"
+#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_dcsnodeset_generated_handling.h"
 #include <fstream>
 #include <iomanip>
 // DCSObject encapsulating Device controller. Device specific controllers should
@@ -45,8 +47,8 @@ template <class Device> class DCSDeviceController : public DCSObject {
     // Non trivial constructor
     DCSDeviceController(){};
 
-    void addChildren(const Options &options) override { addConnection(); }
-    void addConnection();
+    void addChildren(const Options &options) override { addConnection(options); }
+    void addConnection(const Options &options);
     void addProfiles(DCSVariable &configVariable, const Options &options);
     virtual void parseProfile(const nlohmann::json &profile) {}
 
@@ -60,7 +62,9 @@ template <class Device> class DCSDeviceController : public DCSObject {
 
     virtual void connectDevice(const UA_Variant *input, UA_Variant *output);
 
-    bool getConnectionStatus() { return device.isConnected(); }
+    virtual void setConnectionParameters(const UA_Variant *input, UA_Variant *output);
+
+    bool isConnected() { return device.isConnected(); }
 
     void saveProfile(DCSVariable &profiles, DCSVariable &configVariable,
                      const UA_Variant *input, UA_Variant *output);
@@ -73,37 +77,78 @@ template <class Device> class DCSDeviceController : public DCSObject {
 template <class Device>
 void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
                                                 UA_Variant *output) {
-    auto *host = static_cast<UA_String *>(input[0].data);
-    if(host->length == 0) {
+    auto param = variables.at("connectionParameters")->getValue<UA_ParametersTCP>();
+    UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                "%s device connecting to %s:%i", objectName.c_str(), param.address.data,
+                param.port);
+    if(param.address.length == 0) {
         return;
     }
-    std::string address(reinterpret_cast<char *>(host->data), host->length);
-    auto port = *static_cast<UA_Int32 *>(input[1].data);
+    std::string address(reinterpret_cast<char *>(param.address.data),
+                        param.address.length);
     try {
-        auto stream = TCPConnector::connect(address.c_str(), port);
+        auto stream = TCPConnector::connect(address.c_str(), param.port);
         device.setConnectionStream(stream);
     } catch(const std::exception &e) {
         UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                        "%s device controller catched: \"%s\"", objectName.c_str(),
                        e.what());
     }
-    if(getConnectionStatus()) {
+    if(isConnected()) {
         auto found = methods.find("applyProfile");
         if(found != methods.end()) {
             found->second(nullptr, nullptr);
         }
     }
 }
-template <class Device> void DCSDeviceController<Device>::addConnection() {
+
+template <class Device>
+void DCSDeviceController<Device>::setConnectionParameters(const UA_Variant *input,
+                                                          UA_Variant *output) {
+    if(isConnected()) {
+        UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
+                       "%s device: cannot change connection parameters of already "
+                       "connected device.",
+                       objectName.c_str());
+        return;
+    }
+    UA_ParametersTCP par;
+    UA_ParametersTCP_init(&par);
+    UA_String_copy(static_cast<const UA_String *>(input[0].data), &par.address);
+    par.port = *static_cast<UA_Int32 *>(input[1].data);
+    variables.at("connectionParameters")->setValue(par);
+}
+
+template <class Device>
+void DCSDeviceController<Device>::addConnection(const Options &options) {
     device.resetConnectionStream();
-    auto &v = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(v, 1000, [this]() { return getConnectionStatus(); }, true, false);
-    addControllerMethod("connect", "Connects device",
+    auto &s = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);
+    addVariableUpdate(s, 1000, [this]() { return isConnected(); }, true, false);
+    auto &p = addVariable("connectionParameters",
+                          UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PARAMETERSTCP]);
+    addControllerMethod("connect", "Connects device", {}, {},
+                        &DCSDeviceController::connectDevice, this);
+    addControllerMethod("setConnectionParameters", "Sets connection parameters",
                         {{"Address", "Host address", UA_TYPES[UA_TYPES_STRING]},
                          {"Port", "Host port", UA_TYPES[UA_TYPES_INT32]}},
-                        {}, &DCSDeviceController::connectDevice, this);
+                        {}, &DCSDeviceController::setConnectionParameters, this);
     addControllerMethod("disconnect", "Disconnects device", {}, {},
                         &DCSDeviceController::disconnectDevice, this);
+    if(options.contains("address") and options.contains("port")) {
+        try {
+            UA_ParametersTCP param;
+            UA_ParametersTCP_init(&param);
+            param.address =
+                UA_STRING_ALLOC(options.at("address").get<std::string>().c_str());
+            param.port = std::stoi(options.at("port").get<std::string>());
+            p.setValue(param);
+        } catch(const std::exception &e) {
+            UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                           "%s invalid configuration parameters address: %s port: %s",
+                           objectName.c_str(), options.at("address").dump().c_str(),
+                           options.at("port").dump().c_str());
+        }
+    }
 }
 
 template <class Device>

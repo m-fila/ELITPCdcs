@@ -5,46 +5,24 @@
 #include <iostream>
 
 PiWeatherWidget::PiWeatherWidget(std::string name, QWidget *parent)
-    : AbstractWidget(name, parent), ui(new Ui::PiWeatherWidget) {
+    : AbstractWidget(new piweather_controller(name), name, parent),
+      ui(new Ui::PiWeatherWidget) {
     ui->setupUi(this);
     ui->tcpLayout->addWidget(tcp);
     loadConfig();
     setChannelsNames();
-    controller = new piweather_controller(instanceName);
     connectSignals();
 }
-PiWeatherWidget::PiWeatherWidget(std::string name, std::string address, std::string port,
-                                 QWidget *parent)
-    : PiWeatherWidget(name, parent) {
-    if(address.size()) {
-        tcp->setIP(address);
-    }
-    if(port.size()) {
-        tcp->setPort(port);
-    }
-}
-PiWeatherWidget::~PiWeatherWidget() {
-    delete ui;
-    delete controller;
-}
+
+PiWeatherWidget::~PiWeatherWidget() { delete ui; }
 
 void PiWeatherWidget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(controller, SIGNAL(statusChanged(void *)), this, SLOT(updateStatus(void *)));
-    connect(controller, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(controller, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
 
     connect(ui->setName1, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
     connect(ui->setName2, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
     connect(ui->setName3, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
     connect(ui->setName4, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
-}
-
-void PiWeatherWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-                                     UA_CreateSubscriptionResponse resp) {
-    controller->opcInit(client, config, resp);
 }
 
 void PiWeatherWidget::updateStatus(void *data) {
@@ -71,16 +49,7 @@ void PiWeatherWidget::updateMeasurements(void *data) {
         ui->pressureDisplay->display(measurements.pressure);
     }
 }
-void PiWeatherWidget::updateConfiguration(void *data) {
-    UA_PiWeatherc configuration = *static_cast<UA_PiWeatherc *>(data);
-}
-
-void PiWeatherWidget::deviceConnect() {
-    std::string IPaddress = tcp->getIP();
-    int port = tcp->getPort();
-    controller->callConnect(IPaddress, port);
-}
-void PiWeatherWidget::deviceDisconnect() { controller->callDisconnect(); }
+void PiWeatherWidget::updateConfiguration(void *data) {}
 
 void PiWeatherWidget::loadConfig() {
     AbstractWidget::loadConfig();

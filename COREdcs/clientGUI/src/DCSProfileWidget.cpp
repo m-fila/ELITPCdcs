@@ -80,7 +80,7 @@ void DCSProfileWidget::updateStatus(bool status) {
 
 DCSProfileDialog::DCSProfileDialog(const QJsonObject &json, QString activeKey,
                                    QWidget *parent)
-    : json(json), QDialog(parent) {
+    : QDialog(parent), json(json) {
     auto *outerLayout = new QVBoxLayout(this);
     auto *innerLayout = new QHBoxLayout(this);
     QLabel *label = new QLabel("Select profile:", this);

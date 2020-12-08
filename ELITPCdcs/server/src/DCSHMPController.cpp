@@ -1,10 +1,12 @@
 #include "DCSHMPController.h"
 void DCSHMPController::addChildren(const Options &options) {
-    addConnection();
-    auto &m = addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
+    addConnection(options);
+    auto &m =
+        addVariable("measurements", UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_HMPM]);
     addVariableUpdate(m, 1000, &DCSHMPController::getMeasurements, this);
     m.setHistorizing();
-    auto &c = addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC]);
+    auto &c =
+        addVariable("configuration", UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_HMPC]);
     addVariableUpdate(c, 1000, &DCSHMPController::getConfiguration, this);
     addControllerMethod("setchannel", "Sets channel ON/OFF",
                         {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},

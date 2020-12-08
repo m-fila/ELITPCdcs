@@ -7,49 +7,21 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-TPGWidget::TPGWidget(std::string name, QWidget *parent) : AbstractWidget(name, parent) {
+TPGWidget::TPGWidget(std::string name, QWidget *parent)
+    : AbstractWidget(new tpg_controller(name), name, parent) {
     createLayout();
-    controller = new tpg_controller(instanceName);
     connectSignals();
     loadConfig();
     setChannelsNames();
 }
 
-TPGWidget::TPGWidget(std::string name, std::string address, std::string port,
-                     QWidget *parent)
-    : TPGWidget(name, parent) {
-    if(address.size() != 0 && port.size() != 0) {
-        tcp->setIP(address);
-    }
-    if(port.size()) {
-        tcp->setPort(port);
-    }
-}
-
-TPGWidget::~TPGWidget() { delete controller; }
+TPGWidget::~TPGWidget() {}
 
 void TPGWidget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(controller, SIGNAL(statusChanged(void *)), this, SLOT(updateStatus(void *)));
-    connect(controller, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(controller, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
-    connect(controller, SIGNAL(relayChanged(void *)), this, SLOT(updateRelay(void *)));
+    connect(dynamic_cast<tpg_controller *>(controller), SIGNAL(relayChanged(void *)),
+            this, SLOT(updateRelay(void *)));
 }
-
-void TPGWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-                               UA_CreateSubscriptionResponse resp) {
-    controller->opcInit(client, config, resp);
-}
-
-void TPGWidget::deviceConnect() {
-    std::string IPaddress = tcp->getIP();
-    int port = tcp->getPort();
-    controller->callConnect(IPaddress, port);
-}
-
-void TPGWidget::deviceDisconnect() { controller->callDisconnect(); }
 
 void TPGWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
@@ -108,7 +80,8 @@ void TPGWidget::updateRelay(void *data) {
 }
 
 void TPGWidget::changeRelay(int nr, RelayStruct values) {
-    controller->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
+    dynamic_cast<tpg_controller *>(controller)
+        ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
 }
 
 void TPGWidget::updateStatusLabel(QString info) { statusLabel->setText(info); }
@@ -259,7 +232,6 @@ void TPGWidget::setChannelsNames() {
 }
 
 void TPGWidget::loadConfig() {
-    AbstractWidget::loadConfig();
     int i;
     QString configkey;
     for(i = 0; i != 2; ++i) {
@@ -269,7 +241,6 @@ void TPGWidget::loadConfig() {
 }
 
 void TPGWidget::saveConfig() {
-    AbstractWidget::saveConfig();
     int i;
     QString configkey;
     for(i = 0; i != 2; ++i) {

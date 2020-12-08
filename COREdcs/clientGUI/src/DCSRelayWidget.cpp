@@ -4,7 +4,7 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
                                QWidget *parent)
     : QWidget(parent), number(nr), directionPolicy(directionPolicy) {
     auto mainLayout = new QVBoxLayout(this);
-    auto box = new QGroupBox(QString().asprintf("Relay %u", number), this);
+    auto box = new QGroupBox(QString().asprintf("Relay %lu", number), this);
     mainLayout->addWidget(box);
     setLayout(mainLayout);
     auto innerLayout = new QVBoxLayout(this);
@@ -77,7 +77,7 @@ void DCSRelayWidget::showDialog() {
         auto r = dialog.getValue();
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Question);
-        msgBox.setText(QString::asprintf("Changing Relay %u to:", number));
+        msgBox.setText(QString::asprintf("Changing Relay %lu to:", number));
         msgBox.setInformativeText(QString::asprintf(
             "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%f %s\nHysteresis:\t%f "
             "%s\n\nDo you confirm?",
@@ -105,7 +105,7 @@ RelayDialog::RelayDialog(size_t number, RelayStruct init,
     QFormLayout *mainLayout = new QFormLayout(this);
     setLayout(outerLayout);
     outerLayout->addLayout(mainLayout);
-    text.setText(QString::asprintf("Set Relay %u:", number));
+    text.setText(QString::asprintf("Set Relay %lu:", number));
     mainLayout->addWidget(&text);
     for(auto i : labels) {
         enabled.addItem(QString::fromStdString(i.second));

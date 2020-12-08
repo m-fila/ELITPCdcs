@@ -48,7 +48,7 @@ class DCSVariable {
     template <class T> T getValue() const {
         auto var = getValueByVariant();
         if(UA_Variant_isEmpty(&var)) {
-            throw std::runtime_error("empty value");
+            throw std::runtime_error(variableName + " has no value");
         }
         return *static_cast<T *>(var.data);
     }

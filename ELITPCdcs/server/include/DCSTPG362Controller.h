@@ -3,8 +3,8 @@
 #define DCS_TPG362_CONTROLLER_H
 #include "DCSDeviceController.h"
 #include "TPG362.h"
-#include "open62541/types_dcsnodeset_generated.h"
-#include "open62541/types_dcsnodeset_generated_handling.h"
+#include "open62541/types_elitpcnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated_handling.h"
 class DCSTPG362Controller : public DCSDeviceController<TPG362>,
                             DCSObjectFactory::Register<DCSTPG362Controller> {
     friend DCSServer;

@@ -1,6 +1,6 @@
 #ifndef DT1415_VARIABLE_H
 #define DT1415_VARIABLE_H
-#include "open62541/types_dcsnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated.h"
 #include "template_variable.h"
 std::ostream &operator<<(std::ostream &os, const UA_DT1415m &data);
 

@@ -4,39 +4,20 @@
 #include <QSettings>
 
 LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent)
-    : AbstractWidget(name, parent), ui(new Ui::LVpsuWidget) {
+    : AbstractWidget(new lv_controller(name), name, parent), ui(new Ui::LVpsuWidget) {
     ui->setupUi(this);
     ui->tcpLayout->addWidget(tcp);
     profile = new DCSProfileWidget(this);
     ui->profileLayout->addWidget(profile);
     loadConfig();
     setChannelsNames();
-    LVController = new lv_controller(instanceName);
     connectSignals();
 }
-LVpsuWidget::LVpsuWidget(std::string name, std::string address, std::string port,
-                         QWidget *parent)
-    : LVpsuWidget(name, parent) {
-    if(address.size()) {
-        tcp->setIP(address);
-    }
-    if(port.size()) {
-        tcp->setPort(port);
-    }
-}
-LVpsuWidget::~LVpsuWidget() {
-    delete ui;
-    delete LVController;
-}
+
+LVpsuWidget::~LVpsuWidget() { delete ui; }
 
 void LVpsuWidget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(LVController, SIGNAL(statusChanged(void *)), this,
-            SLOT(updateStatus(void *)));
-    connect(LVController, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(LVController, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
 
     connect(ui->CH1on, SIGNAL(clicked(bool)), this, SLOT(setCH1ON()));
     connect(ui->CH2on, SIGNAL(clicked(bool)), this, SLOT(setCH2ON()));
@@ -53,20 +34,19 @@ void LVpsuWidget::connectSignals() {
     connect(ui->CH1confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
     connect(ui->CH2confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
 
-    connect(profile, SIGNAL(applyProfile()), LVController, SLOT(callApplyProfile()));
-    connect(profile, SIGNAL(saveProfile(std::string)), LVController,
+    connect(profile, SIGNAL(applyProfile()), dynamic_cast<lv_controller *>(controller),
+            SLOT(callApplyProfile()));
+    connect(profile, SIGNAL(saveProfile(std::string)),
+            dynamic_cast<lv_controller *>(controller),
             SLOT(callSaveProfile(std::string)));
-    connect(profile, SIGNAL(setProfile(std::string)), LVController,
-            SLOT(callSetProfile(std::string)));
-    connect(LVController, SIGNAL(selectedProfileChanged(void *)), profile,
+    connect(profile, SIGNAL(setProfile(std::string)),
+            dynamic_cast<lv_controller *>(controller), SLOT(callSetProfile(std::string)));
+    connect(dynamic_cast<lv_controller *>(controller),
+            SIGNAL(selectedProfileChanged(void *)), profile,
             SLOT(updateSelectedProfile(void *)));
-    connect(LVController, SIGNAL(enabledProfilesChanged(void *)), profile,
+    connect(dynamic_cast<lv_controller *>(controller),
+            SIGNAL(enabledProfilesChanged(void *)), profile,
             SLOT(updateEnabledProfiles(void *)));
-}
-
-void LVpsuWidget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-                                 UA_CreateSubscriptionResponse resp) {
-    LVController->opcInit(client, config, resp);
 }
 
 void LVpsuWidget::updateStatus(void *data) {
@@ -153,19 +133,24 @@ void LVpsuWidget::updateConfiguration(void *data) {
     }
 }
 
-void LVpsuWidget::deviceConnect() {
-    std::string IPaddress = tcp->getIP();
-    int port = tcp->getPort();
-    LVController->callConnect(IPaddress, port);
+void LVpsuWidget::setCH1ON() {
+    dynamic_cast<lv_controller *>(controller)->callSetChannel(1, true);
 }
-void LVpsuWidget::deviceDisconnect() { LVController->callDisconnect(); }
-
-void LVpsuWidget::setCH1ON() { LVController->callSetChannel(1, true); }
-void LVpsuWidget::setCH2ON() { LVController->callSetChannel(2, true); }
-void LVpsuWidget::setCH1OFF() { LVController->callSetChannel(1, false); }
-void LVpsuWidget::setCH2OFF() { LVController->callSetChannel(2, false); }
-void LVpsuWidget::setOutputON() { LVController->callSetOutput(true); }
-void LVpsuWidget::setOutputOFF() { LVController->callSetOutput(false); }
+void LVpsuWidget::setCH2ON() {
+    dynamic_cast<lv_controller *>(controller)->callSetChannel(2, true);
+}
+void LVpsuWidget::setCH1OFF() {
+    dynamic_cast<lv_controller *>(controller)->callSetChannel(1, false);
+}
+void LVpsuWidget::setCH2OFF() {
+    dynamic_cast<lv_controller *>(controller)->callSetChannel(2, false);
+}
+void LVpsuWidget::setOutputON() {
+    dynamic_cast<lv_controller *>(controller)->callSetOutput(true);
+}
+void LVpsuWidget::setOutputOFF() {
+    dynamic_cast<lv_controller *>(controller)->callSetOutput(false);
+}
 
 void LVpsuWidget::loadConfig() {
     AbstractWidget::loadConfig();
@@ -255,7 +240,7 @@ void LVpsuWidget::setVPressed() {
     double d = QInputDialog::getDouble(this, tr("Set CH %1 V").arg(i + 1), label, val, 0,
                                        20, 1, &ok);
     if(ok) {
-        LVController->callSetVoltage(i + 1, d);
+        dynamic_cast<lv_controller *>(controller)->callSetVoltage(i + 1, d);
     }
 }
 
@@ -279,6 +264,6 @@ void LVpsuWidget::setIPressed() {
     double d = QInputDialog::getDouble(this, tr("Set CH %1 I").arg(i + 1), label, val, 0,
                                        10, 1, &ok);
     if(ok) {
-        LVController->callSetCurrent(i + 1, d);
+        dynamic_cast<lv_controller *>(controller)->callSetCurrent(i + 1, d);
     }
 }

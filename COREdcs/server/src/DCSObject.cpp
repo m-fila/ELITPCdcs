@@ -80,7 +80,7 @@ DCSObject::Method &DCSObject::addMethod(
 
     UA_NodeId methodNodeId;
 
-    UA_Server_addMethodNode(server, UA_NODEID_NULL, objectNodeId,
+    UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1, 0), objectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             methodQName, methodAttr, methodCallback, inputs.size(),
                             inputArguments, outputs.size(), outputArguments, nullptr,
