@@ -7,12 +7,18 @@
   </opc:StructuredType>
   <opc:StructuredType Name="DeviceInfo" BaseType="ua:ExtensionObject">
     <opc:Field Name="vendor" TypeName="opc:String"/>
-    <opc:Field Name="serialNumber" TypeName="opc:String"/>
     <opc:Field Name="model" TypeName="opc:String"/>
+    <opc:Field Name="serialNumber" TypeName="opc:String"/>
     <opc:Field Name="firmwareVersion" TypeName="opc:String"/>
   </opc:StructuredType>
-  <opc:StructuredType Name="LabelInfo" BaseType="ua:ExtensionObject">
+  <opc:StructuredType Name="LabelItemInfo" BaseType="ua:ExtensionObject">
     <opc:Field Name="label" TypeName="opc:String"/>
     <opc:Field Name="description" TypeName="opc:String"/>
+  </opc:StructuredType>  
+  <opc:StructuredType Name="LabelInfo" BaseType="ua:ExtensionObject">
+    <opc:Field Name="description" TypeName="opc:String"/>
+    <opc:Field Name="channelLabelsSize" TypeName="opc:UInt32"/>
+    <opc:Field Name="channelLabels" TypeName="tns:LabelItemInfo" LengthField="channelLabelsSize"/>/>
   </opc:StructuredType>
+
 </opc:TypeDictionary>

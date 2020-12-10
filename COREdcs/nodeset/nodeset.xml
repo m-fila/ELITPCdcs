@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-->A more complete example can be found in tools/test/nodeset_compiler<-->
-<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://fuw.edu.pl/dcs/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://fuw.edu.pl/dcs/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:dcs.core">
   <NamespaceUris>
     <Uri>urn:dcs.core</Uri>
   </NamespaceUris>
@@ -19,7 +19,8 @@
     <Alias Alias="Argument">i=296</Alias>
     <Alias Alias="ParametersTCP">ns=1;i=32001</Alias>
     <Alias Alias="DeviceInfo">ns=1;i=32101</Alias>
-    <Alias Alias="DeviceInfo">ns=1;i=32201</Alias>
+    <Alias Alias="labelItemInfo">ns=1;i=32201</Alias>
+    <Alias Alias="labelInfo">ns=1;i=32201</Alias>
   </Aliases>
   <Extensions>
     <Extension>
@@ -72,8 +73,8 @@
     </References>
     <Definition Name="1:DeviceInfo">
       <Field DataType="String" Name="vendor"/>
-      <Field DataType="String" Name="serialNumber"/>
       <Field DataType="String" Name="model"/>
+      <Field DataType="String" Name="serialNumber"/>
       <Field DataType="String" Name="firmwareVersion"/>
     </Definition>
   </UADataType>
@@ -95,25 +96,25 @@
       <Reference ReferenceType="HasDescription">ns=1;i=32103</Reference>
     </References>
   </UAObject>
-  <!-- LabelInfo-->
-  <UADataType NodeId="ns=1;i=32201" BrowseName="1:Labelnfo">
-    <DisplayName>Labelnfo</DisplayName>
+  <!-- LabelItemInfo-->
+  <UADataType NodeId="ns=1;i=32201" BrowseName="1:LabelItemInfo">
+    <DisplayName>LabelItemInfo</DisplayName>
     <References>
       <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
     </References>
-    <Definition Name="1:Labelnfo">
+    <Definition Name="1:LabelItemInfo">
       <Field DataType="String" Name="label"/>
       <Field DataType="String" Name="description"/>
     </Definition>
   </UADataType>
-  <UAVariable NodeId="ns=1;i=32203" BrowseName="1:Labelnfo" ParentNodeId="ns=1;i=7617" DataType="String">
-    <DisplayName>LabelInfo</DisplayName>
+  <UAVariable NodeId="ns=1;i=32203" BrowseName="1:LabelItemInfo" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>LabelItemInfo</DisplayName>
     <References>
       <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
       <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
     </References>
     <Value>
-      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">Labelnfo</String>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">LabelItemInfo</String>
     </Value>
   </UAVariable>
   <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32204" BrowseName="Default Binary">
@@ -124,6 +125,39 @@
       <Reference ReferenceType="HasDescription">ns=1;i=32203</Reference>
     </References>
   </UAObject>
+
+  <!-- LabelInfo-->
+  <UADataType NodeId="ns=1;i=32301" BrowseName="1:LabelInfo">
+    <DisplayName>LabelInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:LabelInfo">
+      <Field DataType="String" Name="description"/>
+      <Field DataType="Int32" Name="channelLanebelsSize"/>
+      <Field DataType="ns=1;i=32201" ValueRank="1" Name="channelLabels"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=32303" BrowseName="1:LabelInfo" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>LabelInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">LabelInfo</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32304" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32301</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=32303</Reference>
+    </References>
+  </UAObject>
+  
+
   <!-- End of device stuff-->
   <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.DCSnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
     <DisplayName>Opc.Ua.DCSnodeset</DisplayName>
@@ -134,7 +168,7 @@
     <Value>
       <!-- This is the Base64 Encoded content of nodeset.bsd -->
       <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-PD94bWwgdmVyc2lvbj0iMS4wIj8+CjxvcGM6VHlwZURpY3Rpb25hcnkgeG1sbnM6b3BjPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvQmluYXJ5U2NoZW1hLyIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeG1sbnM6dWE9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIHhtbG5zOnRucz0idXJuOmRjcy5jb3JlIiBEZWZhdWx0Qnl0ZU9yZGVyPSJMaXR0bGVFbmRpYW4iIFRhcmdldE5hbWVzcGFjZT0idXJuOmRjcy5jb3JlIj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iUGFyYW1ldGVyc1RDUCIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImFkZHJlc3MiIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InBvcnQiIFR5cGVOYW1lPSJvcGM6VUludDMyIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEZXZpY2VJbmZvIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idmVuZG9yIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzZXJpYWxOdW1iZXIiIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9Im1vZGVsIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJmaXJtd2FyZVZlcnNpb24iIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJMYWJlbEluZm8iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJsYWJlbCIgVHlwZU5hbWU9Im9wYzpTdHJpbmciLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iZGVzY3JpcHRpb24iIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+Cjwvb3BjOlR5cGVEaWN0aW9uYXJ5Pgo=
+PD94bWwgdmVyc2lvbj0iMS4wIj8+CjxvcGM6VHlwZURpY3Rpb25hcnkgeG1sbnM6b3BjPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvQmluYXJ5U2NoZW1hLyIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeG1sbnM6dWE9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIHhtbG5zOnRucz0idXJuOmRjcy5jb3JlIiBEZWZhdWx0Qnl0ZU9yZGVyPSJMaXR0bGVFbmRpYW4iIFRhcmdldE5hbWVzcGFjZT0idXJuOmRjcy5jb3JlIj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iUGFyYW1ldGVyc1RDUCIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImFkZHJlc3MiIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InBvcnQiIFR5cGVOYW1lPSJvcGM6VUludDMyIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEZXZpY2VJbmZvIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idmVuZG9yIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJtb2RlbCIgVHlwZU5hbWU9Im9wYzpTdHJpbmciLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic2VyaWFsTnVtYmVyIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJmaXJtd2FyZVZlcnNpb24iIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJMYWJlbEl0ZW1JbmZvIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0ibGFiZWwiIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImRlc2NyaXB0aW9uIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPiAgCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJMYWJlbEluZm8iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJkZXNjcmlwdGlvbiIgVHlwZU5hbWU9Im9wYzpTdHJpbmciLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2hhbm5lbExhYmVsc1NpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImNoYW5uZWxMYWJlbHMiIFR5cGVOYW1lPSJ0bnM6TGFiZWxJdGVtSW5mbyIgTGVuZ3RoRmllbGQ9ImNoYW5uZWxMYWJlbHNTaXplIi8+Lz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCjwvb3BjOlR5cGVEaWN0aW9uYXJ5Pgo=
       </ByteString>
     </Value>
   </UAVariable>
