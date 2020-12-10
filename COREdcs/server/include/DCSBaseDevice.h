@@ -1,20 +1,15 @@
-#ifndef GENERICDEVICE_H
-#define GENERICDEVICE_H
+#ifndef DCS_BASE_DEVICE_H
+#define DCS_BASE_DEVICE_H
 
 #include "ConnectionStream.h"
 #include <chrono>
 #include <memory>
 #include <regex>
 #include <thread>
-class GenericDevice {
+class DCSBaseDevice {
   public:
-    GenericDevice();
-    virtual ~GenericDevice();
-
-    virtual std::string getVendor() { return "-"; }
-    virtual std::string getModel() { return "-"; }
-    virtual std::string getSerialNumber() { return "-"; }
-    virtual std::string getFirmwareVersion() { return "-"; }
+    DCSBaseDevice() = delete;
+    virtual ~DCSBaseDevice();
 
     virtual void setConnectionStream(ConnectionStream *stream);
     void resetConnectionStream();
@@ -27,7 +22,7 @@ class GenericDevice {
 
   protected:
     void validate(const std::string &response, const std::string &regex);
-    GenericDevice(ConnectionType allowed, ConnectionType active)
+    DCSBaseDevice(ConnectionType allowed, ConnectionType active)
         : connectionTypeAllowed(allowed), activeConnectionType(active) {}
     ConnectionType connectionTypeAllowed;
     ConnectionType activeConnectionType;
@@ -35,4 +30,4 @@ class GenericDevice {
     bool connected = false;
 };
 
-#endif  // GENERICDEVICE_H
+#endif  // DCS_BASE_DEVICE_H

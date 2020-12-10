@@ -1,11 +1,11 @@
 #ifndef N1471_H
 #define N1471_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 #include <map>
 #include <string>
 
-class N1471 : public GenericDevice {
+class N1471 : public DCSGenericDevice {
   public:
     enum class CMD { MON, SET };
     enum class CHANNEL { CH0, CH1, CH2, CH3, ALL, NONE };

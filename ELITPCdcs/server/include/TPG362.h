@@ -1,9 +1,9 @@
 #ifndef TPG362_H
 #define TPG362_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 
-class TPG362 : public GenericDevice {
+class TPG362 : public DCSGenericDevice {
   public:
     TPG362();
     enum class CH { ALL, CH1, CH2 };

@@ -1,7 +1,7 @@
 #include "TPG362.h"
 #include <sstream>
 
-TPG362::TPG362() : GenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
+TPG362::TPG362() : DCSGenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
 
 std::string TPG362::sendWithEnquiry(std::string command) {
     std::string r = sendWithDelayedResponse(command + "\r", 100);

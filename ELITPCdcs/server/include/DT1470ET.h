@@ -1,12 +1,12 @@
 #ifndef DT1470ET_H
 #define DT1470ET_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 #include "version.h"
 #include <map>
 #include <string>
 
-class DT1470ET : public GenericDevice {
+class DT1470ET : public DCSGenericDevice {
   public:
     enum class CMD { MON, SET };
     enum class CHANNEL { CH0, CH1, CH2, CH3, ALL, NONE };

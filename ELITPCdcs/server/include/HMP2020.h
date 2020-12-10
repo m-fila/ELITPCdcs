@@ -1,9 +1,9 @@
 #ifndef HMP2020_H
 #define HMP2020_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 
-class HMP2020 : public GenericDevice {
+class HMP2020 : public DCSGenericDevice {
   public:
     HMP2020();
     virtual ~HMP2020();

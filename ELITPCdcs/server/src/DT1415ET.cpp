@@ -5,12 +5,13 @@
 #include <iomanip>
 
 DT1415ET::DT1415ET()
-    : GenericDevice(ConnectionType::TCP, ConnectionType::TCP), firmwareVersion("1.10") {}
+    : DCSGenericDevice(ConnectionType::TCP, ConnectionType::TCP),
+      firmwareVersion("1.10") {}
 
 DT1415ET::~DT1415ET() {}
 
 void DT1415ET::setConnectionStream(ConnectionStream *stream) {
-    GenericDevice::setConnectionStream(stream);
+    DCSGenericDevice::setConnectionStream(stream);
     if(connected) {
         setFirmwareVersion();
     }

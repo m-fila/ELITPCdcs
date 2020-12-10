@@ -5,7 +5,7 @@
 #include <iomanip>
 
 N1471::N1471()
-    : GenericDevice(ConnectionType::TCP, ConnectionType::TCP), moduleAddress(0) {}
+    : DCSGenericDevice(ConnectionType::TCP, ConnectionType::TCP), moduleAddress(0) {}
 
 void N1471::setModuleAddress(int nr) {
     if(nr >= 0 && nr <= 31) {

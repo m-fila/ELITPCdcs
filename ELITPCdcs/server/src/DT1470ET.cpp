@@ -4,12 +4,12 @@
 
 #include <iomanip>
 
-DT1470ET::DT1470ET() : GenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
+DT1470ET::DT1470ET() : DCSGenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
 
 DT1470ET::~DT1470ET() {}
 
 void DT1470ET::setConnectionStream(ConnectionStream *stream) {
-    GenericDevice::setConnectionStream(stream);
+    DCSGenericDevice::setConnectionStream(stream);
     if(connected) {
         setFirmwareVersion();
     }

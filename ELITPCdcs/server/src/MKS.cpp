@@ -2,7 +2,7 @@
 #include <sstream>
 
 MKS::MKS()
-    : GenericDevice(ConnectionType::TCP | ConnectionType::Serial, ConnectionType::TCP),
+    : DCSGenericDevice(ConnectionType::TCP | ConnectionType::Serial, ConnectionType::TCP),
       delay(200), address(253) {}
 
 std::string MKS::encapsulate(std::string content) {
@@ -28,7 +28,8 @@ std::string MKS::extract(std::string content) {
 }
 
 std::string MKS::sendWithDelayedResponse(std::string command) {
-    std::string s = GenericDevice::sendWithDelayedResponse(encapsulate(command), delay);
+    std::string s =
+        DCSGenericDevice::sendWithDelayedResponse(encapsulate(command), delay);
     return extract(s);
 }
 

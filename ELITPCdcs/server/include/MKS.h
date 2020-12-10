@@ -1,9 +1,9 @@
 #ifndef MKS_H
 #define MKS_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 
-class MKS : public GenericDevice {
+class MKS : public DCSGenericDevice {
   public:
     MKS();
 

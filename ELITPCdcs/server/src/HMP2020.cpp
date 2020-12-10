@@ -2,7 +2,8 @@
 #include <sstream>
 
 HMP2020::HMP2020()
-    : GenericDevice(ConnectionType::TCP | ConnectionType::Serial, ConnectionType::TCP) {}
+    : DCSGenericDevice(ConnectionType::TCP | ConnectionType::Serial,
+                       ConnectionType::TCP) {}
 
 HMP2020::~HMP2020() {}
 
