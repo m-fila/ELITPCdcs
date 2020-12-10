@@ -51,7 +51,7 @@ template <class Device> class DCSDeviceController : public DCSObject {
     void addConnection(const Options &options);
     void addProfiles(DCSVariable &configVariable, const Options &options);
     virtual void parseProfile(const nlohmann::json &profile) {}
-
+    virtual UA_DeviceInfo getDeviceInfo();
     Device device;
     DCSWorkerThread deviceThread;
 
@@ -95,9 +95,17 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
                        e.what());
     }
     if(isConnected()) {
-        auto found = methods.find("applyProfile");
-        if(found != methods.end()) {
-            found->second(nullptr, nullptr);
+        {
+            auto found = variables.find("deviceInfo");
+            if(found != variables.end()) {
+                found->second->setValue(getDeviceInfo());
+            }
+        }
+        {
+            auto found = methods.find("applyProfile");
+            if(found != methods.end()) {
+                found->second(nullptr, nullptr);
+            }
         }
     }
 }
@@ -123,9 +131,11 @@ template <class Device>
 void DCSDeviceController<Device>::addConnection(const Options &options) {
     device.resetConnectionStream();
     auto &s = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(s, 1000, [this]() { return isConnected(); }, true, false);
+    addVariableUpdate(
+        s, 1000, [this]() { return isConnected(); }, true, false);
     auto &p = addVariable("connectionParameters",
                           UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PARAMETERSTCP]);
+    addVariable("deviceInfo", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DEVICEINFO]);
     addControllerMethod("connect", "Connects device", {}, {},
                         &DCSDeviceController::connectDevice, this);
     addControllerMethod("setConnectionParameters", "Sets connection parameters",
@@ -401,6 +411,12 @@ void DCSDeviceController<Device>::applyProfile(const DCSVariable &profile,
                      "%s config doesn't contain \"%s\" profile", objectType.c_str(),
                      profileStr.c_str());
     }
+}
+
+template <class Device> UA_DeviceInfo DCSDeviceController<Device>::getDeviceInfo() {
+    UA_DeviceInfo info;
+    UA_DeviceInfo_init(&info);
+    return info;
 }
 
 #endif  // DCS_DEVICE_CONTROLLER_H

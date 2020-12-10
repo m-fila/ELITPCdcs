@@ -1,2 +1,6 @@
 ParametersTCP_Encoding_DefaultBinary,32004,Object
 ParametersTCP,32001,DataType
+DeviceInfo_Encoding_DefaultBinary,32104,Object
+DeviceInfo,32101,DataType
+LabelInfo_Encoding_DefaultBinary,32204,Object
+LabelInfo,32201,DataType
