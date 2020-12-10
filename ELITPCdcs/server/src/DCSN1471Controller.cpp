@@ -1,38 +1,38 @@
 #include "DCSN1471Controller.h"
 #include <sstream>
 void DCSN1471Controller::addChildren(const Options &options) {
-    addConnection(options);
+    DCSDeviceController<N1471>::addChildren(options);
     auto &m = addVariable("measurements",
-                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415M]);
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415M]);
     addVariableUpdate(m, 1000, &DCSN1471Controller::getMeasurements, this);
     auto &c = addVariable("configuration",
-                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415C]);
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415C]);
     addVariableUpdate(c, 1000, &DCSN1471Controller::getConfiguration, this);
 
     addControllerMethod("setchannel", "Sets channel ON/OFF",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"State", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"State", "ON/OFF", &UA_TYPES[UA_TYPES_BOOLEAN]}},
                         {}, &DCSN1471Controller::setChannel, this);
     addControllerMethod("setvoltage", "Sets voltage",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"Voltage", "Voltage in V", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"Voltage", "Voltage in V", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSN1471Controller::setVoltage, this);
     addControllerMethod(
         "setvoltagemax", "Sets maximum voltage",
-        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-         {"Maximum voltage", "Maximum voltage in V", UA_TYPES[UA_TYPES_DOUBLE]}},
+        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+         {"Maximum voltage", "Maximum voltage in V", &UA_TYPES[UA_TYPES_DOUBLE]}},
         {}, &DCSN1471Controller::setVoltageMax, this);
     addControllerMethod("setcurrent", "Sets current",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"Current", "Current in A", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"Current", "Current in A", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSN1471Controller::setCurrent, this);
     addControllerMethod("setrampup", "Sets ramp up",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"Ramp up", "Ramp up in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"Ramp up", "Ramp up in V/s", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSN1471Controller::setRampUp, this);
     addControllerMethod("setrampdown", "Sets ramp down",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"Ramp down", "Ramp down in V/s", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"Ramp down", "Ramp down in V/s", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSN1471Controller::setRampDown, this);
 }
 

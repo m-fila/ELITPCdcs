@@ -11,6 +11,11 @@ class GenericDevice {
     GenericDevice();
     virtual ~GenericDevice();
 
+    virtual std::string getVendor() { return "-"; }
+    virtual std::string getModel() { return "-"; }
+    virtual std::string getSerialNumber() { return "-"; }
+    virtual std::string getFirmwareVersion() { return "-"; }
+
     virtual void setConnectionStream(ConnectionStream *stream);
     void resetConnectionStream();
     bool isConnected() { return connected; }

@@ -23,7 +23,8 @@ DCSObject::~DCSObject() {
     }
 }
 
-DCSVariable &DCSObject::addVariable(std::string variableName, UA_DataType variableType) {
+DCSVariable &DCSObject::addVariable(std::string variableName,
+                                    const UA_DataType *variableType) {
     if(variables.find(variableName) == variables.end()) {
         return *variables
                     .insert(
@@ -54,7 +55,7 @@ DCSObject::Method &DCSObject::addMethod(
         inputArguments[i].description =
             UA_LOCALIZEDTEXT_ALLOC("en-US", inputs.at(i).description.c_str());
         inputArguments[i].name = UA_String_fromChars(inputs.at(i).name.c_str());
-        inputArguments[i].dataType = inputs.at(i).dataType.typeId;
+        inputArguments[i].dataType = inputs.at(i).dataType->typeId;
         inputArguments[i].valueRank = UA_VALUERANK_SCALAR;
     }
 
@@ -67,7 +68,7 @@ DCSObject::Method &DCSObject::addMethod(
         outputArguments[i].description =
             UA_LOCALIZEDTEXT_ALLOC("en-US", outputs.at(i).description.c_str());
         outputArguments[i].name = UA_String_fromChars(outputs.at(i).name.c_str());
-        outputArguments[i].dataType = outputs.at(i).dataType.typeId;
+        outputArguments[i].dataType = outputs.at(i).dataType->typeId;
         outputArguments[i].valueRank = UA_VALUERANK_SCALAR;
     }
 

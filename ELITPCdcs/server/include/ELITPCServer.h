@@ -8,8 +8,10 @@ class ELITPCServer : public DCSServer {
     ELITPCServer(std::string address, int port);
 
   private:
-    UA_DataTypeArray customDataTypesArray = {nullptr, UA_TYPES_ELITPCNODESET_COUNT,
-                                             UA_TYPES_ELITPCNODESET};
+    UA_DataTypeArray customDataTypesArray2 = {nullptr, UA_TYPES_ELITPCNODESET_COUNT,
+                                              UA_TYPES_ELITPCNODESET};
+    UA_DataTypeArray customDataTypesArray = {
+        &customDataTypesArray2, UA_TYPES_DCSNODESET_COUNT, UA_TYPES_DCSNODESET};
 };
 
 #endif  // ELITPC_SERVER_H

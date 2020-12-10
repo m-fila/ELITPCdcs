@@ -1,24 +1,24 @@
 #include "DCSMKS910Controller.h"
 void DCSMKS910Controller::addChildren(const Options &options) {
-    addConnection(options);
+    DCSDeviceController<MKS910>::addChildren(options);
     auto &m = addVariable("measurements",
-                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910M]);
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910M]);
     addVariableUpdate(m, 1000, &DCSMKS910Controller::getMeasurements, this);
     m.setHistorizing();
     auto &c = addVariable("configuration",
-                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910C]);
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910C]);
     addVariableUpdate(c, 1000, &DCSMKS910Controller::getConfiguration, this);
 
-    auto &r = addVariable("relay", UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
+    auto &r = addVariable("relay", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
     addVariableUpdate(r, 5000, &DCSMKS910Controller::getRelay, this);
     addControllerMethod("setunits", "Sets pressure units",
-                        {{"Unit", "PASCAL/BAR/TORR", UA_TYPES[UA_TYPES_INT16]}}, {},
+                        {{"Unit", "PASCAL/BAR/TORR", &UA_TYPES[UA_TYPES_INT16]}}, {},
                         &DCSMKS910Controller::setUnits, this);
     addControllerMethod("setrelay", "Sets relay",
-                        {{"Relay number", "1-3", UA_TYPES[UA_TYPES_UINT32]},
-                         {"Enabled", "OFF/ON", UA_TYPES[UA_TYPES_UINT32]},
-                         {"Setpoint", "Current units", UA_TYPES[UA_TYPES_DOUBLE]},
-                         {"Hysteresis", "Current units", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Relay number", "1-3", &UA_TYPES[UA_TYPES_UINT32]},
+                         {"Enabled", "OFF/ON", &UA_TYPES[UA_TYPES_UINT32]},
+                         {"Setpoint", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]},
+                         {"Hysteresis", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSMKS910Controller::setRelay, this);
 }
 

@@ -4,21 +4,21 @@
 #include <sstream>
 
 void DCSTPG362Controller::addChildren(const Options &options) {
-    addConnection(options);
+    DCSDeviceController<TPG362>::addChildren(options);
     auto &m = addVariable("measurements",
-                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362M]);
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362M]);
     addVariableUpdate(m, 1000, &DCSTPG362Controller::getMeasurements, this);
     m.setHistorizing();
     auto &c = addVariable("configuration",
-                          UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362C]);
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362C]);
     addVariableUpdate(c, 1000, &DCSTPG362Controller::getConfiguration, this);
-    auto &r = addVariable("relay", UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
+    auto &r = addVariable("relay", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
     addVariableUpdate(r, 1000, &DCSTPG362Controller::getRelay, this);
     addControllerMethod("setrelay", "Sets relay",
-                        {{"Relay number", "1-4", UA_TYPES[UA_TYPES_UINT32]},
-                         {"Enabled", "OFF/ON/CH1/CH2", UA_TYPES[UA_TYPES_UINT32]},
-                         {"Setpoint", "Current units", UA_TYPES[UA_TYPES_DOUBLE]},
-                         {"Hysteresis", "Current units", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Relay number", "1-4", &UA_TYPES[UA_TYPES_UINT32]},
+                         {"Enabled", "OFF/ON/CH1/CH2", &UA_TYPES[UA_TYPES_UINT32]},
+                         {"Setpoint", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]},
+                         {"Hysteresis", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSTPG362Controller::setRelay, this);
 }
 
