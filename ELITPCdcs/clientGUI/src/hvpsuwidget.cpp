@@ -11,6 +11,7 @@ HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber, QWidget *parent)
       ui(new Ui::HVpsuWidget), channelsNumber(channelsNumber) {
     ui->setupUi(this);
     ui->tcpLayout->addWidget(tcp);
+    ui->verticalLayout->addWidget(&deviceInfoLabel);
     loadConfig();  // need to be called first because create functions use some
                    // settings!
     createAllChannelsTab();
@@ -174,8 +175,6 @@ void HVpsuWidget::updateConfiguration(void *data) {
         isRemote = channelStatus.isRemote;
     }
 }
-
-void HVpsuWidget::updateStatusLabel(QString info) { ui->statusLabel->setText(info); }
 
 void HVpsuWidget::onPressed() {
     QObject *obj = sender();
@@ -825,14 +824,14 @@ DT1415Widget::DT1415Widget(std::string name, int enabledChannels, QWidget *paren
 
 DT1470Widget::DT1470Widget(std::string name, int enabledChannels, QWidget *parent)
     : HVpsuWidget(name, enabledChannels, parent) {
-    ui->HVGUI->setPixmap(QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png"))
-                             .scaled(10, 10, Qt::KeepAspectRatio));
+    ui->HVGUI->setPixmap(QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png")));
+    // .scaled(10, 10, Qt::KeepAspectRatio));
 }
 
 N1471Widget::N1471Widget(std::string name, int enabledChannels, QWidget *parent)
     : HVpsuWidget(name, enabledChannels, parent) {
-    ui->HVGUI->setPixmap(QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png"))
-                             .scaled(10, 10, Qt::KeepAspectRatio));
+    ui->HVGUI->setPixmap(QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png")));
+    //                           .scaled(10, 10, Qt::KeepAspectRatio));
 }
 
 void N1471Widget::updateConfiguration(void *data) {

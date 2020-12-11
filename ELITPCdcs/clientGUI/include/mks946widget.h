@@ -30,14 +30,12 @@ class MKS946Widget : public AbstractWidget {
     void updateConfiguration(void *data);
 
     void changeNamePressed();
-    void updateStatusLabel(QString info);
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
     bool connectionState;
     // create layout procedures and variables
     QVBoxLayout *mainLayout;
-    QLabel *statusLabel;
 
     QLabel *mUnitLabel;
     QTabWidget *tab;

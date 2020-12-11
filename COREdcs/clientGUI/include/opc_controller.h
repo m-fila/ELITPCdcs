@@ -16,6 +16,8 @@ class opc_controller : public opcQObject {
     const std::string disconnectBrowseName = "disconnect";
     const std::string setConnectionParametersBrowseName = "setConnectionParameters";
 
+    const std::string deviceInfoBrowseName = "deviceInfo";
+
     const std::string selectedProfileBrowseName = "selectedProfile";
     const std::string enabledProfilesBrowseName = "enabledProfiles";
     const std::string saveProfileBrowseName = "saveProfile";
@@ -41,7 +43,9 @@ class opc_controller : public opcQObject {
     static void EnabledProfilesChangedCallback(UA_Client *client, UA_UInt32 subId,
                                                void *subContext, UA_UInt32 monId,
                                                void *monContext, UA_DataValue *value);
-
+    static void DeviceInfoChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                          void *subContext, UA_UInt32 monId,
+                                          void *monContext, UA_DataValue *value);
   public slots:
     void opcInit(UA_Client *client, UA_ClientConfig *config,
                  UA_CreateSubscriptionResponse response) override;
@@ -61,6 +65,7 @@ class opc_controller : public opcQObject {
 
     void selectedProfileChanged(void *);
     void enabledProfilesChanged(void *);
+    void deviceInfoChanged(void *);
 };
 
 #endif  // OPC_CONTROLLER_H

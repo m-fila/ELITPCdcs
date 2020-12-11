@@ -44,7 +44,6 @@ class HVpsuWidget : public AbstractWidget {
     void setRUPPressed();
     void setRDWNPressed();
     void changeNamePressed();
-    void updateStatusLabel(QString info);
 
   protected:
     const int channelsNumber;

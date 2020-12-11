@@ -82,8 +82,6 @@ void MKS910Widget::changeRelay(int nr, RelayStruct values) {
         ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
 }
 
-void MKS910Widget::updateStatusLabel(QString info) { statusLabel->setText(info); }
-
 void MKS910Widget::createLayout() {
     // create main layout with base size
     mainLayout = new QVBoxLayout();
@@ -98,10 +96,7 @@ void MKS910Widget::createLayout() {
     createCTab();
     createRTab();
     mainLayout->addStretch();
-
-    statusLabel = new QLabel("...");
-    mainLayout->addWidget(statusLabel);
-
+    mainLayout->addWidget(&deviceInfoLabel);
     setLayout(mainLayout);
 }
 void MKS910Widget::createMTab() {

@@ -1,15 +1,15 @@
 #include "abstractwidget.h"
-#include <iostream>
 AbstractWidget::AbstractWidget(opc_controller *controller, std::string name,
                                bool horizontalTcpPanel, QWidget *parent)
     : BaseWidget(name, parent), controller(controller) {
-    tcp = new TCPWidget(horizontalTcpPanel);
-    loadConfig();
+    tcp = new TCPWidget(horizontalTcpPanel, this);
 }
 
 void AbstractWidget::updateStatus(void *data) {
     BaseWidget::updateStatus(data);
-    tcp->setStatus(*static_cast<bool *>(data));
+    auto status = *static_cast<bool *>(data);
+    tcp->setStatus(status);
+    deviceInfoLabel.setEnabled(status);
 }
 
 void AbstractWidget::updateConnectionParameters(void *data) {
@@ -39,4 +39,20 @@ void AbstractWidget::connectSignals() {
             SLOT(updateConfiguration(void *)));
     connect(controller, SIGNAL(connectionParametersChanged(void *)), this,
             SLOT(updateConnectionParameters(void *)));
+    connect(controller, &opc_controller::deviceInfoChanged, this,
+            &AbstractWidget::updateDeviceInfo);
+}
+
+void AbstractWidget::updateDeviceInfo(void *data) {
+    auto f = [](const UA_String &ua) {
+        std::string s = "";
+        if(ua.length != 0) {
+            s = std::string(reinterpret_cast<char *>(ua.data), ua.length);
+        }
+        return s;
+    };
+    auto *info = static_cast<UA_DeviceInfo *>(data);
+    std::string deviceInfo = f(info->vendor) + "/" + f(info->model) + "/" +
+                             f(info->firmwareVersion) + "/" + f(info->serialNumber);
+    deviceInfoLabel.setText(deviceInfo.c_str());
 }

@@ -32,7 +32,6 @@ class TPGWidget : public AbstractWidget {
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
-    void updateStatusLabel(QString info);
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
@@ -40,7 +39,6 @@ class TPGWidget : public AbstractWidget {
     bool connectionState;
     // create layout procedures and variables
     QVBoxLayout *mainLayout;
-    QLabel *statusLabel;
     QLabel *connectionStatus;
     QLineEdit *connectionIP;
     QLineEdit *connectionPort;
