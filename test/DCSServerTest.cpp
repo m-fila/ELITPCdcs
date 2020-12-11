@@ -13,7 +13,7 @@ TEST(DCSServer, objectCreation) {
 TEST(DCSServer, variableCreation) {
     DCSServer server("localhost", 6669);
     auto *object = server.addObject<DCSObject>("testObject");
-    auto &v = object->addVariable("testVar", UA_TYPES[UA_TYPES_INT32]);
+    auto &v = object->addVariable("testVar", &UA_TYPES[UA_TYPES_INT32]);
     ASSERT_EQ("testVar", v.getName());
     v.setValue(2);
     ASSERT_EQ(2, v.getValue<int>());
