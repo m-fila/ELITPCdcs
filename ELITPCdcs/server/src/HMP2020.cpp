@@ -66,10 +66,10 @@ std::string HMP2020::getModel() { return parseIdentifier(1); }
 std::string HMP2020::getSerialNumber() {
     auto r = parseIdentifier(2);
     auto slash = r.find("/");
-    if(slash == std::string::npos || slash == r.length - 1) {
+    if(slash == std::string::npos) {
         return r;
     }
-    return r.substr(slash + 1, r.length);
+    return r.substr(slash + 1, r.length());
 }
 
 std::string HMP2020::getPartNumber() {

@@ -35,7 +35,7 @@ class TPG362 : public DCSGenericDevice {
     void Reset() {}
 
     std::string getTemperature();
-    std::string getVendor() override { return "Pfeifer"; }
+    std::string getVendor() override { return "Pfeiffer"; }
     std::string getModel() override;
     std::string getSerialNumber() override;
     std::string getPartNumber() override;
