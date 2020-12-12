@@ -8,7 +8,11 @@ std::string TPG362::sendWithEnquiry(std::string command) {
     auto code = r.at(0);
     if(code == 6) {
         // 6->ACK
-        return sendWithDelayedResponse(enq, 100);
+        r = sendWithDelayedResponse(enq, 100);
+        if(r.back() == '\r') {
+            r.erase(r.length() - 1);
+        }
+        return r;
     } else if(code == 21) {
         // 21->NACK
         throw std::runtime_error("TPG362 acknowledgement error. Received NACK");
@@ -16,8 +20,6 @@ std::string TPG362::sendWithEnquiry(std::string command) {
         throw std::runtime_error("TPG362 acknowledgement error.");
     }
 }
-
-std::string TPG362::getIdentifier() { return sendWithEnquiry("AYT"); }
 
 std::string TPG362::getGaugesData(CH ch) {
     if(ch == CH::ALL) {
@@ -74,4 +76,20 @@ std::string TPG362::setFilter(FILTER f1, FILTER f2) {
     int F1 = static_cast<int>(f1);
     int F2 = static_cast<int>(f2);
     return sendWithEnquiry("FIL," + std::to_string(F1) + "," + std::to_string(F2));
+}
+std::string TPG362::getTemperature() { return sendWithEnquiry("TMP"); }
+std::string TPG362::getFirmwareVersion() { return sendWithEnquiry("PNR"); }
+std::string TPG362::getHardwareVersion() { return sendWithEnquiry("HDW"); }
+
+std::string TPG362::getModel() { return parseIdentifier(0); }
+std::string TPG362::getSerialNumber() { return parseIdentifier(2); }
+std::string TPG362::getPartNumber() { return parseIdentifier(1); }
+
+std::string TPG362::parseIdentifier(size_t n) {
+    std::stringstream ss(sendWithEnquiry("AYT"));
+    std::string segment;
+    for(size_t i = 0; i <= n; ++i) {
+        std::getline(ss, segment, ',');
+    }
+    return segment;
 }

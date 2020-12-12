@@ -53,7 +53,7 @@ std::string N1471::extractCommandValue(std::string command) {
     return ret;
 }
 
-std::string N1471::getModuleName() {
+std::string N1471::getModel() {
     std::string resp = sendN1471command(CMD::MON, CHANNEL::NONE, "BDNAME", "");
     return extractCommandValue(resp);
 }
@@ -80,15 +80,6 @@ bool N1471::isRemote() {
         return true;
     else
         return false;
-}
-
-std::string N1471::getIdentifier() {
-    std::stringstream cb;
-    cb << "Module name: " << getModuleName() << " | ";
-    cb << "Firmware version: " << getFirmwareVersion() << " | ";
-    cb << "S/N: " << getSerialNumber();
-
-    return cb.str();
 }
 
 std::string N1471::getVoltageSet(CHANNEL channel) {

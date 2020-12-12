@@ -37,7 +37,7 @@ UA_TPG362m DCSTPG362Controller::getMeasurements() {
             std::string response = device.getGaugesData(TPG362::CH::ALL);
             std::regex reg(
                 "^[0-9][,][+-][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][,][+-][0-"
-                "9][.][0-9]{4}[E][+-][0-9]{2}\r$");
+                "9][.][0-9]{4}[E][+-][0-9]{2}$");
             if(!std::regex_match(response, reg)) {
                 throw std::runtime_error(
                     std::string("received invalid  pressure response: ") +
@@ -107,7 +107,7 @@ UA_Relay DCSTPG362Controller::getRelay() {
     while(tries) {
         try {
             auto statusResponse = device.getSwitchingFunctionStatus();
-            std::regex regex("^[01][,][01][,][01][,][01]\r$");
+            std::regex regex("^[01][,][01][,][01][,][01]$");
             if(!std::regex_match(statusResponse, regex)) {
                 throw std::runtime_error(
                     std::string("received invalid switching function status response: ") +
@@ -122,7 +122,7 @@ UA_Relay DCSTPG362Controller::getRelay() {
                 auto functionResponse = device.getSwitchingFunction(
                     static_cast<TPG362::SWITCHING_FUNCTION>(i + 1));
                 std::regex reg("^[0-9][,][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][.][0-9]{"
-                               "4}[E][+-][0-9]{2}\r$");
+                               "4}[E][+-][0-9]{2}$");
                 if(!std::regex_match(functionResponse, reg)) {
                     throw std::runtime_error(
                         std::string("received invalid switching function response: ") +

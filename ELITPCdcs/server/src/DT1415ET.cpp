@@ -55,7 +55,7 @@ std::string DT1415ET::extractCommandValue(std::string command) {
     return ret;
 }
 
-std::string DT1415ET::getModuleName() {
+std::string DT1415ET::getModel() {
     std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDNAME", "");
     return extractCommandValue(resp);
 }
@@ -88,15 +88,6 @@ bool DT1415ET::isRemote() {
         return true;
     else
         return false;
-}
-
-std::string DT1415ET::getIdentifier() {
-    std::stringstream cb;
-    cb << "Module name: " << getModuleName() << " | ";
-    cb << "Firmware version: " << getFirmwareVersion() << " | ";
-    cb << "S/N: " << getSerialNumber();
-
-    return cb.str();
 }
 
 std::string DT1415ET::getVoltageSet(CHANNEL channel) {

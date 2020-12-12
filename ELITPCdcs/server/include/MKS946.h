@@ -43,11 +43,11 @@ class MKS946 : public MKS {
     std::string getSerialNumber(CH ch);
     // unit commands
 
-    std::string getHardware();
+    std::string getVendor() override { return "MKS"; }
+    std::string getFirmwareVersion() override;
     std::string getName();
-    std::string getModel();
-    std::string getSerialNumber();
-    std::string getPartNumer();
+    std::string getModel() override;
+    std::string getSerialNumber() override;
     std::string getUptime();
 
     // TORR, PASCAL, MBAR

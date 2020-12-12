@@ -24,12 +24,14 @@ class DT1470ET : public DCSGenericDevice {
     std::string sendDT1470ETcommand(CMD command, CHANNEL channel, std::string function,
                                     std::string value);
     void setConnectionStream(ConnectionStream *stream) override;
-    std::string getModuleName();
-    std::string getFirmwareVersion();
-    std::string getSerialNumber();
+
+    std::string getVendor() override { return "Caen"; }
+    std::string getModel() override;
+    std::string getFirmwareVersion() override;
+    std::string getSerialNumber() override;
+
     std::string getControlMode();
     bool isRemote();
-    std::string getIdentifier();
     std::string getVoltageSet(CHANNEL channel);
     std::string getVoltage(CHANNEL channel);
     std::string getVoltageMax(CHANNEL channel);

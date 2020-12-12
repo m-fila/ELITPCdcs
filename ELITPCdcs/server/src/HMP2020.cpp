@@ -7,8 +7,6 @@ HMP2020::HMP2020()
 
 HMP2020::~HMP2020() {}
 
-std::string HMP2020::getIdentifier() { return sendWithResponse("*IDN?\n"); }
-
 void HMP2020::setActiveChannel(int channel) {
     std::stringstream cb;
     cb << "INST OUT" << channel << "\n";
@@ -53,3 +51,33 @@ void HMP2020::setCurrent(int channel, double i) {
     cb << "SOUR:CURR " << i << "\n";
     sendCommand(cb.str());
 }
+
+std::string HMP2020::parseIdentifier(size_t n) {
+    std::stringstream ss(sendWithResponse("*IDN?\n"));
+    std::string segment;
+    for(size_t i = 0; i <= n; ++i) {
+        std::getline(ss, segment, ',');
+    }
+    return segment;
+}
+
+std::string HMP2020::getVendor() { return parseIdentifier(0); }
+std::string HMP2020::getModel() { return parseIdentifier(1); }
+std::string HMP2020::getSerialNumber() {
+    auto r = parseIdentifier(2);
+    auto slash = r.find("/");
+    if(slash == std::string::npos || slash == r.length - 1) {
+        return r;
+    }
+    return r.substr(slash + 1, r.length);
+}
+
+std::string HMP2020::getPartNumber() {
+    auto r = parseIdentifier(2);
+    auto slash = r.find("/");
+    if(slash == std::string::npos) {
+        return r;
+    }
+    return r.substr(0, slash);
+}
+std::string HMP2020::getFirmwareVersion() { return parseIdentifier(3); }
