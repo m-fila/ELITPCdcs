@@ -8,8 +8,10 @@
   <opc:StructuredType Name="DeviceInfo" BaseType="ua:ExtensionObject">
     <opc:Field Name="vendor" TypeName="opc:String"/>
     <opc:Field Name="model" TypeName="opc:String"/>
+    <opc:Field Name="partNumber" TypeName="opc:String"/>
     <opc:Field Name="serialNumber" TypeName="opc:String"/>
     <opc:Field Name="firmwareVersion" TypeName="opc:String"/>
+    <opc:Field Name="hardwareVersion" TypeName="opc:String"/>
   </opc:StructuredType>
   <opc:StructuredType Name="LabelItemInfo" BaseType="ua:ExtensionObject">
     <opc:Field Name="label" TypeName="opc:String"/>
