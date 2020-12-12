@@ -455,7 +455,9 @@ template <class Device> UA_DeviceInfo DCSDeviceController<Device>::getDeviceInfo
     info.vendor = UA_STRING_ALLOC(device.getVendor().c_str());
     info.model = UA_STRING_ALLOC(device.getModel().c_str());
     info.serialNumber = UA_STRING_ALLOC(device.getSerialNumber().c_str());
+    info.partNumber = UA_STRING_ALLOC(device.getPartNumber().c_str());
     info.firmwareVersion = UA_STRING_ALLOC(device.getFirmwareVersion().c_str());
+    info.hardwareVersion = UA_STRING_ALLOC(device.getHardwareVersion().c_str());
     return info;
 }
 
