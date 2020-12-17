@@ -43,6 +43,8 @@ class N1471 : public DCSGenericDevice {
     void setRampDown(CHANNEL, double value);
     void setModuleAddress(int nr);
 
+    void clearAlarmSignal();
+
   private:
     const std::map<CMD, std::string> CommandsMap = {{CMD::MON, "MON"}, {CMD::SET, "SET"}};
     const std::map<STATUS, std::string> StatusMap = {

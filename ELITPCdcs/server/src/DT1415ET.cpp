@@ -197,3 +197,8 @@ void DT1415ET::setRampDown(CHANNEL channel, double value) {
             sendDT1415ETcommand(CMD::SET, channel, "RDW", sb.str());
     }
 }
+
+void DT1415ET::clearAlarmSignal() {
+    if(isRemote())
+        sendDT1415ETcommand(CMD::SET, CHANNEL::NONE, "BDCLR", "");
+}

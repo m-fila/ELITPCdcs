@@ -97,6 +97,7 @@ void HVpsuWidget::updateStatus(void *data) {
         allOn->setEnabled(false);
         allOff->setEnabled(false);
     }
+    allTabKill[channelsNumber]->setEnabled(connectionState);
 }
 
 void HVpsuWidget::updateMeasurements(void *data) {
@@ -522,6 +523,10 @@ void HVpsuWidget::createAllChannelsTab() {
 
         // begin kill button
         allTabKill[i] = new QPushButton("KILL");
+        if(i == channelsNumber) {
+            connect(allTabKill[i], SIGNAL(pressed()),
+                    dynamic_cast<hv_controller *>(controller), SLOT(callClearAlarm()));
+        }
         allTabKill[i]->setFixedWidth(40);
         // palette = allTabKill[i]->palette();
         // palette.setColor(QPalette::ButtonText, Qt::red);

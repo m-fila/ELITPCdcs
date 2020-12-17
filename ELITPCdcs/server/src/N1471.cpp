@@ -176,3 +176,8 @@ void N1471::setRampDown(CHANNEL channel, double value) {
         sendN1471command(CMD::SET, channel, "RDW", sb.str());
     }
 }
+
+void N1471::clearAlarmSignal() {
+    if(isRemote())
+        sendN1471command(CMD::SET, CHANNEL::NONE, "BDCLR", "");
+}

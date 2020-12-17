@@ -45,6 +45,8 @@ class DT1415ET : public DCSGenericDevice {
     void setRampUp(CHANNEL channel, double value);
     void setRampDown(CHANNEL, double value);
 
+    void clearAlarmSignal();
+
   private:
     const std::map<CMD, std::string> CommandsMap = {{CMD::MON, "MON"}, {CMD::SET, "SET"}};
     const std::map<STATUS, std::string> StatusMap = {

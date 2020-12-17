@@ -34,6 +34,8 @@ void DCSDT1415ETController::addChildren(const Options &options) {
                         {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
                          {"Ramp down", "Ramp down in V/s", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSDT1415ETController::setRampDown, this);
+    addControllerMethod("clearalarm", "Clears alarm signal", {}, {},
+                        &DCSDT1415ETController::clearAlarm, this);
 }
 
 UA_DT1415m DCSDT1415ETController::getMeasurements() {

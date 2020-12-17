@@ -4,7 +4,7 @@ hv_controller::hv_controller(std::string OName, QObject *parent)
     : opc_controller(OName, parent), setChannelBrowseName("setchannel"),
       setVoltageBrowseName("setvoltage"), setVoltageMaxBrowseName("setvoltagemax"),
       setRampUpBrowseName("setrampup"), setRampDownBrowseName("setrampdown"),
-      setCurrentBrowseName("setcurrent") {}
+      setCurrentBrowseName("setcurrent"), clearAlarmBrowseName("clearalarm") {}
 
 void hv_controller::callSetChannel(int nr, bool state) {
     //  UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetChannel"));
@@ -70,4 +70,9 @@ void hv_controller::callSetCurrent(int nr, double current) {
     UA_Client_call(client, ObjectNodeId, browsedIds[setCurrentBrowseName], 2, input,
                    nullptr, nullptr);
     UA_Variant_clear(input);
+}
+
+void hv_controller::callClearAlarm() {
+    UA_Client_call(client, ObjectNodeId, browsedIds[clearAlarmBrowseName], 0, nullptr,
+                   nullptr, nullptr);
 }

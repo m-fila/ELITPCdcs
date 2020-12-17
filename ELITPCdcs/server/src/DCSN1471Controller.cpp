@@ -34,6 +34,8 @@ void DCSN1471Controller::addChildren(const Options &options) {
                         {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
                          {"Ramp down", "Ramp down in V/s", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSN1471Controller::setRampDown, this);
+    addControllerMethod("clearalarm", "Clears alarm signal", {}, {},
+                        &DCSN1471Controller::clearAlarm, this);
 }
 
 UA_DT1415m DCSN1471Controller::getMeasurements() {

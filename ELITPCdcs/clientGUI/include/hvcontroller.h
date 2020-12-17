@@ -5,12 +5,14 @@ class hv_controller : public opc_controller {
     Q_OBJECT
   public:
     hv_controller(std::string OName, QObject *parent = 0);
+  public slots:
     void callSetChannel(int nr, bool state);
     void callSetVoltage(int nr, double voltage);
     void callSetVoltageMax(int nr, double voltage);
     void callSetRampUp(int nr, double rup);
     void callSetRampDown(int nr, double rdwn);
     void callSetCurrent(int nr, double current);
+    void callClearAlarm();
 
   private:
     const std::string setChannelBrowseName;
@@ -19,6 +21,7 @@ class hv_controller : public opc_controller {
     const std::string setRampUpBrowseName;
     const std::string setRampDownBrowseName;
     const std::string setCurrentBrowseName;
+    const std::string clearAlarmBrowseName;
 };
 
 #endif  // HV_CONTROLLER_H

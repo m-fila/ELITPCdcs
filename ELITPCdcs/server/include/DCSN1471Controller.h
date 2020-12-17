@@ -21,7 +21,9 @@ class DCSN1471Controller : public DCSDeviceController<N1471>,
     void setVoltageMax(const UA_Variant *input, UA_Variant *output);
     void setRampUp(const UA_Variant *input, UA_Variant *output);
     void setRampDown(const UA_Variant *input, UA_Variant *output);
-
+    void clearAlarm(const UA_Variant *input, UA_Variant *output) {
+        device.clearAlarmSignal();
+    }
     UA_DT1415m getMeasurements();
     UA_DT1415c getConfiguration();
 };
