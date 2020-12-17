@@ -1,26 +1,24 @@
-#include "GenericDevice.h"
+#include "DCSBaseDevice.h"
 
-GenericDevice::GenericDevice() {}
+DCSBaseDevice::~DCSBaseDevice() {}
 
-GenericDevice::~GenericDevice() {}
-
-void GenericDevice::setConnectionStream(ConnectionStream *stream) {
+void DCSBaseDevice::setConnectionStream(ConnectionStream *stream) {
     connectionStream.reset(stream);
     connected = true;
 }
 
-void GenericDevice::resetConnectionStream() {
+void DCSBaseDevice::resetConnectionStream() {
     connectionStream.reset();
     connected = false;
 }
 
-void GenericDevice::sendCommand(std::string command) {
+void DCSBaseDevice::sendCommand(std::string command) {
     if(isConnected()) {
         connectionStream->send(command);
     }
 }
 
-std::string GenericDevice::receiveResponse() {
+std::string DCSBaseDevice::receiveResponse() {
     if(isConnected()) {
         return connectionStream->receive();
     } else {
@@ -28,7 +26,7 @@ std::string GenericDevice::receiveResponse() {
     }
 }
 
-std::string GenericDevice::sendWithResponse(std::string command) {
+std::string DCSBaseDevice::sendWithResponse(std::string command) {
     if(isConnected()) {
         return connectionStream->sendWithResponse(command);
     } else {
@@ -36,7 +34,7 @@ std::string GenericDevice::sendWithResponse(std::string command) {
     }
 }
 
-std::string GenericDevice::sendWithDelayedResponse(std::string command, size_t delay) {
+std::string DCSBaseDevice::sendWithDelayedResponse(std::string command, size_t delay) {
     if(isConnected()) {
         connectionStream->send(command);
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
@@ -46,7 +44,7 @@ std::string GenericDevice::sendWithDelayedResponse(std::string command, size_t d
     }
 }
 
-void GenericDevice::validate(const std::string &response, const std::string &pattern) {
+void DCSBaseDevice::validate(const std::string &response, const std::string &pattern) {
     std::regex rgex(pattern);
     if(!std::regex_match(response, std::regex(pattern))) {
         throw std::runtime_error(std::string("received invalid response: ") +

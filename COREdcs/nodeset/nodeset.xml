@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-->A more complete example can be found in tools/test/nodeset_compiler<-->
-<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://fuw.edu.pl/dcs/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <NamespaceUris>
-        <Uri>urn:dcs.core</Uri>
-    </NamespaceUris>
-
-    <Aliases>
-        <Alias Alias="Boolean">i=1</Alias>
-        <Alias Alias="Int32">i=6</Alias>
-        <Alias Alias="UInt32">i=7</Alias>
-        <Alias Alias="Double">i=11</Alias>
-        <Alias Alias="Organizes">i=35</Alias>
-        <Alias Alias="HasModellingRule">i=37</Alias>
-        <Alias Alias="HasEncoding">i=38</Alias>
-        <Alias Alias="HasTypeDefinition">i=40</Alias>
-        <Alias Alias="HasSubtype">i=45</Alias>
-        <Alias Alias="HasComponent">i=47</Alias>
-        <Alias Alias="IdType">i=256</Alias>
-        <Alias Alias="Argument">i=296</Alias>
-        <Alias Alias="ParametersTCP">ns=1;i=32001</Alias>
-    </Aliases>
-
-    <Extensions>
-        <Extension>
-            <ua:ModelInfo Tool="UaModeler" Hash="NY/CbF6sk/OjLXFpjvfTAA==" Version="1.6.2"/>
-        </Extension>
-    </Extensions>
-
-<!--ValueRank>
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://fuw.edu.pl/dcs/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:dcs.core">
+  <NamespaceUris>
+    <Uri>urn:dcs.core</Uri>
+  </NamespaceUris>
+  <Aliases>
+    <Alias Alias="Boolean">i=1</Alias>
+    <Alias Alias="Int32">i=6</Alias>
+    <Alias Alias="UInt32">i=7</Alias>
+    <Alias Alias="Double">i=11</Alias>
+    <Alias Alias="Organizes">i=35</Alias>
+    <Alias Alias="HasModellingRule">i=37</Alias>
+    <Alias Alias="HasEncoding">i=38</Alias>
+    <Alias Alias="HasTypeDefinition">i=40</Alias>
+    <Alias Alias="HasSubtype">i=45</Alias>
+    <Alias Alias="HasComponent">i=47</Alias>
+    <Alias Alias="IdType">i=256</Alias>
+    <Alias Alias="Argument">i=296</Alias>
+    <Alias Alias="ParametersTCP">ns=1;i=32001</Alias>
+    <Alias Alias="DeviceInfo">ns=1;i=32101</Alias>
+    <Alias Alias="labelItemInfo">ns=1;i=32201</Alias>
+    <Alias Alias="labelInfo">ns=1;i=32201</Alias>
+  </Aliases>
+  <Extensions>
+    <Extension>
+      <ua:ModelInfo Tool="UaModeler" Hash="NY/CbF6sk/OjLXFpjvfTAA==" Version="1.6.2"/>
+    </Extension>
+  </Extensions>
+  <!--ValueRank>
     OPC UA spec part 3, NodeClass Variable
     -3: Scalar or 1-dim
     -2: Any, value can be a scalar or an array with any number of dimensions
@@ -36,56 +36,142 @@
      1: array with one dimension
      n>1: array with with the specified numbers of dimensions
 <-->
-<!-- ParametersTCP-->
+  <!-- ParametersTCP-->
+  <UADataType NodeId="ns=1;i=32001" BrowseName="1:ParametersTCP">
+    <DisplayName>ParametersTCP</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:ParametersTCP">
+      <Field DataType="String" Name="address"/>
+      <Field DataType="Int32" Name="port"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=32003" BrowseName="1:ParametersTCP" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>ParametersTCP</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">ParametersTCP</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32004" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32001</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=32003</Reference>
+    </References>
+  </UAObject>
+  <!-- DeviceInfo-->
+  <UADataType NodeId="ns=1;i=32101" BrowseName="1:DeviceInfo">
+    <DisplayName>DeviceInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:DeviceInfo">
+      <Field DataType="String" Name="vendor"/>
+      <Field DataType="String" Name="model"/>
+      <Field DataType="String" Name="partNumber"/>
+      <Field DataType="String" Name="serialNumber"/>
+      <Field DataType="String" Name="firmwareVersion"/>
+      <Field DataType="String" Name="hardwareVersion"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=32103" BrowseName="1:DeviceInfo" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>DeviceInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DeviceInfo</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32104" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32101</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=32103</Reference>
+    </References>
+  </UAObject>
+  <!-- LabelItemInfo-->
+  <UADataType NodeId="ns=1;i=32201" BrowseName="1:LabelItemInfo">
+    <DisplayName>LabelItemInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:LabelItemInfo">
+      <Field DataType="String" Name="label"/>
+      <Field DataType="String" Name="description"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=32203" BrowseName="1:LabelItemInfo" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>LabelItemInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">LabelItemInfo</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32204" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32201</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=32203</Reference>
+    </References>
+  </UAObject>
 
-    <UADataType NodeId="ns=1;i=32001" BrowseName="1:ParametersTCP">
-        <DisplayName>ParametersTCP</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:ParametersTCP">
-            <Field DataType="String" Name="address"/>
-            <Field DataType="Int32" Name="port"/>
-        </Definition>
-    </UADataType>
+  <!-- LabelInfo-->
+  <UADataType NodeId="ns=1;i=32301" BrowseName="1:LabelInfo">
+    <DisplayName>LabelInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:LabelInfo">
+      <Field DataType="String" Name="description"/>
+      <Field DataType="Int32" Name="channelLanebelsSize"/>
+      <Field DataType="ns=1;i=32201" ValueRank="1" Name="channelLabels"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=32303" BrowseName="1:LabelInfo" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>LabelInfo</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">LabelInfo</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32304" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32301</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=32303</Reference>
+    </References>
+  </UAObject>
+  
 
-    <UAVariable NodeId="ns=1;i=32003" BrowseName="1:ParametersTCP" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>PametersTCP</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">ParametersTCP</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32004" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32001</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=32003</Reference>
-        </References>
-    </UAObject>
-
-
-<!-- End of device stuff-->
-    <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.DCSnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
-        <DisplayName>Opc.Ua.DCSnodeset</DisplayName>
-        <References>
-            <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
-        </References>
-        <Value>
-        <!-- This is the Base64 Encoded content of nodeset.bsd -->
-            <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9InVybjpkY3MuY29yZSIKICBEZWZhdWx0Qnl0ZU9yZGVyPSJMaXR0bGVFbmRpYW4iCiAgVGFyZ2V0TmFtZXNwYWNlPSJ1cm46ZGNzLmNvcmUiCj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlBhcmFtZXRlcnNUQ1AiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJhZGRyZXNzIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icG9ydCIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+Cgo8L29wYzpUeXBlRGljdGlvbmFyeT4K
-            </ByteString>
-        </Value>
-    </UAVariable>    
-
- 
-    
+  <!-- End of device stuff-->
+  <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.DCSnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
+    <DisplayName>Opc.Ua.DCSnodeset</DisplayName>
+    <References>
+      <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
+    </References>
+    <Value>
+      <!-- This is the Base64 Encoded content of nodeset.bsd -->
+      <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
+PD94bWwgdmVyc2lvbj0iMS4wIj8+CjxvcGM6VHlwZURpY3Rpb25hcnkgeG1sbnM6b3BjPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvQmluYXJ5U2NoZW1hLyIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeG1sbnM6dWE9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIHhtbG5zOnRucz0idXJuOmRjcy5jb3JlIiBEZWZhdWx0Qnl0ZU9yZGVyPSJMaXR0bGVFbmRpYW4iIFRhcmdldE5hbWVzcGFjZT0idXJuOmRjcy5jb3JlIj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iUGFyYW1ldGVyc1RDUCIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImFkZHJlc3MiIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InBvcnQiIFR5cGVOYW1lPSJvcGM6VUludDMyIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEZXZpY2VJbmZvIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idmVuZG9yIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJtb2RlbCIgVHlwZU5hbWU9Im9wYzpTdHJpbmciLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icGFydE51bWJlciIgVHlwZU5hbWU9Im9wYzpTdHJpbmciLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic2VyaWFsTnVtYmVyIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJmaXJtd2FyZVZlcnNpb24iIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImhhcmR3YXJlVmVyc2lvbiIgVHlwZU5hbWU9Im9wYzpTdHJpbmciLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkxhYmVsSXRlbUluZm8iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJsYWJlbCIgVHlwZU5hbWU9Im9wYzpTdHJpbmciLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iZGVzY3JpcHRpb24iIFR5cGVOYW1lPSJvcGM6U3RyaW5nIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+ICAKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkxhYmVsSW5mbyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImRlc2NyaXB0aW9uIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjaGFubmVsTGFiZWxzU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2hhbm5lbExhYmVscyIgVHlwZU5hbWU9InRuczpMYWJlbEl0ZW1JbmZvIiBMZW5ndGhGaWVsZD0iY2hhbm5lbExhYmVsc1NpemUiLz4vPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKPC9vcGM6VHlwZURpY3Rpb25hcnk+Cg==
+      </ByteString>
+    </Value>
+  </UAVariable>
 </UANodeSet>
-

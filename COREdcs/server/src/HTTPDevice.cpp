@@ -22,7 +22,7 @@ HTTPDevice::HTTPResponse::HTTPResponse(std::string resp) {
     getline(ss, body, '\0');
 }
 
-HTTPDevice::HTTPDevice() : GenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
+HTTPDevice::HTTPDevice() : DCSBaseDevice(ConnectionType::TCP, ConnectionType::TCP) {}
 
 void HTTPDevice::setConnectionParameters(const TCPConnectionParameters &p) {
     connectionParameters = p;

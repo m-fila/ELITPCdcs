@@ -1,16 +1,26 @@
-<opc:TypeDictionary
-  xmlns:opc="http://opcfoundation.org/BinarySchema/"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:ua="http://opcfoundation.org/UA/"
-  xmlns:tns="urn:dcs.core"
-  DefaultByteOrder="LittleEndian"
-  TargetNamespace="urn:dcs.core"
->
+<?xml version="1.0"?>
+<opc:TypeDictionary xmlns:opc="http://opcfoundation.org/BinarySchema/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ua="http://opcfoundation.org/UA/" xmlns:tns="urn:dcs.core" DefaultByteOrder="LittleEndian" TargetNamespace="urn:dcs.core">
   <opc:Import Namespace="http://opcfoundation.org/UA/" Location="Opc.Ua.BinarySchema.bsd"/>
-
   <opc:StructuredType Name="ParametersTCP" BaseType="ua:ExtensionObject">
-    <opc:Field Name="address" TypeName="opc:String" />
-    <opc:Field Name="port" TypeName="opc:UInt32" />
+    <opc:Field Name="address" TypeName="opc:String"/>
+    <opc:Field Name="port" TypeName="opc:UInt32"/>
+  </opc:StructuredType>
+  <opc:StructuredType Name="DeviceInfo" BaseType="ua:ExtensionObject">
+    <opc:Field Name="vendor" TypeName="opc:String"/>
+    <opc:Field Name="model" TypeName="opc:String"/>
+    <opc:Field Name="partNumber" TypeName="opc:String"/>
+    <opc:Field Name="serialNumber" TypeName="opc:String"/>
+    <opc:Field Name="firmwareVersion" TypeName="opc:String"/>
+    <opc:Field Name="hardwareVersion" TypeName="opc:String"/>
+  </opc:StructuredType>
+  <opc:StructuredType Name="LabelItemInfo" BaseType="ua:ExtensionObject">
+    <opc:Field Name="label" TypeName="opc:String"/>
+    <opc:Field Name="description" TypeName="opc:String"/>
+  </opc:StructuredType>  
+  <opc:StructuredType Name="LabelInfo" BaseType="ua:ExtensionObject">
+    <opc:Field Name="description" TypeName="opc:String"/>
+    <opc:Field Name="channelLabelsSize" TypeName="opc:UInt32"/>
+    <opc:Field Name="channelLabels" TypeName="tns:LabelItemInfo" LengthField="channelLabelsSize"/>/>
   </opc:StructuredType>
 
 </opc:TypeDictionary>

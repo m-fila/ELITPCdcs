@@ -5,6 +5,7 @@
 #include "basewidget.h"
 #include "opc_controller.h"
 #include "open62541/types_dcsnodeset_generated.h"
+#include <QLabel>
 #include <QSettings>
 #include <QWidget>
 #include <string>
@@ -18,6 +19,7 @@ class AbstractWidget : public BaseWidget {
   protected:
     opc_controller *controller;
     TCPWidget *tcp;
+    QLabel deviceInfoLabel{"..."};
     virtual void saveConfig() {}
     virtual void loadConfig() {}
     virtual void connectSignals();
@@ -26,6 +28,8 @@ class AbstractWidget : public BaseWidget {
     virtual void updateMeasurements(void *data) {}
     virtual void updateConfiguration(void *data) {}
     virtual void updateConnectionParameters(void *data);
+    virtual void updateDeviceInfo(void *data);
+
     virtual void controllerInit(UA_Client *client, UA_ClientConfig *config,
                                 UA_CreateSubscriptionResponse resp) override {
         controller->opcInit(client, config, resp);

@@ -5,12 +5,13 @@
 #include <iomanip>
 
 DT1415ET::DT1415ET()
-    : GenericDevice(ConnectionType::TCP, ConnectionType::TCP), firmwareVersion("1.10") {}
+    : DCSGenericDevice(ConnectionType::TCP, ConnectionType::TCP),
+      firmwareVersion("1.10") {}
 
 DT1415ET::~DT1415ET() {}
 
 void DT1415ET::setConnectionStream(ConnectionStream *stream) {
-    GenericDevice::setConnectionStream(stream);
+    DCSGenericDevice::setConnectionStream(stream);
     if(connected) {
         setFirmwareVersion();
     }
@@ -54,7 +55,7 @@ std::string DT1415ET::extractCommandValue(std::string command) {
     return ret;
 }
 
-std::string DT1415ET::getModuleName() {
+std::string DT1415ET::getModel() {
     std::string resp = sendDT1415ETcommand(CMD::MON, CHANNEL::NONE, "BDNAME", "");
     return extractCommandValue(resp);
 }
@@ -87,15 +88,6 @@ bool DT1415ET::isRemote() {
         return true;
     else
         return false;
-}
-
-std::string DT1415ET::getIdentifier() {
-    std::stringstream cb;
-    cb << "Module name: " << getModuleName() << " | ";
-    cb << "Firmware version: " << getFirmwareVersion() << " | ";
-    cb << "S/N: " << getSerialNumber();
-
-    return cb.str();
 }
 
 std::string DT1415ET::getVoltageSet(CHANNEL channel) {

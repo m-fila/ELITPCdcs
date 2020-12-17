@@ -9,6 +9,7 @@ LV4psuWidget::LV4psuWidget(std::string name, QWidget *parent)
     : AbstractWidget(new lv_controller(name), name, parent), ui(new Ui::LV4psuWidget) {
     ui->setupUi(this);
     ui->tcpLayout->addWidget(tcp);
+    ui->verticalLayout_16->addWidget(&deviceInfoLabel);
     loadConfig();
     setChannelsNames();
     connectSignals();

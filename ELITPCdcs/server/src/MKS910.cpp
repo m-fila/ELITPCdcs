@@ -20,12 +20,12 @@ std::string MKS910::getPCombined() { return sendWithDelayedResponse("PR3?"); }
 std::string MKS910::getPCombinedLong() { return sendWithDelayedResponse("PR4?"); }
 std::string MKS910::getPDiff() { return sendWithDelayedResponse("PR5?"); }
 
-std::string MKS910::getFirmware() { return sendWithDelayedResponse("FV?"); }
-std::string MKS910::getHardware() { return sendWithDelayedResponse("HV?"); }
+std::string MKS910::getFirmwareVersion() { return sendWithDelayedResponse("FV?"); }
+std::string MKS910::getHardwareVersion() { return sendWithDelayedResponse("HV?"); }
 std::string MKS910::getName() { return sendWithDelayedResponse("DT?"); }
 std::string MKS910::getModel() { return sendWithDelayedResponse("MD?"); }
 std::string MKS910::getSerialNumber() { return sendWithDelayedResponse("SN?"); }
-std::string MKS910::getPartNumer() { return sendWithDelayedResponse("PN?"); }
+std::string MKS910::getPartNumber() { return sendWithDelayedResponse("PN?"); }
 std::string MKS910::getUptime() { return sendWithDelayedResponse("TIM?"); }
 
 void MKS910::setUnits(MKS910codes::Units u) {

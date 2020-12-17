@@ -12,6 +12,7 @@ PiWeatherWidget::PiWeatherWidget(std::string name, QWidget *parent)
     loadConfig();
     setChannelsNames();
     connectSignals();
+    ui->verticalLayout_8->addWidget(&deviceInfoLabel);  //  addWidget(&deviceInfoLabel);
 }
 
 PiWeatherWidget::~PiWeatherWidget() { delete ui; }
@@ -27,10 +28,8 @@ void PiWeatherWidget::connectSignals() {
 
 void PiWeatherWidget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
-    connectionState = isConnected;
-    if(isConnected) {
-    } else {
+    connectionState = *static_cast<bool *>(data);
+    if(!connectionState) {
         ui->tempDisplay1->display(0);
         ui->tempDisplay2->display(0);
         ui->tempDisplay3->display(0);

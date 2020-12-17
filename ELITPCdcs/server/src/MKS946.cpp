@@ -74,11 +74,11 @@ std::string MKS946::getFirmware(CH ch) {
 std::string MKS946::getSerialNumber(CH ch) {
     return sendWithDelayedResponse("SN" + std::to_string(static_cast<int>(ch)) + "?");
 }
-std::string MKS946::getHardware() { return sendWithDelayedResponse("HV?"); }
+
+std::string MKS946::getFirmwareVersion() { return sendWithDelayedResponse("FV6?"); }
 std::string MKS946::getName() { return sendWithDelayedResponse("DT?"); }
 std::string MKS946::getModel() { return sendWithDelayedResponse("MD?"); }
 std::string MKS946::getSerialNumber() { return sendWithDelayedResponse("SN?"); }
-std::string MKS946::getPartNumer() { return sendWithDelayedResponse("PN?"); }
 std::string MKS946::getUptime() { return sendWithDelayedResponse("TIM?"); }
 
 void MKS946::setUnits(MKS946codes::Units u) {

@@ -84,8 +84,6 @@ void TPGWidget::changeRelay(int nr, RelayStruct values) {
         ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
 }
 
-void TPGWidget::updateStatusLabel(QString info) { statusLabel->setText(info); }
-
 void TPGWidget::createLayout() {
     mainLayout = new QVBoxLayout();
     resize(400, 350);
@@ -99,8 +97,7 @@ void TPGWidget::createLayout() {
     createCTab();
     createRTab();
     mainLayout->addStretch();
-    statusLabel = new QLabel("...");
-    mainLayout->addWidget(statusLabel);
+    mainLayout->addWidget(&deviceInfoLabel);
     setLayout(mainLayout);
 }
 

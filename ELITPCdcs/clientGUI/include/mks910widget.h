@@ -32,7 +32,6 @@ class MKS910Widget : public AbstractWidget {
     void updateRelay(void *data);
 
     void changeNamePressed();
-    void updateStatusLabel(QString info);
     void changeRelay(int nr, RelayStruct values);
     void changeUnits(int u);
 
@@ -41,7 +40,6 @@ class MKS910Widget : public AbstractWidget {
     bool connectionState;
     // create layout procedures and variables
     QVBoxLayout *mainLayout;
-    QLabel *statusLabel;
 
     QLabel *mUnitLabel;
     QTabWidget *tab;

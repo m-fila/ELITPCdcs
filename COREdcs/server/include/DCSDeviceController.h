@@ -47,11 +47,17 @@ template <class Device> class DCSDeviceController : public DCSObject {
     // Non trivial constructor
     DCSDeviceController(){};
 
-    void addChildren(const Options &options) override { addConnection(options); }
-    void addConnection(const Options &options);
-    void addProfiles(DCSVariable &configVariable, const Options &options);
-    virtual void parseProfile(const nlohmann::json &profile) {}
+    void addChildren(const Options &options) override {
+        addConnection(options);
+        addLabelInfo(options);
+    }
 
+    void addConnection(const Options &options);
+    void addLabelInfo(const Options &options);
+    void addProfiles(DCSVariable &configVariable, const Options &options);
+
+    virtual void parseProfile(const nlohmann::json &profile) {}
+    virtual UA_DeviceInfo getDeviceInfo();
     Device device;
     DCSWorkerThread deviceThread;
 
@@ -95,9 +101,17 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
                        e.what());
     }
     if(isConnected()) {
-        auto found = methods.find("applyProfile");
-        if(found != methods.end()) {
-            found->second(nullptr, nullptr);
+        {
+            auto found = variables.find("deviceInfo");
+            if(found != variables.end()) {
+                found->second->setValue(getDeviceInfo());
+            }
+        }
+        {
+            auto found = methods.find("applyProfile");
+            if(found != methods.end()) {
+                found->second(nullptr, nullptr);
+            }
         }
     }
 }
@@ -122,15 +136,17 @@ void DCSDeviceController<Device>::setConnectionParameters(const UA_Variant *inpu
 template <class Device>
 void DCSDeviceController<Device>::addConnection(const Options &options) {
     device.resetConnectionStream();
-    auto &s = addVariable("status", UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(s, 1000, [this]() { return isConnected(); }, true, false);
+    auto &s = addVariable("status", &UA_TYPES[UA_TYPES_BOOLEAN]);
+    addVariableUpdate(
+        s, 1000, [this]() { return isConnected(); }, true, false);
     auto &p = addVariable("connectionParameters",
-                          UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PARAMETERSTCP]);
+                          &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PARAMETERSTCP]);
+    addVariable("deviceInfo", &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DEVICEINFO]);
     addControllerMethod("connect", "Connects device", {}, {},
                         &DCSDeviceController::connectDevice, this);
     addControllerMethod("setConnectionParameters", "Sets connection parameters",
-                        {{"Address", "Host address", UA_TYPES[UA_TYPES_STRING]},
-                         {"Port", "Host port", UA_TYPES[UA_TYPES_INT32]}},
+                        {{"Address", "Host address", &UA_TYPES[UA_TYPES_STRING]},
+                         {"Port", "Host port", &UA_TYPES[UA_TYPES_INT32]}},
                         {}, &DCSDeviceController::setConnectionParameters, this);
     addControllerMethod("disconnect", "Disconnects device", {}, {},
                         &DCSDeviceController::disconnectDevice, this);
@@ -149,6 +165,36 @@ void DCSDeviceController<Device>::addConnection(const Options &options) {
                            options.at("port").dump().c_str());
         }
     }
+}
+
+template <class Device>
+void DCSDeviceController<Device>::addLabelInfo(const Options &options) {
+    UA_LabelInfo info;
+    UA_LabelInfo_init(&info);
+    if(options.contains("labels")) {
+        auto &labels = options.at("labels");
+        info.description = UA_STRING_ALLOC(labels.value("description", "a").c_str());
+        if(labels.contains("channels") and labels.at("channels").is_array()) {
+            info.channelLabelsSize = labels.at("channels").size();
+            info.channelLabels = static_cast<UA_LabelItemInfo *>(
+                UA_Array_new(info.channelLabelsSize,
+                             &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_LABELITEMINFO]));
+            for(auto it = labels.at("channels").begin();
+                it != labels.at("channels").end(); ++it) {
+                auto i = std::distance(labels.at("channels").begin(), it);
+                UA_LabelItemInfo in;
+                UA_LabelItemInfo_init(&in);
+                info.channelLabels[i] = in;
+                info.channelLabels[i].description =
+                    UA_STRING_ALLOC(it->value("description", "z").c_str());
+                info.channelLabels[i].label =
+                    UA_STRING_ALLOC(it->value("label", "y").c_str());
+            }
+        }
+    }
+    auto &l =
+        addVariable("labelInfo", &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_LABELINFO]);
+    l.setValue(info);
 }
 
 template <class Device>
@@ -258,9 +304,9 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
 template <class Device>
 void DCSDeviceController<Device>::addProfiles(DCSVariable &configVariable,
                                               const Options &options) {
-    auto profiles = addVariable("enabledProfiles", UA_TYPES[UA_TYPES_STRING]);
+    auto profiles = addVariable("enabledProfiles", &UA_TYPES[UA_TYPES_STRING]);
     updateProfiles(profiles);
-    auto selectedProfile = addVariable("selectedProfile", UA_TYPES[UA_TYPES_STRING]);
+    auto selectedProfile = addVariable("selectedProfile", &UA_TYPES[UA_TYPES_STRING]);
     auto initProfile =
         options.contains("profile")
             ? UA_STRING_ALLOC(options.at("profile").get<std::string>().c_str())
@@ -269,11 +315,11 @@ void DCSDeviceController<Device>::addProfiles(DCSVariable &configVariable,
     UA_String_deleteMembers(&initProfile);
 
     addMethod("saveProfile", "save profile",
-              {{"name", "current profile name", UA_TYPES[UA_TYPES_STRING]}}, {},
+              {{"name", "current profile name", &UA_TYPES[UA_TYPES_STRING]}}, {},
               std::bind(&DCSDeviceController<Device>::saveProfile, this, profiles,
                         configVariable, std::placeholders::_1, std::placeholders::_2));
     addMethod("setProfile", "set active profile",
-              {{"key", "key", UA_TYPES[UA_TYPES_STRING]}}, {},
+              {{"key", "key", &UA_TYPES[UA_TYPES_STRING]}}, {},
               std::bind(&DCSDeviceController<Device>::setProfile, this, selectedProfile,
                         std::placeholders::_1, std::placeholders::_2));
     addControllerMethod(
@@ -401,6 +447,18 @@ void DCSDeviceController<Device>::applyProfile(const DCSVariable &profile,
                      "%s config doesn't contain \"%s\" profile", objectType.c_str(),
                      profileStr.c_str());
     }
+}
+
+template <class Device> UA_DeviceInfo DCSDeviceController<Device>::getDeviceInfo() {
+    UA_DeviceInfo info;
+    UA_DeviceInfo_init(&info);
+    info.vendor = UA_STRING_ALLOC(device.getVendor().c_str());
+    info.model = UA_STRING_ALLOC(device.getModel().c_str());
+    info.serialNumber = UA_STRING_ALLOC(device.getSerialNumber().c_str());
+    info.partNumber = UA_STRING_ALLOC(device.getPartNumber().c_str());
+    info.firmwareVersion = UA_STRING_ALLOC(device.getFirmwareVersion().c_str());
+    info.hardwareVersion = UA_STRING_ALLOC(device.getHardwareVersion().c_str());
+    return info;
 }
 
 #endif  // DCS_DEVICE_CONTROLLER_H

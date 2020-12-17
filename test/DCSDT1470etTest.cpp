@@ -16,9 +16,8 @@ TEST(DT1470ET, connection) {
     ASSERT_EQ(0, device->getBD());
     controller.connect(&p);
     ASSERT_TRUE(device->isConnected());
-    ASSERT_EQ("DT1470ET", device->getModuleName());
-    std::cout << device->getModuleName()
-              << " firmware version: " << device->getFirmwareVersion() << std::endl;
+    ASSERT_EQ("DT1470ET", device->getModel());
+    std::cout << " firmware version: " << device->getFirmwareVersion() << std::endl;
 }
 
 TEST(DT1470ET, rampUp) {

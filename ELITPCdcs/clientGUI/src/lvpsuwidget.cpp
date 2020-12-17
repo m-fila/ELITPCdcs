@@ -9,6 +9,7 @@ LVpsuWidget::LVpsuWidget(std::string name, QWidget *parent)
     ui->tcpLayout->addWidget(tcp);
     profile = new DCSProfileWidget(this);
     ui->profileLayout->addWidget(profile);
+    ui->verticalLayout_8->addWidget(&deviceInfoLabel);
     loadConfig();
     setChannelsNames();
     connectSignals();

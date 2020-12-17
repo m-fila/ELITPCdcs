@@ -4,12 +4,12 @@
 
 #include <iomanip>
 
-DT1470ET::DT1470ET() : GenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
+DT1470ET::DT1470ET() : DCSGenericDevice(ConnectionType::TCP, ConnectionType::TCP) {}
 
 DT1470ET::~DT1470ET() {}
 
 void DT1470ET::setConnectionStream(ConnectionStream *stream) {
-    GenericDevice::setConnectionStream(stream);
+    DCSGenericDevice::setConnectionStream(stream);
     if(connected) {
         setFirmwareVersion();
     }
@@ -54,7 +54,7 @@ std::string DT1470ET::extractCommandValue(std::string command) {
     return ret;
 }
 
-std::string DT1470ET::getModuleName() {
+std::string DT1470ET::getModel() {
     std::string resp = sendDT1470ETcommand(CMD::MON, CHANNEL::NONE, "BDNAME", "");
     return extractCommandValue(resp);
 }
@@ -87,15 +87,6 @@ bool DT1470ET::isRemote() {
         return true;
     else
         return false;
-}
-
-std::string DT1470ET::getIdentifier() {
-    std::stringstream cb;
-    cb << "Module name: " << getModuleName() << " | ";
-    cb << "Firmware version: " << getFirmwareVersion() << " | ";
-    cb << "S/N: " << getSerialNumber();
-
-    return cb.str();
 }
 
 std::string DT1470ET::getVoltageSet(CHANNEL channel) {

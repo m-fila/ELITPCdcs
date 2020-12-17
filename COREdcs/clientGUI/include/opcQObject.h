@@ -24,6 +24,13 @@ class opcQObject : public QObject {
                                                        void *monContext,
                                                        UA_DataValue *value),
                           UA_Double sampling = 250);
+    void addMonitoredItem(const std::string &browseName,
+                          UA_CreateSubscriptionResponse response,
+                          void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId,
+                                                       void *subContext, UA_UInt32 monId,
+                                                       void *monContext,
+                                                       UA_DataValue *value),
+                          UA_Double sampling = 250);
     void browseIds();
   signals:
 

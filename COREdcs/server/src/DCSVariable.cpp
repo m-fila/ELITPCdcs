@@ -2,12 +2,12 @@
 #include "DCSServer.h"
 DCSVariable::DCSVariable(UA_Server *server, UA_NodeId parentNodeId,
                          const std::string &parentName, const std::string &variableName,
-                         UA_DataType type)
+                         const UA_DataType *type)
     : server(server), parentName(parentName), variableName(variableName), dataType(type) {
     UA_VariableAttributes attr = UA_VariableAttributes_default;
     attr.description = UA_LOCALIZEDTEXT_ALLOC("en-Us", variableName.c_str());
     attr.displayName = UA_LOCALIZEDTEXT_ALLOC("en-Us", variableName.c_str());
-    attr.dataType = dataType.typeId;
+    attr.dataType = dataType->typeId;
     attr.valueRank = UA_VALUERANK_SCALAR;
     UA_QualifiedName qName = UA_QUALIFIEDNAME_ALLOC(1, variableName.c_str());
     UA_Server_addVariableNode(server, UA_NODEID_NUMERIC(1, 0), parentNodeId,

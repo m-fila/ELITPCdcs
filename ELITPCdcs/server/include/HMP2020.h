@@ -1,15 +1,20 @@
 #ifndef HMP2020_H
 #define HMP2020_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 
-class HMP2020 : public GenericDevice {
+class HMP2020 : public DCSGenericDevice {
   public:
     HMP2020();
     virtual ~HMP2020();
 
+    std::string getVendor() override;
+    std::string getModel() override;
+    std::string getSerialNumber() override;
+    std::string getPartNumber() override;
+    std::string getFirmwareVersion() override;
+
     // device specific commands
-    std::string getIdentifier();
     void setActiveChannel(int channel);
     std::string getVoltageSet();
     std::string getCurrentSet();
@@ -21,6 +26,9 @@ class HMP2020 : public GenericDevice {
     void setOutputGen(bool state);
     void setVoltage(int channe, double v);
     void setCurrent(int channel, double i);
+
+  private:
+    std::string parseIdentifier(size_t n);
 };
 
 #endif  // HMP2020_H

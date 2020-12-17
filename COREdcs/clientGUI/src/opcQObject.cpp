@@ -28,6 +28,16 @@ void opcQObject::addMonitoredItem(UA_NodeId VariableId,
                                               this, ValueChangedCallback, nullptr);
 }
 
+void opcQObject::addMonitoredItem(const std::string &browseName,
+                                  UA_CreateSubscriptionResponse response,
+                                  void (*ValueChangedCallback)(UA_Client *, UA_UInt32,
+                                                               void *, UA_UInt32, void *,
+                                                               UA_DataValue *),
+                                  UA_Double sampling) {
+    return addMonitoredItem(browsedIds[browseName], response, ValueChangedCallback,
+                            sampling);
+}
+
 void opcQObject::browseIds() {
     UA_BrowseRequest bReq;
     UA_BrowseRequest_init(&bReq);

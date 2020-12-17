@@ -1,5 +1,4 @@
 #include "opc_controller.h"
-#include <iostream>
 #include <open62541/client_highlevel_async.h>
 opc_controller::opc_controller(std::string OName, QObject *parent)
     : opcQObject(OName, parent) {}
@@ -19,6 +18,8 @@ void opc_controller::opcInit(UA_Client *Client, UA_ClientConfig *Config,
                      EnabledProfilesChangedCallback);
     addMonitoredItem(browsedIds[selectedProfileBrowseName], response,
                      SelectedProfileChangedCallback);
+    addMonitoredItem(browsedIds[deviceInfoBrowseName], response,
+                     DeviceInfoChangedCallback);
 }
 
 void opc_controller::StatusChangedCallback(UA_Client *client, UA_UInt32 subId,
@@ -79,7 +80,6 @@ void opc_controller::callDisconnect() {
                          nullptr, nullptr, nullptr, nullptr);
 }
 void opc_controller::callSetConnectionParameters(std::string IPAddress, int port) {
-    std::cout << IPAddress << " " << port << std::endl;
     UA_Variant input[2];
     UA_Variant_init(input);
     UA_String address = UA_String_fromChars(IPAddress.c_str());
@@ -138,6 +138,18 @@ void opc_controller::EnabledProfilesChangedCallback(UA_Client *client, UA_UInt32
             void *data = value->value.data;
             opc_controller *context = static_cast<opc_controller *>(monContext);
             emit context->enabledProfilesChanged(data);
+        }
+    }
+}
+
+void opc_controller::DeviceInfoChangedCallback(UA_Client *client, UA_UInt32 subId,
+                                               void *subContext, UA_UInt32 monId,
+                                               void *monContext, UA_DataValue *value) {
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            void *data = value->value.data;
+            opc_controller *context = static_cast<opc_controller *>(monContext);
+            emit context->deviceInfoChanged(data);
         }
     }
 }

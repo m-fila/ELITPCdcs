@@ -3,7 +3,7 @@
 #define DCS_HTTP_DEVICE_H
 
 #include "ConnectionParameters.h"
-#include "GenericDevice.h"
+#include "DCSBaseDevice.h"
 #include "TCPConnector.h"
 #include <algorithm>
 #include <map>
@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <vector>
 
-class HTTPDevice : public GenericDevice {
+class HTTPDevice : public DCSBaseDevice {
   public:
     enum class Method { GET, POST, PUT, HEAD, DELETE, PATCH, OPTIONS };
 
