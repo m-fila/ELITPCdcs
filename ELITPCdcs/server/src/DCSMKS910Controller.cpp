@@ -26,7 +26,7 @@ UA_MKS910m DCSMKS910Controller::getMeasurements() {
     UA_MKS910m mks;
     UA_MKS910m_init(&mks);
     mks.combined = std::stod(device.getPCombinedLong());
-    mks.piezo = std::stod(device.getPPirani());
+    mks.piezo = std::stod(device.getPPiezo());
     mks.pirani = std::stod(device.getPPirani());
     mks.temperature = std::stod(device.getTemp());
     mks.status = static_cast<int>(MKS910codes::statusFromString.at(device.getStatus()));
