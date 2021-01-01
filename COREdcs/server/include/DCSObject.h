@@ -45,7 +45,8 @@ class DCSObject {
     std::string getName() { return objectName; }
     std::string getType() { return objectType; }
 
-    DCSVariable &addVariable(std::string variableName, const UA_DataType *variableType);
+    DCSVariable &addVariable(std::string variableName, const UA_DataType *variableType,
+                             bool isArray = false);
 
     Method &
     addMethod(std::string methodName, std::string methodDescription,

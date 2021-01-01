@@ -26,7 +26,9 @@ class DCSVariable {
         UA_Server_writeValue(server, variableNodeId, newVal);
         if(newVal.type->pointerFree == false) {
             UA_deleteMembers(newVal.data, newVal.type);
-            //  UA_Variant_deleteMembers(&newVal);
+        }
+        if(!UA_Variant_isScalar(&newVal)) {
+            UA_Variant_deleteMembers(&newVal);
         }
     }
     template <class T> void setValueByPointer(T newVal) {
@@ -39,7 +41,15 @@ class DCSVariable {
         UA_Variant_setScalar(&var, &newVal, dataType);
         return setValueByVariant(var);
     }
-
+    template <class T> void setValue(T *newVal, size_t size) {
+        UA_Variant var;
+        UA_Variant_setArray(&var, newVal, size, dataType);
+        var.arrayDimensionsSize = 1;
+        auto dims = UA_UInt32_new();
+        *dims = size;
+        var.arrayDimensions = dims;
+        return setValueByVariant(var);
+    }
     inline UA_Variant getValueByVariant() const {
         UA_Variant var;
         UA_Server_readValue(server, variableNodeId, &var);
@@ -90,7 +100,8 @@ class DCSVariable {
 
   protected:
     DCSVariable(UA_Server *server, UA_NodeId parentNodeId, const std::string &parentName,
-                const std::string &variableName, const UA_DataType *type);
+                const std::string &variableName, const UA_DataType *type,
+                bool isArray = false);
     inline UA_Byte getAccesLevel() {
         UA_Byte accessLevel;
         UA_Server_readAccessLevel(server, variableNodeId, &accessLevel);
