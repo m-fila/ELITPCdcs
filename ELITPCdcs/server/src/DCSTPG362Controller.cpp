@@ -172,5 +172,5 @@ void DCSTPG362Controller::postConnect() {
         std::getline(ss, val, ',');
         array[i] = UA_STRING_ALLOC(val.c_str());
     }
-    variables.at("sensorType")->setValue(array);
+    variables.at("sensorType")->setValue(array, size);
 }
