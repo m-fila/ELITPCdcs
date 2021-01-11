@@ -14,7 +14,7 @@ class DCSTPG362Controller : public DCSDeviceController<TPG362>,
     static std::string GetType() { return "TPG362"; }
     DCSTPG362Controller(){};
     void addChildren(const Options &options) override;
-
+    void postConnect() override;
     void setRelay(const UA_Variant *, UA_Variant *);
 
     UA_TPG362m getMeasurements();

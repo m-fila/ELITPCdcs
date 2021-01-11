@@ -51,8 +51,8 @@ template <class Device> class DCSDeviceController : public DCSObject {
         addConnection(options);
         addLabelInfo(options);
     }
-
     void addConnection(const Options &options);
+    void virtual postConnect() {}
     void addLabelInfo(const Options &options);
     void addProfiles(DCSVariable &configVariable, const Options &options);
 
@@ -107,6 +107,7 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
                 found->second->setValue(getDeviceInfo());
             }
         }
+        postConnect();
         {
             auto found = methods.find("applyProfile");
             if(found != methods.end()) {

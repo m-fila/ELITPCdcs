@@ -20,6 +20,7 @@ void DCSTPG362Controller::addChildren(const Options &options) {
                          {"Setpoint", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Hysteresis", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSTPG362Controller::setRelay, this);
+    addVariable("sensorType", &UA_TYPES[UA_TYPES_STRING], true);
 }
 
 UA_TPG362m DCSTPG362Controller::getMeasurements() {
@@ -159,4 +160,17 @@ void DCSTPG362Controller::setRelay(const UA_Variant *input, UA_Variant *output) 
     device.setSwitchingFunction(static_cast<TPG362::SWITCHING_FUNCTION>(function),
                                 static_cast<TPG362::SWITCHING_STATUS>(assignment),
                                 setpoint, hysteresis);
+}
+
+void DCSTPG362Controller::postConnect() {
+    size_t size = 2;
+    auto *array =
+        static_cast<UA_String *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_STRING]));
+    std::istringstream ss(device.getGaugesIdentification());
+    for(size_t i = 0; i < size; ++i) {
+        std::string val;
+        std::getline(ss, val, ',');
+        array[i] = UA_STRING_ALLOC(val.c_str());
+    }
+    variables.at("sensorType")->setValue(array, size);
 }

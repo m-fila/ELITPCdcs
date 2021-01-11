@@ -8,6 +8,9 @@ MainWindow::MainWindow(json &config, QWidget *parent)
     client = new eli_client(config.at("server").at("address").get<std::string>(),
                             config.at("server").at("port").get<int>());
     loadWidgets(config.at("devices"));
+    setWindowTitle(
+        QString::fromStdString(config.at("server").at("id").get<std::string>()) +
+        " client");
     buildStateBox();
     statemachine = new stateMachine("MachineState");
     connectSignals();
