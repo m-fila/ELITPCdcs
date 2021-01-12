@@ -3,6 +3,7 @@ void DCSDT1470ETController::addChildren(const Options &options) {
     DCSDeviceController<DT1470ET>::addChildren(options);
     auto &m = addVariable("measurements",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415M]);
+    m.setHistorizing();
     addVariableUpdate(m, 1000, &DCSDT1470ETController::getMeasurements, this);
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415C]);
