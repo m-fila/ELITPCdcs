@@ -30,9 +30,9 @@ class HVpsuWidget : public AbstractWidget {
     Ui::HVpsuWidget *ui;
   public slots:
 
-    void updateStatus(void *data) override;
-    void updateMeasurements(void *data);
-    virtual void updateConfiguration(void *data);
+    void updateStatus(UA_Variant data) override;
+    void updateMeasurements(UA_Variant data) override;
+    void updateConfiguration(UA_Variant data) override;
 
     void allOnPressed();
     void allOffPressed();
@@ -114,14 +114,14 @@ class DT1470Widget : public HVpsuWidget {
     Q_OBJECT
   public:
     DT1470Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
-    void updateConfiguration(void *data) final;
+    void updateConfiguration(UA_Variant data) final;
 };
 
 class N1471Widget : public HVpsuWidget {
     Q_OBJECT
   public:
     N1471Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
-    void updateConfiguration(void *data) final;
+    void updateConfiguration(UA_Variant data) final;
 };
 
 #endif  // HVPSUWIDGET_H

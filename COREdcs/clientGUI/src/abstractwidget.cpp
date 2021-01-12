@@ -5,15 +5,15 @@ AbstractWidget::AbstractWidget(opc_controller *controller, std::string name,
     tcp = new TCPWidget(horizontalTcpPanel, this);
 }
 
-void AbstractWidget::updateStatus(void *data) {
+void AbstractWidget::updateStatus(UA_Variant data) {
     BaseWidget::updateStatus(data);
-    auto status = *static_cast<bool *>(data);
+    auto status = *static_cast<bool *>(data.data);
     tcp->setStatus(status);
     deviceInfoLabel.setEnabled(status);
 }
 
-void AbstractWidget::updateConnectionParameters(void *data) {
-    auto *param = static_cast<UA_ParametersTCP *>(data);
+void AbstractWidget::updateConnectionParameters(UA_Variant data) {
+    auto *param = static_cast<UA_ParametersTCP *>(data.data);
 
     std::string address;
     if(param->address.length == 0) {
@@ -32,18 +32,24 @@ void AbstractWidget::connectSignals() {
             SLOT(callDisconnect()));
     connect(tcp, SIGNAL(changeTCPParameters(std::string, int)), controller,
             SLOT(callSetConnectionParameters(std::string, int)));
-    connect(controller, SIGNAL(statusChanged(void *)), this, SLOT(updateStatus(void *)));
-    connect(controller, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(controller, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
-    connect(controller, SIGNAL(connectionParametersChanged(void *)), this,
-            SLOT(updateConnectionParameters(void *)));
-    connect(controller, &opc_controller::deviceInfoChanged, this,
+    auto *moniteredItem = controller->addMonitoredItem("status");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &AbstractWidget::updateStatus);
+    moniteredItem = controller->addMonitoredItem("measurements");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &AbstractWidget::updateMeasurements);
+    moniteredItem = controller->addMonitoredItem("configuration");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &AbstractWidget::updateConfiguration);
+    moniteredItem = controller->addMonitoredItem("connectionParameters");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &AbstractWidget::updateConnectionParameters);
+    moniteredItem = controller->addMonitoredItem("deviceInfo");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
             &AbstractWidget::updateDeviceInfo);
 }
 
-void AbstractWidget::updateDeviceInfo(void *data) {
+void AbstractWidget::updateDeviceInfo(UA_Variant data) {
     auto f = [](const UA_String &ua) {
         std::string s = "";
         if(ua.length != 0) {
@@ -51,7 +57,7 @@ void AbstractWidget::updateDeviceInfo(void *data) {
         }
         return s;
     };
-    auto *info = static_cast<UA_DeviceInfo *>(data);
+    auto *info = static_cast<UA_DeviceInfo *>(data.data);
     std::string deviceInfo = f(info->vendor) + "/" + f(info->model) + "/" +
                              f(info->firmwareVersion) + "/" + f(info->serialNumber);
     deviceInfoLabel.setText(deviceInfo.c_str());

@@ -31,7 +31,7 @@ void stateMachine::opcInit(UA_Client *Client, UA_ClientConfig *Config,
     client = Client;
     config = Config;
     browseIds();
-    addMonitoredItem(browsedIds[variableName], response, StateChangedCallback);
+    // addMonitoredItem(browsedIds[variableName], response, StateChangedCallback);
 }
 
 /*void stateMachine::browseIds(){

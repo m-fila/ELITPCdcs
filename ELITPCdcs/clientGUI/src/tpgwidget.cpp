@@ -19,13 +19,14 @@ TPGWidget::~TPGWidget() {}
 
 void TPGWidget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(dynamic_cast<tpg_controller *>(controller), SIGNAL(relayChanged(void *)),
-            this, SLOT(updateRelay(void *)));
+    auto *moniteredItem = controller->addMonitoredItem("relay");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &TPGWidget::updateRelay);
 }
 
-void TPGWidget::updateStatus(void *data) {
+void TPGWidget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
+    bool isConnected = *static_cast<bool *>(data.data);
     connectionState = isConnected;
     if(isConnected) {
     } else {
@@ -36,8 +37,8 @@ void TPGWidget::updateStatus(void *data) {
         }
     }
 }
-void TPGWidget::updateMeasurements(void *data) {
-    UA_TPG362m measurements = *static_cast<UA_TPG362m *>(data);
+void TPGWidget::updateMeasurements(UA_Variant data) {
+    UA_TPG362m measurements = *static_cast<UA_TPG362m *>(data.data);
     if(measurements.statusSize) {
         QString val;
         std::string s;
@@ -63,10 +64,10 @@ void TPGWidget::updateMeasurements(void *data) {
     }
 }
 
-void TPGWidget::updateConfiguration(void *data) {}
+void TPGWidget::updateConfiguration(UA_Variant data) {}
 
-void TPGWidget::updateRelay(void *data) {
-    auto r = *static_cast<UA_Relay *>(data);
+void TPGWidget::updateRelay(UA_Variant data) {
+    auto r = *static_cast<UA_Relay *>(data.data);
     for(size_t i = 0; i < r.statusSize; i++) {
         RelayStruct rStruct;
         rStruct.status = r.status[i];

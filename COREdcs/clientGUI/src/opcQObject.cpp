@@ -1,41 +1,41 @@
 #include "opcQObject.h"
-
+#include <iostream>
 opcQObject::opcQObject(std::string OName, QObject *parent)
     : QObject(parent), ObjectName(OName) {
     ObjectNodeId = UA_NODEID_STRING_ALLOC(1, ObjectName.c_str());
 }
 
-opcQObject::~opcQObject() { UA_NodeId_deleteMembers(&ObjectNodeId); }
+opcQObject::~opcQObject() {
+    UA_NodeId_deleteMembers(&ObjectNodeId);
+    for(auto &i : monitoredItems) {
+        delete i.second;
+    }
+}
 
 void opcQObject::opcInit(UA_Client *Client, UA_ClientConfig *Config,
                          UA_CreateSubscriptionResponse response) {
     client = Client;
     config = Config;
+    browseIds();
+    for(auto &i : monitoredItems) {
+        try {
+            UA_MonitoredItemCreateRequest monRequest =
+                UA_MonitoredItemCreateRequest_default(browsedIds.at(i.first));
+            // monRequest.requestedParameters.samplingInterval = sampling;
+            UA_Client_MonitoredItems_createDataChange(
+                client, response.subscriptionId, UA_TIMESTAMPSTORETURN_BOTH, monRequest,
+                i.second, &DCSMonitoredItem::callback, nullptr);
+        } catch(const std::out_of_range &e) {
+            std::cout << ObjectName << "." << i.first
+                      << ": creating monitored item failed" << std::endl;
+        }
+    }
 }
 
-void opcQObject::addMonitoredItem(UA_NodeId VariableId,
-                                  UA_CreateSubscriptionResponse response,
-                                  void (*ValueChangedCallback)(UA_Client *, UA_UInt32,
-                                                               void *, UA_UInt32, void *,
-                                                               UA_DataValue *),
-                                  UA_Double sampling) {
-
-    UA_MonitoredItemCreateRequest monRequest =
-        UA_MonitoredItemCreateRequest_default(VariableId);
-    monRequest.requestedParameters.samplingInterval = sampling;
-    UA_Client_MonitoredItems_createDataChange(client, response.subscriptionId,
-                                              UA_TIMESTAMPSTORETURN_BOTH, monRequest,
-                                              this, ValueChangedCallback, nullptr);
-}
-
-void opcQObject::addMonitoredItem(const std::string &browseName,
-                                  UA_CreateSubscriptionResponse response,
-                                  void (*ValueChangedCallback)(UA_Client *, UA_UInt32,
-                                                               void *, UA_UInt32, void *,
-                                                               UA_DataValue *),
-                                  UA_Double sampling) {
-    return addMonitoredItem(browsedIds[browseName], response, ValueChangedCallback,
-                            sampling);
+DCSMonitoredItem *opcQObject::addMonitoredItem(const std::string &browseName) {
+    auto *newItem = new DCSMonitoredItem(browseName, this);
+    monitoredItems[browseName] = newItem;
+    return newItem;
 }
 
 void opcQObject::browseIds() {
@@ -53,6 +53,15 @@ void opcQObject::browseIds() {
             std::string str =
                 std::string(reinterpret_cast<char *>(ref.browseName.name.data));
             browsedIds[str] = ref.nodeId.nodeId;
+        }
+    }
+}
+void DCSMonitoredItem::callback(UA_Client *client, UA_UInt32 subId, void *subContext,
+                                UA_UInt32 monId, void *monContext, UA_DataValue *value) {
+    if(value->hasValue) {
+        if(!UA_Variant_isEmpty(&value->value)) {
+            auto *context = static_cast<DCSMonitoredItem *>(monContext);
+            emit context->valueChanged(value->value);
         }
     }
 }

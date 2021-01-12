@@ -6,20 +6,6 @@ class tpg_controller : public opc_controller {
   public:
     tpg_controller(std::string OName, QObject *parent = 0);
     void callSetRelay(int nr, int enabled, double setpoint, double hysteresis);
-    void opcInit(UA_Client *client, UA_ClientConfig *config,
-                 UA_CreateSubscriptionResponse response) override {
-        opc_controller::opcInit(client, config, response);
-        addMonitoredItem(browsedIds["relay"], response, RelayChangedCallback);
-    }
-  signals:
-    void relayChanged(void *);
-
-  private:
-    const std::string setUnitsBrowseName;
-
-    static void RelayChangedCallback(UA_Client *client, UA_UInt32 subId, void *subContext,
-                                     UA_UInt32 monId, void *monContext,
-                                     UA_DataValue *value);
 };
 
 #endif  // TPG_CONTROLLER_H

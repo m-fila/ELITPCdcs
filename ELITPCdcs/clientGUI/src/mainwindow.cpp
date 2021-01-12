@@ -94,7 +94,7 @@ void MainWindow::loadWidgets(json &items) {
         } else if(type == "MKS946") {
             new_widget = new MKS946Widget(id);
         } else {
-            std::cout << "Unknown device:" << type << std::endl;
+            std::cout << "Unknown device: " << type << std::endl;
             continue;
         }
         QHBoxLayout *deviceLayout = new QHBoxLayout();

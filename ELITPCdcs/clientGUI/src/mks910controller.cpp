@@ -1,7 +1,7 @@
 #include "mks910controller.h"
 #include <iostream>
 MKS910_controller::MKS910_controller(std::string OName, QObject *parent)
-    : opc_controller(OName, parent), setUnitsBrowseName("setunits") {}
+    : opc_controller(OName, parent) {}
 
 void MKS910_controller::callSetUnits(int unit) {
     //  UA_NodeId MethodNodeId=UA_NODEID_STRING(1,const_cast<char*>("SetChannel"));
@@ -11,18 +11,6 @@ void MKS910_controller::callSetUnits(int unit) {
     UA_Client_call(client, ObjectNodeId, browsedIds[setUnitsBrowseName], 1, &input,
                    nullptr, nullptr);
     UA_Variant_clear(&input);
-}
-
-void MKS910_controller::RelayChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                             void *subContext, UA_UInt32 monId,
-                                             void *monContext, UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            auto *context = static_cast<MKS910_controller *>(monContext);
-            emit context->relayChanged(data);
-        }
-    }
 }
 
 void MKS910_controller::callSetRelay(int nr, int enabled, double setpoint,
