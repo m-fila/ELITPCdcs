@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
+    <width>647</width>
     <height>540</height>
    </rect>
   </property>
@@ -809,7 +809,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_15">
        <item>
-        <layout class="QVBoxLayout" name="profileLayout" stretch="">
+        <layout class="QVBoxLayout" name="profileLayout">
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
@@ -1309,13 +1309,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="statusLabel">
-     <property name="text">
-      <string>...</string>
-     </property>
     </widget>
    </item>
   </layout>

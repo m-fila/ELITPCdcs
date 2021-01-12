@@ -5,6 +5,7 @@
 #include "DCSLogger.h"
 #include "DCSObject.h"
 #include "DCSWorkerThread.h"
+#include "open62541/namespace_dcsnodeset_generated.h"
 #include <map>
 #include <memory>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>

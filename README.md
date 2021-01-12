@@ -24,6 +24,18 @@ Furthermore the GUI clients requires Qt5 :
 ```
 sudo apt-get install qt5-default
 ```
+#### Extras
+The dcs may store the measurments in the InfluxDB 1.x database. InfluxDb 1.8.3 installation:
+```
+wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.3_amd64.deb
+sudo dpkg -i influxdb_1.8.3_amd64.deb
+```
+The extra Python tools (for dumping database) to text file require influxDB API and pandas :
+```
+pip3 install pandas influxdb
+```
+
+
 ### Building
 ```
 git clone --recursive ssh://git@dracula.hep.fuw.edu.pl:8822/mfila/dcs.git

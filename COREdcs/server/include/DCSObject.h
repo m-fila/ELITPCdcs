@@ -32,20 +32,21 @@ class DCSObject {
     };
     /* name ,description, UA_DataType
    examples:
-      "Status", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]
-      "Voltage", "Voltage in V", UA_TYPES[UA_TYPES_DOUBLE]
-      "Channel", "Device channel", UA_TYPES[UA_TYPES_UINT16]
+      "Status", "ON/OFF", &UA_TYPES[UA_TYPES_BOOLEAN]
+      "Voltage", "Voltage in V", &UA_TYPES[UA_TYPES_DOUBLE]
+      "Channel", "Device channel", &UA_TYPES[UA_TYPES_UINT16]
   */
     struct MethodArgs {
         std::string name;
         std::string description;
-        UA_DataType dataType;
+        const UA_DataType *dataType;
     };
 
     std::string getName() { return objectName; }
     std::string getType() { return objectType; }
 
-    DCSVariable &addVariable(std::string variableName, UA_DataType variableType);
+    DCSVariable &addVariable(std::string variableName, const UA_DataType *variableType,
+                             bool isArray = false);
 
     Method &
     addMethod(std::string methodName, std::string methodDescription,

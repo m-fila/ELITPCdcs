@@ -37,7 +37,6 @@ int main(int argc, char *argv[]) {
         auto id = i.at("id").get<std::string>();
         server.addObject(type, id, i);
     }
-    server.addObject("Dummy", "dummy", {{"profile", "test2"}});
 
     server.run();
 

@@ -9,8 +9,8 @@ DCSServer::DCSServer(std::string address, int port) {
     }
     server = UA_Server_new();
     config = UA_Server_getConfig(server);
-    UA_ServerConfig_setMinimal(config, port, nullptr);
     config->logger = *DCSLogger::getLogger();
+    UA_ServerConfig_setMinimal(config, port, nullptr);
     UA_String hostname = UA_STRING_ALLOC(address.c_str());
     UA_ServerConfig_setCustomHostname(config, hostname);
     UA_String_deleteMembers(&hostname);
@@ -22,7 +22,7 @@ DCSServer::DCSServer(std::string address, int port) {
         throw std::runtime_error("Can't add context to server node");
     }
     config->asyncOperationNotifyCallback = asyncCallback;
-
+    namespace_dcsnodeset_generated(server);
     addHistorizing();
     auto objectTypeId = addObjectType("DCSObject");
     addObjectType("DCSState", objectTypeId);

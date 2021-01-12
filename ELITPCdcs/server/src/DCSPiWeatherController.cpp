@@ -2,9 +2,9 @@
 #include <sstream>
 
 void DCSPiWeatherController::addChildren(const Options &options) {
-    addConnection();
-    auto &m =
-        addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PIWEATHERM]);
+    DCSDeviceController<PiWeather>::addChildren(options);
+    auto &m = addVariable("measurements",
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_PIWEATHERM]);
     addVariableUpdate(m, 500, [this]() { return getMeasurements(); });
     m.setHistorizing("default");
 }

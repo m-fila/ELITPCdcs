@@ -1,25 +1,27 @@
 #include "DCSHMPController.h"
 void DCSHMPController::addChildren(const Options &options) {
-    addConnection();
-    auto &m = addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPM]);
+    DCSDeviceController<HMP2020>::addChildren(options);
+    auto &m =
+        addVariable("measurements", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_HMPM]);
     addVariableUpdate(m, 1000, &DCSHMPController::getMeasurements, this);
     m.setHistorizing();
-    auto &c = addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_HMPC]);
+    auto &c = addVariable("configuration",
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_HMPC]);
     addVariableUpdate(c, 1000, &DCSHMPController::getConfiguration, this);
     addControllerMethod("setchannel", "Sets channel ON/OFF",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"State", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"State", "ON/OFF", &UA_TYPES[UA_TYPES_BOOLEAN]}},
                         {}, &DCSHMPController::setChannel, this);
     addControllerMethod("setoutput", "Sets output ON/OFF",
-                        {{"State", "ON/OFF", UA_TYPES[UA_TYPES_BOOLEAN]}}, {},
+                        {{"State", "ON/OFF", &UA_TYPES[UA_TYPES_BOOLEAN]}}, {},
                         &DCSHMPController::setOutput, this);
     addControllerMethod("setvoltage", "Sets voltage",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"Voltage", "Voltage in V", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"Voltage", "Voltage in V", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSHMPController::setVoltage, this);
     addControllerMethod("setcurrent", "Sets current",
-                        {{"Channel", "Channels number", UA_TYPES[UA_TYPES_INT16]},
-                         {"Current", "Current in A", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
+                         {"Current", "Current in A", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSHMPController::setCurrent, this);
     addProfiles(c, options);
 }
@@ -91,14 +93,14 @@ void DCSHMPController::setCurrent(const UA_Variant *input, UA_Variant *) {
 void DCSHMPController::parseProfile(const Options &options) {
     if(options.contains("CurrentSet")) {
         auto o = options.at("CurrentSet");
-        for(int i = 0; i < o.size(); ++i) {
+        for(size_t i = 0; i < o.size(); ++i) {
             device.setCurrent(i + 1, o.at(i).get<double>());
         }
     }
 
     if(options.contains("VoltageSet")) {
         auto o = options.at("VoltageSet");
-        for(int i = 0; i < o.size(); ++i) {
+        for(size_t i = 0; i < o.size(); ++i) {
             device.setVoltage(i + 1, o.at(i).get<double>());
         }
     }

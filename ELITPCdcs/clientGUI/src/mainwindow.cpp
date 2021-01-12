@@ -8,6 +8,9 @@ MainWindow::MainWindow(json &config, QWidget *parent)
     client = new eli_client(config.at("server").at("address").get<std::string>(),
                             config.at("server").at("port").get<int>());
     loadWidgets(config.at("devices"));
+    setWindowTitle(
+        QString::fromStdString(config.at("server").at("id").get<std::string>()) +
+        " client");
     buildStateBox();
     statemachine = new stateMachine("MachineState");
     connectSignals();
@@ -65,43 +68,34 @@ void MainWindow::loadWidgets(json &items) {
         AbstractWidget *new_widget;
         auto type = i.at("type").get<std::string>();
         auto id = i.at("id").get<std::string>();
-        std::string address, port;
-        try {
-            address = i.at("address").get<std::string>();
-        } catch(const nlohmann::detail::out_of_range &) {
-            address = "";
-        }
-        try {
-            port = i.at("port").get<std::string>();
-        } catch(const nlohmann::detail::out_of_range &) {
-            port = "";
-        }
         if(type == "HMP2020") {
-            new_widget = new LVpsuWidget(id, address, port);
+            new_widget = new LVpsuWidget(id);
         } else if(type == "HMP4040") {
-            new_widget = new LV4psuWidget(id, address, port);
+            new_widget = new LV4psuWidget(id);
         } else if(type == "DT1415ET") {
             try {
                 int enabledChannels = i.at("enabledChannels").get<int>();
-                new_widget = new DT1415Widget(id, address, port, enabledChannels);
+                new_widget = new DT1415Widget(id, enabledChannels);
             } catch(const nlohmann::detail::out_of_range &) {
-                new_widget = new DT1415Widget(id, address, port);
+                new_widget = new DT1415Widget(id);
             }
         } else if(type == "N1471") {
             try {
                 int enabledChannels = i.at("enabledChannels").get<int>();
-                new_widget = new N1471Widget(id, address, port, enabledChannels);
+                new_widget = new N1471Widget(id, enabledChannels);
             } catch(const nlohmann::detail::out_of_range &) {
-                new_widget = new N1471Widget(id, address, port);
+                new_widget = new N1471Widget(id);
             }
         } else if(type == "DT1470ET") {
-            new_widget = new DT1470Widget(id, address, port);
+            new_widget = new DT1470Widget(id);
         } else if(type == "TPG362") {
-            new_widget = new TPGWidget(id, address, port);
+            new_widget = new TPGWidget(id);
         } else if(type == "PiWeather") {
-            new_widget = new PiWeatherWidget(id, address, port);
+            new_widget = new PiWeatherWidget(id);
         } else if(type == "MKS910") {
-            new_widget = new MKS910Widget(id, address, port);
+            new_widget = new MKS910Widget(id);
+        } else if(type == "MKS946") {
+            new_widget = new MKS946Widget(id);
         } else {
             std::cout << "Unknown device:" << type << std::endl;
             continue;

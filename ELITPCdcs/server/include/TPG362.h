@@ -1,9 +1,9 @@
 #ifndef TPG362_H
 #define TPG362_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 
-class TPG362 : public GenericDevice {
+class TPG362 : public DCSGenericDevice {
   public:
     TPG362();
     enum class CH { ALL, CH1, CH2 };
@@ -15,7 +15,6 @@ class TPG362 : public GenericDevice {
     enum class FILTER { off, fast, normal, slow };
     // device specific commands
 
-    std::string getIdentifier();
     std::string getGaugesData(CH ch = CH::ALL);
     std::string getGaugesIdentification();
     std::string getUnits();
@@ -35,10 +34,19 @@ class TPG362 : public GenericDevice {
     std::string setFilter(FILTER f1, FILTER f2);
     void Reset() {}
 
+    std::string getTemperature();
+    std::string getVendor() override { return "Pfeiffer"; }
+    std::string getModel() override;
+    std::string getSerialNumber() override;
+    std::string getPartNumber() override;
+    std::string getFirmwareVersion() override;
+    std::string getHardwareVersion() override;
+
   private:
-    //   std::string extractValue(std::string command){return "";}
     const std::string enq = std::string(1, 5);
     std::string sendWithEnquiry(std::string command);
+
+    std::string parseIdentifier(size_t n);
 };
 
 #endif  // TPG362_H

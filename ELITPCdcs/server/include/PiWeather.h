@@ -1,9 +1,9 @@
 #ifndef PIWEATHER_H
 #define PIWEATHER_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 
-class PiWeather : public GenericDevice {
+class PiWeather : public DCSGenericDevice {
   public:
     PiWeather();
 

@@ -23,9 +23,19 @@ void opcQObject::addMonitoredItem(UA_NodeId VariableId,
     UA_MonitoredItemCreateRequest monRequest =
         UA_MonitoredItemCreateRequest_default(VariableId);
     monRequest.requestedParameters.samplingInterval = sampling;
-    UA_MonitoredItemCreateResult monResponse = UA_Client_MonitoredItems_createDataChange(
-        client, response.subscriptionId, UA_TIMESTAMPSTORETURN_BOTH, monRequest, this,
-        ValueChangedCallback, nullptr);
+    UA_Client_MonitoredItems_createDataChange(client, response.subscriptionId,
+                                              UA_TIMESTAMPSTORETURN_BOTH, monRequest,
+                                              this, ValueChangedCallback, nullptr);
+}
+
+void opcQObject::addMonitoredItem(const std::string &browseName,
+                                  UA_CreateSubscriptionResponse response,
+                                  void (*ValueChangedCallback)(UA_Client *, UA_UInt32,
+                                                               void *, UA_UInt32, void *,
+                                                               UA_DataValue *),
+                                  UA_Double sampling) {
+    return addMonitoredItem(browsedIds[browseName], response, ValueChangedCallback,
+                            sampling);
 }
 
 void opcQObject::browseIds() {

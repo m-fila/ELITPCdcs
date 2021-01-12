@@ -5,7 +5,7 @@
 #include <iomanip>
 
 N1471::N1471()
-    : GenericDevice(ConnectionType::TCP, ConnectionType::TCP), moduleAddress(0) {}
+    : DCSGenericDevice(ConnectionType::TCP, ConnectionType::TCP), moduleAddress(0) {}
 
 void N1471::setModuleAddress(int nr) {
     if(nr >= 0 && nr <= 31) {
@@ -53,7 +53,7 @@ std::string N1471::extractCommandValue(std::string command) {
     return ret;
 }
 
-std::string N1471::getModuleName() {
+std::string N1471::getModel() {
     std::string resp = sendN1471command(CMD::MON, CHANNEL::NONE, "BDNAME", "");
     return extractCommandValue(resp);
 }
@@ -80,15 +80,6 @@ bool N1471::isRemote() {
         return true;
     else
         return false;
-}
-
-std::string N1471::getIdentifier() {
-    std::stringstream cb;
-    cb << "Module name: " << getModuleName() << " | ";
-    cb << "Firmware version: " << getFirmwareVersion() << " | ";
-    cb << "S/N: " << getSerialNumber();
-
-    return cb.str();
 }
 
 std::string N1471::getVoltageSet(CHANNEL channel) {
@@ -184,4 +175,9 @@ void N1471::setRampDown(CHANNEL channel, double value) {
         sb << std::setprecision(1) << std::fixed << std::setw(6) << value;
         sendN1471command(CMD::SET, channel, "RDW", sb.str());
     }
+}
+
+void N1471::clearAlarmSignal() {
+    if(isRemote())
+        sendN1471command(CMD::SET, CHANNEL::NONE, "BDCLR", "");
 }

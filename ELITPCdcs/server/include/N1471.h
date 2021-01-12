@@ -1,11 +1,11 @@
 #ifndef N1471_H
 #define N1471_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 #include <map>
 #include <string>
 
-class N1471 : public GenericDevice {
+class N1471 : public DCSGenericDevice {
   public:
     enum class CMD { MON, SET };
     enum class CHANNEL { CH0, CH1, CH2, CH3, ALL, NONE };
@@ -16,12 +16,14 @@ class N1471 : public GenericDevice {
     std::string sendN1471command(CMD command, CHANNEL channel, std::string function,
                                  std::string value);
 
-    std::string getModuleName();
-    std::string getFirmwareVersion();
-    std::string getSerialNumber();
+    std::string getVendor() override { return "Caen"; }
+    std::string getModel() override;
+    std::string getFirmwareVersion() override;
+    std::string getSerialNumber() override;
+
     std::string getControlMode();
+
     bool isRemote();
-    std::string getIdentifier();
     std::string getVoltageSet(CHANNEL channel);
     std::string getVoltage(CHANNEL channel);
     std::string getVoltageMax(CHANNEL channel);
@@ -40,6 +42,8 @@ class N1471 : public GenericDevice {
     void setRampUp(CHANNEL channel, double value);
     void setRampDown(CHANNEL, double value);
     void setModuleAddress(int nr);
+
+    void clearAlarmSignal();
 
   private:
     const std::map<CMD, std::string> CommandsMap = {{CMD::MON, "MON"}, {CMD::SET, "SET"}};

@@ -8,57 +8,30 @@
 #include <string>
 
 MKS910Widget::MKS910Widget(std::string name, QWidget *parent)
-    : AbstractWidget(name, parent) {
+    : AbstractWidget(new MKS910_controller(name), name, parent) {
     createLayout();
-    controller = new MKS910_controller(instanceName);
     connectSignals();
     loadConfig();
     setChannelName();
 }
 
-MKS910Widget::MKS910Widget(std::string name, std::string address, std::string port,
-                           QWidget *parent)
-    : MKS910Widget(name, parent) {
-    if(address.size()) {
-        tcp->setIP(address);
-    }
-    if(port.size()) {
-        tcp->setPort(port);
-    }
-}
-
-MKS910Widget::~MKS910Widget() {
-    // delete ui;
-    delete controller;
-}
+MKS910Widget::~MKS910Widget() {}
 
 void MKS910Widget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(controller, SIGNAL(statusChanged(void *)), this, SLOT(updateStatus(void *)));
-    connect(controller, SIGNAL(measurementsChanged(void *)), this,
-            SLOT(updateMeasurements(void *)));
-    connect(controller, SIGNAL(configurationChanged(void *)), this,
-            SLOT(updateConfiguration(void *)));
-    connect(controller, SIGNAL(relayChanged(void *)), this, SLOT(updateRelay(void *)));
+    connect(dynamic_cast<MKS910_controller *>(controller), SIGNAL(relayChanged(void *)),
+            this, SLOT(updateRelay(void *)));
     connect(unitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeUnits(int)));
 }
-void MKS910Widget::controllerInit(UA_Client *client, UA_ClientConfig *config,
-                                  UA_CreateSubscriptionResponse resp) {
-    controller->opcInit(client, config, resp);
-}
-
-void MKS910Widget::deviceConnect() {
-    std::string IPaddress = tcp->getIP();
-    int port = tcp->getPort();
-    controller->callConnect(IPaddress, port);
-}
-
-void MKS910Widget::deviceDisconnect() { controller->callDisconnect(); }
 
 void MKS910Widget::updateStatus(void *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
-    connectionState = isConnected;
+    connectionState = *static_cast<bool *>(data);
+    if(!connectionState) {
+        mVacuum->display(0);
+        mTemp->setText("");
+        mStatus->setText("");
+    }
 }
 void MKS910Widget::updateMeasurements(void *data) {
     UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data);
@@ -66,7 +39,7 @@ void MKS910Widget::updateMeasurements(void *data) {
     std::string s;
     std::ostringstream os;
     os << std::scientific << std::setprecision(5) << std::uppercase
-       << measurements.vacuum;
+       << measurements.combined;
     s = os.str();
     s.insert(s.size() - 4, " ");
     s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
@@ -74,7 +47,7 @@ void MKS910Widget::updateMeasurements(void *data) {
     mVacuum->display(val);
 
     MKS910codes::Units units = static_cast<MKS910codes::Units>(measurements.units);
-    val = QString::fromStdString(MKS910codes::unitsToString.at(units));
+    val = QString::fromStdString(MKS910codes::unitsToString.at(units)).toLower();
     mUnitLabel->setText(val);
     MKS910codes::Status status = static_cast<MKS910codes::Status>(measurements.status);
     if(status == MKS910codes::Status::O) {
@@ -105,10 +78,9 @@ void MKS910Widget::updateRelay(void *data) {
 }
 
 void MKS910Widget::changeRelay(int nr, RelayStruct values) {
-    controller->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
+    dynamic_cast<MKS910_controller *>(controller)
+        ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
 }
-
-void MKS910Widget::updateStatusLabel(QString info) { statusLabel->setText(info); }
 
 void MKS910Widget::createLayout() {
     // create main layout with base size
@@ -124,10 +96,7 @@ void MKS910Widget::createLayout() {
     createCTab();
     createRTab();
     mainLayout->addStretch();
-
-    statusLabel = new QLabel("...");
-    mainLayout->addWidget(statusLabel);
-
+    mainLayout->addWidget(&deviceInfoLabel);
     setLayout(mainLayout);
 }
 void MKS910Widget::createMTab() {
@@ -162,7 +131,7 @@ void MKS910Widget::createMTab() {
 
     QHBoxLayout *mhUnitLayout = new QHBoxLayout();
     mvLayout->addLayout(mhUnitLayout);
-    mUnitLabel = new QLabel("MBAR");
+    mUnitLabel = new QLabel("mbar");
     mUnitLabel->setAlignment(Qt::AlignRight);
     mhUnitLayout->addWidget(mUnitLabel);
 
@@ -209,7 +178,7 @@ void MKS910Widget::createCTab() {
     unitsBox = new QComboBox();
     cuLayout->addWidget(unitsBox);
     for(auto &i : MKS910codes::unitsToString) {
-        unitsBox->addItem(QString::fromStdString(i.second));
+        unitsBox->addItem(QString::fromStdString(i.second).toLower());
     }
     unitsBox->setCurrentIndex(static_cast<int>(MKS910codes::Units::MBAR));
 }
@@ -248,7 +217,7 @@ void MKS910Widget::drawLine() {
 
 void MKS910Widget::changeUnits(int u) {
     if(connectionState) {
-        controller->callSetUnits(u);
+        dynamic_cast<MKS910_controller *>(controller)->callSetUnits(u);
     }
 }
 

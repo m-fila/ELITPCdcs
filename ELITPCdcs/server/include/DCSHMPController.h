@@ -3,8 +3,8 @@
 #define DCS_HMP_CONTROLLER_H
 #include "DCSDeviceController.h"
 #include "HMP2020.h"
-#include "open62541/types_dcsnodeset_generated.h"
-#include "open62541/types_dcsnodeset_generated_handling.h"
+#include "open62541/types_elitpcnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated_handling.h"
 class DCSHMPController : public DCSDeviceController<HMP2020> {
     friend DCSServer;
 

@@ -18,11 +18,14 @@ class opcQObject : public QObject {
     UA_Client *client;
     UA_ClientConfig *config;
     std::map<std::string, UA_NodeId> browsedIds;
-    /*    void addMonitoredItem(std::string VariableName,UA_CreateSubscriptionResponse
-       response, void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId, void
-       *subContext, UA_UInt32 monId, void *monContext, UA_DataValue *value));
-    */
     void addMonitoredItem(UA_NodeId VariableId, UA_CreateSubscriptionResponse response,
+                          void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId,
+                                                       void *subContext, UA_UInt32 monId,
+                                                       void *monContext,
+                                                       UA_DataValue *value),
+                          UA_Double sampling = 250);
+    void addMonitoredItem(const std::string &browseName,
+                          UA_CreateSubscriptionResponse response,
                           void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId,
                                                        void *subContext, UA_UInt32 monId,
                                                        void *monContext,

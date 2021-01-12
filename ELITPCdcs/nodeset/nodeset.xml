@@ -1,44 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-->A more complete example can be found in tools/test/nodeset_compiler<-->
 <UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://fuw.edu.pl/dcs/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <NamespaceUris>
-        <Uri>http://fuw.edu.pl/dcs/</Uri>
-    </NamespaceUris>
-
-    <Aliases>
-        <Alias Alias="Boolean">i=1</Alias>
-        <Alias Alias="Int32">i=6</Alias>
-        <Alias Alias="UInt32">i=7</Alias>
-        <Alias Alias="Double">i=11</Alias>
-        <Alias Alias="Organizes">i=35</Alias>
-        <Alias Alias="HasModellingRule">i=37</Alias>
-        <Alias Alias="HasEncoding">i=38</Alias>
-        <Alias Alias="HasTypeDefinition">i=40</Alias>
-        <Alias Alias="HasSubtype">i=45</Alias>
-        <Alias Alias="HasComponent">i=47</Alias>
-        <Alias Alias="IdType">i=256</Alias>
-        <Alias Alias="Argument">i=296</Alias>
-        <Alias Alias="HMPm">ns=1;i=20201</Alias>
-        <Alias Alias="HMPc">ns=1;i=20211</Alias>
-        <Alias Alias="DT1415m">ns=1;i=14151</Alias>
-        <Alias Alias="DT1415c">ns=1;i=14155</Alias>
-        <Alias Alias="TPG362m">ns=1;i=36201</Alias>
-        <Alias Alias="TPG362c">ns=1;i=36211</Alias>
-        <Alias Alias="PiWeatherm">ns=1;i=31401</Alias>
-        <Alias Alias="PiWeatherc">ns=1;i=31411</Alias>
-        <Alias Alias="MKS910m">ns=1;i=9101</Alias>
-        <Alias Alias="MKS910c">ns=1;i=9111</Alias>
-        <Alias Alias="ParametersTCP">ns=1;i=32001</Alias>
-        <Alias Alias="Relay">ns=1;i=32101</Alias>
-    </Aliases>
-
-    <Extensions>
-        <Extension>
-            <ua:ModelInfo Tool="UaModeler" Hash="NY/CbF6sk/OjLXFpjvfTAA==" Version="1.6.2"/>
-        </Extension>
-    </Extensions>
-
-<!--ValueRank>
+  <NamespaceUris>
+    <Uri>urn:dcs.elitpc</Uri>
+  </NamespaceUris>
+  <Aliases>
+    <Alias Alias="Boolean">i=1</Alias>
+    <Alias Alias="Int32">i=6</Alias>
+    <Alias Alias="UInt32">i=7</Alias>
+    <Alias Alias="Double">i=11</Alias>
+    <Alias Alias="Organizes">i=35</Alias>
+    <Alias Alias="HasModellingRule">i=37</Alias>
+    <Alias Alias="HasEncoding">i=38</Alias>
+    <Alias Alias="HasTypeDefinition">i=40</Alias>
+    <Alias Alias="HasSubtype">i=45</Alias>
+    <Alias Alias="HasComponent">i=47</Alias>
+    <Alias Alias="IdType">i=256</Alias>
+    <Alias Alias="Argument">i=296</Alias>
+    <Alias Alias="HMPm">ns=1;i=20201</Alias>
+    <Alias Alias="HMPc">ns=1;i=20211</Alias>
+    <Alias Alias="DT1415m">ns=1;i=14151</Alias>
+    <Alias Alias="DT1415c">ns=1;i=14155</Alias>
+    <Alias Alias="TPG362m">ns=1;i=36201</Alias>
+    <Alias Alias="TPG362c">ns=1;i=36211</Alias>
+    <Alias Alias="PiWeatherm">ns=1;i=31401</Alias>
+    <Alias Alias="PiWeatherc">ns=1;i=31411</Alias>
+    <Alias Alias="MKS910m">ns=1;i=9101</Alias>
+    <Alias Alias="MKS910c">ns=1;i=9111</Alias>
+    <Alias Alias="Relay">ns=1;i=31001</Alias>
+    <Alias Alias="MKS946m">ns=1;i=94601</Alias>
+  </Aliases>
+  <Extensions>
+    <Extension>
+      <ua:ModelInfo Tool="UaModeler" Hash="NY/CbF6sk/OjLXFpjvfTAA==" Version="1.6.2"/>
+    </Extension>
+  </Extensions>
+  <!--ValueRank>
     OPC UA spec part 3, NodeClass Variable
     -3: Scalar or 1-dim
     -2: Any, value can be a scalar or an array with any number of dimensions
@@ -47,437 +44,395 @@
      1: array with one dimension
      n>1: array with with the specified numbers of dimensions
 <-->
-    <UADataType NodeId="ns=1;i=14151" BrowseName="1:DT1415m">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:DT1415m">
-            <Field DataType="Double" Name="totalVoltage"/>
-            <Field DataType="Int32" Name="voltageSize"/>
-            <Field DataType="Double" ValueRank="1" Name="voltage"/>
-            <Field DataType="Int32" Name="currentSize"/>
-            <Field DataType="Double" ValueRank="1" Name="current"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=14153" BrowseName="1:DT1415m" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415m</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14154" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14151</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=14153</Reference>
-        </References>
-    </UAObject>
-
-
-    <UADataType NodeId="ns=1;i=14155" BrowseName="1:DT1415c">
-        <DisplayName>DT1415c</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:DT1415c">
-            <Field DataType="Boolean" Name="isRemote"/>
-            <Field DataType="Double" Name="totalVoltageSet"/>
-            <Field DataType="Int32" Name="voltageSetSize"/>
-            <Field DataType="Double" ValueRank="1" Name="voltageSet"/>
-            <Field DataType="Int32" Name="currentSetSize"/>
-            <Field DataType="Double" ValueRank="1" Name="currentSet"/>
-            <Field DataType="Int32" Name="statusSize"/>
-            <Field DataType="Int32" ValueRank="1" Name="status"/>
-	    <Field DataType="Int32" Name="voltageMaxSize"/>
-            <Field DataType="Double" ValueRank="1" Name="voltageMax"/>
-	    <Field DataType="Int32" Name="rupSize"/>
-            <Field DataType="Double" ValueRank="1" Name="rup"/>
-	    <Field DataType="Int32" Name="rdownSize"/>
-            <Field DataType="Double" ValueRank="1" Name="rdown"/>	    
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=14157" BrowseName="1:DT1415c" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>DT1415c</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415c</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14158" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14155</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=14157</Reference>
-        </References>
-    </UAObject>
-
-
-
-    <UADataType NodeId="ns=1;i=20201" BrowseName="1:HMPm">
-        <DisplayName>HMPm</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:HMPm">
-            <Field DataType="Boolean" Name="output"/>
-            <Field DataType="Int32" Name="chSize"/>
-            <Field DataType="Boolean" ValueRank="1" Name="ch"/>
-            <Field DataType="Int32" Name="voltageSize"/>
-            <Field DataType="Double" ValueRank="1" Name="voltage"/>
-            <Field DataType="Int32" Name="currentSize"/>
-            <Field DataType="Double" ValueRank="1" Name="current"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=20203" BrowseName="1:HMPm" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>HMPm</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">HMPm</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=20204" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=20201</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=20203</Reference>
-        </References>
-    </UAObject>
-
-
-
-    
-    <UADataType NodeId="ns=1;i=20211" BrowseName="1:HMPc">
-        <DisplayName>HMPc</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:HMPc">
-            <Field DataType="Int32" Name="voltageSetSize"/>
-            <Field DataType="Double" ValueRank="1" Name="voltageSet"/>
-            <Field DataType="Int32" Name="currentSetSize"/>
-            <Field DataType="Double" ValueRank="1" Name="currentSet"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=20213" BrowseName="1:HMPc" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>HMPc</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">HMPc</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=20214" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=20211</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=20213</Reference>
-        </References>
-    </UAObject>
-
-
-
-
- <UADataType NodeId="ns=1;i=36211" BrowseName="1:TPG362c">
-        <DisplayName>TPG362c</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:TPG362c">
-            <Field DataType="Int32" Name="pressureSize"/>
-            <Field DataType="Double" ValueRank="1" Name="pressure"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=36213" BrowseName="1:TPG362c" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>TPG362c</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">TPG362c</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=36214" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=36211</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=36213</Reference>
-        </References>
-    </UAObject>
-
-<UADataType NodeId="ns=1;i=36201" BrowseName="1:TPG362m">
-        <DisplayName>TPG362m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:TPG362m">
-            <Field DataType="Int32" Name="vacuumSize"/>
-            <Field DataType="Double" ValueRank="1" Name="vacuum"/>
-            <Field DataType="Int32" Name="statusSize"/>
-            <Field DataType="Int32" ValueRank="1" Name="status"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=36203" BrowseName="1:TPG362m" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>TPG362m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">TPG362m</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=36204" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=36201</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=36203</Reference>
-        </References>
-    </UAObject>
-<!-- PiWeather-->
-<UADataType NodeId="ns=1;i=31401" BrowseName="1:PiWeatherm">
-        <DisplayName>PiWeatherm</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:PiWeatherm">
-            <Field DataType="Int32" Name="tempSize"/>
-            <Field DataType="Double" ValueRank="1" Name="temp"/>
-            <Field DataType="Double" Name="temperature"/>
-            <Field DataType="Double"  Name="pressure"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=31403" BrowseName="1:PiWeatherm" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>PiWeatherm</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PiWeatherm</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=31404" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=31401</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=31403</Reference>
-        </References>
-    </UAObject>
-
- <UADataType NodeId="ns=1;i=31411" BrowseName="1:PiWeatherc">
-        <DisplayName>PiWeatherc</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:PiWeatherc">
-            <Field DataType="Int32" Name="units"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=31413" BrowseName="1:PiWeatherc" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>PiWeatherc</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PiWeatherc</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=31414" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=31411</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=31413</Reference>
-        </References>
-    </UAObject>
-<!-- MKS910-->
-<UADataType NodeId="ns=1;i=9101" BrowseName="1:MKS910m">
-        <DisplayName>MKS910m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:MKS910m">
-            <Field DataType="Double"  Name="vacuum"/> 
-            <Field DataType="Double" Name="temperature"/>
-            <Field DataType="Int32" Name="status"/>
-            <Field DataType="Int32" Name="units"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=9103" BrowseName="1:MKS910m" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>MKS910m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">MKS910m</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=9104" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=9101</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=9103</Reference>
-        </References>
-    </UAObject>
-
- <UADataType NodeId="ns=1;i=9111" BrowseName="1:MKS910c">
-        <DisplayName>MKS910c</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:MKS910c">
-            <Field DataType="Int32" Name="dummy"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=9113" BrowseName="1:MKS910c" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>MKS910c</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">MKS910c</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=9114" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=9111</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=9113</Reference>
-        </References>
-    </UAObject>
-
-
-    <UADataType NodeId="ns=1;i=32001" BrowseName="1:ParametersTCP">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:ParametersTCP">
-            <Field DataType="String" Name="address"/>
-            <Field DataType="Int32" Name="port"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=32003" BrowseName="1:ParametersTCP" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">ParametersTCP</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32004" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32001</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=32003</Reference>
-        </References>
-    </UAObject>
-
-    <UADataType NodeId="ns=1;i=32101" BrowseName="1:Relay">
-        <DisplayName>Relay</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
-        </References>
-        <Definition Name="1:Relay">
-            <Field DataType="Int32" Name="relayNumber"/>
-            <Field DataType="Boolean" ValueRank="1" Name="direction"/>
-            <Field DataType="Double" ValueRank="1" Name="setpoint"/>
-            <Field DataType="Double" ValueRank="1" Name="hysteresis"/>
-            <Field DataType="Int32" ValueRank="1" Name="enabled"/>
-            <Field DataType="Boolean" ValueRank="1" Name="status"/>
-        </Definition>
-    </UADataType>
-
-    <UAVariable NodeId="ns=1;i=32103" BrowseName="1:Relay" ParentNodeId="ns=1;i=7617" DataType="String">
-        <DisplayName>DT1415m</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
-        </References>
-        <Value>
-            <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">Relay</String>
-        </Value>
-    </UAVariable>
-
-    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=32104" BrowseName="Default Binary">
-        <DisplayName>Default Binary</DisplayName>
-        <References>
-            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=32101</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
-            <Reference ReferenceType="HasDescription">ns=1;i=32103</Reference>
-        </References>
-    </UAObject>
-
-
-
-
-<!-- End of device stuff-->
-    <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.Testnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
-        <DisplayName>Opc.Ua.Testnodeset</DisplayName>
-        <References>
-            <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
-            <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
-        </References>
-        <Value>
-        <!-- This is the Base64 Encoded content of nodeset.bsd -->
-            <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9Imh0dHA6Ly9mdXcuZWR1LnBsL2Rjcy8iCiAgRGVmYXVsdEJ5dGVPcmRlcj0iTGl0dGxlRW5kaWFuIgogIFRhcmdldE5hbWVzcGFjZT0iaHR0cDovL2hlcC5mdXcuZWR1LnBsL2Rjcy8iCj4KICA8b3BjOkltcG9ydCBOYW1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIExvY2F0aW9uPSJPcGMuVWEuQmluYXJ5U2NoZW1hLmJzZCIvPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkhNUG0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJvdXRwdXQiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2hTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY2giIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9ImNoU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iSE1QYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2V0U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTZXRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkRUMTQxNW0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0b3RhbFZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2UiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTVjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iaXNSZW1vdGUiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idG90YWxWb2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTZXQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNldFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InN0YXR1c1NpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXMiIFR5cGVOYW1lPSJvcGM6VUludDMyIiBMZW5ndGhGaWVsZD0ic3RhdHVzU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlTWF4IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VNYXhTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJydXBTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJ1cFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJkb3duU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJkb3duIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJkb3duU2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJUUEczNjJtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idmFjdXVtU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZhY3V1bSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2YWN1dW1TaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXNTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InN0YXR1c1NpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogICAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJUUEczNjJjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0icHJlc3N1cmVTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icHJlc3N1cmUiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0icHJlc3N1cmVTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlBpV2VhdGhlcm0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InRlbXAiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idGVtcFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InRlbXBlcmF0dXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icHJlc3N1cmUiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICAgIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iUGlXZWF0aGVyYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImR1bW15IiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4gIAoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9Ik1LUzkxMG0iIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2YWN1dW0iIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wZXJhdHVyZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InN0YXR1cyIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InVuaXRzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJNS1M5MTBjIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iZHVtbXkiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlBhcmFtZXRlcnNUQ1AiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJhZGRyZXNzIiBUeXBlTmFtZT0ib3BjOlN0cmluZyIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icG9ydCIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iUmVsYXkiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogIDxvcGM6RmllbGQgTmFtZT0icmVsYXlOdW1iZXIiIFR5cGVOYW1lPSJvcGM6VUludDMyIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImRpcmVjdGlvbiIgVHlwZU5hbWU9Im9wYzpCb29sZWFuIiBMZW5ndGhGaWVsZD0icmVsYXlOdW1iZXIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InNldHBvaW50IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgICA8b3BjOkZpZWxkIE5hbWU9Imh5c3RlcmVzaXMiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0icmVsYXlOdW1iZXIiLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iZW5hYmxlZCIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIExlbmd0aEZpZWxkPSJyZWxheU51bWJlciIvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXMiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+Cgo8L29wYzpUeXBlRGljdGlvbmFyeT4=
+  <!-- DT1415 -->
+  <UADataType NodeId="ns=1;i=14151" BrowseName="1:DT1415m">
+    <DisplayName>DT1415m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:DT1415m">
+      <Field DataType="Double" Name="totalVoltage"/>
+      <Field DataType="Int32" Name="voltageSize"/>
+      <Field DataType="Double" ValueRank="1" Name="voltage"/>
+      <Field DataType="Int32" Name="currentSize"/>
+      <Field DataType="Double" ValueRank="1" Name="current"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=14153" BrowseName="1:DT1415m" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>DT1415m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415m</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14154" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14151</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=14153</Reference>
+    </References>
+  </UAObject>
+  <UADataType NodeId="ns=1;i=14155" BrowseName="1:DT1415c">
+    <DisplayName>DT1415c</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:DT1415c">
+      <Field DataType="Boolean" Name="isRemote"/>
+      <Field DataType="Double" Name="totalVoltageSet"/>
+      <Field DataType="Int32" Name="voltageSetSize"/>
+      <Field DataType="Double" ValueRank="1" Name="voltageSet"/>
+      <Field DataType="Int32" Name="currentSetSize"/>
+      <Field DataType="Double" ValueRank="1" Name="currentSet"/>
+      <Field DataType="Int32" Name="statusSize"/>
+      <Field DataType="Int32" ValueRank="1" Name="status"/>
+      <Field DataType="Int32" Name="voltageMaxSize"/>
+      <Field DataType="Double" ValueRank="1" Name="voltageMax"/>
+      <Field DataType="Int32" Name="rupSize"/>
+      <Field DataType="Double" ValueRank="1" Name="rup"/>
+      <Field DataType="Int32" Name="rdownSize"/>
+      <Field DataType="Double" ValueRank="1" Name="rdown"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=14157" BrowseName="1:DT1415c" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>DT1415c</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">DT1415c</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=14158" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=14155</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=14157</Reference>
+    </References>
+  </UAObject>
+  <!-- HMP -->
+  <UADataType NodeId="ns=1;i=20201" BrowseName="1:HMPm">
+    <DisplayName>HMPm</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:HMPm">
+      <Field DataType="Boolean" Name="output"/>
+      <Field DataType="Int32" Name="chSize"/>
+      <Field DataType="Boolean" ValueRank="1" Name="ch"/>
+      <Field DataType="Int32" Name="voltageSize"/>
+      <Field DataType="Double" ValueRank="1" Name="voltage"/>
+      <Field DataType="Int32" Name="currentSize"/>
+      <Field DataType="Double" ValueRank="1" Name="current"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=20203" BrowseName="1:HMPm" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>HMPm</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">HMPm</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=20204" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=20201</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=20203</Reference>
+    </References>
+  </UAObject>
+  <UADataType NodeId="ns=1;i=20211" BrowseName="1:HMPc">
+    <DisplayName>HMPc</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:HMPc">
+      <Field DataType="Int32" Name="voltageSetSize"/>
+      <Field DataType="Double" ValueRank="1" Name="voltageSet"/>
+      <Field DataType="Int32" Name="currentSetSize"/>
+      <Field DataType="Double" ValueRank="1" Name="currentSet"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=20213" BrowseName="1:HMPc" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>HMPc</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">HMPc</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=20214" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=20211</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=20213</Reference>
+    </References>
+  </UAObject>
+  <!-- TPG362 -->
+  <UADataType NodeId="ns=1;i=36211" BrowseName="1:TPG362c">
+    <DisplayName>TPG362c</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:TPG362c">
+      <Field DataType="Int32" Name="pressureSize"/>
+      <Field DataType="Double" ValueRank="1" Name="pressure"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=36213" BrowseName="1:TPG362c" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>TPG362c</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">TPG362c</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=36214" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=36211</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=36213</Reference>
+    </References>
+  </UAObject>
+  <UADataType NodeId="ns=1;i=36201" BrowseName="1:TPG362m">
+    <DisplayName>TPG362m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:TPG362m">
+      <Field DataType="Int32" Name="vacuumSize"/>
+      <Field DataType="Double" ValueRank="1" Name="vacuum"/>
+      <Field DataType="Int32" Name="statusSize"/>
+      <Field DataType="Int32" ValueRank="1" Name="status"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=36203" BrowseName="1:TPG362m" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>TPG362m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">TPG362m</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=36204" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=36201</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=36203</Reference>
+    </References>
+  </UAObject>
+  <!-- PiWeather-->
+  <UADataType NodeId="ns=1;i=31401" BrowseName="1:PiWeatherm">
+    <DisplayName>PiWeatherm</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:PiWeatherm">
+      <Field DataType="Int32" Name="tempSize"/>
+      <Field DataType="Double" ValueRank="1" Name="temp"/>
+      <Field DataType="Double" Name="temperature"/>
+      <Field DataType="Double" Name="pressure"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=31403" BrowseName="1:PiWeatherm" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>PiWeatherm</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PiWeatherm</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=31404" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=31401</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=31403</Reference>
+    </References>
+  </UAObject>
+  <UADataType NodeId="ns=1;i=31411" BrowseName="1:PiWeatherc">
+    <DisplayName>PiWeatherc</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:PiWeatherc">
+      <Field DataType="Int32" Name="units"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=31413" BrowseName="1:PiWeatherc" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>PiWeatherc</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">PiWeatherc</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=31414" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=31411</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=31413</Reference>
+    </References>
+  </UAObject>
+  <!-- MKS910-->
+  <UADataType NodeId="ns=1;i=9101" BrowseName="1:MKS910m">
+    <DisplayName>MKS910m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:MKS910m">
+      <Field DataType="Double" Name="combined"/>
+      <Field DataType="Double" Name="piezo"/>
+      <Field DataType="Double" Name="pirani"/>
+      <Field DataType="Double" Name="temperature"/>
+      <Field DataType="Int32" Name="status"/>
+      <Field DataType="Int32" Name="units"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=9103" BrowseName="1:MKS910m" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>MKS910m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">MKS910m</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=9104" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=9101</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=9103</Reference>
+    </References>
+  </UAObject>
+  <UADataType NodeId="ns=1;i=9111" BrowseName="1:MKS910c">
+    <DisplayName>MKS910c</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:MKS910c">
+      <Field DataType="Int32" Name="dummy"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=9113" BrowseName="1:MKS910c" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>MKS910c</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">MKS910c</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=9114" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=9111</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=9113</Reference>
+    </References>
+  </UAObject>
+  <!-- Relay -->
+  <UADataType NodeId="ns=1;i=31001" BrowseName="1:Relay">
+    <DisplayName>Relay</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:Relay">
+      <Field DataType="Int32" Name="relayNumber"/>
+      <Field DataType="Boolean" ValueRank="1" Name="direction"/>
+      <Field DataType="Double" ValueRank="1" Name="setpoint"/>
+      <Field DataType="Double" ValueRank="1" Name="hysteresis"/>
+      <Field DataType="Int32" ValueRank="1" Name="enabled"/>
+      <Field DataType="Boolean" ValueRank="1" Name="status"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=31003" BrowseName="1:Relay" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>Relay</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">Relay</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=31004" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=31001</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=31003</Reference>
+    </References>
+  </UAObject>
+  <!-- MKS946 -->
+  <UADataType NodeId="ns=1;i=94601" BrowseName="1:MKS946m">
+    <DisplayName>MKS946m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+    </References>
+    <Definition Name="1:MKS946m">
+      <Field DataType="Double" Name="pressure"/>
+      <Field DataType="Double" Name="flow"/>
+      <Field DataType="Double" Name="flowSetPoint"/>
+      <Field DataType="Int32" Name="flowMode"/>
+    </Definition>
+  </UADataType>
+  <UAVariable NodeId="ns=1;i=94603" BrowseName="1:MKS946m" ParentNodeId="ns=1;i=7617" DataType="String">
+    <DisplayName>MKS946m</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+      <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=7617</Reference>
+    </References>
+    <Value>
+      <String xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">MKS946m</String>
+    </Value>
+  </UAVariable>
+  <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=94604" BrowseName="Default Binary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=94601</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+      <Reference ReferenceType="HasDescription">ns=1;i=94603</Reference>
+    </References>
+  </UAObject>
+  <!-- End of device stuff-->
+  <UAVariable NodeId="ns=1;i=7617" BrowseName="1:Opc.Ua.ELITPCnodeset" SymbolicName="OpcUa_BinarySchema" DataType="ByteString">
+    <DisplayName>Opc.Ua.ELITPCnodeset</DisplayName>
+    <References>
+      <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
+      <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
+    </References>
+    <Value>
+      <!-- This is the Base64 Encoded content of nodeset.bsd -->
+      <ByteString xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
+PG9wYzpUeXBlRGljdGlvbmFyeQogIHhtbG5zOm9wYz0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL0JpbmFyeVNjaGVtYS8iCiAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIKICB4bWxuczp1YT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBLyIKICB4bWxuczp0bnM9InVybjpkY3MuZWxpdHBjIgogIERlZmF1bHRCeXRlT3JkZXI9IkxpdHRsZUVuZGlhbiIKICBUYXJnZXROYW1lc3BhY2U9InVybjpkY3MuZWxpdHBjIgo+CiAgPG9wYzpJbXBvcnQgTmFtZXNwYWNlPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvVUEvIiBMb2NhdGlvbj0iT3BjLlVhLkJpbmFyeVNjaGVtYS5ic2QiLz4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJITVBtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0ib3V0cHV0IiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImNoU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImNoIiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIExlbmd0aEZpZWxkPSJjaFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IkhNUGMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlU2V0U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idm9sdGFnZVNldFNpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnRTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJjdXJyZW50U2V0U2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJEVDE0MTVtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idG90YWxWb2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2b2x0YWdlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InZvbHRhZ2VTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImN1cnJlbnQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0iY3VycmVudFNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iRFQxNDE1YyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImlzUmVtb3RlIiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InRvdGFsVm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VTZXRTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZVNldCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlU2V0U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iY3VycmVudFNldFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJjdXJyZW50U2V0IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9ImN1cnJlbnRTZXRTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXNTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InN0YXR1c1NpemUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZvbHRhZ2VNYXhTaXplIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idm9sdGFnZU1heCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJ2b2x0YWdlTWF4U2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0icnVwU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InJ1cCIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJydXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93blNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJyZG93biIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIExlbmd0aEZpZWxkPSJyZG93blNpemUiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYybSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InZhY3V1bVNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ2YWN1dW0iIFR5cGVOYW1lPSJvcGM6RG91YmxlIiBMZW5ndGhGaWVsZD0idmFjdXVtU2l6ZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InN0YXR1cyIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIExlbmd0aEZpZWxkPSJzdGF0dXNTaXplIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICAgIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iVFBHMzYyYyIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlU2l6ZSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InByZXNzdXJlU2l6ZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJQaVdlYXRoZXJtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0idGVtcFNpemUiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InRlbXBTaXplIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJ0ZW1wZXJhdHVyZSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCiAgICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlBpV2VhdGhlcmMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJkdW1teSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+ICAKCiAgPG9wYzpTdHJ1Y3R1cmVkVHlwZSBOYW1lPSJNS1M5MTBtIiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICAgIDxvcGM6RmllbGQgTmFtZT0iY29tYmluZWQiIFR5cGVOYW1lPSJvcGM6RG91YmxlIiAvPgogICAgPG9wYzpGaWVsZCBOYW1lPSJwaWV6byIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InBpcmFuaSIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9InRlbXBlcmF0dXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0ic3RhdHVzIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0idW5pdHMiIFR5cGVOYW1lPSJvcGM6VUludDMyIiAvPgogIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9Ik1LUzkxMGMiIEJhc2VUeXBlPSJ1YTpFeHRlbnNpb25PYmplY3QiPgogICAgPG9wYzpGaWVsZCBOYW1lPSJkdW1teSIgVHlwZU5hbWU9Im9wYzpVSW50MzIiIC8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgoKICA8b3BjOlN0cnVjdHVyZWRUeXBlIE5hbWU9IlJlbGF5IiBCYXNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0Ij4KICA8b3BjOkZpZWxkIE5hbWU9InJlbGF5TnVtYmVyIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIvPgogIDxvcGM6RmllbGQgTmFtZT0iZGlyZWN0aW9uIiBUeXBlTmFtZT0ib3BjOkJvb2xlYW4iIExlbmd0aEZpZWxkPSJyZWxheU51bWJlciIgLz4KICA8b3BjOkZpZWxkIE5hbWU9InNldHBvaW50IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBOYW1lPSJoeXN0ZXJlc2lzIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBOYW1lPSJlbmFibGVkIiBUeXBlTmFtZT0ib3BjOlVJbnQzMiIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBOYW1lPSJzdGF0dXMiIFR5cGVOYW1lPSJvcGM6Qm9vbGVhbiIgTGVuZ3RoRmllbGQ9InJlbGF5TnVtYmVyIi8+CiAgPC9vcGM6U3RydWN0dXJlZFR5cGU+CgogIDxvcGM6U3RydWN0dXJlZFR5cGUgTmFtZT0iTUtTOTQ2bSIgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCI+CiAgICA8b3BjOkZpZWxkIE5hbWU9InByZXNzdXJlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iZmxvdyIgVHlwZU5hbWU9Im9wYzpEb3VibGUiIC8+CiAgICA8b3BjOkZpZWxkIE5hbWU9ImZsb3dNb2RlIiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICAgIDxvcGM6RmllbGQgTmFtZT0iZmxvd1NldFBvaW50IiBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgLz4KICA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KCjwvb3BjOlR5cGVEaWN0aW9uYXJ5Pgo=
             </ByteString>
-        </Value>
-    </UAVariable>    
-
- 
-    
+    </Value>
+  </UAVariable>
 </UANodeSet>
-

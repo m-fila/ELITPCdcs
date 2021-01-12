@@ -1,14 +1,14 @@
 #ifndef DT1415ET_H
 #define DT1415ET_H
 
-#include "GenericDevice.h"
+#include "DCSGenericDevice.h"
 #include "version.h"
 #include <map>
 #include <string>
 
 // enum class DT1415ETchannelStatus;
 
-class DT1415ET : public GenericDevice {
+class DT1415ET : public DCSGenericDevice {
   public:
     enum class CMD { MON, SET };
     enum class CHANNEL { CH0, CH1, CH2, CH3, CH4, CH5, CH6, CH7, ALL, NONE };
@@ -20,12 +20,14 @@ class DT1415ET : public GenericDevice {
     std::string sendDT1415ETcommand(CMD command, CHANNEL channel, std::string function,
                                     std::string value);
     void setConnectionStream(ConnectionStream *stream) override;
-    std::string getModuleName();
-    std::string getFirmwareVersion();
-    std::string getSerialNumber();
+
+    std::string getVendor() override { return "Caen"; }
+    std::string getModel() override;
+    std::string getFirmwareVersion() override;
+    std::string getSerialNumber() override;
+
     std::string getControlMode();
     bool isRemote();
-    std::string getIdentifier();
     std::string getVoltageSet(CHANNEL channel);
     std::string getVoltage(CHANNEL channel);
     std::string getVoltageMax(CHANNEL channel);
@@ -42,6 +44,8 @@ class DT1415ET : public GenericDevice {
     void setVoltageMax(CHANNEL channel, double value);
     void setRampUp(CHANNEL channel, double value);
     void setRampDown(CHANNEL, double value);
+
+    void clearAlarmSignal();
 
   private:
     const std::map<CMD, std::string> CommandsMap = {{CMD::MON, "MON"}, {CMD::SET, "SET"}};

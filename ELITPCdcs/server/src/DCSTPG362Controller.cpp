@@ -4,22 +4,23 @@
 #include <sstream>
 
 void DCSTPG362Controller::addChildren(const Options &options) {
-    addConnection();
-    auto &m =
-        addVariable("measurements", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362M]);
+    DCSDeviceController<TPG362>::addChildren(options);
+    auto &m = addVariable("measurements",
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362M]);
     addVariableUpdate(m, 1000, &DCSTPG362Controller::getMeasurements, this);
     m.setHistorizing();
-    auto &c =
-        addVariable("configuration", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_TPG362C]);
+    auto &c = addVariable("configuration",
+                          &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_TPG362C]);
     addVariableUpdate(c, 1000, &DCSTPG362Controller::getConfiguration, this);
-    auto &r = addVariable("relay", UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_RELAY]);
+    auto &r = addVariable("relay", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
     addVariableUpdate(r, 1000, &DCSTPG362Controller::getRelay, this);
     addControllerMethod("setrelay", "Sets relay",
-                        {{"Relay number", "1-4", UA_TYPES[UA_TYPES_UINT32]},
-                         {"Enabled", "OFF/ON/CH1/CH2", UA_TYPES[UA_TYPES_UINT32]},
-                         {"Setpoint", "Current units", UA_TYPES[UA_TYPES_DOUBLE]},
-                         {"Hysteresis", "Current units", UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {{"Relay number", "1-4", &UA_TYPES[UA_TYPES_UINT32]},
+                         {"Enabled", "OFF/ON/CH1/CH2", &UA_TYPES[UA_TYPES_UINT32]},
+                         {"Setpoint", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]},
+                         {"Hysteresis", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSTPG362Controller::setRelay, this);
+    addVariable("sensorType", &UA_TYPES[UA_TYPES_STRING], true);
 }
 
 UA_TPG362m DCSTPG362Controller::getMeasurements() {
@@ -37,7 +38,7 @@ UA_TPG362m DCSTPG362Controller::getMeasurements() {
             std::string response = device.getGaugesData(TPG362::CH::ALL);
             std::regex reg(
                 "^[0-9][,][+-][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][,][+-][0-"
-                "9][.][0-9]{4}[E][+-][0-9]{2}\r$");
+                "9][.][0-9]{4}[E][+-][0-9]{2}$");
             if(!std::regex_match(response, reg)) {
                 throw std::runtime_error(
                     std::string("received invalid  pressure response: ") +
@@ -107,7 +108,7 @@ UA_Relay DCSTPG362Controller::getRelay() {
     while(tries) {
         try {
             auto statusResponse = device.getSwitchingFunctionStatus();
-            std::regex regex("^[01][,][01][,][01][,][01]\r$");
+            std::regex regex("^[01][,][01][,][01][,][01]$");
             if(!std::regex_match(statusResponse, regex)) {
                 throw std::runtime_error(
                     std::string("received invalid switching function status response: ") +
@@ -122,7 +123,7 @@ UA_Relay DCSTPG362Controller::getRelay() {
                 auto functionResponse = device.getSwitchingFunction(
                     static_cast<TPG362::SWITCHING_FUNCTION>(i + 1));
                 std::regex reg("^[0-9][,][0-9][.][0-9]{4}[E][+-][0-9]{2}[,][0-9][.][0-9]{"
-                               "4}[E][+-][0-9]{2}\r$");
+                               "4}[E][+-][0-9]{2}$");
                 if(!std::regex_match(functionResponse, reg)) {
                     throw std::runtime_error(
                         std::string("received invalid switching function response: ") +
@@ -159,4 +160,17 @@ void DCSTPG362Controller::setRelay(const UA_Variant *input, UA_Variant *output) 
     device.setSwitchingFunction(static_cast<TPG362::SWITCHING_FUNCTION>(function),
                                 static_cast<TPG362::SWITCHING_STATUS>(assignment),
                                 setpoint, hysteresis);
+}
+
+void DCSTPG362Controller::postConnect() {
+    size_t size = 2;
+    auto *array =
+        static_cast<UA_String *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_STRING]));
+    std::istringstream ss(device.getGaugesIdentification());
+    for(size_t i = 0; i < size; ++i) {
+        std::string val;
+        std::getline(ss, val, ',');
+        array[i] = UA_STRING_ALLOC(val.c_str());
+    }
+    variables.at("sensorType")->setValue(array, size);
 }

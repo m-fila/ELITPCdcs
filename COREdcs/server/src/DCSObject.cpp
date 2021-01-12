@@ -23,12 +23,13 @@ DCSObject::~DCSObject() {
     }
 }
 
-DCSVariable &DCSObject::addVariable(std::string variableName, UA_DataType variableType) {
+DCSVariable &DCSObject::addVariable(std::string variableName,
+                                    const UA_DataType *variableType, bool isArray) {
     if(variables.find(variableName) == variables.end()) {
         return *variables
-                    .insert(
-                        {variableName, new DCSVariable(server, objectNodeId, objectName,
-                                                       variableName, variableType)})
+                    .insert({variableName,
+                             new DCSVariable(server, objectNodeId, objectName,
+                                             variableName, variableType, isArray)})
                     .first->second;
     } else {
         throw std::runtime_error("Not unique variable id: " + objectName + "/" +
@@ -54,7 +55,7 @@ DCSObject::Method &DCSObject::addMethod(
         inputArguments[i].description =
             UA_LOCALIZEDTEXT_ALLOC("en-US", inputs.at(i).description.c_str());
         inputArguments[i].name = UA_String_fromChars(inputs.at(i).name.c_str());
-        inputArguments[i].dataType = inputs.at(i).dataType.typeId;
+        inputArguments[i].dataType = inputs.at(i).dataType->typeId;
         inputArguments[i].valueRank = UA_VALUERANK_SCALAR;
     }
 
@@ -67,7 +68,7 @@ DCSObject::Method &DCSObject::addMethod(
         outputArguments[i].description =
             UA_LOCALIZEDTEXT_ALLOC("en-US", outputs.at(i).description.c_str());
         outputArguments[i].name = UA_String_fromChars(outputs.at(i).name.c_str());
-        outputArguments[i].dataType = outputs.at(i).dataType.typeId;
+        outputArguments[i].dataType = outputs.at(i).dataType->typeId;
         outputArguments[i].valueRank = UA_VALUERANK_SCALAR;
     }
 
@@ -80,7 +81,7 @@ DCSObject::Method &DCSObject::addMethod(
 
     UA_NodeId methodNodeId;
 
-    UA_Server_addMethodNode(server, UA_NODEID_NULL, objectNodeId,
+    UA_Server_addMethodNode(server, UA_NODEID_NUMERIC(1, 0), objectNodeId,
                             UA_NODEID_NUMERIC(0, UA_NS0ID_HASORDEREDCOMPONENT),
                             methodQName, methodAttr, methodCallback, inputs.size(),
                             inputArguments, outputs.size(), outputArguments, nullptr,

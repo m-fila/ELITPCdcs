@@ -11,4 +11,5 @@ env.sh
 .clangd
 compile_commands.json
 workspace.code-workspace
-/docs/api/*
+docs/api/*
+deps/include/ProjectVersion.h

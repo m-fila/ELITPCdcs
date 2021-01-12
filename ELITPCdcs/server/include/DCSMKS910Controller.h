@@ -3,8 +3,8 @@
 #define DCS_MKS910_CONTROLLER_H
 #include "DCSDeviceController.h"
 #include "MKS910.h"
-#include "open62541/types_dcsnodeset_generated.h"
-#include "open62541/types_dcsnodeset_generated_handling.h"
+#include "open62541/types_elitpcnodeset_generated.h"
+#include "open62541/types_elitpcnodeset_generated_handling.h"
 class DCSMKS910Controller : public DCSDeviceController<MKS910>,
                             public DCSObjectFactory::Register<DCSMKS910Controller> {
     friend DCSServer;

@@ -18,12 +18,13 @@ class MKS910 : public MKS {
     std::string getPCombinedLong();
     std::string getPDiff();
 
-    std::string getFirmware();
-    std::string getHardware();
+    std::string getFirmwareVersion() override;
+    std::string getHardwareVersion() override;
     std::string getName();
-    std::string getModel();
-    std::string getSerialNumber();
-    std::string getPartNumer();
+    std::string getModel() override;
+    std::string getSerialNumber() override;
+    std::string getPartNumber() override;
+    std::string getVendor() override { return "MKS"; }
     std::string getUptime();
     // TORR, PASCAL, MBAR
     void setUnits(MKS910codes::Units u);

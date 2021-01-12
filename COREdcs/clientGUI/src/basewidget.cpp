@@ -1,9 +1,7 @@
 #include "basewidget.h"
 
 BaseWidget::BaseWidget(std::string name, QWidget *parent)
-    : QWidget(parent), instanceName(name) {
-    // loadConfig();
-}
+    : QWidget(parent), instanceName(name) {}
 
 void BaseWidget::startup() {
     this->show();

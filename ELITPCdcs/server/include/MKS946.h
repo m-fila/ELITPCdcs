@@ -25,7 +25,7 @@ class MKS946 : public MKS {
     std::string getFlowNominalRange(CH ch);
     void setFlowNomialRange(CH ch, double range);
     void zeroMFC(CH ch);
-    std::string getFlowPoint(CH ch);
+    std::string getFlowSetPoint(CH ch);
     void setFlowPoint(CH ch, double range);
     std::string getFlowMode(CH ch);
     void setFlowMode(CH ch, double range);
@@ -36,18 +36,20 @@ class MKS946 : public MKS {
     std::string getActiveRatioRecipe();
     void setActiveRatioRecipe(RATIO recipe);
 
-    // moduels commands
+    // modules commands
     std::string getModuleType();
     std::string getSensorType(MODULE m);
-
+    std::string getFirmware(CH ch);
+    std::string getSerialNumber(CH ch);
     // unit commands
-    std::string getFirmware();
-    std::string getHardware();
+
+    std::string getVendor() override { return "MKS"; }
+    std::string getFirmwareVersion() override;
     std::string getName();
-    std::string getModel();
-    std::string getSerialNumber();
-    std::string getPartNumer();
+    std::string getModel() override;
+    std::string getSerialNumber() override;
     std::string getUptime();
+
     // TORR, PASCAL, MBAR
     void setUnits(MKS946codes::Units u);
 };

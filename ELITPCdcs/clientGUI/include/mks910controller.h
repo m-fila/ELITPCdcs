@@ -24,4 +24,4 @@ class MKS910_controller : public opc_controller {
                                      UA_DataValue *value);
 };
 
-#endif  // HV_CONTROLLER_H
+#endif  // MKS910_CONTROLLER_H
