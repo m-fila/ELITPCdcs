@@ -2,7 +2,7 @@
 #include "DCSContext.h"
 #include "DCSUAJson.h"
 #include "DCSVariable.h"
-
+#include <algorithm>
 using namespace nlohmann;
 
 UA_HistoryDataBackend DCSHistoryBackendInflux::getUaBackend() {
@@ -56,6 +56,7 @@ UA_StatusCode DCSHistoryBackendInflux::serverSetHistoryData(
     } catch(const exception &e) {
         return UA_STATUSCODE_BADINTERNALERROR;
     }
+    std::replace(measurement.begin(), measurement.end(), ' ', '_');
     std::unique_lock<std::mutex> lock(instance->bucketMutex);
     instance->bucket.append(
         measurement + " " + cmd + " " +
