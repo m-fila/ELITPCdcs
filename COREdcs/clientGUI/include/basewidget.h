@@ -25,7 +25,7 @@ class BaseWidget : public QWidget {
     virtual void startup();
     virtual void controllerInit(UA_Client *, UA_ClientConfig *,
                                 UA_CreateSubscriptionResponse) = 0;
-    virtual void updateStatus(void *data);
+    virtual void updateStatus(UA_Variant data);
 };
 
 #endif  // BASEWIDGET_H

@@ -25,9 +25,9 @@ class MKS946Widget : public AbstractWidget {
     ~MKS946Widget();
 
   public slots:
-    void updateStatus(void *data) override;
-    void updateMeasurements(void *data);
-    void updateConfiguration(void *data);
+    void updateStatus(UA_Variant data) override;
+    void updateMeasurements(UA_Variant data) override;
+    void updateConfiguration(UA_Variant data) override;
 
     void changeNamePressed();
 

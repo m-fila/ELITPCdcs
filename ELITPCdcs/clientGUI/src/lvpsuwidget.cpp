@@ -50,9 +50,9 @@ void LVpsuWidget::connectSignals() {
             SLOT(updateEnabledProfiles(void *)));
 }
 
-void LVpsuWidget::updateStatus(void *data) {
+void LVpsuWidget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
+    bool isConnected = *static_cast<bool *>(data.data);
     connectionState = isConnected;
     if(isConnected) {
         ui->CH1on->setEnabled(!deviceSettings.CH1);
@@ -90,8 +90,8 @@ void LVpsuWidget::updateStatus(void *data) {
     }
 }
 
-void LVpsuWidget::updateMeasurements(void *data) {
-    UA_HMPm measurements = *static_cast<UA_HMPm *>(data);
+void LVpsuWidget::updateMeasurements(UA_Variant data) {
+    UA_HMPm measurements = *static_cast<UA_HMPm *>(data.data);
     if(measurements.voltageSize) {
         QString val;
         val.sprintf("%.3f", measurements.voltage[0]);
@@ -115,8 +115,8 @@ void LVpsuWidget::updateMeasurements(void *data) {
         deviceSettings.Output = measurements.output;
     }
 }
-void LVpsuWidget::updateConfiguration(void *data) {
-    UA_HMPc configuration = *static_cast<UA_HMPc *>(data);
+void LVpsuWidget::updateConfiguration(UA_Variant data) {
+    UA_HMPc configuration = *static_cast<UA_HMPc *>(data.data);
     if(configuration.voltageSetSize) {
         QString val;
         val.sprintf("%.2f", configuration.voltageSet[0]);

@@ -18,9 +18,9 @@ MKS946Widget::~MKS946Widget() {}
 
 void MKS946Widget::connectSignals() { AbstractWidget::connectSignals(); }
 
-void MKS946Widget::updateStatus(void *data) {
+void MKS946Widget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
-    connectionState = *static_cast<bool *>(data);
+    connectionState = *static_cast<bool *>(data.data);
     if(!connectionState) {
         mVacuum->display(0);
         mFlow->display(0);
@@ -28,8 +28,8 @@ void MKS946Widget::updateStatus(void *data) {
         mStatus->setText("");
     }
 }
-void MKS946Widget::updateMeasurements(void *data) {
-    UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data);
+void MKS946Widget::updateMeasurements(UA_Variant data) {
+    UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data.data);
     QString val;
     std::string s;
     std::ostringstream os;
@@ -43,7 +43,7 @@ void MKS946Widget::updateMeasurements(void *data) {
     mFlow->display(measurements.flow);
 }
 
-void MKS946Widget::updateConfiguration(void *data) {}
+void MKS946Widget::updateConfiguration(UA_Variant data) {}
 
 void MKS946Widget::createLayout() {
     // create main layout with base size

@@ -24,31 +24,7 @@ class opc_controller : public opcQObject {
     const std::string applyProfileBrowseName = "applyProfile";
     const std::string setProfileBrowseName = "setProfile";
 
-    static void StatusChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                      void *subContext, UA_UInt32 monId, void *monContext,
-                                      UA_DataValue *value);
-    static void ConnectionParametersChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                                    void *subContext, UA_UInt32 monId,
-                                                    void *monContext,
-                                                    UA_DataValue *value);
-    static void MeasurementsChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                            void *subContext, UA_UInt32 monId,
-                                            void *monContext, UA_DataValue *value);
-    static void ConfigurationChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                             void *subContext, UA_UInt32 monId,
-                                             void *monContext, UA_DataValue *value);
-    static void SelectedProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                               void *subContext, UA_UInt32 monId,
-                                               void *monContext, UA_DataValue *value);
-    static void EnabledProfilesChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                               void *subContext, UA_UInt32 monId,
-                                               void *monContext, UA_DataValue *value);
-    static void DeviceInfoChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                          void *subContext, UA_UInt32 monId,
-                                          void *monContext, UA_DataValue *value);
   public slots:
-    void opcInit(UA_Client *client, UA_ClientConfig *config,
-                 UA_CreateSubscriptionResponse response) override;
     void callSetProfile(std::string key);
     void callSaveProfile(std::string key);
     void callApplyProfile();
@@ -56,16 +32,5 @@ class opc_controller : public opcQObject {
     void callConnect();
     void callDisconnect();
     void callSetConnectionParameters(std::string IPAddress, int port);
-
-  signals:
-    void statusChanged(void *);
-    void connectionParametersChanged(void *);
-    void measurementsChanged(void *);
-    void configurationChanged(void *);
-
-    void selectedProfileChanged(void *);
-    void enabledProfilesChanged(void *);
-    void deviceInfoChanged(void *);
 };
-
 #endif  // OPC_CONTROLLER_H

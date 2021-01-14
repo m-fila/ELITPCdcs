@@ -24,9 +24,9 @@ HVpsuWidget::~HVpsuWidget() { delete ui; }
 
 void HVpsuWidget::connectSignals() { AbstractWidget::connectSignals(); }
 
-void HVpsuWidget::updateStatus(void *data) {
+void HVpsuWidget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
+    bool isConnected = *static_cast<bool *>(data.data);
     connectionState = isConnected;
     if(isConnected) {
         for(int i = 0; i < channelsNumber; i++) {
@@ -100,8 +100,8 @@ void HVpsuWidget::updateStatus(void *data) {
     allTabKill[channelsNumber]->setEnabled(connectionState);
 }
 
-void HVpsuWidget::updateMeasurements(void *data) {
-    UA_DT1415m measurements = *static_cast<UA_DT1415m *>(data);
+void HVpsuWidget::updateMeasurements(UA_Variant data) {
+    UA_DT1415m measurements = *static_cast<UA_DT1415m *>(data.data);
     if(measurements.voltageSize) {
         QString val;
         double totalVoltage = 0;
@@ -118,8 +118,8 @@ void HVpsuWidget::updateMeasurements(void *data) {
         allTabCHvoltage[channelsNumber]->display(val);
     }
 }
-void HVpsuWidget::updateConfiguration(void *data) {
-    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data);
+void HVpsuWidget::updateConfiguration(UA_Variant data) {
+    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
         QString val;
@@ -839,8 +839,8 @@ N1471Widget::N1471Widget(std::string name, int enabledChannels, QWidget *parent)
     //                           .scaled(10, 10, Qt::KeepAspectRatio));
 }
 
-void N1471Widget::updateConfiguration(void *data) {
-    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data);
+void N1471Widget::updateConfiguration(UA_Variant data) {
+    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
         QString val;
@@ -897,8 +897,8 @@ void N1471Widget::updateConfiguration(void *data) {
     }
 }
 
-void DT1470Widget::updateConfiguration(void *data) {
-    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data);
+void DT1470Widget::updateConfiguration(UA_Variant data) {
+    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
         QString val;

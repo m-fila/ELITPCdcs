@@ -6,31 +6,32 @@
 #include <open62541/client_highlevel.h>
 #include <open62541/client_subscriptions.h>
 #include <open62541/plugin/log_stdout.h>
+
+class DCSMonitoredItem;
+
 class opcQObject : public QObject {
+    friend DCSMonitoredItem;
     Q_OBJECT
   public:
     explicit opcQObject(std::string OName, QObject *parent = 0);
-    ~opcQObject();
+    virtual ~opcQObject();
     const std::string ObjectName;
     UA_NodeId ObjectNodeId;
+    DCSMonitoredItem *getMonitoredItem(const std::string &browseName) {
+        try {
+            return monitoredItems.at(browseName);
+        } catch(const std::out_of_range &e) {
+            return nullptr;
+        }
+    }
+    DCSMonitoredItem *addMonitoredItem(const std::string &browseName);
 
   protected:
     UA_Client *client;
     UA_ClientConfig *config;
-    std::map<std::string, UA_NodeId> browsedIds;
-    void addMonitoredItem(UA_NodeId VariableId, UA_CreateSubscriptionResponse response,
-                          void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId,
-                                                       void *subContext, UA_UInt32 monId,
-                                                       void *monContext,
-                                                       UA_DataValue *value),
-                          UA_Double sampling = 250);
-    void addMonitoredItem(const std::string &browseName,
-                          UA_CreateSubscriptionResponse response,
-                          void (*ValueChangedCallback)(UA_Client *client, UA_UInt32 subId,
-                                                       void *subContext, UA_UInt32 monId,
-                                                       void *monContext,
-                                                       UA_DataValue *value),
-                          UA_Double sampling = 250);
+    std::map<const std::string, UA_NodeId> browsedIds;
+    std::map<const std::string, DCSMonitoredItem *> monitoredItems;
+
     void browseIds();
   signals:
 
@@ -39,4 +40,19 @@ class opcQObject : public QObject {
                          UA_CreateSubscriptionResponse response);
 };
 
+class DCSMonitoredItem : public QObject {
+    friend opcQObject;
+    Q_OBJECT
+  public:
+    DCSMonitoredItem(const std::string &browseName, QObject *parent = 0)
+        : QObject(parent), browseName(browseName) {}
+    std::string getBrowseName() { return browseName; }
+  signals:
+    void valueChanged(UA_Variant data);
+
+  private:
+    static void callback(UA_Client *client, UA_UInt32 subId, void *subContext,
+                         UA_UInt32 monId, void *monContext, UA_DataValue *value);
+    const std::string browseName;
+};
 #endif  // OPC_QOBJECT_H
