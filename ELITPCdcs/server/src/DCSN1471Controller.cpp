@@ -4,10 +4,10 @@ void DCSN1471Controller::addChildren(const Options &options) {
     DCSDeviceController<N1471>::addChildren(options);
     auto &m = addVariable("measurements",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415M]);
-    addVariableUpdate(m, 1000, &DCSN1471Controller::getMeasurements, this);
+    addVariableUpdate(m, 1000, &DCSN1471Controller::getMeasurements, this, options);
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415C]);
-    addVariableUpdate(c, 1000, &DCSN1471Controller::getConfiguration, this);
+    addVariableUpdate(c, 1000, &DCSN1471Controller::getConfiguration, this, options);
 
     addControllerMethod("setchannel", "Sets channel ON/OFF",
                         {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},

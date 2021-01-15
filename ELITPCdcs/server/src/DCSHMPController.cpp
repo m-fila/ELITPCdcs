@@ -3,11 +3,11 @@ void DCSHMPController::addChildren(const Options &options) {
     DCSDeviceController<HMP2020>::addChildren(options);
     auto &m =
         addVariable("measurements", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_HMPM]);
-    addVariableUpdate(m, 1000, &DCSHMPController::getMeasurements, this);
+    addVariableUpdate(m, 1000, &DCSHMPController::getMeasurements, this, options);
     m.setHistorizing();
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_HMPC]);
-    addVariableUpdate(c, 1000, &DCSHMPController::getConfiguration, this);
+    addVariableUpdate(c, 1000, &DCSHMPController::getConfiguration, this, options);
     addControllerMethod("setchannel", "Sets channel ON/OFF",
                         {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
                          {"State", "ON/OFF", &UA_TYPES[UA_TYPES_BOOLEAN]}},

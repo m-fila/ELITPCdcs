@@ -3,11 +3,11 @@ void DCSDT1415ETController::addChildren(const Options &options) {
     DCSDeviceController<DT1415ET>::addChildren(options);
     auto &m = addVariable("measurements",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415M]);
-    addVariableUpdate(m, 1000, &DCSDT1415ETController::getMeasurements, this);
+    addVariableUpdate(m, 1000, &DCSDT1415ETController::getMeasurements, this, options);
     m.setHistorizing();
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415C]);
-    addVariableUpdate(c, 1000, &DCSDT1415ETController::getConfiguration, this);
+    addVariableUpdate(c, 1000, &DCSDT1415ETController::getConfiguration, this, options);
 
     addControllerMethod("setchannel", "Sets channel ON/OFF",
                         {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},

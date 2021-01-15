@@ -4,10 +4,10 @@ void DCSDT1470ETController::addChildren(const Options &options) {
     auto &m = addVariable("measurements",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415M]);
     m.setHistorizing();
-    addVariableUpdate(m, 1000, &DCSDT1470ETController::getMeasurements, this);
+    addVariableUpdate(m, 1000, &DCSDT1470ETController::getMeasurements, this, options);
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_DT1415C]);
-    addVariableUpdate(c, 1000, &DCSDT1470ETController::getConfiguration, this);
+    addVariableUpdate(c, 1000, &DCSDT1470ETController::getConfiguration, this, options);
 
     addControllerMethod("setchannel", "Sets channel ON/OFF",
                         {{"Channel", "Channels number", &UA_TYPES[UA_TYPES_INT16]},
