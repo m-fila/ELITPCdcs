@@ -1,6 +1,7 @@
 #ifndef OPC_CONTROLLER_H
 #define OPC_CONTROLLER_H
 #include "opcQObject.h"
+#include <open62541/client_highlevel_async.h>
 
 class opc_controller : public opcQObject {
     Q_OBJECT

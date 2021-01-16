@@ -1,5 +1,5 @@
 #include "opc_controller.h"
-#include <open62541/client_highlevel_async.h>
+
 opc_controller::opc_controller(std::string OName, QObject *parent)
     : opcQObject(OName, parent) {
     addMonitoredItem(statusVariableName);
