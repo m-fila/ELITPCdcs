@@ -75,7 +75,7 @@ UA_Relay DCSMKS910Controller::getRelay() {
         resp = device.getRelayEnabled(no);
         relay.enabled[i] = static_cast<int>(MKS910codes::relayEnabledFromString.at(resp));
         relay.hysteresis[i] = std::stod(device.getRelayHysteresis(no));
-        relay.setpoint[i] = std::stod(device.getRelayHysteresis(no));
+        relay.setpoint[i] = std::stod(device.getRelaySetPoint(no));
         resp = device.getRelayStatus(no);
         relay.status[i] = static_cast<int>(MKS910codes::relaySetFromString.at(resp));
     }
