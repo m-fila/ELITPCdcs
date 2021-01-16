@@ -11,7 +11,7 @@ void MKS946_controller::callSetRelay(int nr, int enabled, double setpoint,
     UA_Variant_setScalarCopy(&input[1], &enabled, &UA_TYPES[UA_TYPES_UINT32]);
     UA_Variant_setScalarCopy(&input[2], &setpoint, &UA_TYPES[UA_TYPES_DOUBLE]);
     UA_Variant_setScalarCopy(&input[3], &hysteresis, &UA_TYPES[UA_TYPES_DOUBLE]);
-    UA_Client_call(client, ObjectNodeId, browsedIds["setrelay"], 4, input, nullptr,
-                   nullptr);
+    UA_Client_call_async(client, ObjectNodeId, browsedIds["setrelay"], 4, input, nullptr,
+                         nullptr, nullptr);
     UA_Variant_clear(input);
 }
