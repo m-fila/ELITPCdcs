@@ -15,12 +15,12 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
     innerLayout->addLayout(secondRow);
     auto statusLabel = new QLabel("Status:", this);
     status = new QLabel("", this);
-    status->setFixedWidth(40);
+    status->setFixedWidth(50);
     firstRow->addWidget(statusLabel);
     firstRow->addWidget(status);
     auto enabledLabel = new QLabel("Enabled:", this);
     enabled = new QLabel("", this);
-    enabled->setFixedWidth(40);
+    enabled->setFixedWidth(50);
     firstRow->addWidget(enabledLabel);
     firstRow->addWidget(enabled);
     auto directionLabel = new QLabel("Direction:", this);

@@ -19,6 +19,7 @@ class DCSMKS946Controller : public DCSDeviceController<MKS946>,
     void setRelay(const UA_Variant *input, UA_Variant *output);
 
     UA_MKS946m getMeasurements();
+    UA_Relay getRelay();
 };
 
 #endif  // DCS_MKS946_CONTROLLER_H

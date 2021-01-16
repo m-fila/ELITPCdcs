@@ -16,7 +16,12 @@ MKS946Widget::MKS946Widget(std::string name, QWidget *parent)
 
 MKS946Widget::~MKS946Widget() {}
 
-void MKS946Widget::connectSignals() { AbstractWidget::connectSignals(); }
+void MKS946Widget::connectSignals() {
+    AbstractWidget::connectSignals();
+    auto *moniteredItem = controller->addMonitoredItem("relay");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &MKS946Widget::updateRelay);
+}
 
 void MKS946Widget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
@@ -44,6 +49,19 @@ void MKS946Widget::updateMeasurements(UA_Variant data) {
 }
 
 void MKS946Widget::updateConfiguration(UA_Variant data) {}
+
+void MKS946Widget::updateRelay(UA_Variant data) {
+    auto r = *static_cast<UA_Relay *>(data.data);
+    for(size_t i = 0; i < r.statusSize; i++) {
+        RelayStruct rStruct;
+        rStruct.status = r.status[i];
+        rStruct.direction = r.direction[i];
+        rStruct.enabled = r.enabled[i];
+        rStruct.setpoint = r.setpoint[i];
+        rStruct.hysteresis = r.hysteresis[i];
+        relayWidgets.at(i)->setValues(rStruct);
+    }
+}
 
 void MKS946Widget::createLayout() {
     // create main layout with base size
@@ -145,6 +163,18 @@ void MKS946Widget::createRTab() {
     tab->addTab(rWidget, "Interlock");
     QVBoxLayout *rLayout = new QVBoxLayout();
     rWidget->setLayout(rLayout);
+    std::map<int, std::string> enabledLabels;
+    for(const auto &i : MKS946codes::relayEnabledToString) {
+        enabledLabels.insert(std::make_pair(static_cast<int>(i.first), i.second));
+    }
+    for(int i = 5; i <= 6; ++i) {
+        auto relayPanel = new DCSRelayWidget(i);
+        relayPanel->setEnabledLabels(enabledLabels);
+        rLayout->addWidget(relayPanel);
+        connect(relayPanel, SIGNAL(changeValues(int, RelayStruct)), this,
+                SLOT(changeRelay(int, RelayStruct)));
+        relayWidgets.push_back(relayPanel);
+    }
 }
 
 void MKS946Widget::drawLine() {
@@ -185,4 +215,9 @@ void MKS946Widget::saveConfig() {
     QString configkey;
     configkey.sprintf("%s/CustomName", instanceName.c_str());
     QSettings().setValue(configkey, cCustomName);
+}
+
+void MKS946Widget::changeRelay(int nr, RelayStruct values) {
+    dynamic_cast<MKS946_controller *>(controller)
+        ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
 }

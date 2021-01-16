@@ -28,8 +28,10 @@ class MKS946Widget : public AbstractWidget {
     void updateStatus(UA_Variant data) override;
     void updateMeasurements(UA_Variant data) override;
     void updateConfiguration(UA_Variant data) override;
+    void updateRelay(UA_Variant data);
 
     void changeNamePressed();
+    void changeRelay(int nr, RelayStruct values);
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;

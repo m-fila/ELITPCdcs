@@ -18,16 +18,19 @@ static std::map<std::string, Units> unitsFromString = {{"PASCAL", Units::PASCAL}
                                                        {"TORR", Units::TORR},
                                                        {"MICRON", Units::MICRON}};
 
-enum class Mode { OPEN, CLOSE, SETPOINT, PCTRL, RATIO, PRESET };
+enum class FlowMode { OPEN, CLOSE, SETPOINT /*, PCTRL, RATIO, PRESET*/ };
 
-static std::map<Mode, std::string> modeToString = {
-    {Mode::CLOSE, "CLOSE"}, {Mode::OPEN, "OPEN"},   {Mode::SETPOINT, "SETPOINT"},
-    {Mode::PCTRL, "PCTRL"}, {Mode::RATIO, "RATIO"}, {Mode::PRESET, "PRESET"},
+static std::map<FlowMode, std::string> flowModeToString = {
+    {FlowMode::CLOSE, "CLOSE"},
+    {FlowMode::OPEN, "OPEN"},
+    {FlowMode::SETPOINT, "SETPOINT"} /*, {FlowMode::PCTRL, "PCTRL"},
+     {FlowMode::RATIO, "RATIO"},       {FlowMode::PRESET, "PRESET"},*/
 };
 
-static std::map<std::string, Mode> modeFromString = {
-    {"CLOSE", Mode::CLOSE}, {"OPEN", Mode::OPEN},   {"SETPOINT", Mode::SETPOINT},
-    {"PCTRL", Mode::PCTRL}, {"RATIO", Mode::RATIO}, {"PRESET", Mode::PRESET}};
+static std::map<std::string, FlowMode> flowModeFromString = {
+    {"CLOSE", FlowMode::CLOSE},       {"OPEN", FlowMode::OPEN},
+    {"SETPOINT", FlowMode::SETPOINT} /*, {"PCTRL", FlowMode::PCTRL},
+    {"RATIO", FlowMode::RATIO},       {"PRESET", FlowMode::PRESET}*/};
 
 enum class Error {
     WRONG_GAUGE = 150,
@@ -120,13 +123,13 @@ static std::map<RelayEnabled, std::string> relayEnabledToString = {
     {RelayEnabled::On, "SET"},
     {RelayEnabled::Enabled, "ENABLE"}};
 
-enum class RelaySet { Clear, Set };
+enum class RelayStatus { Clear, Set };
 
-static std::map<std::string, RelaySet> relaySetFromString = {{"CLEAR", RelaySet::Clear},
-                                                             {"SET", RelaySet::Set}};
+static std::map<std::string, RelayStatus> relaySetFromString = {
+    {"CLEAR", RelayStatus::Clear}, {"SET", RelayStatus::Set}};
 
-static std::map<RelaySet, std::string> relaySetToString = {{RelaySet::Clear, "CLEAR"},
-                                                           {RelaySet::Set, "SET"}};
+static std::map<RelayStatus, std::string> relaySetToString = {
+    {RelayStatus::Clear, "CLEAR"}, {RelayStatus::Set, "SET"}};
 
 }  // namespace MKS946codes
 #endif  // MKS946CODES_H
