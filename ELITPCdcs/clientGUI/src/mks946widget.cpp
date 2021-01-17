@@ -1,4 +1,5 @@
 #include "mks946widget.h"
+#include <QGridLayout>
 #include <QInputDialog>
 #include <QSettings>
 #include <algorithm>
@@ -21,6 +22,9 @@ void MKS946Widget::connectSignals() {
     auto *moniteredItem = controller->addMonitoredItem("relay");
     connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
             &MKS946Widget::updateRelay);
+    moniteredItem = controller->addMonitoredItem("PID");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &MKS946Widget::updatePID);
 }
 
 void MKS946Widget::updateStatus(UA_Variant data) {
@@ -29,8 +33,32 @@ void MKS946Widget::updateStatus(UA_Variant data) {
     if(!connectionState) {
         mVacuum->display(0);
         mFlow->display(0);
-        mTemp->setText("");
-        mStatus->setText("");
+
+        flowMode.setText("");
+        flowSetPoint.setText("");
+        flowNominalRange.setText("");
+        flowScaleFactor.setText("");
+        manometerType.setText("");
+        manometerNominalRange.setText("");
+        manometerVoltageRange.setText("");
+
+        PIDUnits.setText("");
+        PIDRecipe.setText("");
+        PIDFlowChannel.setText("");
+        PIDPressureChannel.setText("");
+        PIDPresssureSetPoint.setText("");
+        PIDKp.setText("");
+        PIDTimeConstant.setText("");
+        PIDDerivativeTimeConstant.setText("");
+        PIDCeiling.setText("");
+        PIDBase.setText("");
+        PIDPreset.setText("");
+        PIDStart.setText("");
+        PIDEnd.setText("");
+        PIDCtrlStart.setText("");
+        PIDDirection.setText("");
+        PIDBand.setText("");
+        PIDGain.setText("");
     }
 }
 void MKS946Widget::updateMeasurements(UA_Variant data) {
@@ -48,7 +76,18 @@ void MKS946Widget::updateMeasurements(UA_Variant data) {
     mFlow->display(measurements.flow);
 }
 
-void MKS946Widget::updateConfiguration(UA_Variant data) {}
+void MKS946Widget::updateConfiguration(UA_Variant data) {
+    UA_MKS946c conf = *static_cast<UA_MKS946c *>(data.data);
+    flowMode.setText(QString::fromStdString(MKS946codes::flowModeToString.at(
+        static_cast<MKS946codes::FlowMode>(conf.flowMode))));
+    flowSetPoint.setText(QString("%1").arg(conf.flowSetPoint));
+    flowNominalRange.setText(QString("%1").arg(conf.flowNominalRange));
+    flowScaleFactor.setText(QString("%1").arg(conf.flowScaleFactor));
+    manometerType.setText(QString::fromStdString(MKS946codes::CMTypeToString.at(
+        static_cast<MKS946codes::CMType>(conf.manometerType))));
+    manometerNominalRange.setText(QString("%1").arg(conf.manometerNominalRange));
+    manometerVoltageRange.setText(QString("%1").arg(conf.manometerVoltageRange));
+}
 
 void MKS946Widget::updateRelay(UA_Variant data) {
     auto r = *static_cast<UA_Relay *>(data.data);
@@ -63,6 +102,35 @@ void MKS946Widget::updateRelay(UA_Variant data) {
     }
 }
 
+void MKS946Widget::updatePID(UA_Variant data) {
+
+    auto uaString2std = [](UA_String ua) {
+        std::string std;
+        if(ua.length != 0) {
+            std = std::string(reinterpret_cast<char *>(ua.data), ua.length);
+        }
+        return std;
+    };
+    auto pid = *static_cast<UA_PID *>(data.data);
+    PIDUnits.setText(QString::fromStdString(uaString2std(pid.units)));
+    PIDRecipe.setText(QString("%1").arg(pid.recipeNr));
+    PIDFlowChannel.setText(QString::fromStdString(uaString2std(pid.flowChannel)));
+    PIDPressureChannel.setText(QString::fromStdString(uaString2std(pid.pressureChannel)));
+    PIDPresssureSetPoint.setText(QString("%1").arg(pid.pressureSetPoint));
+    PIDKp.setText(QString("%1").arg(pid.kp));
+    PIDTimeConstant.setText(QString("%1").arg(pid.timeConstant));
+    PIDDerivativeTimeConstant.setText(QString("%1").arg(pid.derivativeTimeConstant));
+    PIDCeiling.setText(QString("%1").arg(pid.ceiling));
+    PIDBase.setText(QString("%1").arg(pid.base));
+    PIDPreset.setText(QString("%1").arg(pid.preset));
+    PIDStart.setText(QString("%1").arg(pid.start));
+    PIDEnd.setText(QString("%1").arg(pid.end));
+    PIDCtrlStart.setText(QString("%1").arg(pid.ctrlStart));
+    PIDDirection.setText(QString("%1").arg(pid.direction));
+    PIDBand.setText(QString("%1").arg(pid.band));
+    PIDGain.setText(QString("%1").arg(pid.gain));
+}
+
 void MKS946Widget::createLayout() {
     // create main layout with base size
     mainLayout = new QVBoxLayout();
@@ -73,8 +141,8 @@ void MKS946Widget::createLayout() {
     mainLayout->addWidget(tab);
 
     createMTab();
-    //  createHTab();
     createCTab();
+    createPIDTab();
     createRTab();
     mainLayout->addStretch();
     mainLayout->addWidget(&deviceInfoLabel);
@@ -86,76 +154,93 @@ void MKS946Widget::createMTab() {
     tab->addTab(mWidget, "Measurements");
     QVBoxLayout *mLayout = new QVBoxLayout();
     mWidget->setLayout(mLayout);
-    // mainLayout->addStretch();
-    mBox = new QGroupBox("Pressure");
-    QVBoxLayout *mvLayout = new QVBoxLayout();
-    mBox->setLayout(mvLayout);
-    QHBoxLayout *mhStatusLayout = new QHBoxLayout();
-    mvLayout->addLayout(mhStatusLayout);
-    mStatusLabel = new QLabel("Status: ");
-    mStatusLabel->setAlignment(Qt::AlignLeft);  //|Qt::AlignCenter);
-    mStatus = new QLabel(".");
-    mStatus->setAlignment(Qt::AlignLeft);
-    QFont statusFont = mStatus->font();
-    statusFont.setBold(true);
-    mStatus->setFont(statusFont);
-    mhStatusLayout->addWidget(mStatusLabel);
-    mhStatusLayout->addWidget(mStatus);
 
-    QHBoxLayout *mhTempLayout = new QHBoxLayout();
-    mvLayout->addLayout(mhTempLayout);
-    auto mTempLabel = new QLabel("Temperature: ");
-    mTempLabel->setAlignment(Qt::AlignLeft);
-    mTemp = new QLabel("°C");
-    mTemp->setAlignment(Qt::AlignLeft);
-    mhTempLayout->addWidget(mTempLabel);
-    mhTempLayout->addWidget(mTemp);
+    auto createMeasurementsPanel = [](std::string name, QLabel *unitLabel,
+                                      QLCDNumber *display) {
+        auto *box = new QGroupBox(name.c_str());
+        QVBoxLayout *layout = new QVBoxLayout();
+        box->setLayout(layout);
 
-    QHBoxLayout *mhUnitLayout = new QHBoxLayout();
-    mvLayout->addLayout(mhUnitLayout);
-    mUnitLabel = new QLabel("mbar");
-    mUnitLabel->setAlignment(Qt::AlignRight);
-    mhUnitLayout->addWidget(mUnitLabel);
+        unitLabel->setAlignment(Qt::AlignRight);
+        layout->addWidget(unitLabel);
 
-    QHBoxLayout *mhVacuumLayout = new QHBoxLayout();
-    mvLayout->addLayout(mhVacuumLayout);
+        display->setDigitCount(12);
+        display->setSegmentStyle(QLCDNumber::Flat);
+        display->setMinimumSize(QSize(200, 50));
+        auto palette = display->palette();
+        palette.setColor(QPalette::WindowText, Qt::darkGreen);
+        display->setPalette(palette);
+        display->display(0.00);
+        layout->addWidget(display);
+        return box;
+    };
     mVacuum = new QLCDNumber();
-    mVacuum->setDigitCount(12);
-    mVacuum->setSegmentStyle(QLCDNumber::Flat);
-    mVacuum->setMinimumSize(QSize(200, 50));
-    auto palette = mVacuum->palette();
-    palette.setColor(QPalette::WindowText, Qt::darkGreen);
-    mVacuum->setPalette(palette);
-    mVacuum->display(0.00);
-    mhVacuumLayout->addWidget(mVacuum);
     mFlow = new QLCDNumber();
-    mFlow->setDigitCount(12);
-    mFlow->setSegmentStyle(QLCDNumber::Flat);
-    mFlow->setMinimumSize(QSize(200, 50));
-    auto paletteFlow = mFlow->palette();
-    paletteFlow.setColor(QPalette::WindowText, Qt::darkGreen);
-
-    auto flowUnitLabel = new QLabel("sccm");
-    flowUnitLabel->setAlignment(Qt::AlignRight);
-    mvLayout->addWidget(flowUnitLabel);
-    mFlow->setPalette(paletteFlow);
-    mFlow->display(0.00);
-    mvLayout->addWidget(mFlow);
-
-    mLayout->addWidget(mBox);
-    mLayout->addStretch();
+    mUnitLabel = new QLabel("mbar");
+    mLayout->addWidget(createMeasurementsPanel("Flow", new QLabel("sccm"), mFlow));
+    mLayout->addWidget(createMeasurementsPanel("Pressure", mUnitLabel, mVacuum));
 }
+
 void MKS946Widget::createCTab() {
     QWidget *cWidget = new QWidget();
     tab->addTab(cWidget, "Config");
     QVBoxLayout *cLayout = new QVBoxLayout();
     cWidget->setLayout(cLayout);
+
+    auto *flowBox = new QGroupBox("Flow");
+    cLayout->addWidget(flowBox);
+    auto *flowGrid = new QGridLayout();
+    flowBox->setLayout(flowGrid);
+    fillGrid({{"Type:", &manometerType},
+              {"Nominal range:", &manometerNominalRange},
+              {"Voltage range:", &manometerVoltageRange}},
+             flowGrid);
+
+    auto *pressureBox = new QGroupBox("Pressure");
+    cLayout->addWidget(pressureBox);
+    auto *pressureGrid = new QGridLayout();
+    pressureBox->setLayout(pressureGrid);
+    fillGrid({{"Mode:", &flowMode},
+              {"Setpoint:", &flowSetPoint},
+              {"Nominal range:", &flowNominalRange},
+              {"Scale factor:", &flowScaleFactor}},
+             pressureGrid);
 }
-void MKS946Widget::createHTab() {
-    QWidget *hWidget = new QWidget();
-    tab->addTab(hWidget, "Plots");
-    QVBoxLayout *hLayout = new QVBoxLayout();
-    hWidget->setLayout(hLayout);
+
+void MKS946Widget::createPIDTab() {
+    QWidget *pidWidget = new QWidget();
+    tab->addTab(pidWidget, "PID");
+    QVBoxLayout *pidLayout = new QVBoxLayout();
+    pidWidget->setLayout(pidLayout);
+
+    auto *pidBox = new QGroupBox("PID");
+    pidLayout->addWidget(pidBox);
+    auto *pidGrid = new QGridLayout();
+    pidBox->setLayout(pidGrid);
+
+    fillGrid(
+        {
+            {"Units:", &PIDUnits},
+            {"Recipe nr:", &PIDRecipe},
+            {"MKF channel:", &PIDFlowChannel},
+            {"Pressure channel:", &PIDPressureChannel},
+            {"Kp:", &PIDKp},
+            {"Time constant:", &PIDTimeConstant},
+            {"Derivative time constant:", &PIDDerivativeTimeConstant},
+            {"Ceiling:", &PIDCeiling},
+            {"Base:", &PIDBase},
+            {"Preset:", &PIDPreset},
+            {"Start:", &PIDStart},
+            {"End:", &PIDEnd},
+            {"CtrlStart:", &PIDCtrlStart},
+            {"Direction:", &PIDDirection},
+            {"Band:", &PIDBand},
+            {"Gain:", &PIDGain},
+        },
+        pidGrid, 8);
+    PIDButton = new QPushButton("Set PID");
+    PIDButton->setDisabled(true);
+    pidLayout->addWidget(PIDButton);
 }
 
 void MKS946Widget::createRTab() {
@@ -198,7 +283,6 @@ void MKS946Widget::setChannelName() {
     QString title;
     title = tr("");
     title.append(cCustomName);
-    mBox->setTitle(title);
     if(cCustomName.isEmpty())
         cNameLabel->setText("...");
     else
@@ -220,4 +304,13 @@ void MKS946Widget::saveConfig() {
 void MKS946Widget::changeRelay(int nr, RelayStruct values) {
     dynamic_cast<MKS946_controller *>(controller)
         ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
+}
+
+void MKS946Widget::fillGrid(std::vector<std::pair<std::string, QWidget *>> names,
+                            QGridLayout *grid, size_t row_max) {
+    for(size_t i = 0; i < names.size(); ++i) {
+        grid->addWidget(new QLabel(names.at(i).first.c_str()), i % row_max, i / row_max,
+                        Qt::AlignmentFlag::AlignRight);
+        grid->addWidget(names.at(i).second, i % row_max, i / row_max + 1);
+    }
 }

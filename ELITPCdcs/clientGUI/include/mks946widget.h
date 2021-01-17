@@ -29,6 +29,7 @@ class MKS946Widget : public AbstractWidget {
     void updateMeasurements(UA_Variant data) override;
     void updateConfiguration(UA_Variant data) override;
     void updateRelay(UA_Variant data);
+    void updatePID(UA_Variant data);
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
@@ -41,28 +42,53 @@ class MKS946Widget : public AbstractWidget {
 
     QLabel *mUnitLabel;
     QTabWidget *tab;
-    QGroupBox *mBox;
     QLCDNumber *mVacuum;
-    QLabel *mStatusLabel;
-    QLabel *mStatus;
-    QLabel *mTemp;
     QLCDNumber *mFlow;
     QPushButton *cNameButton;
     QLabel *cNameLabel;
     QString cCustomName;
-    QComboBox *unitsBox;
+
+    QLabel flowMode;
+    QLabel flowSetPoint;
+    QLabel flowNominalRange;
+    QLabel flowScaleFactor;
+    QLabel manometerType;
+    QLabel manometerNominalRange;
+    QLabel manometerVoltageRange;
+
+    QLabel PIDUnits;
+    QLabel PIDRecipe;
+    QLabel PIDFlowChannel;
+    QLabel PIDPressureChannel;
+    QLabel PIDPresssureSetPoint;
+    QLabel PIDKp;
+    QLabel PIDTimeConstant;
+    QLabel PIDDerivativeTimeConstant;
+    QLabel PIDCeiling;
+    QLabel PIDBase;
+    QLabel PIDPreset;
+    QLabel PIDStart;
+    QLabel PIDEnd;
+    QLabel PIDCtrlStart;
+    QLabel PIDDirection;
+    QLabel PIDBand;
+    QLabel PIDGain;
+    QPushButton *PIDButton;
 
     void createLayout();
     void drawLine();
     void createConnectionSection();
     void createMTab();
     void createCTab();
-    void createHTab();
+    void createPIDTab();
     void createRTab();
     void setChannelName();
     void connectSignals();
     void loadConfig();
     void saveConfig();
+
+    void fillGrid(std::vector<std::pair<std::string, QWidget *>> names, QGridLayout *grid,
+                  size_t grid_max = 100);
 };
 
 #endif  // MKS946WIDGET_H

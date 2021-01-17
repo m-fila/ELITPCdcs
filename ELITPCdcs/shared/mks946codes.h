@@ -147,5 +147,31 @@ static std::map<std::string, PIDDirection> PIDDirectionFromString = {
 static std::map<PIDDirection, std::string> PIDDirectionToString = {
     {PIDDirection::UPSTREAM, "Upstream"}, {PIDDirection::DOWNSTREAM, "Downstram"}};
 
+enum class PIDFlowChannel { A1, B1, A2, B2, C1, C2, Rat, Vlv };
+
+static std::map<std::string, PIDFlowChannel> PIDFlowChannelFromString = {
+    {"A1", PIDFlowChannel::A1},   {"B1", PIDFlowChannel::B1},  {"C1", PIDFlowChannel::C1},
+    {"A2", PIDFlowChannel::A1},   {"B2", PIDFlowChannel::B2},  {"C2", PIDFlowChannel::C2},
+    {"Rat", PIDFlowChannel::Rat}, {"Vlv", PIDFlowChannel::Vlv}};
+
+static std::map<PIDFlowChannel, std::string> PIDFlowChannelToString = {
+    {PIDFlowChannel::A1, "A1"},   {PIDFlowChannel::B1, "B1"},  {PIDFlowChannel::C1, "C1"},
+    {PIDFlowChannel::A2, "A2"},   {PIDFlowChannel::B2, "B2"},  {PIDFlowChannel::C2, "C2"},
+    {PIDFlowChannel::Rat, "Rat"}, {PIDFlowChannel::Vlv, "Vlv"}};
+
+enum class PIDPressureChannel { A1, B1, A2, B2, C1, C2, PC1, PC2 };
+
+static std::map<std::string, PIDPressureChannel> PIDPressureChannelFromString = {
+    {"A1", PIDPressureChannel::A1},   {"B1", PIDPressureChannel::B1},
+    {"C1", PIDPressureChannel::C1},   {"A2", PIDPressureChannel::A1},
+    {"B2", PIDPressureChannel::B2},   {"C2", PIDPressureChannel::C2},
+    {"PC1", PIDPressureChannel::PC1}, {"PC2", PIDPressureChannel::PC2}};
+
+static std::map<PIDPressureChannel, std::string> PIDPressureChannelToString = {
+    {PIDPressureChannel::A1, "A1"},   {PIDPressureChannel::B1, "B1"},
+    {PIDPressureChannel::C1, "C1"},   {PIDPressureChannel::A2, "A2"},
+    {PIDPressureChannel::B2, "B2"},   {PIDPressureChannel::C2, "C2"},
+    {PIDPressureChannel::PC1, "PC1"}, {PIDPressureChannel::PC2, "PC2"}};
+
 }  // namespace MKS946codes
 #endif  // MKS946CODES_H
