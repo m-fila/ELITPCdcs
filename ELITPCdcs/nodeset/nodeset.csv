@@ -11,6 +11,8 @@ MKS910c_Encoding_DefaultBinary,9114,Object
 ParametersTCP_Encoding_DefaultBinary,32004,Object
 Relay_Encoding_DefaultBinary,31004,Object
 MKS946m_Encoding_DefaultBinary,94604,Object
+MKS946c_Encoding_DefaultBinary,94614,Object
+PID_Encoding_DefaultBinary,94624,Object
 HMPm,20201,DataType
 HMPc,20211,DataType
 DT1415m,14151,DataType
@@ -23,3 +25,6 @@ MKS910m,9101,DataType
 MKS910c,9111,DataType
 Relay,31001,DataType
 MKS946m,94601,DataType
+MKS946c,94611,DataType
+PID,94621,DataType
+

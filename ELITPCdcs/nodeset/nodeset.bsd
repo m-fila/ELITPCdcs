@@ -83,4 +83,32 @@
     <opc:Field Name="flowMode" TypeName="opc:Double"/>
     <opc:Field Name="flowSetPoint" TypeName="opc:Double"/>
   </opc:StructuredType>
+  <opc:StructuredType Name="MKS946c" BaseType="ua:ExtensionObject">
+    <opc:Field Name="flowMode" TypeName="opc:Int32"/>
+    <opc:Field Name="flowSetPoint" TypeName="opc:Double"/>
+    <opc:Field Name="flowScaleFactor" TypeName="opc:Double"/>
+    <opc:Field Name="flowNominalRange" TypeName="opc:Double"/>
+    <opc:Field Name="manometerType" TypeName="opc:Int32"/>
+    <opc:Field Name="manometerNominalRange" TypeName="opc:Double"/>
+    <opc:Field Name="manometerVoltageRange" TypeName="opc:Double"/>
+  </opc:StructuredType>
+  <opc:StructuredType Name="PID" BaseType="ua:ExtensionObject">
+    <opc:Field Name="units" TypeName="opc:String"/>
+    <opc:Field Name="recipeNr" TypeName="opc:Int32"/>
+    <opc:Field Name="flowChannel" TypeName="opc:String"/>
+    <opc:Field Name="pressureChannel" TypeName="opc:String"/>
+    <opc:Field Name="pressureSetPoint" TypeName="opc:Double"/>
+    <opc:Field Name="Kp" TypeName="opc:Double"/>
+    <opc:Field Name="timeConstant" TypeName="opc:Double"/>
+    <opc:Field Name="derivativeTimeConstant" TypeName="opc:Double"/>
+    <opc:Field Name="ceiling" TypeName="opc:Double"/>
+    <opc:Field Name="base" TypeName="opc:Double"/>
+    <opc:Field Name="preset" TypeName="opc:Double"/>
+    <opc:Field Name="start" TypeName="opc:Double"/>
+    <opc:Field Name="end" TypeName="opc:Double"/>
+    <opc:Field Name="ctrlStart" TypeName="opc:Double"/>
+    <opc:Field Name="direction" TypeName="opc:Int32"/>
+    <opc:Field Name="band" TypeName="opc:Int32"/>
+    <opc:Field Name="gain" TypeName="opc:Int32"/>
+  </opc:StructuredType>
 </opc:TypeDictionary>
