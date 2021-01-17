@@ -20,6 +20,7 @@ void DCSMKS946Controller::addChildren(const Options &options) {
     addVariableUpdate(c, 6000, &DCSMKS946Controller::getConfiguration, this, options);
     auto &p = addVariable("PID", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_PID]);
     addVariableUpdate(p, 6000, &DCSMKS946Controller::getPID, this, options);
+    addVariable("sensorType", &UA_TYPES[UA_TYPES_STRING], true);
 }
 
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
@@ -126,4 +127,17 @@ UA_PID DCSMKS946Controller::getPID() {
     mks.timeConstant = std::stod(device.getPIDTimeConstant());
     mks.units = UA_STRING_ALLOC(device.getUnits().c_str());
     return mks;
+}
+
+void DCSMKS946Controller::postConnect() {
+    size_t size = 4;
+    auto *array =
+        static_cast<UA_String *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_STRING]));
+    std::istringstream ss(device.getModuleType());
+    for(size_t i = 0; i < size; ++i) {
+        std::string val;
+        std::getline(ss, val, ',');
+        array[i] = UA_STRING_ALLOC(val.c_str());
+    }
+    variables.at("sensorType")->setValue(array, size);
 }
