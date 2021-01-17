@@ -131,5 +131,21 @@ static std::map<std::string, RelayStatus> relaySetFromString = {
 static std::map<RelayStatus, std::string> relaySetToString = {
     {RelayStatus::Clear, "CLEAR"}, {RelayStatus::Set, "SET"}};
 
+enum class CMType { ABS, Diff };
+
+static std::map<std::string, CMType> CMTypeFromString = {{"ABS", CMType::ABS},
+                                                         {"Diff", CMType::Diff}};
+
+static std::map<CMType, std::string> CMTypeToString = {{CMType::ABS, "ABS"},
+                                                       {CMType::Diff, "Diff"}};
+
+enum class PIDDirection { UPSTREAM, DOWNSTREAM };
+
+static std::map<std::string, PIDDirection> PIDDirectionFromString = {
+    {"UPSTREAM", PIDDirection::UPSTREAM}, {"DOWNSTREAM", PIDDirection::DOWNSTREAM}};
+
+static std::map<PIDDirection, std::string> PIDDirectionToString = {
+    {PIDDirection::UPSTREAM, "Upstream"}, {PIDDirection::DOWNSTREAM, "Downstram"}};
+
 }  // namespace MKS946codes
 #endif  // MKS946CODES_H
