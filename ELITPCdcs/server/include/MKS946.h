@@ -8,7 +8,7 @@ class MKS946 : public MKS {
   public:
     MKS946();
     // channel enum 1-6
-    enum class CH { CH1 = 1, CH2, CH3, CH4, CH5, CH6 };
+    enum class CH { NONE = 0, CH1, CH2, CH3, CH4, CH5, CH6 };
     enum class PID { R1 = 1, R2, R3, R4, R5, R6, R7, R8 };
     enum class RATIO { R1 = 1, R2, R3, R4 };
     enum class MODULE { A = 1, B, C };
@@ -19,17 +19,26 @@ class MKS946 : public MKS {
     std::string getPressure(CH ch);
     std::string getPressureAll();
 
-    // flow commands
+    // CM commands
+    std::string getCMNominalRange(CH ch);
+    std::string getCMType(CH ch);
+    std::string getCMVoltageRange(CH ch);
+
+    void setCMNominalRange(CH ch, double value);
+    void setCMType(CH ch, MKS946codes::CMType type);
+    void setCMVoltageRange(CH ch, std::string value);
+
+    // MFC commands
     std::string getFlow(CH ch);
-    std::string getFlowFactor(CH ch);
+    std::string getFlowScaleFactor(CH ch);
     std::string getFlowNominalRange(CH ch);
     std::string getFlowSetPoint(CH ch);
     std::string getFlowMode(CH ch);
 
     void zeroMFC(CH ch);
-    void setFlowFactor(CH ch, double factor);
-    void setFlowNomialRange(CH ch, double range);
-    void setFlowPoint(CH ch, double value);
+    void setFlowScaleFactor(CH ch, double factor);
+    void setFlowNominalRange(CH ch, double range);
+    void setFlowSetPoint(CH ch, double value);
     void setFlowMode(CH ch, MKS946codes::FlowMode mode);
 
     // relay commands
@@ -45,10 +54,28 @@ class MKS946 : public MKS {
     void setRelayHysteresis(RelayNo i, double v);
 
     // pid/ratio commands
-    std::string getActivePIDRecipe();
     std::string getActiveRatioRecipe();
+
     std::string getPIDControl();
     std::string getManualControl();
+
+    std::string getActivePIDRecipe();
+
+    std::string getPIDMFCChannel() { return queryPID("RDCH"); }
+    std::string getPIDPressureChannel() { return queryPID("RPCH"); }
+    std::string getPIDPressureSetPoint() { return queryPID("RPSP"); }
+    std::string getPIDKp() { return queryPID("RKP"); }
+    std::string getPIDTimeConstant() { return queryPID("RTI"); }
+    std::string getPIDDerivativeTimeConstant() { return queryPID("RTD"); }
+    std::string getPIDCeiling() { return queryPID("RCEI"); }
+    std::string getPIDBase() { return queryPID("RBAS"); }
+    std::string getPIDPreset() { return queryPID("RPST"); }
+    std::string getPIDStart() { return queryPID("RSTR"); }
+    std::string getPIDEnd() { return queryPID("REND"); }
+    std::string getPIDCtrlStart() { return queryPID("RCST"); }
+    std::string getPIDDirection() { return queryPID("RDIR"); }
+    std::string getPIDBand() { return queryPID("RGSB"); }
+    std::string getPIDGain() { return queryPID("RGSG"); }
 
     void setActivePIDRecipe(PID recipe);
     void setActiveRatioRecipe(RATIO recipe);
@@ -69,8 +96,13 @@ class MKS946 : public MKS {
     std::string getSerialNumber() override;
     std::string getUptime();
 
-    // TORR, PASCAL, MBAR
+    std::string getUnits() { return sendWithDelayedResponse("U?"); }
     void setUnits(MKS946codes::Units u);
+
+  private:
+    std::string query(std::string command, CH ch);
+    std::string queryPID(std::string command);
+    void sendCommand(std::string command, CH ch, std::string value);
 };
 
 #endif  // mks946_H
