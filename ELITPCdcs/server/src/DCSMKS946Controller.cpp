@@ -5,8 +5,6 @@ void DCSMKS946Controller::addChildren(const Options &options) {
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS946M]);
     addVariableUpdate(m, 1000, &DCSMKS946Controller::getMeasurements, this, options);
     m.setHistorizing();
-    // addVariable("configuration",
-    // &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS946C]);
     auto &r = addVariable("relay", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
     addVariableUpdate(r, 1000, &DCSMKS946Controller::getRelay, this, options);
     addControllerMethod("setrelay", "Sets relay",
