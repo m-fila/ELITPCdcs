@@ -63,17 +63,17 @@ void MKS946Widget::updateStatus(UA_Variant data) {
 }
 void MKS946Widget::updateMeasurements(UA_Variant data) {
     UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data.data);
-    QString val;
-    std::string s;
-    std::ostringstream os;
-    os << std::scientific << std::setprecision(5) << std::uppercase
-       << measurements.pressure;
-    s = os.str();
-    s.insert(s.size() - 4, " ");
-    s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
-    val = QString::fromStdString(s);
-    mVacuum->display(val);
-    mFlow->display(measurements.flow);
+    auto f = [](double value) {
+        std::string s;
+        std::ostringstream os;
+        os << std::scientific << std::setprecision(2) << std::uppercase << value;
+        s = os.str();
+        s.insert(s.size() - 4, " ");
+        return QString::fromStdString(s);
+    };
+
+    mVacuum->display(f(measurements.pressure));
+    mFlow->display(f(measurements.flow));
 }
 
 void MKS946Widget::updateConfiguration(UA_Variant data) {
