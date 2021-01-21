@@ -92,7 +92,7 @@ def getMeasurements(client, measurements, startTime, endTime, timeLength):
         query = 'select * from "{}"'.format(m)+whereClause
         if args.verbose:
             print(query)
-        results = client.query(query)
+        results = client.query(query, epoch='ms')
         try:
             df = DataFrame(results[m])
         except KeyError:
