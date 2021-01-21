@@ -78,6 +78,7 @@ devices used in experimental setup and address of a server. So far known devices
 * N1471 - 4 channel NIM hv psu
 * TPG362 - vacuum gauge
 * MKS910 - vacuum gauge
+* MKS946 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
 
 A path to config file should be given in first argument for server or client application. Otherwise an enviromental variable will be looked for.
@@ -98,8 +99,8 @@ The project is split into two catalogs COREdcs with framework and ELITPCdcs impl
 * `${device}controller` slots for calling device specific methods
 * `${device}widget` device specific gui
 ### Roadmap
-- [ ] new devices (MKS 946) 
-- [ ] interlock support 
+- [x] new devices (MKS 946) 
+- [x] interlock support 
 - [x] server events
 - [x] historizing
 - [x] refactorized server
