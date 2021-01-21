@@ -41,7 +41,7 @@ void DCSN1471Controller::addChildren(const Options &options) {
 UA_DT1415m DCSN1471Controller::getMeasurements() {
     UA_DT1415m dtm;
     UA_DT1415m_init(&dtm);
-    int size = 4;
+    size_t size = 4;
     dtm.voltageSize = size;
     dtm.currentSize = size;
     dtm.voltage =
