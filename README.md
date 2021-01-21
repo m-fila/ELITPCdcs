@@ -46,11 +46,11 @@ make
 make install
 ```
 
-CMake flags `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
+CMake flags `-DBUILD_GUI` `-DBUILD_SERVER` `-DBUILD_CHECKS` can be switched to `OFF` to disable building some parts of the project.
 `cmake -DCMAKE_INSTALL_PREFIX=your_path ..` can be used to specify custom installation path.
 
 
-Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available:
+Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsChecks will be available:
 * dcsServer - provides OPC server and device controllers. Should be run on a computer with access to devices.
 * dcsGui - GUI client. Provides graphic interface for operator user of services exposed by server such as monitoring and manipulating devices.
 * dcsChecks - checks status of services running in ELITPC dcs stack: dcsServer, InfluxDb, Grafana.
