@@ -38,6 +38,8 @@
     <opc:Field Name="rup" TypeName="opc:Double" LengthField="rupSize"/>
     <opc:Field Name="rdownSize" TypeName="opc:UInt32"/>
     <opc:Field Name="rdown" TypeName="opc:Double" LengthField="rdownSize"/>
+    <opc:Field Name="polaritySize" TypeName="opc:UInt32"/>
+    <opc:Field Name="polarity" TypeName="opc:String" LengthField="polaritySize"/>
   </opc:StructuredType>
   <opc:StructuredType Name="TPG362m" BaseType="ua:ExtensionObject">
     <opc:Field Name="vacuumSize" TypeName="opc:UInt32"/>

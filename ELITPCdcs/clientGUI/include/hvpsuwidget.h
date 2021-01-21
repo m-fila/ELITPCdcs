@@ -70,6 +70,7 @@ class HVpsuWidget : public AbstractWidget {
     std::vector<QLabel *> tabCHxCustomName = std::vector<QLabel *>(channelsNumber + 1);
     std::vector<QPushButton *> tabCHxChangeName =
         std::vector<QPushButton *>(channelsNumber + 1);
+    std::vector<QLabel *> tabCHxPOLARITY = std::vector<QLabel *>(channelsNumber);
     std::vector<QLabel *> tabCHxSTATUS = std::vector<QLabel *>(channelsNumber);
     std::vector<QPushButton *> tabCHxSetVMAX = std::vector<QPushButton *>(channelsNumber);
     std::vector<QLabel *> tabCHxVMAX = std::vector<QLabel *>(channelsNumber);

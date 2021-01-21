@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QVBoxLayout>
-#include <iostream>
+
 HVpsuWidget::HVpsuWidget(std::string name, int channelsNumber, QWidget *parent)
     : AbstractWidget(new hv_controller(name), name, true, parent),
       ui(new Ui::HVpsuWidget), channelsNumber(channelsNumber) {
@@ -167,6 +167,13 @@ void HVpsuWidget::updateConfiguration(UA_Variant data) {
             tabCHxVMAX[i]->setText(val);
             val.sprintf("%3.1lf", channelStatus.currentSet[i]);
             tabCHxIset[i]->setText(val);
+            std::string std;
+            if(channelStatus.polarity[i].length != 0) {
+                std =
+                    std::string(reinterpret_cast<char *>(channelStatus.polarity[i].data),
+                                channelStatus.polarity[i].length);
+            }
+            tabCHxPOLARITY[i]->setText(QString::fromStdString(std));
         }
         val.sprintf("%6.1lf", totalVoltageSet);
         allTabVset[channelsNumber]->setText(val);
@@ -571,6 +578,14 @@ void HVpsuWidget::createChannelTabs() {
         channelCustomNameBox->setLayout(qhbCustomName);
         qvb->addWidget(channelCustomNameBox);
 
+        // create channel polarity box
+        QGroupBox *channelPolarityBox = new QGroupBox("Channel polarity");
+        QHBoxLayout *qhbPolarity = new QHBoxLayout();
+        tabCHxPOLARITY[i] = new QLabel(".");
+        qhbPolarity->addWidget(tabCHxPOLARITY[i]);
+        qhbPolarity->addStretch();
+        channelPolarityBox->setLayout(qhbPolarity);
+        qvb->addWidget(channelPolarityBox);
         // create channel status box
         QGroupBox *channelStatusBox = new QGroupBox("Channel status");
         QHBoxLayout *qhbStatus = new QHBoxLayout();
@@ -861,6 +876,7 @@ void N1471Widget::updateConfiguration(UA_Variant data) {
             allTabOff[i]->setChecked((!ON[i]) && connectionState);
 
             val = QString::fromStdString(N1471codes::translateChannelStatus(chanStat));
+
             tabCHxSTATUS[i]->setText(val);
             tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
@@ -887,6 +903,14 @@ void N1471Widget::updateConfiguration(UA_Variant data) {
             tabCHxVMAX[i]->setText(val);
             val.sprintf("%3.1lf", channelStatus.currentSet[i]);
             tabCHxIset[i]->setText(val);
+
+            std::string std;
+            if(channelStatus.polarity[i].length != 0) {
+                std =
+                    std::string(reinterpret_cast<char *>(channelStatus.polarity[i].data),
+                                channelStatus.polarity[i].length);
+            }
+            tabCHxPOLARITY[i]->setText(QString::fromStdString(std));
         }
         val.sprintf("%6.1lf", totalVoltageSet);
         allTabVset[channelsNumber]->setText(val);
@@ -945,6 +969,13 @@ void DT1470Widget::updateConfiguration(UA_Variant data) {
             tabCHxVMAX[i]->setText(val);
             val.sprintf("%3.1lf", channelStatus.currentSet[i]);
             tabCHxIset[i]->setText(val);
+            std::string std;
+            if(channelStatus.polarity[i].length != 0) {
+                std =
+                    std::string(reinterpret_cast<char *>(channelStatus.polarity[i].data),
+                                channelStatus.polarity[i].length);
+            }
+            tabCHxPOLARITY[i]->setText(QString::fromStdString(std));
         }
         val.sprintf("%6.1lf", totalVoltageSet);
         allTabVset[channelsNumber]->setText(val);

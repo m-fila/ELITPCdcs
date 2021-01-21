@@ -98,6 +98,8 @@
       <Field DataType="Double" ValueRank="1" Name="rup"/>
       <Field DataType="Int32" Name="rdownSize"/>
       <Field DataType="Double" ValueRank="1" Name="rdown"/>
+      <Field DataType="Int32" Name="polaritySize"/>
+      <Field DataType="String" ValueRank="1" Name="polarity"/>
     </Definition>
   </UADataType>
   <UAVariable NodeId="ns=1;i=14157" BrowseName="1:DT1415c" ParentNodeId="ns=1;i=7617" DataType="String">
