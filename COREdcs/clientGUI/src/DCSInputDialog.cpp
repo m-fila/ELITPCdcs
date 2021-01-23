@@ -99,6 +99,16 @@ int DCSInputDialog::exec() {
             widget->setValue(variant.toInt());
             break;
         }
+        case QVariant::StringList: {
+            auto *widget = qobject_cast<QComboBox *>(genericWidget);
+            if(!options.currentString.isEmpty()) {
+                auto index = widget->findText(options.currentString);
+                if(index != -1) {
+                    widget->setCurrentIndex(index);
+                }
+            }
+            break;
+        }
         default:
             break;
         }

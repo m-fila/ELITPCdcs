@@ -23,23 +23,29 @@ class DCSInputDialog : public QDialog {
             return *this;
         }
         FieldOptions &setReturnIndex() {
-            this->returnString = false;
+            returnString = false;
             return *this;
         }
         FieldOptions &setReturnString() {
-            this->returnString = true;
+            returnString = true;
+            return *this;
+        }
+        FieldOptions &setInitial(QString current) {
+            currentString = current;
             return *this;
         }
 
       private:
         double min = 0;
         double max = 1e6;
-        bool returnString = false;
+        bool returnString = true;
+        QString currentString;
     };
 
     DCSInputDialog(const QString &title, const QString &text, size_t max_row = 10,
                    QWidget *parent = nullptr);
     FieldOptions &addField(const QString &key, QVariant value, bool disbled = false);
+    void addConstant(const QString &key, const QString &value);
     template <typename T> T get(const QString &key) const {
         return getValue(key).value<T>();
     }
