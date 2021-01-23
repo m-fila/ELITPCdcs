@@ -7,9 +7,10 @@ message(STATUS "Adding CMake fragment for submodule:\t\t"
 
 include_directories(
   ${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}/include)
-include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/shared)
+include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/common)
 include_directories(${PROJECT_SOURCE_DIR}/${MODULE_NAME}/server/include)
 include_directories(${PROJECT_SOURCE_DIR}/COREdcs/server/include)
+include_directories(${PROJECT_SOURCE_DIR}/COREdcs/common)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 # add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${sources})
