@@ -14,7 +14,10 @@ DCSInputDialog::DCSInputDialog(const QString &title, const QString &text, size_t
     setWindowTitle(title);
     auto *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
-    mainLayout->addWidget(new QLabel(text), Qt::AlignmentFlag::AlignCenter);
+    auto *textLabel = new QLabel(text);
+    textLabel->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(textLabel, Qt::AlignmentFlag::AlignCenter);
+    mainLayout->addSpacing(10);
     layout = new QGridLayout();
     mainLayout->addLayout(layout);
 
@@ -25,8 +28,8 @@ DCSInputDialog::DCSInputDialog(const QString &title, const QString &text, size_t
     mainLayout->addWidget(buttonBox);
 }
 
-DCSInputDialog::FieldOptions &DCSInputDialog::addField(const QString &key,
-                                                       QVariant value) {
+DCSInputDialog::FieldOptions &DCSInputDialog::addField(const QString &key, QVariant value,
+                                                       bool disabled) {
 
     QWidget *genericWidget = nullptr;
     switch(value.type()) {
@@ -65,6 +68,8 @@ DCSInputDialog::FieldOptions &DCSInputDialog::addField(const QString &key,
         throw std::logic_error("Incomatybile type: " + value.type());
         break;
     }
+    genericWidget->setDisabled(disabled);
+
     layout->addWidget(new QLabel(key + ":"), combo.size() % max_row,
                       2 * (combo.size() / max_row));
     layout->addWidget(genericWidget, combo.size() % max_row,
@@ -84,12 +89,14 @@ int DCSInputDialog::exec() {
             auto *widget = qobject_cast<QDoubleSpinBox *>(genericWidget);
             widget->setMinimum(options.min);
             widget->setMaximum(options.max);
+            widget->setValue(variant.toDouble());
             break;
         }
         case QVariant::Int: {
             auto *widget = qobject_cast<QSpinBox *>(genericWidget);
             widget->setMinimum(options.min);
             widget->setMaximum(options.max);
+            widget->setValue(variant.toInt());
             break;
         }
         default:

@@ -33,13 +33,13 @@ class DCSInputDialog : public QDialog {
 
       private:
         double min = 0;
-        double max = 100;
+        double max = 1e6;
         bool returnString = false;
     };
 
     DCSInputDialog(const QString &title, const QString &text, size_t max_row = 10,
                    QWidget *parent = nullptr);
-    FieldOptions &addField(const QString &key, QVariant value);
+    FieldOptions &addField(const QString &key, QVariant value, bool disbled = false);
     template <typename T> T get(const QString &key) const {
         return getValue(key).value<T>();
     }
