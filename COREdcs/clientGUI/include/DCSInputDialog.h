@@ -22,6 +22,10 @@ class DCSInputDialog : public QDialog {
             this->max = max;
             return *this;
         }
+        FieldOptions &setPrecision(int precision) {
+            this->precision = precision;
+            return *this;
+        }
         FieldOptions &setReturnIndex() {
             returnString = false;
             return *this;
@@ -38,6 +42,7 @@ class DCSInputDialog : public QDialog {
       private:
         double min = 0;
         double max = 1e6;
+        int precision = 2;
         bool returnString = true;
         QString currentString;
     };

@@ -89,6 +89,7 @@ int DCSInputDialog::exec() {
             auto *widget = qobject_cast<QDoubleSpinBox *>(genericWidget);
             widget->setMinimum(options.min);
             widget->setMaximum(options.max);
+            widget->setDecimals(options.precision);
             widget->setValue(variant.toDouble());
             break;
         }
