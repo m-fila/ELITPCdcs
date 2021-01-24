@@ -1,4 +1,6 @@
 #include "mks946widget.h"
+#include "utils.h"
+#include "utilsQt.h"
 #include <QGridLayout>
 #include <QInputDialog>
 #include <QSettings>
@@ -7,7 +9,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
 MKS946Widget::MKS946Widget(std::string name, QWidget *parent)
     : AbstractWidget(new MKS946_controller(name), name, parent) {
     createLayout();
@@ -33,33 +34,35 @@ void MKS946Widget::updateStatus(UA_Variant data) {
     if(!connectionState) {
         mVacuum->display(0);
         mFlow->display(0);
-
-        flowMode.setText("");
-        flowSetPoint.setText("");
-        flowNominalRange.setText("");
-        flowScaleFactor.setText("");
-        manometerType.setText("");
-        manometerNominalRange.setText("");
-        manometerVoltageRange.setText("");
-
-        PIDUnits.setText("");
-        PIDRecipe.setText("");
-        PIDFlowChannel.setText("");
-        PIDPressureChannel.setText("");
-        PIDPresssureSetPoint.setText("");
-        PIDKp.setText("");
-        PIDTimeConstant.setText("");
-        PIDDerivativeTimeConstant.setText("");
-        PIDCeiling.setText("");
-        PIDBase.setText("");
-        PIDPreset.setText("");
-        PIDStart.setText("");
-        PIDEnd.setText("");
-        PIDCtrlStart.setText("");
-        PIDDirection.setText("");
-        PIDBand.setText("");
-        PIDGain.setText("");
     }
+    flowMode.setEnabled(connectionState);
+    flowSetPoint.setEnabled(connectionState);
+    flowNominalRange.setEnabled(connectionState);
+    flowScaleFactor.setEnabled(connectionState);
+    manometerType.setEnabled(connectionState);
+    manometerNominalRange.setEnabled(connectionState);
+    manometerVoltageRange.setEnabled(connectionState);
+
+    PIDUnits.setEnabled(connectionState);
+    PIDRecipe.setEnabled(connectionState);
+    PIDFlowChannel.setEnabled(connectionState);
+    PIDPressureChannel.setEnabled(connectionState);
+    PIDPresssureSetPoint.setEnabled(connectionState);
+    PIDKp.setEnabled(connectionState);
+    PIDTimeConstant.setEnabled(connectionState);
+    PIDDerivativeTimeConstant.setEnabled(connectionState);
+    PIDCeiling.setEnabled(connectionState);
+    PIDBase.setEnabled(connectionState);
+    PIDPreset.setEnabled(connectionState);
+    PIDStart.setEnabled(connectionState);
+    PIDEnd.setEnabled(connectionState);
+    PIDCtrlStart.setEnabled(connectionState);
+    PIDDirection.setEnabled(connectionState);
+    PIDBand.setEnabled(connectionState);
+    PIDGain.setEnabled(connectionState);
+    flowButton->setEnabled(connectionState);
+    manometerButton->setEnabled(connectionState);
+    PIDButton->setEnabled(connectionState);
 }
 void MKS946Widget::updateMeasurements(UA_Variant data) {
     UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data.data);
@@ -78,15 +81,14 @@ void MKS946Widget::updateMeasurements(UA_Variant data) {
 
 void MKS946Widget::updateConfiguration(UA_Variant data) {
     UA_MKS946c conf = *static_cast<UA_MKS946c *>(data.data);
-    flowMode.setText(QString::fromStdString(MKS946codes::flowModeToString.at(
-        static_cast<MKS946codes::FlowMode>(conf.flowMode))));
+    flowMode.setText(QString::fromStdString(DCSUtils::UaToStd(conf.flowMode)));
     flowSetPoint.setText(QString("%1").arg(conf.flowSetPoint));
     flowNominalRange.setText(QString("%1").arg(conf.flowNominalRange));
     flowScaleFactor.setText(QString("%1").arg(conf.flowScaleFactor));
-    manometerType.setText(QString::fromStdString(MKS946codes::CMTypeToString.at(
-        static_cast<MKS946codes::CMType>(conf.manometerType))));
+    manometerType.setText(QString::fromStdString(DCSUtils::UaToStd(conf.manometerType)));
     manometerNominalRange.setText(QString("%1").arg(conf.manometerNominalRange));
-    manometerVoltageRange.setText(QString("%1").arg(conf.manometerVoltageRange));
+    manometerVoltageRange.setText(
+        QString::fromStdString(DCSUtils::UaToStd(conf.manometerVoltageRange)));
 }
 
 void MKS946Widget::updateRelay(UA_Variant data) {
@@ -104,18 +106,12 @@ void MKS946Widget::updateRelay(UA_Variant data) {
 
 void MKS946Widget::updatePID(UA_Variant data) {
 
-    auto uaString2std = [](UA_String ua) {
-        std::string std;
-        if(ua.length != 0) {
-            std = std::string(reinterpret_cast<char *>(ua.data), ua.length);
-        }
-        return std;
-    };
     auto pid = *static_cast<UA_PID *>(data.data);
-    PIDUnits.setText(QString::fromStdString(uaString2std(pid.units)));
+    PIDUnits.setText(QString::fromStdString(DCSUtils::UaToStd(pid.units)));
     PIDRecipe.setText(QString("%1").arg(pid.recipeNr));
-    PIDFlowChannel.setText(QString::fromStdString(uaString2std(pid.flowChannel)));
-    PIDPressureChannel.setText(QString::fromStdString(uaString2std(pid.pressureChannel)));
+    PIDFlowChannel.setText(QString::fromStdString(DCSUtils::UaToStd(pid.flowChannel)));
+    PIDPressureChannel.setText(
+        QString::fromStdString(DCSUtils::UaToStd(pid.pressureChannel)));
     PIDPresssureSetPoint.setText(QString("%1").arg(pid.pressureSetPoint));
     PIDKp.setText(QString("%1").arg(pid.kp));
     PIDTimeConstant.setText(QString("%1").arg(pid.timeConstant));
@@ -126,7 +122,7 @@ void MKS946Widget::updatePID(UA_Variant data) {
     PIDStart.setText(QString("%1").arg(pid.start));
     PIDEnd.setText(QString("%1").arg(pid.end));
     PIDCtrlStart.setText(QString("%1").arg(pid.ctrlStart));
-    PIDDirection.setText(QString("%1").arg(pid.direction));
+    PIDDirection.setText(QString::fromStdString(DCSUtils::UaToStd(pid.direction)));
     PIDBand.setText(QString("%1").arg(pid.band));
     PIDGain.setText(QString("%1").arg(pid.gain));
 }
@@ -189,22 +185,33 @@ void MKS946Widget::createCTab() {
 
     auto *flowBox = new QGroupBox("Flow");
     cLayout->addWidget(flowBox);
+    auto *flowVLayout = new QVBoxLayout();
+    flowBox->setLayout(flowVLayout);
     auto *flowGrid = new QGridLayout();
-    flowBox->setLayout(flowGrid);
-    fillGrid({{"Type:", &manometerType},
-              {"Nominal range:", &manometerNominalRange},
-              {"Voltage range:", &manometerVoltageRange}},
-             flowGrid);
-
-    auto *pressureBox = new QGroupBox("Pressure");
-    cLayout->addWidget(pressureBox);
-    auto *pressureGrid = new QGridLayout();
-    pressureBox->setLayout(pressureGrid);
+    flowVLayout->addLayout(flowGrid);
     fillGrid({{"Mode:", &flowMode},
               {"Setpoint:", &flowSetPoint},
               {"Nominal range:", &flowNominalRange},
               {"Scale factor:", &flowScaleFactor}},
+             flowGrid);
+    flowButton = new QPushButton("Set flow");
+    connect(flowButton, &QPushButton::pressed, this, &MKS946Widget::showFlowDialog);
+    flowVLayout->addWidget(flowButton);
+
+    auto *pressureBox = new QGroupBox("Pressure");
+    cLayout->addWidget(pressureBox);
+    auto *pressureVLayout = new QVBoxLayout();
+    pressureBox->setLayout(pressureVLayout);
+    auto *pressureGrid = new QGridLayout();
+    pressureVLayout->addLayout(pressureGrid);
+    fillGrid({{"Type:", &manometerType},
+              {"Nominal range:", &manometerNominalRange},
+              {"Voltage range:", &manometerVoltageRange}},
              pressureGrid);
+    manometerButton = new QPushButton("Set pressure");
+    connect(manometerButton, &QPushButton::pressed, this,
+            &MKS946Widget::showPressureDialog);
+    cLayout->addWidget(manometerButton);
 }
 
 void MKS946Widget::createPIDTab() {
@@ -215,15 +222,17 @@ void MKS946Widget::createPIDTab() {
 
     auto *pidBox = new QGroupBox("PID");
     pidLayout->addWidget(pidBox);
+    auto *pidVLayout = new QVBoxLayout();
+    pidBox->setLayout(pidVLayout);
     auto *pidGrid = new QGridLayout();
-    pidBox->setLayout(pidGrid);
-
+    pidVLayout->addLayout(pidGrid);
     fillGrid(
         {
             {"Units:", &PIDUnits},
             {"Recipe nr:", &PIDRecipe},
-            {"MKF channel:", &PIDFlowChannel},
+            {"MFC channel:", &PIDFlowChannel},
             {"Pressure channel:", &PIDPressureChannel},
+            {"Pressure setpoint:", &PIDPresssureSetPoint},
             {"Kp:", &PIDKp},
             {"Time constant:", &PIDTimeConstant},
             {"Derivative time constant:", &PIDDerivativeTimeConstant},
@@ -237,10 +246,10 @@ void MKS946Widget::createPIDTab() {
             {"Band:", &PIDBand},
             {"Gain:", &PIDGain},
         },
-        pidGrid, 8);
+        pidGrid, 9);
     PIDButton = new QPushButton("Set PID");
-    PIDButton->setDisabled(true);
-    pidLayout->addWidget(PIDButton);
+    connect(PIDButton, &QPushButton::pressed, this, &MKS946Widget::showPIDDialog);
+    pidVLayout->addWidget(PIDButton);
 }
 
 void MKS946Widget::createRTab() {
@@ -309,8 +318,91 @@ void MKS946Widget::changeRelay(int nr, RelayStruct values) {
 void MKS946Widget::fillGrid(std::vector<std::pair<std::string, QWidget *>> names,
                             QGridLayout *grid, size_t row_max) {
     for(size_t i = 0; i < names.size(); ++i) {
-        grid->addWidget(new QLabel(names.at(i).first.c_str()), i % row_max, i / row_max,
-                        Qt::AlignmentFlag::AlignRight);
-        grid->addWidget(names.at(i).second, i % row_max, i / row_max + 1);
+        grid->addWidget(new QLabel(names.at(i).first.c_str()), i % row_max,
+                        2 * (i / row_max), Qt::AlignmentFlag::AlignRight);
+        grid->addWidget(names.at(i).second, i % row_max, 2 * (i / row_max) + 1);
+    }
+}
+
+void MKS946Widget::showPIDDialog() {
+    DCSInputDialog data("Change PID", "Enter PID parameters:", 9);
+    data.addField("Units", PIDUnits.text(), true);
+    data.addField("Recipe nr", PIDRecipe.text(), true);
+    data.addField("MFC channel", DCSUtils::getKeys(MKS946codes::PIDFlowChannelFromString))
+        .setInitial(PIDFlowChannel.text());
+    data.addField("Pressure channel",
+                  DCSUtils::getKeys(MKS946codes::PIDPressureChannelFromString))
+        .setInitial(PIDPressureChannel.text());
+    data.addField("Pressure setpoint", PIDPresssureSetPoint.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Kp", PIDKp.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Time constant", PIDTimeConstant.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Derivative time constant", PIDDerivativeTimeConstant.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Ceiling", PIDCeiling.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Base", PIDBase.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Preset", PIDPreset.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Start", PIDStart.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("End", PIDEnd.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("CtrlStart", PIDCtrlStart.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Direction", DCSUtils::getKeys(MKS946codes::PIDDirectionFromString))
+        .setInitial(PIDDirection.text());
+    data.addField("Gain", PIDGain.text().toInt()).setMin(1).setMax(30);
+    data.addField("Band", PIDBand.text().toInt()).setMin(0).setMax(200);
+    if(data.exec()) {
+        dynamic_cast<MKS946_controller *>(controller)
+            ->callSetPID(data.get<QString>("MFC channel").toStdString(),
+                         data.get<QString>("Pressure channel").toStdString(),
+                         data.get<double>("Pressure setpoint"), data.get<double>("Kp"),
+                         data.get<double>("Time constant"),
+                         data.get<double>("Derivative time constant"),
+                         data.get<double>("Ceiling"), data.get<double>("Base"),
+                         data.get<double>("Preset"), data.get<double>("Start"),
+                         data.get<double>("End"), data.get<double>("CtrlStart"),
+                         data.get<QString>("Direction").toStdString(),
+                         data.get<int>("Gain"), data.get<int>("Band"));
+    }
+}
+
+void MKS946Widget::showFlowDialog() {
+    DCSInputDialog data("Change flow", "Enter flow parameters:", 10);
+    data.addField("Mode", DCSUtils::getKeys(MKS946codes::flowModeFromString))
+        .setInitial(flowMode.text());
+    data.addField("Setpoint", flowSetPoint.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Nominal range", flowNominalRange.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Scale factor", flowScaleFactor.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    if(data.exec()) {
+        dynamic_cast<MKS946_controller *>(controller)
+            ->callSetFlow(data.get<QString>("Mode").toStdString(),
+                          data.get<double>("Setpoint"), data.get<double>("Nominal range"),
+                          data.get<double>("Scale factor"));
+    }
+}
+
+void MKS946Widget::showPressureDialog() {
+    DCSInputDialog data("Change pressure", "Enter pressure parameters:", 10);
+    data.addField("Type", DCSUtils::getKeys(MKS946codes::CMTypeFromString))
+        .setInitial(manometerType.text());
+    data.addField("Nominal range", manometerNominalRange.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Voltage range",
+                  DCSUtils::getKeys(MKS946codes::CMVoltageRangeFromString))
+        .setInitial(manometerVoltageRange.text())
+        .setMin(0)
+        .setMax(1e6);
+    if(data.exec()) {
+        dynamic_cast<MKS946_controller *>(controller)
+            ->callSetPressure(data.get<QString>("Type").toStdString(),
+                              data.get<double>("Nominal range"),
+                              data.get<QString>("Voltage range").toStdString());
     }
 }

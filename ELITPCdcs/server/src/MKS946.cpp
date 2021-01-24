@@ -166,6 +166,51 @@ void MKS946::setCMType(CH ch, MKS946codes::CMType type) {
 
 std::string MKS946::getCMVoltageRange(CH ch) { return query("BVR", ch); }
 
-void MKS946::setCMVoltageRange(CH ch, std::string value) {
-    sendCommand("BVR", ch, value);
+void MKS946::setCMVoltageRange(CH ch, MKS946codes::CMVoltageRange range) {
+    sendCommand("BVR", ch, MKS946codes::CMVoltageRangeToString.at(range));
+}
+
+void MKS946::setPIDMFCChannel(MKS946codes::PIDFlowChannel ch) {
+    return sendCommand("RDCH", CH::NONE, MKS946codes::PIDFlowChannelToString.at(ch));
+}
+void MKS946::setPIDPressureChannel(MKS946codes::PIDPressureChannel ch) {
+    return sendCommand("RPCH", CH::NONE, MKS946codes::PIDPressureChannelToString.at(ch));
+}
+void MKS946::setPIDPressureSetPoint(double value) {
+    return sendCommand("RPSP", CH::NONE, format(value));
+}
+void MKS946::setPIDKp(double value) { return sendPIDCommand("RKP", value); }
+void MKS946::setPIDTimeConstant(double value) { return sendPIDCommand("RTI", value); }
+void MKS946::setPIDDerivativeTimeConstant(double value) {
+    return sendPIDCommand("RTD", value);
+}
+void MKS946::setPIDCeiling(double value) { return sendPIDCommand("RCEI", value); }
+void MKS946::setPIDBase(double value) { return sendPIDCommand("RBAS", value); }
+void MKS946::setPIDPreset(double value) { return sendPIDCommand("RPST", value); }
+void MKS946::setPIDStart(double value) { return sendPIDCommand("RSTR", value); }
+void MKS946::setPIDEnd(double value) { return sendPIDCommand("REND", value); }
+void MKS946::setPIDCtrlStart(double value) { return sendPIDCommand("RCST", value); }
+void MKS946::setPIDDirection(MKS946codes::PIDDirection dir) {
+    return sendCommand("RDIR", CH::NONE, MKS946codes::PIDDirectionToString.at(dir));
+}
+void MKS946::setPIDBand(uint value) {
+    if(value > 30) {
+        throw std::runtime_error("Incorrect PID band value");
+    }
+    return sendCommand("RGSB", CH::NONE, std::to_string(value));
+}
+void MKS946::setPIDGain(uint value) {
+    if(value == 0 || value > 200) {
+        throw std::runtime_error("Incorrect PID gain value");
+    }
+    return sendCommand("RGSG", CH::NONE, std::to_string(value));
+}
+
+std::string MKS946::format(double v) {
+    std::stringstream ss;
+    ss.precision(2);
+    ss << std::scientific << v;
+    auto str = ss.str();
+    str.replace(4, 1, "E");
+    return str;
 }

@@ -1,6 +1,7 @@
 #ifndef MKS946WIDGET_H
 #define MKS946WIDGET_H
 
+#include "DCSInputDialog.h"
 #include "DCSRelayWidget.h"
 #include "abstractwidget.h"
 #include "mks946codes.h"
@@ -33,6 +34,10 @@ class MKS946Widget : public AbstractWidget {
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
+  private slots:
+    void showPIDDialog();
+    void showFlowDialog();
+    void showPressureDialog();
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
@@ -52,9 +57,11 @@ class MKS946Widget : public AbstractWidget {
     QLabel flowSetPoint;
     QLabel flowNominalRange;
     QLabel flowScaleFactor;
+    QPushButton *flowButton;
     QLabel manometerType;
     QLabel manometerNominalRange;
     QLabel manometerVoltageRange;
+    QPushButton *manometerButton;
 
     QLabel PIDUnits;
     QLabel PIDRecipe;

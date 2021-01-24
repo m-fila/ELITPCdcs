@@ -1,4 +1,5 @@
 #include "DCSMKS946Controller.h"
+#include "utils.h"
 void DCSMKS946Controller::addChildren(const Options &options) {
     DCSDeviceController<MKS946>::addChildren(options);
     auto &m = addVariable("measurements",
@@ -15,10 +16,40 @@ void DCSMKS946Controller::addChildren(const Options &options) {
                         {}, &DCSMKS946Controller::setRelay, this);
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS946C]);
-    addVariableUpdate(c, 6000, &DCSMKS946Controller::getConfiguration, this, options);
+    c.setHistorizing();
     auto &p = addVariable("PID", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_PID]);
-    addVariableUpdate(p, 6000, &DCSMKS946Controller::getPID, this, options);
+    p.setHistorizing();
     addVariable("sensorType", &UA_TYPES[UA_TYPES_STRING], true);
+    addControllerMethod("setPID", "sets parameters of active PID recipe",
+                        {
+                            {"MFC channel", "", &UA_TYPES[UA_TYPES_STRING]},
+                            {"Pressure channel", "", &UA_TYPES[UA_TYPES_STRING]},
+                            {"Pressure setpoint", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Kp", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Time constant", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Derivative time constant", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Ceiling", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Base", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Preset", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Start", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"End", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"CtrlStart", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                            {"Direction", "", &UA_TYPES[UA_TYPES_STRING]},
+                            {"Band", "", &UA_TYPES[UA_TYPES_UINT32]},
+                            {"Gain", "", &UA_TYPES[UA_TYPES_UINT32]},
+                        },
+                        {}, &DCSMKS946Controller::setPID, this);
+    addControllerMethod("setMFC", "sets parameters of mfc",
+                        {{"Mode", "", &UA_TYPES[UA_TYPES_STRING]},
+                         {"Setpoint", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                         {"Nominal range", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                         {"Scale factor", "", &UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {}, &DCSMKS946Controller::setFlow, this);
+    addControllerMethod("setManometer", "sets parameters of manometer",
+                        {{"Type", "", &UA_TYPES[UA_TYPES_STRING]},
+                         {"Nominal range", "", &UA_TYPES[UA_TYPES_DOUBLE]},
+                         {"Voltage range", "", &UA_TYPES[UA_TYPES_STRING]}},
+                        {}, &DCSMKS946Controller::setPressure, this);
 }
 
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
@@ -26,9 +57,6 @@ UA_MKS946m DCSMKS946Controller::getMeasurements() {
     UA_MKS946m_init(&mks);
     mks.flow = std::stod(device.getFlow(flowCH));
     mks.pressure = std::stod(device.getPressure(pressureCH));
-    mks.flowSetPoint = std::stod(device.getFlowSetPoint(flowCH));
-    mks.flowMode =
-        static_cast<int>(MKS946codes::flowModeFromString.at(device.getFlowMode(flowCH)));
     return mks;
 }
 
@@ -54,7 +82,6 @@ UA_Relay DCSMKS946Controller::getRelay() {
         static_cast<UA_Boolean *>(UA_Array_new(size, &UA_TYPES[UA_TYPES_BOOLEAN]));
 
     for(size_t i = 0; i < size; ++i) {
-        // auto no = static_cast<MKS910::RelayNo>(i + 1);
         auto no = static_cast<MKS946::RelayNo>(i + 5);
         std::string resp;
         resp = device.getRelayDirection(no);
@@ -91,28 +118,27 @@ void DCSMKS946Controller::setRelay(const UA_Variant *input, UA_Variant *output) 
 UA_MKS946c DCSMKS946Controller::getConfiguration() {
     UA_MKS946c mks;
     UA_MKS946c_init(&mks);
-    mks.flowMode =
-        static_cast<int>(MKS946codes::flowModeFromString.at(device.getFlowMode(flowCH)));
+    mks.flowMode = UA_STRING_ALLOC(device.getFlowMode(flowCH).c_str());
     mks.flowNominalRange = std::stod(device.getFlowNominalRange(flowCH));
     mks.flowScaleFactor = std::stod(device.getFlowScaleFactor(flowCH));
     mks.flowSetPoint = std::stod(device.getFlowSetPoint(flowCH));
     mks.manometerNominalRange = std::stod(device.getCMNominalRange(pressureCH));
-    mks.manometerType =
-        static_cast<int>(MKS946codes::CMTypeFromString.at(device.getCMType(pressureCH)));
-    mks.manometerVoltageRange = std::stod(device.getCMVoltageRange(pressureCH));
+    mks.manometerType = UA_STRING_ALLOC(device.getCMType(pressureCH).c_str());
+    mks.manometerVoltageRange =
+        UA_STRING_ALLOC(device.getCMVoltageRange(pressureCH).c_str());
     return mks;
 }
 
 UA_PID DCSMKS946Controller::getPID() {
     UA_PID mks;
     UA_PID_init(&mks);
+    mks.direction = UA_STRING_ALLOC(device.getPIDDirection().c_str());
     mks.band = std::stoi(device.getPIDBand());
     mks.base = std::stod(device.getPIDBase());
     mks.ceiling = std::stod(device.getPIDCeiling());
     mks.ctrlStart = std::stod(device.getPIDCtrlStart());
     mks.derivativeTimeConstant = std::stod(device.getPIDDerivativeTimeConstant());
-    mks.direction = static_cast<int>(
-        MKS946codes::PIDDirectionFromString.at(device.getPIDDirection()));
+
     mks.end = std::stod(device.getPIDEnd());
     mks.flowChannel = UA_STRING_ALLOC(device.getPIDMFCChannel().c_str());
     mks.gain = std::stoi(device.getPIDBand());
@@ -138,4 +164,69 @@ void DCSMKS946Controller::postConnect() {
         array[i] = UA_STRING_ALLOC(val.c_str());
     }
     variables.at("sensorType")->setValue(array, size);
+    variables.at("PID")->setValue(getPID());
+    variables.at("configuration")->setValue(getConfiguration());
+}
+
+void DCSMKS946Controller::setPID(const UA_Variant *input, UA_Variant *output) {
+    auto mfc = *static_cast<UA_String *>(input[0].data);
+    auto prc = *static_cast<UA_String *>(input[1].data);
+    auto setpoint = *static_cast<UA_Double *>(input[2].data);
+    auto kp = *static_cast<UA_Double *>(input[3].data);
+    auto timeConstant = *static_cast<UA_Double *>(input[4].data);
+    auto derivativeTimeConstant = *static_cast<UA_Double *>(input[5].data);
+    auto ceiling = *static_cast<UA_Double *>(input[6].data);
+    auto base = *static_cast<UA_Double *>(input[7].data);
+    auto preset = *static_cast<UA_Double *>(input[8].data);
+    auto start = *static_cast<UA_Double *>(input[9].data);
+    auto end = *static_cast<UA_Double *>(input[10].data);
+    auto ctrlstart = *static_cast<UA_Double *>(input[11].data);
+    auto direction = *static_cast<UA_String *>(input[12].data);
+    auto gain = *static_cast<UA_UInt32 *>(input[13].data);
+    auto band = *static_cast<UA_UInt32 *>(input[14].data);
+    device.setPIDMFCChannel(
+        MKS946codes::PIDFlowChannelFromString.at(DCSUtils::UaToStd(mfc)));
+    device.setPIDPressureChannel(
+        MKS946codes::PIDPressureChannelFromString.at(DCSUtils::UaToStd(prc)));
+    device.setPIDPressureSetPoint(setpoint);
+    device.setPIDKp(kp);
+    device.setPIDTimeConstant(timeConstant);
+    device.setPIDDerivativeTimeConstant(derivativeTimeConstant);
+    device.setPIDCeiling(ceiling);
+    device.setPIDBase(base);
+    device.setPIDPreset(preset);
+    device.setPIDStart(start);
+    device.setPIDEnd(end);
+    device.setPIDCtrlStart(ctrlstart);
+    device.setPIDDirection(
+        MKS946codes::PIDDirectionFromString.at(DCSUtils::UaToStd(direction)));
+    device.setPIDGain(gain);
+    device.setPIDBand(band);
+}
+
+void DCSMKS946Controller::setFlow(const UA_Variant *input, UA_Variant *output) {
+    auto mode = *static_cast<UA_String *>(input[0].data);
+    auto setpoint = *static_cast<UA_Double *>(input[1].data);
+    auto nominalRange = *static_cast<UA_Double *>(input[2].data);
+    auto scaleFactor = *static_cast<UA_Double *>(input[3].data);
+    device.setFlowMode(flowCH,
+                       MKS946codes::flowModeFromString.at(DCSUtils::UaToStd(mode)));
+    device.setFlowSetPoint(flowCH, setpoint);
+    device.setFlowNominalRange(flowCH, nominalRange);
+    device.setFlowScaleFactor(flowCH, scaleFactor);
+
+    variables.at("configuration")->setValue(getConfiguration());
+}
+
+void DCSMKS946Controller::setPressure(const UA_Variant *input, UA_Variant *output) {
+    auto type = *static_cast<UA_String *>(input[0].data);
+    auto nominalRange = *static_cast<UA_Double *>(input[1].data);
+    auto voltageRange = *static_cast<UA_String *>(input[2].data);
+    device.setCMType(pressureCH,
+                     MKS946codes::CMTypeFromString.at(DCSUtils::UaToStd(type)));
+    device.setCMNominalRange(pressureCH, nominalRange);
+    device.setCMVoltageRange(pressureCH, MKS946codes::CMVoltageRangeFromString.at(
+                                             DCSUtils::UaToStd(voltageRange)));
+
+    variables.at("configuration")->setValue(getConfiguration());
 }

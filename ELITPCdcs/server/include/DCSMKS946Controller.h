@@ -17,6 +17,10 @@ class DCSMKS946Controller : public DCSDeviceController<MKS946>,
 
     void setUnits(const UA_Variant *input, UA_Variant *output);
     void setRelay(const UA_Variant *input, UA_Variant *output);
+    void setPID(const UA_Variant *input, UA_Variant *output);
+    void setFlow(const UA_Variant *input, UA_Variant *output);
+    void setPressure(const UA_Variant *input, UA_Variant *output);
+
     void postConnect() override;
 
     UA_MKS946m getMeasurements();

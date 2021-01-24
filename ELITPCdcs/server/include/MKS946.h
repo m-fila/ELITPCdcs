@@ -26,7 +26,7 @@ class MKS946 : public MKS {
 
     void setCMNominalRange(CH ch, double value);
     void setCMType(CH ch, MKS946codes::CMType type);
-    void setCMVoltageRange(CH ch, std::string value);
+    void setCMVoltageRange(CH ch, MKS946codes::CMVoltageRange range);
 
     // MFC commands
     std::string getFlow(CH ch);
@@ -77,6 +77,22 @@ class MKS946 : public MKS {
     std::string getPIDBand() { return queryPID("RGSB"); }
     std::string getPIDGain() { return queryPID("RGSG"); }
 
+    void setPIDMFCChannel(MKS946codes::PIDFlowChannel ch);
+    void setPIDPressureChannel(MKS946codes::PIDPressureChannel ch);
+    void setPIDPressureSetPoint(double value);
+    void setPIDKp(double value);
+    void setPIDTimeConstant(double value);
+    void setPIDDerivativeTimeConstant(double value);
+    void setPIDCeiling(double value);
+    void setPIDBase(double value);
+    void setPIDPreset(double value);
+    void setPIDStart(double value);
+    void setPIDEnd(double value);
+    void setPIDCtrlStart(double value);
+    void setPIDDirection(MKS946codes::PIDDirection dir);
+    void setPIDBand(uint value);
+    void setPIDGain(uint value);
+
     void setActivePIDRecipe(PID recipe);
     void setActiveRatioRecipe(RATIO recipe);
     void setPIDControl(bool isOn);
@@ -103,6 +119,10 @@ class MKS946 : public MKS {
     std::string query(std::string command, CH ch);
     std::string queryPID(std::string command);
     void sendCommand(std::string command, CH ch, std::string value);
+    void sendPIDCommand(std::string command, double value) {
+        return sendCommand(command, CH::NONE, format(value));
+    }
+    static std::string format(double v);
 };
 
 #endif  // mks946_H

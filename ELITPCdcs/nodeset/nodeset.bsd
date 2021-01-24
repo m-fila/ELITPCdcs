@@ -82,17 +82,15 @@
   <opc:StructuredType Name="MKS946m" BaseType="ua:ExtensionObject">
     <opc:Field Name="pressure" TypeName="opc:Double"/>
     <opc:Field Name="flow" TypeName="opc:Double"/>
-    <opc:Field Name="flowMode" TypeName="opc:Double"/>
-    <opc:Field Name="flowSetPoint" TypeName="opc:Double"/>
   </opc:StructuredType>
   <opc:StructuredType Name="MKS946c" BaseType="ua:ExtensionObject">
-    <opc:Field Name="flowMode" TypeName="opc:Int32"/>
+    <opc:Field Name="flowMode" TypeName="opc:String"/>
     <opc:Field Name="flowSetPoint" TypeName="opc:Double"/>
     <opc:Field Name="flowScaleFactor" TypeName="opc:Double"/>
     <opc:Field Name="flowNominalRange" TypeName="opc:Double"/>
-    <opc:Field Name="manometerType" TypeName="opc:Int32"/>
+    <opc:Field Name="manometerType" TypeName="opc:String"/>
     <opc:Field Name="manometerNominalRange" TypeName="opc:Double"/>
-    <opc:Field Name="manometerVoltageRange" TypeName="opc:Double"/>
+    <opc:Field Name="manometerVoltageRange" TypeName="opc:String"/>
   </opc:StructuredType>
   <opc:StructuredType Name="PID" BaseType="ua:ExtensionObject">
     <opc:Field Name="units" TypeName="opc:String"/>
@@ -109,7 +107,7 @@
     <opc:Field Name="start" TypeName="opc:Double"/>
     <opc:Field Name="end" TypeName="opc:Double"/>
     <opc:Field Name="ctrlStart" TypeName="opc:Double"/>
-    <opc:Field Name="direction" TypeName="opc:Int32"/>
+    <opc:Field Name="direction" TypeName="opc:String"/>
     <opc:Field Name="band" TypeName="opc:Int32"/>
     <opc:Field Name="gain" TypeName="opc:Int32"/>
   </opc:StructuredType>

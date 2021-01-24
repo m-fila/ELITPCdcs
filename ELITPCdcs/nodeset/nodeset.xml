@@ -403,8 +403,6 @@
     <Definition Name="1:MKS946m">
       <Field DataType="Double" Name="pressure"/>
       <Field DataType="Double" Name="flow"/>
-      <Field DataType="Double" Name="flowSetPoint"/>
-      <Field DataType="Int32" Name="flowMode"/>
     </Definition>
   </UADataType>
   <UAVariable NodeId="ns=1;i=94603" BrowseName="1:MKS946m" ParentNodeId="ns=1;i=7617" DataType="String">
@@ -431,13 +429,13 @@
       <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
     </References>
     <Definition Name="1:MKS946c">
-      <Field DataType="Int32" Name="flowMode"/>
+      <Field DataType="String" Name="flowMode"/>
       <Field DataType="Double" Name="flowSetPoint"/>
       <Field DataType="Double" Name="flowNominalRange"/>
       <Field DataType="Double" Name="flowScaleFactor"/>
-      <Field DataType="Int32" Name="manometerType"/>
+      <Field DataType="String" Name="manometerType"/>
       <Field DataType="Double" Name="manometerNominalRange"/>
-      <Field DataType="Double" Name="manometerVoltageRange"/>
+      <Field DataType="String" Name="manometerVoltageRange"/>
     </Definition>
   </UADataType>
   <UAVariable NodeId="ns=1;i=94613" BrowseName="1:MKS946c" ParentNodeId="ns=1;i=7617" DataType="String">
@@ -479,7 +477,7 @@
       <Field DataType="Double" Name="start"/>
       <Field DataType="Double" Name="end"/>
       <Field DataType="Double" Name="ctrlStart"/>
-      <Field DataType="Int32" Name="direction"/>
+      <Field DataType="String" Name="direction"/>
       <Field DataType="Int32" Name="band"/>
       <Field DataType="Int32" Name="gain"/>
     </Definition>

@@ -173,5 +173,17 @@ static std::map<PIDPressureChannel, std::string> PIDPressureChannelToString = {
     {PIDPressureChannel::B2, "B2"},   {PIDPressureChannel::C2, "C2"},
     {PIDPressureChannel::PC1, "PC1"}, {PIDPressureChannel::PC2, "PC2"}};
 
+enum class CMVoltageRange { a5, a10, b1, b5, u1, u5, u10 };
+
+static std::map<std::string, CMVoltageRange> CMVoltageRangeFromString = {
+    {"5", CMVoltageRange::a5},    {"10", CMVoltageRange::a10}, {"1B", CMVoltageRange::b1},
+    {"5B", CMVoltageRange::b5},   {"1U", CMVoltageRange::u1},  {"5U", CMVoltageRange::u5},
+    {"10U", CMVoltageRange::u10},
+};
+
+static std::map<CMVoltageRange, std::string> CMVoltageRangeToString = {
+    {CMVoltageRange::a5, "5"},   {CMVoltageRange::a10, "10"}, {CMVoltageRange::b1, "1B"},
+    {CMVoltageRange::b5, "5B"},  {CMVoltageRange::u1, "1U"},  {CMVoltageRange::u5, "5U"},
+    {CMVoltageRange::u10, "10U"}};
 }  // namespace MKS946codes
 #endif  // MKS946CODES_H
