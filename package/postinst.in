@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if ! id edcs &>/dev/null; then
+    useradd -r -s /usr/bin/nologin edcs -U
+fi
+
+if [[ ! -f /etc/dcs/dcs.json ]]; then
+    mkdir -p /etc/dcs/
+    cp -f @CPACK_PACKAGING_INSTALL_PREFIX@/config/dcs.json /etc/dcs/dcs.json
+fi
+
+if command -v systemctl &>/dev/null; then
+    cp -f @CPACK_PACKAGING_INSTALL_PREFIX@/scripts/dcs-server.service /lib/systemd/system/dcs-server.service
+fi
