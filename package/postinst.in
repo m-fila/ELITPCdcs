@@ -10,5 +10,5 @@ if [[ ! -f /etc/dcs/dcs.json ]]; then
 fi
 
 if command -v systemctl &>/dev/null; then
-    cp -f @CPACK_PACKAGING_INSTALL_PREFIX@/scripts/dcs-server.service /lib/systemd/system/dcs-server.service
+    cp -f @CPACK_PACKAGING_INSTALL_PREFIX@/scripts/dcs-server.service /usr/lib/systemd/system/dcs-server.service
 fi

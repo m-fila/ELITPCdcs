@@ -8,7 +8,7 @@ if [[ -f /etc/lsb-release ]]; then
 
         if command -v systemctl &>/dev/null; then
             systemctl disable dcs-server
-            rm -f /lib/systemd/system/dcs-server.service
+            rm -f /usr/lib/systemd/system/dcs-server.service
         fi
     fi
 fi
