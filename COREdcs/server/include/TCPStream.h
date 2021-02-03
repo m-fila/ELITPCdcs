@@ -14,10 +14,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-using namespace std;
-
 class TCPStream : public ConnectionStream {
-    string m_peerIP;
+    std::string m_peerIP;
     int m_peerPort;
 
   public:
@@ -26,7 +24,7 @@ class TCPStream : public ConnectionStream {
 
     virtual ~TCPStream();
 
-    string getPeerIP();
+    std::string getPeerIP();
     int getPeerPort();
 
   private:

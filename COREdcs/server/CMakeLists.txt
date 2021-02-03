@@ -1,7 +1,8 @@
 set(SUBMODULE_NAME "server")
 message(STATUS "Adding CMake fragment for submodule:\t\t"
                ${MODULE_NAME}_${SUBMODULE_NAME})
-
+find_package(OpenSSL REQUIRED)
+include_directories(OPENSSL_INCLUDE_DIR)
 file(GLOB_RECURSE sources
      ${PROJECT_SOURCE_DIR}/${MODULE_NAME}/${SUBMODULE_NAME}/src/*.cpp)
 
@@ -12,6 +13,6 @@ include_directories(${CMAKE_BINARY_DIR}/src_generated)
 add_library(${MODULE_NAME}_${SUBMODULE_NAME} SHARED ${sources})
 
 target_link_libraries(${MODULE_NAME}_${SUBMODULE_NAME} ${MODULE_NAME}_nodeset
-                      open62541::open62541 UA_JSON)
+                      open62541::open62541 UA_JSON ${OPENSSL_LIBRARIES})
 
 install(TARGETS ${MODULE_NAME}_${SUBMODULE_NAME} LIBRARY DESTINATION lib)

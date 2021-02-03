@@ -78,5 +78,6 @@ class HTTPDevice : public DCSBaseDevice {
         {Method::HEAD, "HEAD"},      {Method::DELETE, "DELETE"}, {Method::PATCH, "PATCH"},
         {Method::OPTIONS, "OPTIONS"}};
     TCPConnectionParameters connectionParameters;
+    std::string hostname;
 };
 #endif  // DCS_HTTP_DEVICE_H

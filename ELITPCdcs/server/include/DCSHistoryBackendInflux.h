@@ -133,7 +133,7 @@ class DCSHistoryBackendInflux : public DCSHistoryBackend {
 
     static void deleteMembers(UA_HistoryDataBackend *backend);
 
-    std::string toInflux(nlohmann::json j);
+    static std::string toInflux(nlohmann::json j);
 
     void write();
     static void writeCallback(UA_Server *server, void *context);

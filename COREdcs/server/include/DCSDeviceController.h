@@ -101,7 +101,7 @@ void DCSDeviceController<Device>::connectDevice(const UA_Variant *input,
     std::string address(reinterpret_cast<char *>(param.address.data),
                         param.address.length);
     try {
-        auto stream = TCPConnector::connect(address.c_str(), param.port);
+        auto stream = TCPConnector::connect(address, param.port);
         device.setConnectionStream(stream);
     } catch(const std::exception &e) {
         UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
@@ -218,7 +218,7 @@ void DCSDeviceController<Device>::addControllerMethod(
                                                   UA_Variant *output) {
         try {
             methodBody(input, output);
-        } catch(const exception &e) {
+        } catch(const std::exception &e) {
             UA_LOG_ERROR(DCSLogger::getLogger(), UA_LOGCATEGORY_USERLAND,
                          "Method %s encountered error: %s . Disconnecting device...",
                          methodName.c_str(), e.what());
