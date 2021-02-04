@@ -39,23 +39,13 @@ staging_ssh:
      paths:
      - build
 
-#build_release:
-#  stage: build
-#  script:
-#    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
-#    - cmake --build build 
-#  artifacts:
-#    paths:
-#      - build
       
 build_debug:
   stage: build
   script:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_EXE_LINKER_FLAGS="-coverage"
     - cmake --build build 
-#  artifacts:
-#    paths:
-#      - build
+    
 
 export_commands:
  stage: build

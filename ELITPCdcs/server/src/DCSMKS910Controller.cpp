@@ -3,14 +3,14 @@ void DCSMKS910Controller::addChildren(const Options &options) {
     DCSDeviceController<MKS910>::addChildren(options);
     auto &m = addVariable("measurements",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910M]);
-    addVariableUpdate(m, 1000, &DCSMKS910Controller::getMeasurements, this);
+    addVariableUpdate(m, 1000, &DCSMKS910Controller::getMeasurements, this, options);
     m.setHistorizing();
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS910C]);
-    addVariableUpdate(c, 1000, &DCSMKS910Controller::getConfiguration, this);
+    addVariableUpdate(c, 1000, &DCSMKS910Controller::getConfiguration, this, options);
 
     auto &r = addVariable("relay", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_RELAY]);
-    addVariableUpdate(r, 5000, &DCSMKS910Controller::getRelay, this);
+    addVariableUpdate(r, 5000, &DCSMKS910Controller::getRelay, this, options);
     addControllerMethod("setunits", "Sets pressure units",
                         {{"Unit", "PASCAL/BAR/TORR", &UA_TYPES[UA_TYPES_INT16]}}, {},
                         &DCSMKS910Controller::setUnits, this);
@@ -75,7 +75,7 @@ UA_Relay DCSMKS910Controller::getRelay() {
         resp = device.getRelayEnabled(no);
         relay.enabled[i] = static_cast<int>(MKS910codes::relayEnabledFromString.at(resp));
         relay.hysteresis[i] = std::stod(device.getRelayHysteresis(no));
-        relay.setpoint[i] = std::stod(device.getRelayHysteresis(no));
+        relay.setpoint[i] = std::stod(device.getRelaySetPoint(no));
         resp = device.getRelayStatus(no);
         relay.status[i] = static_cast<int>(MKS910codes::relaySetFromString.at(resp));
     }

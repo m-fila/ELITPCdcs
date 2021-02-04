@@ -19,13 +19,17 @@ TPGWidget::~TPGWidget() {}
 
 void TPGWidget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(dynamic_cast<tpg_controller *>(controller), SIGNAL(relayChanged(void *)),
-            this, SLOT(updateRelay(void *)));
+    auto *moniteredItem = controller->addMonitoredItem("relay");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &TPGWidget::updateRelay);
+    moniteredItem = controller->addMonitoredItem("sensorType");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &TPGWidget::updateSensorType);
 }
 
-void TPGWidget::updateStatus(void *data) {
+void TPGWidget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data);
+    bool isConnected = *static_cast<bool *>(data.data);
     connectionState = isConnected;
     if(isConnected) {
     } else {
@@ -36,8 +40,8 @@ void TPGWidget::updateStatus(void *data) {
         }
     }
 }
-void TPGWidget::updateMeasurements(void *data) {
-    UA_TPG362m measurements = *static_cast<UA_TPG362m *>(data);
+void TPGWidget::updateMeasurements(UA_Variant data) {
+    UA_TPG362m measurements = *static_cast<UA_TPG362m *>(data.data);
     if(measurements.statusSize) {
         QString val;
         std::string s;
@@ -63,10 +67,10 @@ void TPGWidget::updateMeasurements(void *data) {
     }
 }
 
-void TPGWidget::updateConfiguration(void *data) {}
+void TPGWidget::updateConfiguration(UA_Variant data) {}
 
-void TPGWidget::updateRelay(void *data) {
-    auto r = *static_cast<UA_Relay *>(data);
+void TPGWidget::updateRelay(UA_Variant data) {
+    auto r = *static_cast<UA_Relay *>(data.data);
     for(size_t i = 0; i < r.statusSize; i++) {
         RelayStruct rStruct;
         rStruct.status = r.status[i];
@@ -108,10 +112,10 @@ void TPGWidget::createMTab() {
     mWidget->setLayout(mLayout);
     for(int i = 0; i != 2; ++i) {
         mBox[i] = new QGroupBox(("CH" + std::to_string(i + 2)).c_str());
-        QHBoxLayout *mhLayout = new QHBoxLayout();
         QVBoxLayout *mvLayout = new QVBoxLayout();
+
         mBox[i]->setLayout(mvLayout);
-        mvLayout->addLayout(mhLayout);
+
         mVacuum[i] = new QLCDNumber();
         mVacuum[i]->setDigitCount(12);
         mVacuum[i]->setSegmentStyle(QLCDNumber::Flat);
@@ -121,27 +125,41 @@ void TPGWidget::createMTab() {
         mVacuum[i]->setPalette(palette);
         mVacuum[i]->display(0.00);
 
+        auto *mSensorLayout = new QHBoxLayout();
+        auto *sensorLabel = new QLabel("Sensor type: ", this);
+        mSensorType[i] = new QLabel(" ", this);
+        mvLayout->addLayout(mSensorLayout);
+        mSensorLayout->addWidget(sensorLabel);
+        mSensorLayout->addWidget(mSensorType[i]);
+
         mStatusLabel[i] = new QLabel("Status: ");
         mStatusLabel[i]->setAlignment(Qt::AlignLeft);
         mStatus[i] = new QLabel(".");
         mStatus[i]->setAlignment(Qt::AlignLeft);
         QFont statusFont = mStatus[i]->font();
-
+        statusFont.setBold(true);
         mStatus[i]->setFont(statusFont);
-        QLabel *unit = new QLabel("mbar");
-        unit->setAlignment(Qt::AlignRight);
+
+        QHBoxLayout *mhLayout = new QHBoxLayout();
+        mvLayout->addLayout(mhLayout);
         mhLayout->addWidget(mStatusLabel[i]);
         mhLayout->addWidget(mStatus[i]);
-        mhLayout->addWidget(unit);
+
+        QLabel *unit = new QLabel("mbar");
+        unit->setAlignment(Qt::AlignRight);
+        QHBoxLayout *mhUnitLayout = new QHBoxLayout();
+        mhUnitLayout->addWidget(unit);
+        mvLayout->addLayout(mhUnitLayout);
+
         QHBoxLayout *mhhLayout = new QHBoxLayout();
         mvLayout->addLayout(mhhLayout);
-
         mhhLayout->addWidget(mVacuum[i]);
 
         mLayout->addWidget(mBox[i]);
         mLayout->addStretch();
     }
 }
+
 void TPGWidget::createCTab() {
     QWidget *cWidget = new QWidget();
     tab->addTab(cWidget, "Config");
@@ -243,5 +261,19 @@ void TPGWidget::saveConfig() {
     for(i = 0; i != 2; ++i) {
         configkey.sprintf("%s/CustomName%i", instanceName.c_str(), i);
         QSettings().setValue(configkey, cCustomName[i]);
+    }
+}
+
+void TPGWidget::updateSensorType(UA_Variant data) {
+    if(data.arrayLength == 2) {
+        auto *sensor = static_cast<UA_String *>(data.data);
+        for(size_t i = 0; i < data.arrayLength; ++i) {
+            std::string sensorType;
+            if(sensor[i].length != 0) {
+                sensorType = std::string(reinterpret_cast<char *>(sensor[i].data),
+                                         sensor[i].length);
+            }
+            mSensorType[i]->setText(QString::fromStdString(sensorType));
+        }
     }
 }

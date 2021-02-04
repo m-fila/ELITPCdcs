@@ -30,9 +30,9 @@ class HVpsuWidget : public AbstractWidget {
     Ui::HVpsuWidget *ui;
   public slots:
 
-    void updateStatus(void *data) override;
-    void updateMeasurements(void *data);
-    virtual void updateConfiguration(void *data);
+    void updateStatus(UA_Variant data) override;
+    void updateMeasurements(UA_Variant data) override;
+    void updateConfiguration(UA_Variant data) override;
 
     void allOnPressed();
     void allOffPressed();
@@ -70,6 +70,7 @@ class HVpsuWidget : public AbstractWidget {
     std::vector<QLabel *> tabCHxCustomName = std::vector<QLabel *>(channelsNumber + 1);
     std::vector<QPushButton *> tabCHxChangeName =
         std::vector<QPushButton *>(channelsNumber + 1);
+    std::vector<QLabel *> tabCHxPOLARITY = std::vector<QLabel *>(channelsNumber);
     std::vector<QLabel *> tabCHxSTATUS = std::vector<QLabel *>(channelsNumber);
     std::vector<QPushButton *> tabCHxSetVMAX = std::vector<QPushButton *>(channelsNumber);
     std::vector<QLabel *> tabCHxVMAX = std::vector<QLabel *>(channelsNumber);
@@ -114,14 +115,14 @@ class DT1470Widget : public HVpsuWidget {
     Q_OBJECT
   public:
     DT1470Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
-    void updateConfiguration(void *data) final;
+    void updateConfiguration(UA_Variant data) final;
 };
 
 class N1471Widget : public HVpsuWidget {
     Q_OBJECT
   public:
     N1471Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
-    void updateConfiguration(void *data) final;
+    void updateConfiguration(UA_Variant data) final;
 };
 
 #endif  // HVPSUWIDGET_H

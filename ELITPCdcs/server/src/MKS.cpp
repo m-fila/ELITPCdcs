@@ -20,7 +20,7 @@ std::string MKS::extract(std::string content) {
         if(content.find("ACK") != std::string::npos) {
             return value;
         } else {
-            throw std::runtime_error("Encountered MKS error response");
+            throw std::runtime_error("Encountered MKS error response: " + value);
         }
     } else {
         throw std::runtime_error("Encountered MKS broken response");

@@ -25,10 +25,11 @@ class TPGWidget : public AbstractWidget {
 
   public slots:
 
-    void updateStatus(void *data) override;
-    void updateMeasurements(void *data);
-    void updateConfiguration(void *data);
-    void updateRelay(void *data);
+    void updateStatus(UA_Variant data) override;
+    void updateMeasurements(UA_Variant data) override;
+    void updateConfiguration(UA_Variant data) override;
+    void updateRelay(UA_Variant data);
+    void updateSensorType(UA_Variant data);
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
@@ -46,6 +47,7 @@ class TPGWidget : public AbstractWidget {
     QPushButton *disconnectButton;
 
     QTabWidget *tab;
+    QLabel *mSensorType[2];
     QGroupBox *mBox[2];
     QLCDNumber *mVacuum[2];
     QLabel *mStatusLabel[2];

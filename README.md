@@ -46,11 +46,11 @@ make
 make install
 ```
 
-CMake flags `-DBUILD_DB` `-DBUILD_GUI` `-DBUILD_SERVER`  can be switched to `OFF` to disable building some parts of the project.
+CMake flags `-DBUILD_GUI` `-DBUILD_SERVER` `-DBUILD_CHECKS` can be switched to `OFF` to disable building some parts of the project.
 `cmake -DCMAKE_INSTALL_PREFIX=your_path ..` can be used to specify custom installation path.
 
 
-Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsDb` will be available:
+Upon successful build the resulting executables `dscServer`, `dcsGui` and `dcsChecks will be available:
 * dcsServer - provides OPC server and device controllers. Should be run on a computer with access to devices.
 * dcsGui - GUI client. Provides graphic interface for operator user of services exposed by server such as monitoring and manipulating devices.
 * dcsChecks - checks status of services running in ELITPC dcs stack: dcsServer, InfluxDb, Grafana.
@@ -78,6 +78,7 @@ devices used in experimental setup and address of a server. So far known devices
 * N1471 - 4 channel NIM hv psu
 * TPG362 - vacuum gauge
 * MKS910 - vacuum gauge
+* MKS946 - vacuum gauge
 * PiWeather - custom Raspberry Pi powered weather station
 
 A path to config file should be given in first argument for server or client application. Otherwise an enviromental variable will be looked for.
@@ -98,8 +99,8 @@ The project is split into two catalogs COREdcs with framework and ELITPCdcs impl
 * `${device}controller` slots for calling device specific methods
 * `${device}widget` device specific gui
 ### Roadmap
-- [ ] new devices (MKS 946) 
-- [ ] interlock support 
+- [x] new devices (MKS 946) 
+- [x] interlock support 
 - [x] server events
 - [x] historizing
 - [x] refactorized server

@@ -21,11 +21,14 @@ template <class Device> class DCSDeviceController : public DCSObject {
     // interface for adding device related methods to opc objects
     // if threaded==true metohdBody will be wrapped for execution in device worker
     // thread
+    enum class Execution { Blocking, Parallel };
+    enum class Protection { None, Connection };
     template <class T>
     void addControllerMethod(std::string methodName, std::string methodDescription,
                              std::vector<DCSObject::MethodArgs> inputArgs,
                              std::vector<DCSObject::MethodArgs> outputArgs,
-                             const T &methodBody, bool threaded = true);
+                             const T &methodBody,
+                             Execution threaded = Execution::Parallel);
     // interface for adding device related methods to opc objects
     // if threaded==true metohdBody will be wrapped for execution in device worker
     // thread
@@ -33,15 +36,20 @@ template <class Device> class DCSDeviceController : public DCSObject {
     void addControllerMethod(std::string methodName, std::string methodDescription,
                              std::vector<DCSObject::MethodArgs> inputArgs,
                              std::vector<DCSObject::MethodArgs> outputArgs,
-                             const T &methodBody, B instance, bool threaded = true);
+                             const T &methodBody, B instance,
+                             Execution threaded = Execution::Parallel);
 
     template <class T>
     void addVariableUpdate(DCSVariable &variable, size_t interval_ms, T updateMethod,
-                           bool threaded = true, bool deviceProtected = true);
+                           const Options &options = {},
+                           Execution threaded = Execution::Parallel,
+                           Protection deviceProtected = Protection::Connection);
 
     template <class T, class B>
     void addVariableUpdate(DCSVariable &variable, size_t interval_ms, T updateMethod,
-                           B instance, bool threaded = true, bool deviceProtected = true);
+                           B instance, const Options &options = {},
+                           Execution threaded = Execution::Parallel,
+                           Protection deviceProtected = Protection::Connection);
 
   protected:
     // Non trivial constructor
@@ -138,7 +146,8 @@ template <class Device>
 void DCSDeviceController<Device>::addConnection(const Options &options) {
     device.resetConnectionStream();
     auto &s = addVariable("status", &UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(s, 1000, [this]() { return isConnected(); }, true, false);
+    addVariableUpdate(s, 1000, [this]() { return isConnected(); }, {},
+                      Execution::Parallel, Protection::None);
     auto &p = addVariable("connectionParameters",
                           &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PARAMETERSTCP]);
     addVariable("deviceInfo", &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DEVICEINFO]);
@@ -202,7 +211,8 @@ template <class T>
 void DCSDeviceController<Device>::addControllerMethod(
     std::string methodName, std::string methodDescription,
     std::vector<DCSObject::MethodArgs> inputArgs,
-    std::vector<DCSObject::MethodArgs> outputArgs, const T &methodBody, bool threaded) {
+    std::vector<DCSObject::MethodArgs> outputArgs, const T &methodBody,
+    Execution threaded) {
     // wrap with exception
     auto newBody = [methodBody, methodName, this](const UA_Variant *input,
                                                   UA_Variant *output) {
@@ -218,7 +228,7 @@ void DCSDeviceController<Device>::addControllerMethod(
         }
     };
 
-    if(threaded) {
+    if(threaded == Execution::Parallel) {
         DCSObject::addMethod(methodName, methodDescription, inputArgs, outputArgs,
                              newBody, &this->deviceThread);
     } else {
@@ -232,7 +242,7 @@ void DCSDeviceController<Device>::addControllerMethod(
     std::string methodName, std::string methodDescription,
     std::vector<DCSObject::MethodArgs> inputArgs,
     std::vector<DCSObject::MethodArgs> outputArgs, const T &methodBody, B instance,
-    bool threaded) {
+    Execution threaded) {
     std::function<void(const UA_Variant *, UA_Variant *)> newBody =
         std::bind(methodBody, instance, std::placeholders::_1, std::placeholders::_2);
     addControllerMethod(methodName, methodDescription, inputArgs, outputArgs, newBody,
@@ -242,9 +252,18 @@ template <class Device>
 template <class T>
 void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
                                                     size_t interval_ms, T updateMethod,
-                                                    bool threaded, bool deviceProtected) {
+                                                    const Options &options,
+                                                    Execution threaded,
+                                                    Protection deviceProtected) {
     std::function<void()> callback;
-    if(deviceProtected) {
+    const std::string intervalTag{variable.getName() + "_interval"};
+    if(options.contains(intervalTag)) {
+        interval_ms = options.at(intervalTag).get<size_t>();
+    } else if(options.contains("interval")) {
+        interval_ms = options.at("interval").get<size_t>();
+    }
+
+    if(deviceProtected == Protection::Connection) {
         callback = [this, &variable, updateMethod]() {
             if(device.isConnected()) {
                 try {
@@ -281,7 +300,7 @@ void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
             }
         };
     }
-    if(threaded) {
+    if(threaded == Execution::Parallel) {
         auto threadedCallback = [this, callback]() {
             this->deviceThread.push_back(callback);
         };
@@ -295,10 +314,12 @@ template <class Device>
 template <class T, class B>
 void DCSDeviceController<Device>::addVariableUpdate(DCSVariable &variable,
                                                     size_t interval_ms, T updateMethod,
-                                                    B instance, bool threaded,
-                                                    bool deviceProtected) {
+                                                    B instance, const Options &options,
+                                                    Execution threaded,
+                                                    Protection deviceProtected) {
     auto callback = std::bind(updateMethod, instance);
-    return addVariableUpdate(variable, interval_ms, callback, threaded, deviceProtected);
+    return addVariableUpdate(variable, interval_ms, callback, options, threaded,
+                             deviceProtected);
 }
 
 template <class Device>

@@ -26,9 +26,9 @@ void PiWeatherWidget::connectSignals() {
     connect(ui->setName4, SIGNAL(pressed()), this, SLOT(changeNamePressed()));
 }
 
-void PiWeatherWidget::updateStatus(void *data) {
+void PiWeatherWidget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
-    connectionState = *static_cast<bool *>(data);
+    connectionState = *static_cast<bool *>(data.data);
     if(!connectionState) {
         ui->tempDisplay1->display(0);
         ui->tempDisplay2->display(0);
@@ -38,8 +38,8 @@ void PiWeatherWidget::updateStatus(void *data) {
     }
 }
 
-void PiWeatherWidget::updateMeasurements(void *data) {
-    UA_PiWeatherm measurements = *static_cast<UA_PiWeatherm *>(data);
+void PiWeatherWidget::updateMeasurements(UA_Variant data) {
+    UA_PiWeatherm measurements = *static_cast<UA_PiWeatherm *>(data.data);
     if(measurements.tempSize) {
         ui->tempDisplay1->display(measurements.temp[0]);
         ui->tempDisplay2->display(measurements.temp[1]);
@@ -48,7 +48,7 @@ void PiWeatherWidget::updateMeasurements(void *data) {
         ui->pressureDisplay->display(measurements.pressure);
     }
 }
-void PiWeatherWidget::updateConfiguration(void *data) {}
+void PiWeatherWidget::updateConfiguration(UA_Variant data) {}
 
 void PiWeatherWidget::loadConfig() {
     AbstractWidget::loadConfig();

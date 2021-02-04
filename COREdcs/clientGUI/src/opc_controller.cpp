@@ -1,73 +1,14 @@
 #include "opc_controller.h"
-#include <open62541/client_highlevel_async.h>
+
 opc_controller::opc_controller(std::string OName, QObject *parent)
-    : opcQObject(OName, parent) {}
-
-void opc_controller::opcInit(UA_Client *Client, UA_ClientConfig *Config,
-                             UA_CreateSubscriptionResponse response) {
-    opcQObject::opcInit(Client, Config, response);
-    browseIds();
-    addMonitoredItem(browsedIds[statusVariableName], response, StatusChangedCallback);
-    addMonitoredItem(browsedIds[connectionParametersVariableName], response,
-                     ConnectionParametersChangedCallback);
-    addMonitoredItem(browsedIds[measurementsVariableName], response,
-                     MeasurementsChangedCallback);
-    addMonitoredItem(browsedIds[configurationVariableName], response,
-                     ConfigurationChangedCallback);
-    addMonitoredItem(browsedIds[enabledProfilesBrowseName], response,
-                     EnabledProfilesChangedCallback);
-    addMonitoredItem(browsedIds[selectedProfileBrowseName], response,
-                     SelectedProfileChangedCallback);
-    addMonitoredItem(browsedIds[deviceInfoBrowseName], response,
-                     DeviceInfoChangedCallback);
-}
-
-void opc_controller::StatusChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                           void *subContext, UA_UInt32 monId,
-                                           void *monContext, UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->statusChanged(data);
-        }
-    }
-}
-
-void opc_controller::ConnectionParametersChangedCallback(
-    UA_Client *client, UA_UInt32 subId, void *subContext, UA_UInt32 monId,
-    void *monContext, UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->connectionParametersChanged(data);
-        }
-    }
-}
-
-void opc_controller::MeasurementsChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                                 void *subContext, UA_UInt32 monId,
-                                                 void *monContext, UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->measurementsChanged(data);
-        }
-    }
-}
-
-void opc_controller::ConfigurationChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                                  void *subContext, UA_UInt32 monId,
-                                                  void *monContext, UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->configurationChanged(data);
-        }
-    }
+    : opcQObject(OName, parent) {
+    addMonitoredItem(statusVariableName);
+    addMonitoredItem(connectionParametersVariableName);
+    addMonitoredItem(measurementsVariableName);
+    addMonitoredItem(configurationVariableName);
+    addMonitoredItem(enabledProfilesBrowseName);
+    addMonitoredItem(selectedProfileBrowseName);
+    addMonitoredItem(deviceInfoBrowseName);
 }
 
 void opc_controller::callConnect() {
@@ -114,42 +55,4 @@ void opc_controller::callSaveProfile(std::string key) {
     UA_Client_call_async(client, ObjectNodeId, browsedIds[saveProfileBrowseName], 1,
                          input, nullptr, nullptr, nullptr);
     UA_Variant_clear(input);
-}
-
-void opc_controller::SelectedProfileChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                                    void *subContext, UA_UInt32 monId,
-                                                    void *monContext,
-                                                    UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->selectedProfileChanged(data);
-        }
-    }
-}
-
-void opc_controller::EnabledProfilesChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                                    void *subContext, UA_UInt32 monId,
-                                                    void *monContext,
-                                                    UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->enabledProfilesChanged(data);
-        }
-    }
-}
-
-void opc_controller::DeviceInfoChangedCallback(UA_Client *client, UA_UInt32 subId,
-                                               void *subContext, UA_UInt32 monId,
-                                               void *monContext, UA_DataValue *value) {
-    if(value->hasValue) {
-        if(!UA_Variant_isEmpty(&value->value)) {
-            void *data = value->value.data;
-            opc_controller *context = static_cast<opc_controller *>(monContext);
-            emit context->deviceInfoChanged(data);
-        }
-    }
 }

@@ -18,14 +18,17 @@ def parser():
                         help="Database user password", default="", nargs='?')
     parser.add_argument("-db", "--database",
                         help="Database name", nargs='?', required=True)
+    parser.add_argument("-l", "--list", action="store_true",
+                        help="Display all measurements in the database and exit")
     parser.add_argument("-m", "--measurements",
                         help="List of measurements to dump. If not specified then every measurment in the database will be dumped", default="ALL", nargs='+')
     parser.add_argument("-tl", "--timelength",
                         help="Length of time for dump with postfix u, ms, s, m, h, d, w", nargs='?')
     parser.add_argument("-st", "--starttime",
-                        help="Start time in rfc3389, e.g. 2020-11-27T13:19:11.4527Z", nargs='?')
+                        help="Start time in unix timestamp or rfc3339, e.g. 2020-11-27T13:19:11.4527Z or 2020-11-27T14:19:11.4527+01:00", nargs='?')
     parser.add_argument("-et", "--endtime",
-                        help="End time as now or in rfc3389, e.g. 2020-11-27T13:19:11.4527Z", default="now", nargs='?')
+                        help="End time as now or in unix timestamp or rfc3339, e.g. 2020-11-27T13:19:11.4527Z or 2020-11-27T13:19:11.4527+01:00", default="now", nargs='?')
+    parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument('--version', action='version',
                         version='%(prog)s @PROJECT_VERSION@')
     args = parser.parse_args()
@@ -38,30 +41,47 @@ def getNames(client, measurements):
             stderr.write("WARNING: Measurement {} not found\n".format(i))
             return False
         return True
+
     query = 'show measurements'
     results = client.query(query)
     found = [i[0]['name'] for i in zip(*results)]
+    if args.list:
+        print('Measurements found:')
+        for i in found:
+            print('\t', i)
+        exit()
     if measurements == 'ALL':
         return found
     return list(filter(helper, measurements))
 
 
 def getMeasurements(client, measurements, startTime, endTime, timeLength):
-    if timeLength and endTime:
-        if endTime != "now":
-            endTime = "'"+endTime+"'"
+    def timestamp2rfc(stamp):
+        t = datetime.datetime.fromtimestamp(float(stamp))
+        print(t.isoformat()+'Z')
+        return t.isoformat()+'Z'
+
+    def fixTime(t):
+        if t == None:
+            pass
+        elif t.isdigit():
+            t += 's'
+        elif t == "now":
+            t = "now()"
         else:
-            endTime = "now()"
+            t = "'"+t+"'"
+        return t
+
+    startTime = fixTime(startTime)
+    endTime = fixTime(endTime)
+
+    if timeLength and endTime:
         whereClause = " where time > {} - {} AND time < {}".format(
             endTime, timeLength, endTime)
     elif timeLength and startTime:
         whereClause = " where time > {}  AND time < {} + {}".format(
             endTime, startTime, startTime, timeLength)
     elif startTime and endTime:
-        if endTime != "now":
-            endTime = "'"+endTime+"'"
-        else:
-            endTime = "now()"
         whereClause = " where time > {}  AND time < {}".format(
             startTime, endTime)
     else:
@@ -70,7 +90,9 @@ def getMeasurements(client, measurements, startTime, endTime, timeLength):
         exit()
     for m in measurements:
         query = 'select * from "{}"'.format(m)+whereClause
-        results = client.query(query)
+        if args.verbose:
+            print(query)
+        results = client.query(query, epoch='ms')
         try:
             df = DataFrame(results[m])
         except KeyError:

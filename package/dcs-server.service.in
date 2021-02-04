@@ -1,0 +1,21 @@
+[Unit]
+Description=Detector Control System for ELITPC detector
+Documentation=https://dracula.hep.fuw.edu.pl/doku.php?id=dcs:start
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=@CPACK_PACKAGING_INSTALL_PREFIX@/bin/dcsServer ~edcs/dcs.json
+User=edcs
+Group=edcs
+Restart=on-failure
+LimitNOFILE=1024
+LimitAS=1G
+LimitNICE=15
+ProtectSystem=full
+ProtectHome=read-only
+KillMode=control-group
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

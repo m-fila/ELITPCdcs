@@ -19,22 +19,23 @@ MKS910Widget::~MKS910Widget() {}
 
 void MKS910Widget::connectSignals() {
     AbstractWidget::connectSignals();
-    connect(dynamic_cast<MKS910_controller *>(controller), SIGNAL(relayChanged(void *)),
-            this, SLOT(updateRelay(void *)));
+    auto *moniteredItem = controller->addMonitoredItem("relay");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &MKS910Widget::updateRelay);
     connect(unitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeUnits(int)));
 }
 
-void MKS910Widget::updateStatus(void *data) {
+void MKS910Widget::updateStatus(UA_Variant data) {
     AbstractWidget::updateStatus(data);
-    connectionState = *static_cast<bool *>(data);
+    connectionState = *static_cast<bool *>(data.data);
     if(!connectionState) {
         mVacuum->display(0);
         mTemp->setText("");
         mStatus->setText("");
     }
 }
-void MKS910Widget::updateMeasurements(void *data) {
-    UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data);
+void MKS910Widget::updateMeasurements(UA_Variant data) {
+    UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data.data);
     QString val;
     std::string s;
     std::ostringstream os;
@@ -62,10 +63,10 @@ void MKS910Widget::updateMeasurements(void *data) {
     mTemp->setText(val);
 }
 
-void MKS910Widget::updateConfiguration(void *data) {}
+void MKS910Widget::updateConfiguration(UA_Variant data) {}
 
-void MKS910Widget::updateRelay(void *data) {
-    auto r = *static_cast<UA_Relay *>(data);
+void MKS910Widget::updateRelay(UA_Variant data) {
+    auto r = *static_cast<UA_Relay *>(data.data);
     for(size_t i = 0; i < r.statusSize; i++) {
         RelayStruct rStruct;
         rStruct.status = r.status[i];
