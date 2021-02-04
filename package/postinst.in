@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if ! id edcs &>/dev/null; then
-    useradd -r -m -s /usr/bin/nologin edcs -U
+    useradd -r -m -U
 fi
 
 if [[ ! -f ~edcs/dcs.json ]]; then
