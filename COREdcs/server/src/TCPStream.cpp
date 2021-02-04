@@ -19,7 +19,7 @@ TCPStream::TCPStream(int sd, struct sockaddr_in *address) : ConnectionStream(sd)
     m_peerPort = ntohs(address->sin_port);
 }
 
-std::string TCPStream::getPeerIP() { return m_peerIP; }
+string TCPStream::getPeerIP() { return m_peerIP; }
 
 int TCPStream::getPeerPort() { return m_peerPort; }
 

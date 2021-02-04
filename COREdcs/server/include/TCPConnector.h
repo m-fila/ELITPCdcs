@@ -10,26 +10,14 @@
 
 #include "TCPStream.h"
 #include <netinet/in.h>
-#include <string>
 
 class TCPConnector {
   public:
     TCPConnector();
     virtual ~TCPConnector();
 
-    static ConnectionStream *connect(const std::string &server, int port,
-                                     bool secure = false) {
-        std::string address;
-        if(server.find("https://") == 0) {
-            secure = true;
-            address = server.substr(8);
-        } else if(server.find("http://") == 0) {
-            secure = false;
-            address = server.substr(7);
-        } else {
-            address = server;
-        }
-        return get().createConnection(address.c_str(), port, secure);
+    static TCPStream *connect(const char *server, int port) {
+        return get().createConnection(server, port);
     }
     static TCPConnector &get() {
         static TCPConnector instance;
@@ -40,7 +28,7 @@ class TCPConnector {
     // produce TCPStreams without instance creation
 
   private:
-    ConnectionStream *createConnection(const char *server, int port, bool secure = false);
+    TCPStream *createConnection(const char *server, int port);
     int resolveHostName(const char *host, struct in_addr *addr);
     int connect(int sockno, struct sockaddr *addr, size_t addrlen, timeval timeout);
 };
