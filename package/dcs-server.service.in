@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=@CPACK_PACKAGING_INSTALL_PREFIX@/bin/dcsServer ~edcs/dcs.json
+ExecStart=@CPACK_PACKAGING_INSTALL_PREFIX@/bin/dcsServer /home/edcs/dcs.json
 User=edcs
 Group=edcs
 Restart=on-failure
