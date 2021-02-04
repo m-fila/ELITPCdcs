@@ -45,6 +45,9 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/ProjectVersion.h.in
 configure_file(${CMAKE_SOURCE_DIR}/tools/dcsDbDump.py.in
                ${CMAKE_BINARY_DIR}/bin/dcsDbDump @ONLY)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/dcsDbDump DESTINATION bin)
+configure_file(${CMAKE_SOURCE_DIR}/tools/thisdcs.sh.in
+               ${CMAKE_BINARY_DIR}/bin/thisdcs.sh @ONLY)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/thisdcs.sh DESTINATION bin)
 option(BUILD_TEST "build simple tests" OFF)
 if(BUILD_TEST)
   enable_testing()
