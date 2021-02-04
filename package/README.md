@@ -31,7 +31,7 @@ Replace `enable` with `start` to start immediately, with `stop` to stop immediat
 
 ### Configuration file
 
-The configuration file used by the `dcs-sever.service` is installed in `\etc\dcs\dcs.json`.  
+The configuration file used by the `dcs-sever.service` is installed in `~dcs\dcs.json`.  
 You can edit the file directly with `sudo` or add your user to the `edcs` group:
 
 ```bash
@@ -42,6 +42,6 @@ sudo usermod -aG edcs username
 Connect to the dcs server run by systemd:
 
 ```bash
-/opt/soft/dcs/bin/dcsGUI /etc/dcs/dcs.json
+/opt/soft/dcs/bin/dcsGUI ~dcs/dcs.json
 # or /your-path/bin/dcsGUI
 ```
