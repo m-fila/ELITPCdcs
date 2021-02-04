@@ -5,7 +5,7 @@ if ! id edcs &>/dev/null; then
 fi
 
 if [[ ! -f ~edcs/dcs.json ]]; then
-    install -g edcs -o edcs -m 664 @CPACK_PACKAGING_INSTALL_PREFIX@/config/dcs.json ~dcs/dcs.json
+    install -g edcs -o edcs -m 664 @CPACK_PACKAGING_INSTALL_PREFIX@/config/dcs.json ~edcs/dcs.json
 fi
 
 if command -v systemctl &>/dev/null; then
