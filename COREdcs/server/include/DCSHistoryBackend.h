@@ -1,5 +1,7 @@
 #ifndef DCS_HISTORY_BACKEND_H
 #define DCS_HISTORY_BACKEND_H
+#include "DCSNodeIdMap.h"
+#include <map>
 #include <open62541/plugin/historydata/history_data_backend.h>
 #include <open62541/plugin/historydata/history_data_gathering_default.h>
 #include <open62541/plugin/historydata/history_database_default.h>

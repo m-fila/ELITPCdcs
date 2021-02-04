@@ -6,7 +6,6 @@
  */
 
 #include "TCPConnector.h"
-#include "SecureStream.h"
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -17,8 +16,7 @@ TCPConnector::TCPConnector() {}
 
 TCPConnector::~TCPConnector() {}
 
-ConnectionStream *TCPConnector::createConnection(const char *server, int port,
-                                                 bool secure) {
+TCPStream *TCPConnector::createConnection(const char *server, int port) {
     struct sockaddr_in address;
 
     memset(&address, 0, sizeof(address));
@@ -32,9 +30,6 @@ ConnectionStream *TCPConnector::createConnection(const char *server, int port,
     if(connect(sd, (struct sockaddr *)&address, sizeof(address), {2, 0}) != 0) {
         close(sd);
         throw std::runtime_error("Error while connecting to endpoint or device.");
-    }
-    if(secure) {
-        return new SecureStream(sd);
     }
     return new TCPStream(sd, &address);
 }

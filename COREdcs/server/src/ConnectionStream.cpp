@@ -34,7 +34,7 @@ std::string ConnectionStream::receive() {
     ssize_t len;
     do {
         char buffer[1024];
-        len = receive(buffer, 1024);
+        len = ConnectionStream::receive(buffer, 1024);
         response.append(buffer, len);
         //  std::fill(&buffer[0], &buffer[0]+len, 0);
     } while(len == 1024);
