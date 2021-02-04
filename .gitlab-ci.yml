@@ -39,23 +39,6 @@ staging_ssh:
      paths:
      - build
 
-production_ssh:
-  stage: deploy
-  tags:
-  - ssh-production
-  only:
-  - master
-  - /^v[0-9]+(?:.[0-9]+)+$/
-  environment: prod-daq-$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-  script:
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-    - cmake --build build
-    - rm -rf $HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-    - cmake --build build --target install
-  artifacts:
-     paths:
-     - build
-
       
 build_debug:
   stage: build
