@@ -18,6 +18,9 @@
 #include <iostream>
 #include <map>
 #include <string>
+
+class RelayDialog;
+
 enum class RelayDirectionPolicy { Auto, Below, Above };
 
 struct RelayStruct {
@@ -53,7 +56,7 @@ class DCSRelayWidget : public QWidget {
     QLabel *units;
     QPushButton *setButton;
     RelayStruct value;
-
+    RelayDialog *dialog = nullptr;
     void connectSignals();
   public slots:
     void showDialog();
