@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(
   ELITPC_DCS
-  VERSION 1.7
+  VERSION 1.7.1
   LANGUAGES CXX C)
 message("\nStarted CMake for ${PROJECT_NAME} v${PROJECT_VERSION}")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -45,6 +45,9 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/ProjectVersion.h.in
 configure_file(${CMAKE_SOURCE_DIR}/tools/dcsDbDump.py.in
                ${CMAKE_BINARY_DIR}/bin/dcsDbDump @ONLY)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/dcsDbDump DESTINATION bin)
+configure_file(${CMAKE_SOURCE_DIR}/tools/thisdcs.sh.in
+               ${CMAKE_BINARY_DIR}/bin/thisdcs.sh @ONLY)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/thisdcs.sh DESTINATION bin)
 option(BUILD_TEST "build simple tests" OFF)
 if(BUILD_TEST)
   enable_testing()

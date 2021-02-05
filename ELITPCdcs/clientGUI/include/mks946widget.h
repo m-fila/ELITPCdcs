@@ -31,6 +31,7 @@ class MKS946Widget : public AbstractWidget {
     void updateConfiguration(UA_Variant data) override;
     void updateRelay(UA_Variant data);
     void updatePID(UA_Variant data);
+    void updatePIDState(UA_Variant data);
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
@@ -38,6 +39,8 @@ class MKS946Widget : public AbstractWidget {
     void showPIDDialog();
     void showFlowDialog();
     void showPressureDialog();
+    void zeroMFC();
+    void setPIDState();
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
@@ -81,6 +84,11 @@ class MKS946Widget : public AbstractWidget {
     QLabel PIDBand;
     QLabel PIDGain;
     QPushButton *PIDButton;
+
+    QPushButton *PIDStateButtonON;
+    QPushButton *PIDStateButtonOFF;
+    QLabel *PIDStateLabel;
+    QPushButton *zeroMFCButton;
 
     void createLayout();
     void drawLine();

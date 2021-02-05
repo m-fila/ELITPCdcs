@@ -70,26 +70,33 @@ void DCSRelayWidget::setValues(const RelayStruct &newVal) {
 }
 
 void DCSRelayWidget::showDialog() {
-    RelayDialog dialog(number, value, enabledLabels, directionPolicy);
-    dialog.setWindowModality(Qt::WindowModal);
-    auto retv = dialog.exec();
-    if(retv) {
-        auto r = dialog.getValue();
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Question);
-        msgBox.setText(QString::asprintf("Changing Relay %lu to:", number));
-        msgBox.setInformativeText(QString::asprintf(
-            "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%f %s\nHysteresis:\t%f "
-            "%s\n\nDo you confirm?",
-            enabledLabels.at(r.enabled).c_str(), r.direction ? "BELOW" : "ABOVE",
-            r.setpoint, r.unit.c_str(), r.hysteresis, r.unit.c_str()));
-        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        if(msgBox.exec() == QMessageBox::Ok) {
-            std::cout << r.enabled << " " << r.setpoint << " " << r.hysteresis
-                      << std::endl;
-            emit changeValues(number, r);
+
+    if(dialog == nullptr) {
+        dialog = new RelayDialog(number, value, enabledLabels, directionPolicy);
+        dialog->setWindowModality(Qt::WindowModality::WindowModal);
+        auto retv = dialog->exec();
+        if(retv) {
+            auto r = dialog->getValue();
+            QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Question);
+            msgBox.setText(QString::asprintf("Changing Relay %lu to:", number));
+            msgBox.setInformativeText(QString::asprintf(
+                "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%f %s\nHysteresis:\t%f "
+                "%s\n\nDo you confirm?",
+                enabledLabels.at(r.enabled).c_str(), r.direction ? "BELOW" : "ABOVE",
+                r.setpoint, r.unit.c_str(), r.hysteresis, r.unit.c_str()));
+            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Save);
+            if(msgBox.exec() == QMessageBox::Ok) {
+                std::cout << r.enabled << " " << r.setpoint << " " << r.hysteresis
+                          << std::endl;
+                emit changeValues(number, r);
+            }
         }
+        delete dialog;
+        dialog = nullptr;
+    } else {
+        dialog->activateWindow();
     }
 }
 
