@@ -75,3 +75,17 @@ void MKS946_controller::callConfigurePressure(std::string type, double nominalRa
                          nullptr, nullptr, nullptr);
     UA_Variant_clear(input);
 }
+
+void MKS946_controller::callSetPIDState(bool state) {
+    UA_Variant input[1];
+    UA_Variant_init(input);
+    UA_Variant_setScalarCopy(&input[0], &state, &UA_TYPES[UA_TYPES_BOOLEAN]);
+    UA_Client_call_async(client, ObjectNodeId, browsedIds["setPIDState"], 1, input,
+                         nullptr, nullptr, nullptr);
+    UA_Variant_clear(input);
+}
+
+void MKS946_controller::callZeroMFC() {
+    UA_Client_call_async(client, ObjectNodeId, browsedIds["zeroMFC"], 0, nullptr, nullptr,
+                         nullptr, nullptr);
+}

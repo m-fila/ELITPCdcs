@@ -16,11 +16,13 @@ void DCSMKS946Controller::addChildren(const Options &options) {
                         {}, &DCSMKS946Controller::setRelay, this);
     auto &c = addVariable("configuration",
                           &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_MKS946C]);
+    addVariableUpdate(c, 600000, &DCSMKS946Controller::getConfiguration, this, options);
     c.setHistorizing();
     auto &p = addVariable("PID", &UA_TYPES_ELITPCNODESET[UA_TYPES_ELITPCNODESET_PID]);
+    addVariableUpdate(p, 600000, &DCSMKS946Controller::getPID, this, options);
     p.setHistorizing();
     addVariable("sensorType", &UA_TYPES[UA_TYPES_STRING], true);
-    addControllerMethod("setPID", "sets parameters of active PID recipe",
+    addControllerMethod("configurePID", "sets parameters of active PID recipe",
                         {
                             {"MFC channel", "", &UA_TYPES[UA_TYPES_STRING]},
                             {"Pressure channel", "", &UA_TYPES[UA_TYPES_STRING]},
@@ -39,17 +41,26 @@ void DCSMKS946Controller::addChildren(const Options &options) {
                             {"Gain", "", &UA_TYPES[UA_TYPES_UINT32]},
                         },
                         {}, &DCSMKS946Controller::configurePID, this);
-    addControllerMethod("setMFC", "sets parameters of mfc",
+    addControllerMethod("configureMFC", "sets parameters of mfc",
                         {{"Mode", "", &UA_TYPES[UA_TYPES_STRING]},
                          {"Setpoint", "", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Nominal range", "", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Scale factor", "", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSMKS946Controller::configureFlow, this);
-    addControllerMethod("setManometer", "sets parameters of manometer",
+    addControllerMethod("configureManometer", "sets parameters of manometer",
                         {{"Type", "", &UA_TYPES[UA_TYPES_STRING]},
                          {"Nominal range", "", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Voltage range", "", &UA_TYPES[UA_TYPES_STRING]}},
                         {}, &DCSMKS946Controller::configurePressure, this);
+    addControllerMethod("setPIDState", "sets PID control mode ON/OFF",
+                        {{"State", "", &UA_TYPES[UA_TYPES_BOOLEAN]}}, {},
+                        &DCSMKS946Controller::setPIDState, this);
+    auto &ps = addVariable("PIDState", &UA_TYPES[UA_TYPES_BOOLEAN]);
+    addVariableUpdate(ps, 1000, &DCSMKS946Controller::getPIDState, this, options);
+    ps.setHistorizing();
+    addControllerMethod(
+        "zeroMFC", "zero MFC Channel", {}, {},
+        [this](const UA_Variant *in, UA_Variant *out) { device.zeroMFC(flowCH); });
 }
 
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
@@ -202,6 +213,7 @@ void DCSMKS946Controller::configurePID(const UA_Variant *input, UA_Variant *outp
         MKS946codes::PIDDirectionFromString.at(DCSUtils::UaToStd(direction)));
     device.setPIDGain(gain);
     device.setPIDBand(band);
+    variables.at("PID")->setValue(getPID());
 }
 
 void DCSMKS946Controller::configureFlow(const UA_Variant *input, UA_Variant *output) {
@@ -229,4 +241,21 @@ void DCSMKS946Controller::configurePressure(const UA_Variant *input, UA_Variant 
                                              DCSUtils::UaToStd(voltageRange)));
 
     variables.at("configuration")->setValue(getConfiguration());
+}
+
+void DCSMKS946Controller::setPIDState(const UA_Variant *input, UA_Variant *output) {
+    auto state = *static_cast<UA_Boolean *>(input[0].data);
+    device.setPIDControl(state);
+    variables.at("configuration")->setValue(getConfiguration());
+}
+
+UA_Boolean DCSMKS946Controller::getPIDState() {
+    auto response = device.getPIDControl();
+    if(response.find("ON") != response.npos) {
+        return true;
+    } else if(response == "OFF") {
+        return false;
+    } else {
+        throw std::runtime_error("Received incorrect pid state: " + response);
+    }
 }

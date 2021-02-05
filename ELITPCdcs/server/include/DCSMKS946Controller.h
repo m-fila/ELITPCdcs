@@ -20,6 +20,7 @@ class DCSMKS946Controller : public DCSDeviceController<MKS946>,
     void configurePID(const UA_Variant *input, UA_Variant *output);
     void configureFlow(const UA_Variant *input, UA_Variant *output);
     void configurePressure(const UA_Variant *input, UA_Variant *output);
+    void setPIDState(const UA_Variant *input, UA_Variant *output);
 
     void postConnect() override;
 
@@ -27,6 +28,7 @@ class DCSMKS946Controller : public DCSDeviceController<MKS946>,
     UA_Relay getRelay();
     UA_MKS946c getConfiguration();
     UA_PID getPID();
+    UA_Boolean getPIDState();
     MKS946::CH flowCH = MKS946::CH::CH1;
     MKS946::CH pressureCH = MKS946::CH::CH3;
 };

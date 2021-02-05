@@ -17,5 +17,7 @@ class MKS946_controller : public opc_controller {
                           double derivatibeTomeConstant, double ceiling, double base,
                           double preset, double start, double end, double ctrlStart,
                           std::string direction, int band, int gain);
+    void callSetPIDState(bool state);
+    void callZeroMFC();
 };
 #endif  // MKS946_CONTROLLER_H

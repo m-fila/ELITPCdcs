@@ -26,6 +26,9 @@ void MKS946Widget::connectSignals() {
     moniteredItem = controller->addMonitoredItem("PID");
     connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
             &MKS946Widget::updatePID);
+    moniteredItem = controller->addMonitoredItem("PIDState");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &MKS946Widget::updatePIDState);
 }
 
 void MKS946Widget::updateStatus(UA_Variant data) {
@@ -63,7 +66,12 @@ void MKS946Widget::updateStatus(UA_Variant data) {
     flowButton->setEnabled(connectionState);
     manometerButton->setEnabled(connectionState);
     PIDButton->setEnabled(connectionState);
+
+    zeroMFCButton->setEnabled(connectionState);
+    PIDStateButtonOFF->setEnabled(connectionState && PIDStateLabel->text() == "ON");
+    PIDStateButtonON->setEnabled(connectionState && PIDStateLabel->text() == "OFF");
 }
+
 void MKS946Widget::updateMeasurements(UA_Variant data) {
     UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data.data);
     auto f = [](double value) {
@@ -77,6 +85,13 @@ void MKS946Widget::updateMeasurements(UA_Variant data) {
 
     mVacuum->display(f(measurements.pressure));
     mFlow->display(f(measurements.flow));
+}
+
+void MKS946Widget::updatePIDState(UA_Variant data) {
+    auto state = *static_cast<UA_Boolean *>(data.data);
+    PIDStateLabel->setText(state ? "ON" : "OFF");
+    PIDStateButtonOFF->setEnabled(state);
+    PIDStateButtonON->setEnabled(!state);
 }
 
 void MKS946Widget::updateConfiguration(UA_Variant data) {
@@ -197,6 +212,10 @@ void MKS946Widget::createCTab() {
     connect(flowButton, &QPushButton::pressed, this, &MKS946Widget::showFlowDialog);
     flowVLayout->addWidget(flowButton);
 
+    zeroMFCButton = new QPushButton("Zero MFC");
+    connect(zeroMFCButton, &QPushButton::clicked, this, &MKS946Widget::zeroMFC);
+    cLayout->addWidget(zeroMFCButton);
+
     auto *pressureBox = new QGroupBox("Pressure");
     cLayout->addWidget(pressureBox);
     auto *pressureVLayout = new QVBoxLayout();
@@ -210,7 +229,7 @@ void MKS946Widget::createCTab() {
     manometerButton = new QPushButton("Configure CM");
     connect(manometerButton, &QPushButton::pressed, this,
             &MKS946Widget::showPressureDialog);
-    cLayout->addWidget(manometerButton);
+    pressureVLayout->addWidget(manometerButton);
 }
 
 void MKS946Widget::createPIDTab() {
@@ -218,6 +237,19 @@ void MKS946Widget::createPIDTab() {
     tab->addTab(pidWidget, "PID");
     QVBoxLayout *pidLayout = new QVBoxLayout();
     pidWidget->setLayout(pidLayout);
+
+    auto *stateLayout = new QHBoxLayout();
+    pidLayout->addLayout(stateLayout);
+    auto *statelabel = new QLabel("PID control: ");
+    stateLayout->addWidget(statelabel);
+    PIDStateLabel = new QLabel();
+    stateLayout->addWidget(PIDStateLabel);
+    PIDStateButtonOFF = new QPushButton("OFF");
+    connect(PIDStateButtonOFF, &QPushButton::clicked, this, &MKS946Widget::setPIDState);
+    stateLayout->addWidget(PIDStateButtonOFF);
+    PIDStateButtonON = new QPushButton("ON");
+    connect(PIDStateButtonON, &QPushButton::clicked, this, &MKS946Widget::setPIDState);
+    stateLayout->addWidget(PIDStateButtonON);
 
     auto *pidBox = new QGroupBox("PID");
     pidLayout->addWidget(pidBox);
@@ -404,4 +436,24 @@ void MKS946Widget::showPressureDialog() {
                                     data.get<double>("Nominal range"),
                                     data.get<QString>("Voltage range").toStdString());
     }
+}
+
+void MKS946Widget::zeroMFC() {
+    QMessageBox msgBox;
+    msgBox.setText(QString::asprintf("Zero MFC channel %s.\nExecute only when flow "
+                                     "reading is less than 5%% of full scale. ",
+                                     "A1"));
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    if(msgBox.exec() == QMessageBox::Ok) {
+        dynamic_cast<MKS946_controller *>(controller)->callZeroMFC();
+    }
+}
+
+void MKS946Widget::setPIDState() {
+    QObject *obj = sender();
+    if(obj == PIDStateButtonON) {
+        dynamic_cast<MKS946_controller *>(controller)->callSetPIDState(true);
+    } else if(obj == PIDStateButtonOFF)
+        dynamic_cast<MKS946_controller *>(controller)->callSetPIDState(false);
 }
