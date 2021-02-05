@@ -16,12 +16,11 @@ void MKS946_controller::callSetRelay(int nr, int enabled, double setpoint,
     UA_Variant_clear(input);
 }
 
-void MKS946_controller::callSetPID(std::string flowChannel, std::string pressureChannel,
-                                   double pressureSetpoint, double kp,
-                                   double timeConstant, double derivativeTimeConstant,
-                                   double ceiling, double base, double preset,
-                                   double start, double end, double ctrlStart,
-                                   std::string direction, int band, int gain) {
+void MKS946_controller::callConfigurePID(
+    std::string flowChannel, std::string pressureChannel, double pressureSetpoint,
+    double kp, double timeConstant, double derivativeTimeConstant, double ceiling,
+    double base, double preset, double start, double end, double ctrlStart,
+    std::string direction, int band, int gain) {
     UA_Variant input[15];
     UA_Variant_init(input);
     auto flowStr = UA_STRING_ALLOC(flowChannel.c_str());
@@ -44,13 +43,13 @@ void MKS946_controller::callSetPID(std::string flowChannel, std::string pressure
     UA_Variant_setScalarCopy(&input[13], &band, &UA_TYPES[UA_TYPES_UINT32]);
     UA_Variant_setScalarCopy(&input[14], &gain, &UA_TYPES[UA_TYPES_UINT32]);
 
-    UA_Client_call_async(client, ObjectNodeId, browsedIds["setPID"], 15, input, nullptr,
-                         nullptr, nullptr);
+    UA_Client_call_async(client, ObjectNodeId, browsedIds["configurePID"], 15, input,
+                         nullptr, nullptr, nullptr);
     UA_Variant_clear(input);
 }
 
-void MKS946_controller::callSetFlow(std::string mode, double setpoint,
-                                    double nominalRange, double scaleFactor) {
+void MKS946_controller::callConfigureFlow(std::string mode, double setpoint,
+                                          double nominalRange, double scaleFactor) {
     UA_Variant input[4];
     UA_Variant_init(input);
     auto modeStr = UA_STRING_ALLOC(mode.c_str());
@@ -58,13 +57,13 @@ void MKS946_controller::callSetFlow(std::string mode, double setpoint,
     UA_Variant_setScalarCopy(&input[1], &setpoint, &UA_TYPES[UA_TYPES_DOUBLE]);
     UA_Variant_setScalarCopy(&input[2], &nominalRange, &UA_TYPES[UA_TYPES_DOUBLE]);
     UA_Variant_setScalarCopy(&input[3], &scaleFactor, &UA_TYPES[UA_TYPES_DOUBLE]);
-    UA_Client_call_async(client, ObjectNodeId, browsedIds["setMFC"], 4, input, nullptr,
-                         nullptr, nullptr);
+    UA_Client_call_async(client, ObjectNodeId, browsedIds["configureMFC"], 4, input,
+                         nullptr, nullptr, nullptr);
     UA_Variant_clear(input);
 }
 
-void MKS946_controller::callSetPressure(std::string type, double nominalRange,
-                                        std::string voltageRange) {
+void MKS946_controller::callConfigurePressure(std::string type, double nominalRange,
+                                              std::string voltageRange) {
     UA_Variant input[3];
     UA_Variant_init(input);
     auto typeStr = UA_STRING_ALLOC(type.c_str());
@@ -72,7 +71,7 @@ void MKS946_controller::callSetPressure(std::string type, double nominalRange,
     UA_Variant_setScalarCopy(&input[0], &typeStr, &UA_TYPES[UA_TYPES_STRING]);
     UA_Variant_setScalarCopy(&input[1], &nominalRange, &UA_TYPES[UA_TYPES_DOUBLE]);
     UA_Variant_setScalarCopy(&input[2], &volStr, &UA_TYPES[UA_TYPES_STRING]);
-    UA_Client_call_async(client, ObjectNodeId, browsedIds["setManometer"], 3, input,
+    UA_Client_call_async(client, ObjectNodeId, browsedIds["configureManometer"], 3, input,
                          nullptr, nullptr, nullptr);
     UA_Variant_clear(input);
 }

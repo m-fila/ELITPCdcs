@@ -38,18 +38,18 @@ void DCSMKS946Controller::addChildren(const Options &options) {
                             {"Band", "", &UA_TYPES[UA_TYPES_UINT32]},
                             {"Gain", "", &UA_TYPES[UA_TYPES_UINT32]},
                         },
-                        {}, &DCSMKS946Controller::setPID, this);
+                        {}, &DCSMKS946Controller::configurePID, this);
     addControllerMethod("setMFC", "sets parameters of mfc",
                         {{"Mode", "", &UA_TYPES[UA_TYPES_STRING]},
                          {"Setpoint", "", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Nominal range", "", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Scale factor", "", &UA_TYPES[UA_TYPES_DOUBLE]}},
-                        {}, &DCSMKS946Controller::setFlow, this);
+                        {}, &DCSMKS946Controller::configureFlow, this);
     addControllerMethod("setManometer", "sets parameters of manometer",
                         {{"Type", "", &UA_TYPES[UA_TYPES_STRING]},
                          {"Nominal range", "", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Voltage range", "", &UA_TYPES[UA_TYPES_STRING]}},
-                        {}, &DCSMKS946Controller::setPressure, this);
+                        {}, &DCSMKS946Controller::configurePressure, this);
 }
 
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
@@ -168,7 +168,7 @@ void DCSMKS946Controller::postConnect() {
     variables.at("configuration")->setValue(getConfiguration());
 }
 
-void DCSMKS946Controller::setPID(const UA_Variant *input, UA_Variant *output) {
+void DCSMKS946Controller::configurePID(const UA_Variant *input, UA_Variant *output) {
     auto mfc = *static_cast<UA_String *>(input[0].data);
     auto prc = *static_cast<UA_String *>(input[1].data);
     auto setpoint = *static_cast<UA_Double *>(input[2].data);
@@ -204,7 +204,7 @@ void DCSMKS946Controller::setPID(const UA_Variant *input, UA_Variant *output) {
     device.setPIDBand(band);
 }
 
-void DCSMKS946Controller::setFlow(const UA_Variant *input, UA_Variant *output) {
+void DCSMKS946Controller::configureFlow(const UA_Variant *input, UA_Variant *output) {
     auto mode = *static_cast<UA_String *>(input[0].data);
     auto setpoint = *static_cast<UA_Double *>(input[1].data);
     auto nominalRange = *static_cast<UA_Double *>(input[2].data);
@@ -218,7 +218,7 @@ void DCSMKS946Controller::setFlow(const UA_Variant *input, UA_Variant *output) {
     variables.at("configuration")->setValue(getConfiguration());
 }
 
-void DCSMKS946Controller::setPressure(const UA_Variant *input, UA_Variant *output) {
+void DCSMKS946Controller::configurePressure(const UA_Variant *input, UA_Variant *output) {
     auto type = *static_cast<UA_String *>(input[0].data);
     auto nominalRange = *static_cast<UA_Double *>(input[1].data);
     auto voltageRange = *static_cast<UA_String *>(input[2].data);

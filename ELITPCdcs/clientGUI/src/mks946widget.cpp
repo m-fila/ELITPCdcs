@@ -150,7 +150,6 @@ void MKS946Widget::createMTab() {
     tab->addTab(mWidget, "Measurements");
     QVBoxLayout *mLayout = new QVBoxLayout();
     mWidget->setLayout(mLayout);
-
     auto createMeasurementsPanel = [](std::string name, QLabel *unitLabel,
                                       QLCDNumber *display) {
         auto *box = new QGroupBox(name.c_str());
@@ -179,7 +178,7 @@ void MKS946Widget::createMTab() {
 
 void MKS946Widget::createCTab() {
     QWidget *cWidget = new QWidget();
-    tab->addTab(cWidget, "Config");
+    tab->addTab(cWidget, "Config channels");
     QVBoxLayout *cLayout = new QVBoxLayout();
     cWidget->setLayout(cLayout);
 
@@ -194,7 +193,7 @@ void MKS946Widget::createCTab() {
               {"Nominal range:", &flowNominalRange},
               {"Scale factor:", &flowScaleFactor}},
              flowGrid);
-    flowButton = new QPushButton("Set flow");
+    flowButton = new QPushButton("Configure MFC");
     connect(flowButton, &QPushButton::pressed, this, &MKS946Widget::showFlowDialog);
     flowVLayout->addWidget(flowButton);
 
@@ -208,7 +207,7 @@ void MKS946Widget::createCTab() {
               {"Nominal range:", &manometerNominalRange},
               {"Voltage range:", &manometerVoltageRange}},
              pressureGrid);
-    manometerButton = new QPushButton("Set pressure");
+    manometerButton = new QPushButton("Configure CM");
     connect(manometerButton, &QPushButton::pressed, this,
             &MKS946Widget::showPressureDialog);
     cLayout->addWidget(manometerButton);
@@ -247,7 +246,7 @@ void MKS946Widget::createPIDTab() {
             {"Gain:", &PIDGain},
         },
         pidGrid, 9);
-    PIDButton = new QPushButton("Set PID");
+    PIDButton = new QPushButton("Configure PID");
     connect(PIDButton, &QPushButton::pressed, this, &MKS946Widget::showPIDDialog);
     pidVLayout->addWidget(PIDButton);
 }
@@ -355,16 +354,16 @@ void MKS946Widget::showPIDDialog() {
     data.addField("Band", PIDBand.text().toInt()).setMin(0).setMax(200);
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
-            ->callSetPID(data.get<QString>("MFC channel").toStdString(),
-                         data.get<QString>("Pressure channel").toStdString(),
-                         data.get<double>("Pressure setpoint"), data.get<double>("Kp"),
-                         data.get<double>("Time constant"),
-                         data.get<double>("Derivative time constant"),
-                         data.get<double>("Ceiling"), data.get<double>("Base"),
-                         data.get<double>("Preset"), data.get<double>("Start"),
-                         data.get<double>("End"), data.get<double>("CtrlStart"),
-                         data.get<QString>("Direction").toStdString(),
-                         data.get<int>("Gain"), data.get<int>("Band"));
+            ->callConfigurePID(data.get<QString>("MFC channel").toStdString(),
+                               data.get<QString>("Pressure channel").toStdString(),
+                               data.get<double>("Pressure setpoint"),
+                               data.get<double>("Kp"), data.get<double>("Time constant"),
+                               data.get<double>("Derivative time constant"),
+                               data.get<double>("Ceiling"), data.get<double>("Base"),
+                               data.get<double>("Preset"), data.get<double>("Start"),
+                               data.get<double>("End"), data.get<double>("CtrlStart"),
+                               data.get<QString>("Direction").toStdString(),
+                               data.get<int>("Gain"), data.get<int>("Band"));
     }
 }
 
@@ -381,9 +380,9 @@ void MKS946Widget::showFlowDialog() {
         .setMax(1e6);
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
-            ->callSetFlow(data.get<QString>("Mode").toStdString(),
-                          data.get<double>("Setpoint"), data.get<double>("Nominal range"),
-                          data.get<double>("Scale factor"));
+            ->callConfigureFlow(
+                data.get<QString>("Mode").toStdString(), data.get<double>("Setpoint"),
+                data.get<double>("Nominal range"), data.get<double>("Scale factor"));
     }
 }
 
@@ -401,8 +400,8 @@ void MKS946Widget::showPressureDialog() {
         .setMax(1e6);
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
-            ->callSetPressure(data.get<QString>("Type").toStdString(),
-                              data.get<double>("Nominal range"),
-                              data.get<QString>("Voltage range").toStdString());
+            ->callConfigurePressure(data.get<QString>("Type").toStdString(),
+                                    data.get<double>("Nominal range"),
+                                    data.get<QString>("Voltage range").toStdString());
     }
 }
