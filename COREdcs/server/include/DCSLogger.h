@@ -10,9 +10,10 @@
 
 class DCSLogger {
   public:
+    enum Output { tty, file, all };
     static UA_Logger *getLogger() { return &getInstance().logger; }
-    static void setFile(std::string logFile);
-
+    static void setFile(const std::string &logFile);
+    static void setLogLevel(const std::string &level, Output output);
     DCSLogger(DCSLogger const &) = delete;
     void operator=(DCSLogger const &) = delete;
 
@@ -32,6 +33,8 @@ class DCSLogger {
     struct logContext {
         std::string file = "";
         std::mutex mutex;
+        UA_LogLevel logLevelTTY = UA_LOGLEVEL_INFO;
+        UA_LogLevel logLevelFile = UA_LOGLEVEL_INFO;
         const char *const logLevelNames[6] = {"trace", "debug", "info",
                                               "warn",  "error", "fatal"};
         const char *const logCategoryNames[7] = {"network",       "channel", "session",
