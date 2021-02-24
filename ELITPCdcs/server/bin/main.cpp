@@ -27,6 +27,13 @@ int main(int argc, char *argv[]) {
     ELITPCServer server(config.at("server").at("address").get<std::string>(),
                         config.at("server").at("port").get<int>());
 
+    if(config.contains("recoveryFile")) {
+        server.setRecovery(config.at("recoveryFile").get<std::string>());
+    } else {
+        UA_LOG_DEBUG(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                     "Not using recovery file");
+    }
+
     if(config.contains("profileDir")) {
         server.setProfileDir(config.at("profileDir").get<std::string>());
     } else {

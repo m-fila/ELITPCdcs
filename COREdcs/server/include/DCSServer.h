@@ -4,6 +4,7 @@
 #include "DCSHistoryBackend.h"
 #include "DCSLogger.h"
 #include "DCSObject.h"
+#include "DCSRecovery.h"
 #include "DCSWorkerThread.h"
 #include "open62541/namespace_dcsnodeset_generated.h"
 #include <map>
@@ -15,7 +16,6 @@
 #include <signal.h>
 #include <stdexcept>
 #include <string>
-
 class DCSServer {
 
   public:
@@ -57,6 +57,12 @@ class DCSServer {
     }
     std::string getProfileDir() { return profileDir; }
 
+    std::shared_ptr<DCSRecovery> setRecovery(const std::string &recoveryFileName) {
+        recovery = std::make_shared<DCSRecovery>(recoveryFileName);
+        return recovery;
+    };
+    std::shared_ptr<DCSRecovery> getRecovery() { return recovery; }
+
   protected:
     std::map<std::string, DCSObject *> objects;
     std::map<std::string, DCSHistoryBackend *> historyBackends;
@@ -78,6 +84,8 @@ class DCSServer {
     std::string profileDir;
     DCSWorkerThread dispatcherThread;
     static void asyncCallback(UA_Server *server);
+
+    std::shared_ptr<DCSRecovery> recovery;
 };
 
 template <class T>
