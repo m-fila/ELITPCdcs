@@ -109,6 +109,17 @@ int TCPConnector::connect(int sockno, struct sockaddr *addr, size_t addrlen,
             return -1;
         }
     }
+    struct timeval operationTimeout;
+    operationTimeout.tv_sec = 10;
+    operationTimeout.tv_usec = 0;
+
+    if(setsockopt(sockno, SOL_SOCKET, SO_RCVTIMEO, (char *)&operationTimeout,
+                  sizeof(operationTimeout)) < 0) {
+    }
+
+    if(setsockopt(sockno, SOL_SOCKET, SO_SNDTIMEO, (char *)&operationTimeout,
+                  sizeof(operationTimeout)) < 0) {
+    }
 
     return 0;
 }
