@@ -3,6 +3,7 @@ stages:
     - format
     - build
     - deploy
+    - release
     - lint
     
 cmake-check:
@@ -25,27 +26,14 @@ clang-check:
     - clang-format -i $(find ELITPCdcs -name "*.h")
     - git diff --exit-code
 
-staging_ssh:
-  stage: deploy
-  tags:
-  - ssh
-  environment: daq-$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-  script:
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-    - cmake --build build
-    - rm -rf $HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-    - cmake --build build --target install
-  artifacts:
-     paths:
-     - build
 
-      
 build_debug:
   stage: build
   script:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_EXE_LINKER_FLAGS="-coverage"
     - cmake --build build 
-    
+  except:
+    - tags
 
 export_commands:
  stage: build
@@ -56,6 +44,49 @@ export_commands:
     paths:
       - build
 
+staging_ssh:
+  stage: deploy
+  tags:
+  - ssh
+  environment: daq-$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
+  script:
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
+    - cmake --build build
+    - rm -rf $HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
+    - cmake --build build --target install
+  dependencies: []
+    
+package:
+  stage: build
+  tags:
+  - ssh
+  script:
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-install
+    - cmake --build build --target package
+  dependencies: []
+  artifacts:
+    name: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-package
+    paths:
+      - build/*.deb
+  only:
+    - tags
+
+release:
+  stage: release
+  before_script:
+    - apt-get -qq update && apt-get -qq install -y curl
+  script:
+    - |
+      curl -k --silent --show-error --fail \
+        --header "PRIVATE-TOKEN: $REPO_KEY" \
+        --data name="$CI_COMMIT_TAG" \
+        --data tag_name="$CI_COMMIT_TAG" \
+        --data description="$(cat CHANGELOG.md)" \
+        --request POST "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
+    - bash tools/release-assets.sh
+  dependencies: []
+  only:
+    - /^v[0-9]+(?:.[0-9]+)+$/
 
 lint_clang_tidy:
   stage: lint
