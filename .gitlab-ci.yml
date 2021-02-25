@@ -76,9 +76,8 @@ release:
   script:
     - |
       curl -k --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-        --data name="$CI_COMMIT_TAG" \
-        --data tag_name="$CI_COMMIT_TAG" \
-        --data description="$(cat CHANGELOG.md)" \
+        --header "content-type: application/json" \
+        --data "{\"name\":\"$CI_COMMIT_TAG\", \"tag_name\":\"$CI_COMMIT_TAG\",\"description\":\"$(cat CHANGELOG.md)\"}" \
         --request POST "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
     - |
       curl -k --header "JOB-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
