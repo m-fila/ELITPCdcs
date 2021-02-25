@@ -160,9 +160,8 @@ template <class Device>
 void DCSDeviceController<Device>::addConnection(const Options &options) {
     device.resetConnectionStream();
     auto &s = addVariable("status", &UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(
-        s, 1000, [this]() { return isConnected(); }, {}, Execution::Parallel,
-        Protection::None);
+    addVariableUpdate(s, 1000, [this]() { return isConnected(); }, {},
+                      Execution::Parallel, Protection::None);
     auto &p = addVariable("connectionParameters",
                           &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PARAMETERSTCP]);
     addVariable("deviceInfo", &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DEVICEINFO]);
