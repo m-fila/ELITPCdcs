@@ -32,6 +32,15 @@ build_debug:
   script:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_EXE_LINKER_FLAGS="-coverage"
     - cmake --build build 
+    
+export_commands:
+ stage: build
+ script:
+    - rm -rf build
+    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++
+ artifacts:
+    paths:
+      - build
 
 staging_ssh:
   stage: deploy
@@ -43,6 +52,7 @@ staging_ssh:
     - cmake --build build
     - rm -rf $HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
     - cmake --build build --target install
+  dependencies: []
     
 package:
   stage: release
@@ -52,16 +62,7 @@ package:
   script:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-install
     - cmake --build build --target package
-
-export_commands:
- stage: lint
- script:
-    - rm -rf build
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++
- artifacts:
-    paths:
-      - build
-
+  dependencies: []
 
 lint_clang_tidy:
   stage: lint
