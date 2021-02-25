@@ -75,12 +75,11 @@ release:
     - apt-get -qq update && apt-get -qq install -y curl
   script:
     - |
-      curl -k --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" \
-        --header "content-type: application/json" \
-        --data "{\"name\":\"$CI_COMMIT_TAG\", \"tag_name\":\"$CI_COMMIT_TAG\",\"description\":\"$(cat CHANGELOG.md)\"}" \
+      curl -k --data token="$CI_JOB_TOKEN" \
+        --data name="$CI_COMMIT_TAG" \
+        --data tag_name="$CI_COMMIT_TAG" \
+        --data description=@CHANGELOG.md \
         --request POST "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
-    - |
-      curl -k --header "token: $PRIVATE-TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
     - bash tools/release-assets.sh
   dependencies: []
   only:
