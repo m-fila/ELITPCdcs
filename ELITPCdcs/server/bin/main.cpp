@@ -12,8 +12,27 @@ int main(int argc, char *argv[]) {
     json config = ConfigLoader::getMasterConfig(argc, argv);
 
     DCSLogger::setFile(config.at("logFile").get<std::string>());
+    if(config.contains("logLevel")) {
+        DCSLogger::setLogLevel(config.at("logLevel").get<std::string>(),
+                               DCSLogger::Output::all);
+    }
+    if(config.contains("logLevelTTY")) {
+        DCSLogger::setLogLevel(config.at("logLevelTTY").get<std::string>(),
+                               DCSLogger::Output::tty);
+    }
+    if(config.contains("logLevelFile")) {
+        DCSLogger::setLogLevel(config.at("logLevelFile").get<std::string>(),
+                               DCSLogger::Output::file);
+    }
     ELITPCServer server(config.at("server").at("address").get<std::string>(),
                         config.at("server").at("port").get<int>());
+
+    if(config.contains("recoveryFile")) {
+        server.setRecovery(config.at("recoveryFile").get<std::string>());
+    } else {
+        UA_LOG_DEBUG(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                     "Not using recovery file");
+    }
 
     if(config.contains("profileDir")) {
         server.setProfileDir(config.at("profileDir").get<std::string>());

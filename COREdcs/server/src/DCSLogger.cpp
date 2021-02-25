@@ -13,7 +13,7 @@ void DCSLogger::log(void *context, UA_LogLevel level, UA_LogCategory category,
                 (int)(tOffset / UA_DATETIME_SEC / 36));
     }
     const std::lock_guard<std::mutex> lock(logC->mutex);
-    if(!logC->file.empty()) {
+    if(!logC->file.empty() && level >= logC->logLevelFile) {
         FILE *file = nullptr;
         file = fopen(logC->file.c_str(), "a");
         if(file != nullptr) {
@@ -35,16 +35,53 @@ void DCSLogger::log(void *context, UA_LogLevel level, UA_LogCategory category,
             fflush(stdout);
         }
     }
-    printf("%s%s %s/%s%s\t", date, logC->logLeveLColors[level],
-           logC->logLevelNames[level], logC->logCategoryNames[category],
-           logC->logLevelResetColor);
-    vprintf(msg, args);
-    printf("\n");
-    fflush(stdout);
+    if(level >= logC->logLevelTTY) {
+        printf("%s%s %s/%s%s\t", date, logC->logLeveLColors[level],
+               logC->logLevelNames[level], logC->logCategoryNames[category],
+               logC->logLevelResetColor);
+        vprintf(msg, args);
+        printf("\n");
+        fflush(stdout);
+    }
 }
 
-void DCSLogger::setFile(std::string logFile) {
+void DCSLogger::setFile(const std::string &logFile) {
     auto &c = getInstance().context;
     const std::lock_guard<std::mutex> lock(c.mutex);
     c.file = logFile;
+};
+
+void DCSLogger::setLogLevel(const std::string &level, DCSLogger::Output output) {
+    if(output == Output::all) {
+        for(int i = 0; i < Output::all; ++i)
+            setLogLevel(level, static_cast<DCSLogger::Output>(i));
+        return;
+    }
+    auto &c = getInstance().context;
+    const std::lock_guard<std::mutex> lock(c.mutex);
+    UA_LogLevel *outputLogLevel = nullptr;
+    switch(output) {
+    case Output::tty:
+        outputLogLevel = &c.logLevelTTY;
+        break;
+    case Output::file:
+        outputLogLevel = &c.logLevelFile;
+        break;
+    default:
+        return;
+        break;
+    }
+    if(level == "trace") {
+        *outputLogLevel = UA_LOGLEVEL_TRACE;
+    } else if(level == "debug") {
+        *outputLogLevel = UA_LOGLEVEL_DEBUG;
+    } else if(level == "info") {
+        *outputLogLevel = UA_LOGLEVEL_INFO;
+    } else if(level == "warn") {
+        *outputLogLevel = UA_LOGLEVEL_WARNING;
+    } else if(level == "error") {
+        *outputLogLevel = UA_LOGLEVEL_ERROR;
+    } else if(level == "fatal") {
+        *outputLogLevel = UA_LOGLEVEL_FATAL;
+    }
 };

@@ -65,6 +65,7 @@ class DCSObject {
     static std::string GetType() { return "DCSObject"; }
 
     virtual void addChildren(const Options &options) {}
+    virtual void finalizeInit() {}
 
     UA_Server *server;
     std::string objectName;

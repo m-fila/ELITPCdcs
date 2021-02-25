@@ -162,6 +162,7 @@ void DCSObject::init(std::string type, std::string name, UA_Server *host,
     objectType = type;
     addObjectNode();
     addChildren(options);
+    finalizeInit();
 }
 
 void DCSObject::fastEvent(const std::string &sourceName, size_t severity,
