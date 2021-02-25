@@ -71,8 +71,6 @@ package:
 
 release:
   stage: release
-  tags:
-  - ssh
   before_script:
     - apt-get -qq update && apt-get -qq install -y curl
   script:
