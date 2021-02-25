@@ -64,9 +64,11 @@ package:
     - cmake --build build --target package
   dependencies: []
   artifacts:
+    name: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-package
     paths:
-     - build/*.deb
-     
+      - build/*.deb
+  only:
+    - tags
 
 lint_clang_tidy:
   stage: lint
