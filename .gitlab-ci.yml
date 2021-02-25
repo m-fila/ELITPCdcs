@@ -84,6 +84,7 @@ release:
   dependencies: []
   only:
     - /^v[0-9]+(?:.[0-9]+)+$/
+  when: manual
 
 lint_clang_tidy:
   stage: lint
