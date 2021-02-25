@@ -63,6 +63,10 @@ package:
     - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/opt/soft/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-install
     - cmake --build build --target package
   dependencies: []
+  artifacts:
+    paths:
+     - build/*.deb
+     
 
 lint_clang_tidy:
   stage: lint
