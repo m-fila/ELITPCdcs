@@ -75,7 +75,8 @@ release:
     - apt-get -qq update && apt-get -qq install -y curl
   script:
     - |
-      curl -k --header "PRIVATE-TOKEN: $REPO_KEY" \
+      curl -k --silent --show-error --fail \
+        --header "PRIVATE-TOKEN: $REPO_KEY" \
         --data name="$CI_COMMIT_TAG" \
         --data tag_name="$CI_COMMIT_TAG" \
         --data description="$(cat CHANGELOG.md)" \
