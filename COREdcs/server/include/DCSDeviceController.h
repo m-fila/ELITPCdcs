@@ -60,6 +60,7 @@ template <class Device> class DCSDeviceController : public DCSObject {
         addConnection(options);
         addLabelInfo(options);
     }
+    void finalizeInit() override;
     void addConnection(const Options &options);
     void virtual postConnect() {}
     void addLabelInfo(const Options &options);
@@ -159,8 +160,9 @@ template <class Device>
 void DCSDeviceController<Device>::addConnection(const Options &options) {
     device.resetConnectionStream();
     auto &s = addVariable("status", &UA_TYPES[UA_TYPES_BOOLEAN]);
-    addVariableUpdate(s, 1000, [this]() { return isConnected(); }, {},
-                      Execution::Parallel, Protection::None);
+    addVariableUpdate(
+        s, 1000, [this]() { return isConnected(); }, {}, Execution::Parallel,
+        Protection::None);
     auto &p = addVariable("connectionParameters",
                           &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_PARAMETERSTCP]);
     addVariable("deviceInfo", &UA_TYPES_DCSNODESET[UA_TYPES_DCSNODESET_DEVICEINFO]);
@@ -185,41 +187,6 @@ void DCSDeviceController<Device>::addConnection(const Options &options) {
                            "%s invalid configuration parameters address: %s port: %s",
                            objectName.c_str(), options.at("address").dump().c_str(),
                            options.at("port").dump().c_str());
-        }
-    }
-    std::shared_ptr<DCSRecovery> recovery =
-        DCSServer::getServerContext(server)->getRecovery();
-    if(recovery != nullptr) {
-        TCPConnectionParameters recovered;
-        try {
-            recovered = recovery->get(objectName);
-            UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
-                        "%s recovery parameters  %s:%i", objectName.c_str(),
-                        recovered.IPaddress.c_str(), recovered.port);
-        } catch(const std::exception &e) {
-            return;
-        }
-        try {
-            UA_ParametersTCP param;
-            UA_ParametersTCP_init(&param);
-            param.address = UA_STRING_ALLOC(recovered.IPaddress.c_str());
-            param.port = recovered.port;
-            p.setValue(param);
-        } catch(const std::exception &e) {
-            UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
-                           "%s invalid recovery parameters address", objectName.c_str());
-            return;
-        }
-        try {
-            methods.at("connect").method(nullptr, nullptr);
-            UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
-                        "%s recovery complete. Connected to %s:%i ", objectName.c_str(),
-                        recovered.IPaddress.c_str(), recovered.port);
-        } catch(const std::exception &e) {
-            UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
-                           "%s recovery failed. Can't connect to %s:%i ",
-                           objectName.c_str(), recovered.IPaddress.c_str(),
-                           recovered.port);
         }
     }
 }
@@ -530,4 +497,52 @@ template <class Device> UA_DeviceInfo DCSDeviceController<Device>::getDeviceInfo
     return info;
 }
 
+template <class Device> void DCSDeviceController<Device>::finalizeInit() {
+    std::shared_ptr<DCSRecovery> recovery =
+        DCSServer::getServerContext(server)->getRecovery();
+    if(recovery != nullptr) {
+        TCPConnectionParameters recovered;
+        try {
+            recovered = recovery->get(objectName);
+            UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                        "%s recovery parameters  %s:%i", objectName.c_str(),
+                        recovered.IPaddress.c_str(), recovered.port);
+        } catch(const std::exception &e) {
+            return;
+        }
+        auto p = variables.find("connectionParameters");
+        auto m = methods.find("connect");
+        if(p != variables.end() && m != methods.end()) {
+            try {
+                UA_ParametersTCP param;
+                UA_ParametersTCP_init(&param);
+                param.address = UA_STRING_ALLOC(recovered.IPaddress.c_str());
+                param.port = recovered.port;
+                p->second->setValue(param);
+            } catch(const std::exception &e) {
+                UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                               "%s invalid recovery parameters address",
+                               objectName.c_str());
+                return;
+            }
+            try {
+                m->second.method(nullptr, nullptr);
+                UA_LOG_INFO(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                            "%s recovery complete. Connected to %s:%i ",
+                            objectName.c_str(), recovered.IPaddress.c_str(),
+                            recovered.port);
+            } catch(const std::exception &e) {
+                UA_LOG_WARNING(DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                               "%s recovery failed. Can't connect to %s:%i ",
+                               objectName.c_str(), recovered.IPaddress.c_str(),
+                               recovered.port);
+            }
+        } else {
+            UA_LOG_WARNING(
+                DCSLogger::getLogger(), UA_LOGCATEGORY_SERVER,
+                "%s skipping recovery. Missing connection parameters or connect method ",
+                objectName.c_str());
+        }
+    }
+}
 #endif  // DCS_DEVICE_CONTROLLER_H
