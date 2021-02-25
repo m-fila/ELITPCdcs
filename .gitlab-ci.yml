@@ -35,9 +35,6 @@ staging_ssh:
     - cmake --build build
     - rm -rf $HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
     - cmake --build build --target install
-  artifacts:
-     paths:
-     - build
 
       
 build_debug:
