@@ -80,7 +80,8 @@ release:
         --data tag_name="$CI_COMMIT_TAG" \
         --data description="$(cat CHANGELOG.md)" \
         --request POST "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
-    - curl -k --header "JOB-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
+    - |
+      curl -k --header "JOB-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
     - bash tools/release-assets.sh
   dependencies: []
   only:
