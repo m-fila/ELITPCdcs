@@ -56,7 +56,7 @@ UA_DT1415m DCSDT1415ETController::getMeasurements() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; ++i) {
             std::getline(iss, val, ';');
-            dtm.voltage[i] = std::stoi(val);
+            dtm.voltage[i] = std::stod(val);
             total += dtm.voltage[i];
         }
     }
@@ -67,7 +67,7 @@ UA_DT1415m DCSDT1415ETController::getMeasurements() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; ++i) {
             std::getline(iss, val, ';');
-            dtm.current[i] = std::stoi(val);
+            dtm.current[i] = std::stod(val);
         }
     }
 
@@ -114,7 +114,7 @@ UA_DT1415c DCSDT1415ETController::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; ++i) {
             std::getline(iss, val, ';');
-            dtc.voltageSet[i] = std::stoi(val);
+            dtc.voltageSet[i] = std::stod(val);
             total += dtc.voltageSet[i];
         }
     }
@@ -125,7 +125,7 @@ UA_DT1415c DCSDT1415ETController::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; ++i) {
             std::getline(iss, val, ';');
-            dtc.currentSet[i] = std::stoi(val);
+            dtc.currentSet[i] = std::stod(val);
         }
     }
 
@@ -134,7 +134,7 @@ UA_DT1415c DCSDT1415ETController::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; ++i) {
             std::getline(iss, val, ';');
-            dtc.rup[i] = std::stoi(val);
+            dtc.rup[i] = std::stod(val);
         }
     }
 
@@ -143,7 +143,7 @@ UA_DT1415c DCSDT1415ETController::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; ++i) {
             std::getline(iss, val, ';');
-            dtc.rdown[i] = std::stoi(val);
+            dtc.rdown[i] = std::stod(val);
         }
     }
     response = device.getVoltageMax(DT1415ET::CHANNEL::ALL);
@@ -151,7 +151,7 @@ UA_DT1415c DCSDT1415ETController::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; ++i) {
             std::getline(iss, val, ';');
-            dtc.voltageMax[i] = std::stoi(val);
+            dtc.voltageMax[i] = std::stod(val);
         }
     }
     return dtc;
