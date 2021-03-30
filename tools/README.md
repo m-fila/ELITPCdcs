@@ -29,11 +29,11 @@ Python3 and it's packages influxdb 1.x client and pandas
     ```
 - get measurement *GEM-HV.measurements* from *elitpc* database collected during 2 hours from 2021-01-21T14:34:21.749Z (UTC)
     ```
-    dcsDbDump.py.in -db elitpc -m GEM-HV.measurements -st 2021-01-21T14:34:21.749Z -tl 2h
+    dcsDbDump -db elitpc -m GEM-HV.measurements -st 2021-01-21T14:34:21.749Z -tl 2h
     ```
     or from 2021-01-21T15:34:21.749+01:00 (same time but in EST)
     ```
-    dcsDbDump.py.in -db elitpc -m GEM-HV.measurements -st 2021-01-21T15:34:21.749+01:00 -tl 2h
+    dcsDbDump -db elitpc -m GEM-HV.measurements -st 2021-01-21T15:34:21.749+01:00 -tl 2h
     ```
 - get measurements *PM3.measurements* and *PID_Controller.measurements* from *elitpc* database between timestamps 1611234905 and 1611253360
     ```
