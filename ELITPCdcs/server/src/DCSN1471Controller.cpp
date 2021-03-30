@@ -133,7 +133,7 @@ UA_DT1415c DCSN1471Controller::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; i++) {
             std::getline(iss, val, ';');
-            dtc.rup[i] = std::stoi(val);
+            dtc.rup[i] = std::stod(val);
         }
     }
 
@@ -142,7 +142,7 @@ UA_DT1415c DCSN1471Controller::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; i++) {
             std::getline(iss, val, ';');
-            dtc.rdown[i] = std::stoi(val);
+            dtc.rdown[i] = std::stod(val);
         }
     }
 
@@ -151,7 +151,7 @@ UA_DT1415c DCSN1471Controller::getConfiguration() {
         std::istringstream iss(response);
         for(size_t i = 0; i < size; i++) {
             std::getline(iss, val, ';');
-            dtc.voltageMax[i] = std::stoi(val);
+            dtc.voltageMax[i] = std::stod(val);
         }
     }
 

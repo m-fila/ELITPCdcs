@@ -27,7 +27,7 @@ def parser():
     parser.add_argument("-st", "--starttime",
                         help="Start time in unix timestamp or rfc3339, e.g. 2020-11-27T13:19:11.4527Z or 2020-11-27T14:19:11.4527+01:00", nargs='?')
     parser.add_argument("-et", "--endtime",
-                        help="End time as now or in unix timestamp or rfc3339, e.g. 2020-11-27T13:19:11.4527Z or 2020-11-27T13:19:11.4527+01:00", default="now", nargs='?')
+                        help="End time as now or in unix timestamp or rfc3339, e.g. 2020-11-27T13:19:11.4527Z or 2020-11-27T13:19:11.4527+01:00", nargs='?')
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument('--version', action='version',
                         version='%(prog)s @PROJECT_VERSION@')
@@ -80,13 +80,13 @@ def getMeasurements(client, measurements, startTime, endTime, timeLength):
             endTime, timeLength, endTime)
     elif timeLength and startTime:
         whereClause = " where time > {}  AND time < {} + {}".format(
-            endTime, startTime, startTime, timeLength)
+            startTime, startTime, timeLength)
     elif startTime and endTime:
         whereClause = " where time > {}  AND time < {}".format(
             startTime, endTime)
     else:
         print(
-            "You must specify two from {starttime | stoptime | timelength}")
+            "You must specify any two from {starttime | stoptime | timelength}")
         exit()
     for m in measurements:
         query = 'select * from "{}"'.format(m)+whereClause
