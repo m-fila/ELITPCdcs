@@ -152,7 +152,7 @@ UA_PID DCSMKS946Controller::getPID() {
 
     mks.end = std::stod(device.getPIDEnd());
     mks.flowChannel = UA_STRING_ALLOC(device.getPIDMFCChannel().c_str());
-    mks.gain = std::stoi(device.getPIDBand());
+    mks.gain = std::stoi(device.getPIDGain());
     mks.kp = std::stod(device.getPIDKp());
     mks.preset = std::stod(device.getPIDPreset());
     mks.pressureChannel = UA_STRING_ALLOC(device.getPIDPressureChannel().c_str());
