@@ -382,8 +382,9 @@ void MKS946Widget::showPIDDialog() {
     data.addField("CtrlStart", PIDCtrlStart.text().toDouble()).setMin(0).setMax(1e6);
     data.addField("Direction", DCSUtils::getKeys(MKS946codes::PIDDirectionFromString))
         .setInitial(PIDDirection.text());
-    data.addField("Gain", PIDGain.text().toInt()).setMin(1).setMax(30);
     data.addField("Band", PIDBand.text().toInt()).setMin(0).setMax(200);
+    data.addField("Gain", PIDGain.text().toInt()).setMin(1).setMax(30);
+
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
             ->callConfigurePID(data.get<QString>("MFC channel").toStdString(),
