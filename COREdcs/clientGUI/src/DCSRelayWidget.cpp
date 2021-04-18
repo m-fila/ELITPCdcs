@@ -79,7 +79,7 @@ void DCSRelayWidget::showDialog() {
             auto r = dialog->getValue();
             QMessageBox msgBox;
             msgBox.setIcon(QMessageBox::Question);
-            msgBox.setText(QString::asprintf("Changing Relay %lu to:", number));
+            msgBox.setText(QString::asprintf("Changing relay %lu to:", number));
             msgBox.setInformativeText(QString::asprintf(
                 "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%f %s\nHysteresis:\t%f "
                 "%s\n\nDo you confirm?",
