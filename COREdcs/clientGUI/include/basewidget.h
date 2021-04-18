@@ -15,6 +15,7 @@ class BaseWidget : public QWidget {
 
   protected:
     const std::string instanceName;
+    virtual std::string getDeviceType() const { return ""; }
     KLed *externalLed;
     virtual void saveConfig();
     virtual void loadConfig();

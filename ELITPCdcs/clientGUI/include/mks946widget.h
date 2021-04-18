@@ -104,6 +104,8 @@ class MKS946Widget : public AbstractWidget {
 
     void fillGrid(std::vector<std::pair<std::string, QWidget *>> names, QGridLayout *grid,
                   size_t grid_max = 100);
+
+    std::string getDeviceType() const final { return "MKS946"; }
 };
 
 #endif  // MKS946WIDGET_H

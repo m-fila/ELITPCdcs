@@ -53,6 +53,9 @@ class LVpsuWidget : public AbstractWidget {
     void changeNamePressed();
     void setVPressed();
     void setIPressed();
+
+  private:
+    std::string getDeviceType() const final { return "HMP2020"; }
 };
 
 #endif  // LVPSUWIDGET_H
