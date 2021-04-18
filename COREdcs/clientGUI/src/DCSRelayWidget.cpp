@@ -41,7 +41,7 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
     units = new QLabel("");
     units->setFixedWidth(50);
     secondRow->addWidget(units);
-    setButton = new QPushButton("Set relay", this);
+    setButton = new QPushButton("Configure", this);
     secondRow->addWidget(setButton);
     setValues({0, 0, 0, 0, 0, "mbar"});
     connectSignals();
@@ -112,7 +112,7 @@ RelayDialog::RelayDialog(size_t number, RelayStruct init,
     QFormLayout *mainLayout = new QFormLayout(this);
     setLayout(outerLayout);
     outerLayout->addLayout(mainLayout);
-    text.setText(QString::asprintf("Set Relay %lu:", number));
+    text.setText(QString::asprintf("Configure relay %lu:", number));
     mainLayout->addWidget(&text);
     for(auto i : labels) {
         enabled.addItem(QString::fromStdString(i.second));
