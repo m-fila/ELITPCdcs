@@ -53,7 +53,8 @@ class DCSRelayWidget : public QWidget {
     QLabel *direction;
     QLabel *enabled;
     QLabel *status;
-    QLabel *units;
+    QLabel *unitsH;
+    QLabel *unitsS;
     QPushButton *setButton;
     RelayStruct value;
     RelayDialog *dialog = nullptr;

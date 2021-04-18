@@ -33,17 +33,20 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
     setpoint->setFixedWidth(50);
     secondRow->addWidget(setpointLabel);
     secondRow->addWidget(setpoint);
+    unitsS = new QLabel("");
+    unitsS->setFixedWidth(50);
+    secondRow->addWidget(unitsS);
     auto hysteresisLabel = new QLabel("Hysteresis:", this);
     hysteresis = new QLabel("", this);
     hysteresis->setFixedWidth(50);
     secondRow->addWidget(hysteresisLabel);
     secondRow->addWidget(hysteresis);
-    units = new QLabel("");
-    units->setFixedWidth(50);
-    secondRow->addWidget(units);
+    unitsH = new QLabel("");
+    unitsH->setFixedWidth(50);
+    secondRow->addWidget(unitsH);
     setButton = new QPushButton("Configure", this);
     secondRow->addWidget(setButton);
-    setValues({0, 0, 0, 0, 0, "mbar"});
+    setValues({0, 0, 0, 0, 0, ""});
     connectSignals();
 }
 
@@ -64,7 +67,8 @@ void DCSRelayWidget::setValues(const RelayStruct &newVal) {
     } else {
         status->setText("OFF");
     }
-    units->setText(QString::fromStdString(value.unit));
+    unitsS->setText(QString::fromStdString(value.unit));
+    unitsH->setText(QString::fromStdString(value.unit));
     setpoint->setText(QString::asprintf("%.2f", value.setpoint));
     hysteresis->setText(QString::asprintf("%.2f", value.hysteresis));
 }
