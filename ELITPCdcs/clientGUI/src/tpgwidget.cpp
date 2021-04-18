@@ -97,7 +97,6 @@ void TPGWidget::createLayout() {
     mainLayout->addWidget(tab);
 
     createMTab();
-    createHTab();
     createCTab();
     createRTab();
     mainLayout->addStretch();
