@@ -259,22 +259,22 @@ void MKS946Widget::createPIDTab() {
     pidVLayout->addLayout(pidGrid);
     fillGrid(
         {
-            {"Units:", &PIDUnits},
+            {"Pressure units:", &PIDUnits},
             {"Recipe nr:", &PIDRecipe},
             {"MFC channel:", &PIDFlowChannel},
             {"Pressure channel:", &PIDPressureChannel},
             {"Pressure setpoint:", &PIDPresssureSetPoint},
             {"Kp:", &PIDKp},
-            {"Time constant:", &PIDTimeConstant},
-            {"Derivative time constant:", &PIDDerivativeTimeConstant},
-            {"Ceiling:", &PIDCeiling},
-            {"Base:", &PIDBase},
-            {"Preset:", &PIDPreset},
-            {"Start:", &PIDStart},
-            {"End:", &PIDEnd},
-            {"CtrlStart:", &PIDCtrlStart},
+            {"Time constant [s]:", &PIDTimeConstant},
+            {"Derivative time constant [s]:", &PIDDerivativeTimeConstant},
+            {"Ceiling [%]:", &PIDCeiling},
+            {"Base [%]:", &PIDBase},
+            {"Preset [%]:", &PIDPreset},
+            {"Start [%]:", &PIDStart},
+            {"End [%]:", &PIDEnd},
+            {"CtrlStart [s]:", &PIDCtrlStart},
             {"Direction:", &PIDDirection},
-            {"Band:", &PIDBand},
+            {"Band [%]:", &PIDBand},
             {"Gain:", &PIDGain},
         },
         pidGrid, 9);
@@ -357,7 +357,7 @@ void MKS946Widget::fillGrid(std::vector<std::pair<std::string, QWidget *>> names
 
 void MKS946Widget::showPIDDialog() {
     DCSInputDialog data("Change PID", "Enter PID parameters:", 9);
-    data.addField("Units", PIDUnits.text(), true);
+    data.addField("Pressure units", PIDUnits.text(), true);
     data.addField("Recipe nr", PIDRecipe.text(), true);
     data.addField("MFC channel", DCSUtils::getKeys(MKS946codes::PIDFlowChannelFromString))
         .setInitial(PIDFlowChannel.text());
@@ -368,21 +368,22 @@ void MKS946Widget::showPIDDialog() {
         .setMin(0)
         .setMax(1e6);
     data.addField("Kp", PIDKp.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Time constant", PIDTimeConstant.text().toDouble())
+    data.addField("Time constant [s]", PIDTimeConstant.text().toDouble())
         .setMin(0)
         .setMax(1e6);
-    data.addField("Derivative time constant", PIDDerivativeTimeConstant.text().toDouble())
+    data.addField("Derivative time constant [s]",
+                  PIDDerivativeTimeConstant.text().toDouble())
         .setMin(0)
         .setMax(1e6);
-    data.addField("Ceiling", PIDCeiling.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Base", PIDBase.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Preset", PIDPreset.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Start", PIDStart.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("End", PIDEnd.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("CtrlStart", PIDCtrlStart.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Ceiling [%]", PIDCeiling.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Base [%]", PIDBase.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Preset [%]", PIDPreset.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("Start [%]", PIDStart.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("End [%]", PIDEnd.text().toDouble()).setMin(0).setMax(1e6);
+    data.addField("CtrlStart [s]", PIDCtrlStart.text().toDouble()).setMin(0).setMax(1e6);
     data.addField("Direction", DCSUtils::getKeys(MKS946codes::PIDDirectionFromString))
         .setInitial(PIDDirection.text());
-    data.addField("Band", PIDBand.text().toInt()).setMin(0).setMax(200);
+    data.addField("Band [%]", PIDBand.text().toInt()).setMin(0).setMax(200);
     data.addField("Gain", PIDGain.text().toInt()).setMin(1).setMax(30);
 
     if(data.exec()) {
