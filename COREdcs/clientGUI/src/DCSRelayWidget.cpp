@@ -57,10 +57,11 @@ void DCSRelayWidget::setValues(const RelayStruct &newVal) {
     } catch(const std::exception &e) {
         enabled->setText(QString::asprintf("%d", value.enabled));
     }
+    std::cout << number << ": " << (newVal.direction) << std::endl;
     if(value.direction) {
-        status->setText("ABOVE");
+        direction->setText("ABOVE");
     } else {
-        status->setText("BELOW");
+        direction->setText("BELOW");
     }
     if(value.status) {
         status->setText("ON");

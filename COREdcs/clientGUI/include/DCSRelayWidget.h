@@ -25,7 +25,7 @@ enum class RelayDirectionPolicy { Auto, Below, Above };
 
 struct RelayStruct {
     int status;
-    int direction;
+    bool direction;
     int enabled;
     double setpoint;
     double hysteresis;
