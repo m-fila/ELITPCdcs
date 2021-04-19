@@ -169,6 +169,7 @@ void MKS946Widget::createMTab() {
                                       QLCDNumber *display) {
         auto *box = new QGroupBox(name.c_str());
         QVBoxLayout *layout = new QVBoxLayout();
+        layout->addStretch();
         box->setLayout(layout);
 
         unitLabel->setAlignment(Qt::AlignRight);
