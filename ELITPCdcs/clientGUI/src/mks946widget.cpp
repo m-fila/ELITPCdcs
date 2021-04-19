@@ -209,12 +209,22 @@ void MKS946Widget::createCTab() {
               {"Scale factor:", &flowScaleFactor}},
              flowGrid);
     flowButton = new QPushButton("Configure MFC");
+    flowButton->setFixedWidth(120);
+    auto *flowLayout = new QHBoxLayout();
+    flowLayout->addStretch();
+    flowLayout->addWidget(flowButton);
+    flowLayout->addStretch();
+    flowVLayout->addLayout(flowLayout);
     connect(flowButton, &QPushButton::pressed, this, &MKS946Widget::showFlowDialog);
-    flowVLayout->addWidget(flowButton);
 
     zeroMFCButton = new QPushButton("Zero MFC");
+    zeroMFCButton->setFixedWidth(120);
+    auto *zeroMFCLayout = new QHBoxLayout();
+    zeroMFCLayout->addStretch();
+    zeroMFCLayout->addWidget(zeroMFCButton);
+    zeroMFCLayout->addStretch();
+    cLayout->addLayout(zeroMFCLayout);
     connect(zeroMFCButton, &QPushButton::clicked, this, &MKS946Widget::zeroMFC);
-    cLayout->addWidget(zeroMFCButton);
 
     auto *pressureBox = new QGroupBox("Pressure");
     cLayout->addWidget(pressureBox);
@@ -227,9 +237,14 @@ void MKS946Widget::createCTab() {
               {"Voltage range [V]:", &manometerVoltageRange}},
              pressureGrid);
     manometerButton = new QPushButton("Configure CM");
+    manometerButton->setFixedWidth(120);
+    auto *manometerLayout = new QHBoxLayout();
+    manometerLayout->addStretch();
+    manometerLayout->addWidget(manometerButton);
+    manometerLayout->addStretch();
+    pressureVLayout->addLayout(manometerLayout);
     connect(manometerButton, &QPushButton::pressed, this,
             &MKS946Widget::showPressureDialog);
-    pressureVLayout->addWidget(manometerButton);
 }
 
 void MKS946Widget::createPIDTab() {
@@ -279,8 +294,13 @@ void MKS946Widget::createPIDTab() {
         },
         pidGrid, 9);
     PIDButton = new QPushButton("Configure PID");
+    PIDButton->setFixedWidth(120);
+    auto *PIDLayout = new QHBoxLayout();
+    PIDLayout->addStretch();
+    PIDLayout->addWidget(PIDButton);
+    PIDLayout->addStretch();
+    pidVLayout->addLayout(PIDLayout);
     connect(PIDButton, &QPushButton::pressed, this, &MKS946Widget::showPIDDialog);
-    pidVLayout->addWidget(PIDButton);
 }
 
 void MKS946Widget::createRTab() {
