@@ -1,5 +1,6 @@
+- fixed interlock direction GUI
+- fixes in interlock and PID GUI
+- fixed hv precision
 - automated release creation
 - added recovery file
 - added settable log level
-- fixed hv precision
-- fixes in interlock and PID GUI
