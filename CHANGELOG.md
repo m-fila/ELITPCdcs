@@ -2,4 +2,4 @@
 - added recovery file
 - added settable log level
 - fixed hv precision
-
+- fixes in interlock and PID GUI
