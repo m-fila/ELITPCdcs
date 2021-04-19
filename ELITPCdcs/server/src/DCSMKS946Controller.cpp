@@ -193,8 +193,9 @@ void DCSMKS946Controller::configurePID(const UA_Variant *input, UA_Variant *outp
     auto end = *static_cast<UA_Double *>(input[10].data);
     auto ctrlstart = *static_cast<UA_Double *>(input[11].data);
     auto direction = *static_cast<UA_String *>(input[12].data);
-    auto gain = *static_cast<UA_UInt32 *>(input[13].data);
-    auto band = *static_cast<UA_UInt32 *>(input[14].data);
+    auto band = *static_cast<UA_UInt32 *>(input[13].data);
+    auto gain = *static_cast<UA_UInt32 *>(input[14].data);
+
     device.setPIDMFCChannel(
         MKS946codes::PIDFlowChannelFromString.at(DCSUtils::UaToStd(mfc)));
     device.setPIDPressureChannel(

@@ -204,8 +204,8 @@ void MKS946Widget::createCTab() {
     auto *flowGrid = new QGridLayout();
     flowVLayout->addLayout(flowGrid);
     fillGrid({{"Mode:", &flowMode},
-              {"Setpoint:", &flowSetPoint},
-              {"Nominal range:", &flowNominalRange},
+              {"Setpoint [sccm]:", &flowSetPoint},
+              {"Nominal range [sccm]:", &flowNominalRange},
               {"Scale factor:", &flowScaleFactor}},
              flowGrid);
     flowButton = new QPushButton("Configure MFC");
@@ -224,7 +224,7 @@ void MKS946Widget::createCTab() {
     pressureVLayout->addLayout(pressureGrid);
     fillGrid({{"Type:", &manometerType},
               {"Nominal range:", &manometerNominalRange},
-              {"Voltage range:", &manometerVoltageRange}},
+              {"Voltage range [V]:", &manometerVoltageRange}},
              pressureGrid);
     manometerButton = new QPushButton("Configure CM");
     connect(manometerButton, &QPushButton::pressed, this,
@@ -388,16 +388,17 @@ void MKS946Widget::showPIDDialog() {
 
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
-            ->callConfigurePID(data.get<QString>("MFC channel").toStdString(),
-                               data.get<QString>("Pressure channel").toStdString(),
-                               data.get<double>("Pressure setpoint"),
-                               data.get<double>("Kp"), data.get<double>("Time constant"),
-                               data.get<double>("Derivative time constant"),
-                               data.get<double>("Ceiling"), data.get<double>("Base"),
-                               data.get<double>("Preset"), data.get<double>("Start"),
-                               data.get<double>("End"), data.get<double>("CtrlStart"),
-                               data.get<QString>("Direction").toStdString(),
-                               data.get<int>("Gain"), data.get<int>("Band"));
+            ->callConfigurePID(
+                data.get<QString>("MFC channel").toStdString(),
+                data.get<QString>("Pressure channel").toStdString(),
+                data.get<double>("Pressure setpoint"), data.get<double>("Kp"),
+                data.get<double>("Time constant [s]"),
+                data.get<double>("Derivative time constant [s]"),
+                data.get<double>("Ceiling [%]"), data.get<double>("Base [%]"),
+                data.get<double>("Preset [%]"), data.get<double>("Start [%]"),
+                data.get<double>("End [%]"), data.get<double>("CtrlStart [s]"),
+                data.get<QString>("Direction").toStdString(), data.get<int>("Band [%]"),
+                data.get<int>("Gain"));
     }
 }
 
@@ -405,8 +406,10 @@ void MKS946Widget::showFlowDialog() {
     DCSInputDialog data("Change flow", "Enter flow parameters:", 10);
     data.addField("Mode", DCSUtils::getKeys(MKS946codes::flowModeFromString))
         .setInitial(flowMode.text());
-    data.addField("Setpoint", flowSetPoint.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Nominal range", flowNominalRange.text().toDouble())
+    data.addField("Setpoint [sccm]", flowSetPoint.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Nominal range [sccm]", flowNominalRange.text().toDouble())
         .setMin(0)
         .setMax(1e6);
     data.addField("Scale factor", flowScaleFactor.text().toDouble())
@@ -414,9 +417,10 @@ void MKS946Widget::showFlowDialog() {
         .setMax(1e6);
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
-            ->callConfigureFlow(
-                data.get<QString>("Mode").toStdString(), data.get<double>("Setpoint"),
-                data.get<double>("Nominal range"), data.get<double>("Scale factor"));
+            ->callConfigureFlow(data.get<QString>("Mode").toStdString(),
+                                data.get<double>("Setpoint [sccm]"),
+                                data.get<double>("Nominal range [sccm]"),
+                                data.get<double>("Scale factor"));
     }
 }
 
@@ -427,7 +431,7 @@ void MKS946Widget::showPressureDialog() {
     data.addField("Nominal range", manometerNominalRange.text().toDouble())
         .setMin(0)
         .setMax(1e6);
-    data.addField("Voltage range",
+    data.addField("Voltage range [V]",
                   DCSUtils::getKeys(MKS946codes::CMVoltageRangeFromString))
         .setInitial(manometerVoltageRange.text())
         .setMin(0)
@@ -436,7 +440,7 @@ void MKS946Widget::showPressureDialog() {
         dynamic_cast<MKS946_controller *>(controller)
             ->callConfigurePressure(data.get<QString>("Type").toStdString(),
                                     data.get<double>("Nominal range"),
-                                    data.get<QString>("Voltage range").toStdString());
+                                    data.get<QString>("Voltage range [V]").toStdString());
     }
 }
 
