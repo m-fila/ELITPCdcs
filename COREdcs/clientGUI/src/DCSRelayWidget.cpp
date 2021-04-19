@@ -18,11 +18,13 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
     status->setFixedWidth(50);
     firstRow->addWidget(statusLabel);
     firstRow->addWidget(status);
+    firstRow->addStretch();
     auto enabledLabel = new QLabel("Enabled:", this);
     enabled = new QLabel("", this);
     enabled->setFixedWidth(50);
     firstRow->addWidget(enabledLabel);
     firstRow->addWidget(enabled);
+    firstRow->addStretch();
     auto directionLabel = new QLabel("Direction:", this);
     direction = new QLabel("BELOW", this);
     direction->setFixedWidth(50);
