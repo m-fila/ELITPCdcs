@@ -195,25 +195,26 @@ void DCSMKS946Controller::configurePID(const UA_Variant *input, UA_Variant *outp
     auto direction = *static_cast<UA_String *>(input[12].data);
     auto band = *static_cast<UA_UInt32 *>(input[13].data);
     auto gain = *static_cast<UA_UInt32 *>(input[14].data);
-
-    device.setPIDMFCChannel(
-        MKS946codes::PIDFlowChannelFromString.at(DCSUtils::UaToStd(mfc)));
-    device.setPIDPressureChannel(
-        MKS946codes::PIDPressureChannelFromString.at(DCSUtils::UaToStd(prc)));
+    if(!getPIDState()) {
+        device.setPIDMFCChannel(
+            MKS946codes::PIDFlowChannelFromString.at(DCSUtils::UaToStd(mfc)));
+        device.setPIDPressureChannel(
+            MKS946codes::PIDPressureChannelFromString.at(DCSUtils::UaToStd(prc)));
+        device.setPIDCeiling(ceiling);
+        device.setPIDBase(base);
+        device.setPIDPreset(preset);
+        device.setPIDStart(start);
+        device.setPIDEnd(end);
+        device.setPIDCtrlStart(ctrlstart);
+        device.setPIDDirection(
+            MKS946codes::PIDDirectionFromString.at(DCSUtils::UaToStd(direction)));
+        device.setPIDGain(gain);
+        device.setPIDBand(band);
+    }
     device.setPIDPressureSetPoint(setpoint);
     device.setPIDKp(kp);
     device.setPIDTimeConstant(timeConstant);
     device.setPIDDerivativeTimeConstant(derivativeTimeConstant);
-    device.setPIDCeiling(ceiling);
-    device.setPIDBase(base);
-    device.setPIDPreset(preset);
-    device.setPIDStart(start);
-    device.setPIDEnd(end);
-    device.setPIDCtrlStart(ctrlstart);
-    device.setPIDDirection(
-        MKS946codes::PIDDirectionFromString.at(DCSUtils::UaToStd(direction)));
-    device.setPIDGain(gain);
-    device.setPIDBand(band);
     variables.at("PID")->setValue(getPID());
 }
 
