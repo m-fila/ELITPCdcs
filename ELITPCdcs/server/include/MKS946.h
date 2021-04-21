@@ -112,6 +112,9 @@ class MKS946 : public MKS {
     std::string getSerialNumber() override;
     std::string getUptime();
 
+    std::string getUserCalibrationEnabled();
+    void setUserCalibrationEnabled(bool enabled);
+
     std::string getUnits() { return sendWithDelayedResponse("U?"); }
     void setUnits(MKS946codes::Units u);
 

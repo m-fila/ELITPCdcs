@@ -214,3 +214,8 @@ std::string MKS946::format(double v) {
     str.replace(4, 1, "E");
     return str;
 }
+
+std::string MKS946::getUserCalibrationEnabled() { return query("CAL", CH::NONE); }
+void MKS946::setUserCalibrationEnabled(bool enabled) {
+    return sendCommand("CAL", CH::NONE, enabled ? "Enable" : "Disable");
+}
