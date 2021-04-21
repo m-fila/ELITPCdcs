@@ -65,7 +65,7 @@ DCSInputDialog::FieldOptions &DCSInputDialog::addField(const QString &key, QVari
         break;
     }
     default:
-        throw std::logic_error("Incomatybile type: " + value.type());
+        throw std::logic_error("Incompatible type: " + value.type());
         break;
     }
     genericWidget->setDisabled(disabled);
