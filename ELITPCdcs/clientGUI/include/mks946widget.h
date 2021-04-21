@@ -45,6 +45,7 @@ class MKS946Widget : public AbstractWidget {
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
     bool connectionState;
+    bool PIDState;
     // create layout procedures and variables
     QVBoxLayout *mainLayout;
 

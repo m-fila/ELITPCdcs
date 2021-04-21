@@ -88,10 +88,10 @@ void MKS946Widget::updateMeasurements(UA_Variant data) {
 }
 
 void MKS946Widget::updatePIDState(UA_Variant data) {
-    auto state = *static_cast<UA_Boolean *>(data.data);
-    PIDStateLabel->setText(state ? "ON" : "OFF");
-    PIDStateButtonOFF->setEnabled(state);
-    PIDStateButtonON->setEnabled(!state);
+    PIDState = *static_cast<UA_Boolean *>(data.data);
+    PIDStateLabel->setText(PIDState ? "ON" : "OFF");
+    PIDStateButtonOFF->setEnabled(PIDState);
+    PIDStateButtonON->setEnabled(!PIDState);
 }
 
 void MKS946Widget::updateConfiguration(UA_Variant data) {
@@ -377,13 +377,18 @@ void MKS946Widget::fillGrid(std::vector<std::pair<std::string, QWidget *>> names
 }
 
 void MKS946Widget::showPIDDialog() {
-    DCSInputDialog data("Change PID", "Enter PID parameters:", 9);
+    DCSInputDialog data("Change PID",
+                        PIDState ? "Enter PID parameters:\nOnly some parameters can be "
+                                   "changed while the PID control is running."
+                                 : "Enter PID parameters:",
+                        9);
     data.addField("Pressure units", PIDUnits.text(), true);
     data.addField("Recipe nr", PIDRecipe.text(), true);
-    data.addField("MFC channel", DCSUtils::getKeys(MKS946codes::PIDFlowChannelFromString))
+    data.addField("MFC channel", DCSUtils::getKeys(MKS946codes::PIDFlowChannelFromString),
+                  PIDState)
         .setInitial(PIDFlowChannel.text());
     data.addField("Pressure channel",
-                  DCSUtils::getKeys(MKS946codes::PIDPressureChannelFromString))
+                  DCSUtils::getKeys(MKS946codes::PIDPressureChannelFromString), PIDState)
         .setInitial(PIDPressureChannel.text());
     data.addField("Pressure setpoint", PIDPresssureSetPoint.text().toDouble())
         .setMin(0)
@@ -396,16 +401,25 @@ void MKS946Widget::showPIDDialog() {
                   PIDDerivativeTimeConstant.text().toDouble())
         .setMin(0)
         .setMax(1e6);
-    data.addField("Ceiling [%]", PIDCeiling.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Base [%]", PIDBase.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Preset [%]", PIDPreset.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Start [%]", PIDStart.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("End [%]", PIDEnd.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("CtrlStart [s]", PIDCtrlStart.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Direction", DCSUtils::getKeys(MKS946codes::PIDDirectionFromString))
+    data.addField("Ceiling [%]", PIDCeiling.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Base [%]", PIDBase.text().toDouble(), PIDState).setMin(0).setMax(1e6);
+    data.addField("Preset [%]", PIDPreset.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Start [%]", PIDStart.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("End [%]", PIDEnd.text().toDouble(), PIDState).setMin(0).setMax(1e6);
+    data.addField("CtrlStart [s]", PIDCtrlStart.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Direction", DCSUtils::getKeys(MKS946codes::PIDDirectionFromString),
+                  PIDState)
         .setInitial(PIDDirection.text());
-    data.addField("Band [%]", PIDBand.text().toInt()).setMin(0).setMax(200);
-    data.addField("Gain", PIDGain.text().toInt()).setMin(1).setMax(30);
+    data.addField("Band [%]", PIDBand.text().toInt(), PIDState).setMin(0).setMax(200);
+    data.addField("Gain", PIDGain.text().toInt(), PIDState).setMin(1).setMax(30);
 
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
