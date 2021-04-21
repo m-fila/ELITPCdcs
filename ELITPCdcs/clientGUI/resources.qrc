@@ -6,5 +6,6 @@
         <file>res/dcs_64x64_bw.png</file>
         <file>res/relay_below.png</file>
         <file>res/relay_above.png</file>
+        <file>res/hv_combo_DT14170ET_gui_pic.png</file>
     </qresource>
 </RCC>
