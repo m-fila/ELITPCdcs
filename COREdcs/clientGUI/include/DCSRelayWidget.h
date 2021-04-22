@@ -25,7 +25,7 @@ enum class RelayDirectionPolicy { Auto, Below, Above };
 
 struct RelayStruct {
     int status;
-    int direction;
+    bool direction;
     int enabled;
     double setpoint;
     double hysteresis;
@@ -53,7 +53,8 @@ class DCSRelayWidget : public QWidget {
     QLabel *direction;
     QLabel *enabled;
     QLabel *status;
-    QLabel *units;
+    QLabel *unitsH;
+    QLabel *unitsS;
     QPushButton *setButton;
     RelayStruct value;
     RelayDialog *dialog = nullptr;

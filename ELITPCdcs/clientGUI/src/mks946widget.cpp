@@ -88,10 +88,10 @@ void MKS946Widget::updateMeasurements(UA_Variant data) {
 }
 
 void MKS946Widget::updatePIDState(UA_Variant data) {
-    auto state = *static_cast<UA_Boolean *>(data.data);
-    PIDStateLabel->setText(state ? "ON" : "OFF");
-    PIDStateButtonOFF->setEnabled(state);
-    PIDStateButtonON->setEnabled(!state);
+    PIDState = *static_cast<UA_Boolean *>(data.data);
+    PIDStateLabel->setText(PIDState ? "ON" : "OFF");
+    PIDStateButtonOFF->setEnabled(PIDState);
+    PIDStateButtonON->setEnabled(!PIDState);
 }
 
 void MKS946Widget::updateConfiguration(UA_Variant data) {
@@ -169,6 +169,7 @@ void MKS946Widget::createMTab() {
                                       QLCDNumber *display) {
         auto *box = new QGroupBox(name.c_str());
         QVBoxLayout *layout = new QVBoxLayout();
+        layout->addStretch();
         box->setLayout(layout);
 
         unitLabel->setAlignment(Qt::AlignRight);
@@ -204,17 +205,27 @@ void MKS946Widget::createCTab() {
     auto *flowGrid = new QGridLayout();
     flowVLayout->addLayout(flowGrid);
     fillGrid({{"Mode:", &flowMode},
-              {"Setpoint:", &flowSetPoint},
-              {"Nominal range:", &flowNominalRange},
+              {"Setpoint [sccm]:", &flowSetPoint},
+              {"Nominal range [sccm]:", &flowNominalRange},
               {"Scale factor:", &flowScaleFactor}},
              flowGrid);
     flowButton = new QPushButton("Configure MFC");
+    flowButton->setFixedWidth(120);
+    auto *flowLayout = new QHBoxLayout();
+    flowLayout->addStretch();
+    flowLayout->addWidget(flowButton);
+    flowLayout->addStretch();
+    flowVLayout->addLayout(flowLayout);
     connect(flowButton, &QPushButton::pressed, this, &MKS946Widget::showFlowDialog);
-    flowVLayout->addWidget(flowButton);
 
     zeroMFCButton = new QPushButton("Zero MFC");
+    zeroMFCButton->setFixedWidth(120);
+    auto *zeroMFCLayout = new QHBoxLayout();
+    zeroMFCLayout->addStretch();
+    zeroMFCLayout->addWidget(zeroMFCButton);
+    zeroMFCLayout->addStretch();
+    cLayout->addLayout(zeroMFCLayout);
     connect(zeroMFCButton, &QPushButton::clicked, this, &MKS946Widget::zeroMFC);
-    cLayout->addWidget(zeroMFCButton);
 
     auto *pressureBox = new QGroupBox("Pressure");
     cLayout->addWidget(pressureBox);
@@ -224,12 +235,17 @@ void MKS946Widget::createCTab() {
     pressureVLayout->addLayout(pressureGrid);
     fillGrid({{"Type:", &manometerType},
               {"Nominal range:", &manometerNominalRange},
-              {"Voltage range:", &manometerVoltageRange}},
+              {"Voltage range [V]:", &manometerVoltageRange}},
              pressureGrid);
     manometerButton = new QPushButton("Configure CM");
+    manometerButton->setFixedWidth(120);
+    auto *manometerLayout = new QHBoxLayout();
+    manometerLayout->addStretch();
+    manometerLayout->addWidget(manometerButton);
+    manometerLayout->addStretch();
+    pressureVLayout->addLayout(manometerLayout);
     connect(manometerButton, &QPushButton::pressed, this,
             &MKS946Widget::showPressureDialog);
-    pressureVLayout->addWidget(manometerButton);
 }
 
 void MKS946Widget::createPIDTab() {
@@ -259,28 +275,33 @@ void MKS946Widget::createPIDTab() {
     pidVLayout->addLayout(pidGrid);
     fillGrid(
         {
-            {"Units:", &PIDUnits},
+            {"Pressure units:", &PIDUnits},
             {"Recipe nr:", &PIDRecipe},
             {"MFC channel:", &PIDFlowChannel},
             {"Pressure channel:", &PIDPressureChannel},
             {"Pressure setpoint:", &PIDPresssureSetPoint},
             {"Kp:", &PIDKp},
-            {"Time constant:", &PIDTimeConstant},
-            {"Derivative time constant:", &PIDDerivativeTimeConstant},
-            {"Ceiling:", &PIDCeiling},
-            {"Base:", &PIDBase},
-            {"Preset:", &PIDPreset},
-            {"Start:", &PIDStart},
-            {"End:", &PIDEnd},
-            {"CtrlStart:", &PIDCtrlStart},
+            {"Time constant [s]:", &PIDTimeConstant},
+            {"Derivative time constant [s]:", &PIDDerivativeTimeConstant},
+            {"Ceiling [%]:", &PIDCeiling},
+            {"Base [%]:", &PIDBase},
+            {"Preset [%]:", &PIDPreset},
+            {"Start [%]:", &PIDStart},
+            {"End [%]:", &PIDEnd},
+            {"CtrlStart [s]:", &PIDCtrlStart},
             {"Direction:", &PIDDirection},
-            {"Band:", &PIDBand},
+            {"Band [%]:", &PIDBand},
             {"Gain:", &PIDGain},
         },
         pidGrid, 9);
     PIDButton = new QPushButton("Configure PID");
+    PIDButton->setFixedWidth(120);
+    auto *PIDLayout = new QHBoxLayout();
+    PIDLayout->addStretch();
+    PIDLayout->addWidget(PIDButton);
+    PIDLayout->addStretch();
+    pidVLayout->addLayout(PIDLayout);
     connect(PIDButton, &QPushButton::pressed, this, &MKS946Widget::showPIDDialog);
-    pidVLayout->addWidget(PIDButton);
 }
 
 void MKS946Widget::createRTab() {
@@ -356,46 +377,63 @@ void MKS946Widget::fillGrid(std::vector<std::pair<std::string, QWidget *>> names
 }
 
 void MKS946Widget::showPIDDialog() {
-    DCSInputDialog data("Change PID", "Enter PID parameters:", 9);
-    data.addField("Units", PIDUnits.text(), true);
+    DCSInputDialog data("Change PID",
+                        PIDState ? "Enter PID parameters:\nOnly some parameters can be "
+                                   "changed while the PID control is running."
+                                 : "Enter PID parameters:",
+                        9);
+    data.addField("Pressure units", PIDUnits.text(), true);
     data.addField("Recipe nr", PIDRecipe.text(), true);
-    data.addField("MFC channel", DCSUtils::getKeys(MKS946codes::PIDFlowChannelFromString))
+    data.addField("MFC channel", DCSUtils::getKeys(MKS946codes::PIDFlowChannelFromString),
+                  PIDState)
         .setInitial(PIDFlowChannel.text());
     data.addField("Pressure channel",
-                  DCSUtils::getKeys(MKS946codes::PIDPressureChannelFromString))
+                  DCSUtils::getKeys(MKS946codes::PIDPressureChannelFromString), PIDState)
         .setInitial(PIDPressureChannel.text());
     data.addField("Pressure setpoint", PIDPresssureSetPoint.text().toDouble())
         .setMin(0)
         .setMax(1e6);
     data.addField("Kp", PIDKp.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Time constant", PIDTimeConstant.text().toDouble())
+    data.addField("Time constant [s]", PIDTimeConstant.text().toDouble())
         .setMin(0)
         .setMax(1e6);
-    data.addField("Derivative time constant", PIDDerivativeTimeConstant.text().toDouble())
+    data.addField("Derivative time constant [s]",
+                  PIDDerivativeTimeConstant.text().toDouble())
         .setMin(0)
         .setMax(1e6);
-    data.addField("Ceiling", PIDCeiling.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Base", PIDBase.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Preset", PIDPreset.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Start", PIDStart.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("End", PIDEnd.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("CtrlStart", PIDCtrlStart.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Direction", DCSUtils::getKeys(MKS946codes::PIDDirectionFromString))
+    data.addField("Ceiling [%]", PIDCeiling.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Base [%]", PIDBase.text().toDouble(), PIDState).setMin(0).setMax(1e6);
+    data.addField("Preset [%]", PIDPreset.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Start [%]", PIDStart.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("End [%]", PIDEnd.text().toDouble(), PIDState).setMin(0).setMax(1e6);
+    data.addField("CtrlStart [s]", PIDCtrlStart.text().toDouble(), PIDState)
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Direction", DCSUtils::getKeys(MKS946codes::PIDDirectionFromString),
+                  PIDState)
         .setInitial(PIDDirection.text());
-    data.addField("Gain", PIDGain.text().toInt()).setMin(1).setMax(30);
-    data.addField("Band", PIDBand.text().toInt()).setMin(0).setMax(200);
+    data.addField("Band [%]", PIDBand.text().toInt(), PIDState).setMin(0).setMax(200);
+    data.addField("Gain", PIDGain.text().toInt(), PIDState).setMin(1).setMax(30);
+
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
-            ->callConfigurePID(data.get<QString>("MFC channel").toStdString(),
-                               data.get<QString>("Pressure channel").toStdString(),
-                               data.get<double>("Pressure setpoint"),
-                               data.get<double>("Kp"), data.get<double>("Time constant"),
-                               data.get<double>("Derivative time constant"),
-                               data.get<double>("Ceiling"), data.get<double>("Base"),
-                               data.get<double>("Preset"), data.get<double>("Start"),
-                               data.get<double>("End"), data.get<double>("CtrlStart"),
-                               data.get<QString>("Direction").toStdString(),
-                               data.get<int>("Gain"), data.get<int>("Band"));
+            ->callConfigurePID(
+                data.get<QString>("MFC channel").toStdString(),
+                data.get<QString>("Pressure channel").toStdString(),
+                data.get<double>("Pressure setpoint"), data.get<double>("Kp"),
+                data.get<double>("Time constant [s]"),
+                data.get<double>("Derivative time constant [s]"),
+                data.get<double>("Ceiling [%]"), data.get<double>("Base [%]"),
+                data.get<double>("Preset [%]"), data.get<double>("Start [%]"),
+                data.get<double>("End [%]"), data.get<double>("CtrlStart [s]"),
+                data.get<QString>("Direction").toStdString(), data.get<int>("Band [%]"),
+                data.get<int>("Gain"));
     }
 }
 
@@ -403,8 +441,10 @@ void MKS946Widget::showFlowDialog() {
     DCSInputDialog data("Change flow", "Enter flow parameters:", 10);
     data.addField("Mode", DCSUtils::getKeys(MKS946codes::flowModeFromString))
         .setInitial(flowMode.text());
-    data.addField("Setpoint", flowSetPoint.text().toDouble()).setMin(0).setMax(1e6);
-    data.addField("Nominal range", flowNominalRange.text().toDouble())
+    data.addField("Setpoint [sccm]", flowSetPoint.text().toDouble())
+        .setMin(0)
+        .setMax(1e6);
+    data.addField("Nominal range [sccm]", flowNominalRange.text().toDouble())
         .setMin(0)
         .setMax(1e6);
     data.addField("Scale factor", flowScaleFactor.text().toDouble())
@@ -412,9 +452,10 @@ void MKS946Widget::showFlowDialog() {
         .setMax(1e6);
     if(data.exec()) {
         dynamic_cast<MKS946_controller *>(controller)
-            ->callConfigureFlow(
-                data.get<QString>("Mode").toStdString(), data.get<double>("Setpoint"),
-                data.get<double>("Nominal range"), data.get<double>("Scale factor"));
+            ->callConfigureFlow(data.get<QString>("Mode").toStdString(),
+                                data.get<double>("Setpoint [sccm]"),
+                                data.get<double>("Nominal range [sccm]"),
+                                data.get<double>("Scale factor"));
     }
 }
 
@@ -425,7 +466,7 @@ void MKS946Widget::showPressureDialog() {
     data.addField("Nominal range", manometerNominalRange.text().toDouble())
         .setMin(0)
         .setMax(1e6);
-    data.addField("Voltage range",
+    data.addField("Voltage range [V]",
                   DCSUtils::getKeys(MKS946codes::CMVoltageRangeFromString))
         .setInitial(manometerVoltageRange.text())
         .setMin(0)
@@ -434,7 +475,7 @@ void MKS946Widget::showPressureDialog() {
         dynamic_cast<MKS946_controller *>(controller)
             ->callConfigurePressure(data.get<QString>("Type").toStdString(),
                                     data.get<double>("Nominal range"),
-                                    data.get<QString>("Voltage range").toStdString());
+                                    data.get<QString>("Voltage range [V]").toStdString());
     }
 }
 

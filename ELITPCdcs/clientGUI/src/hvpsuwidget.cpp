@@ -836,15 +836,16 @@ void HVpsuWidget::drawLine(QLayout *layout) {
 DT1415Widget::DT1415Widget(std::string name, int enabledChannels, QWidget *parent)
     : HVpsuWidget(name, enabledChannels, parent) {
 
-    if(enabledChannels < 8) {
-        ui->HVGUI->setPixmap(
-            QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png")));
-    }
+    // if(enabledChannels < 8) {
+    ui->HVGUI->setPixmap(
+        QPixmap(QString::fromUtf8(":/images/res/hv_combo_DT14170ET_gui_pic.png")));
+    //}
 }
 
 DT1470Widget::DT1470Widget(std::string name, int enabledChannels, QWidget *parent)
     : HVpsuWidget(name, enabledChannels, parent) {
-    ui->HVGUI->setPixmap(QPixmap(QString::fromUtf8(":/images/res/hvcombo_gui_pic.png")));
+    ui->HVGUI->setPixmap(
+        QPixmap(QString::fromUtf8(":/images/res/hv_combo_DT14170ET_gui_pic.png")));
     // .scaled(10, 10, Qt::KeepAspectRatio));
 }
 

@@ -67,6 +67,8 @@ class TPGWidget : public AbstractWidget {
     void connectSignals();
     void loadConfig();
     void saveConfig();
+
+    std::string getDeviceType() const final { return "TPG362"; }
 };
 
 #endif  // TPGWIDGET_H

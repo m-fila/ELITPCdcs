@@ -109,7 +109,8 @@ void MainWindow::loadWidgets(json &items) {
         controlLeds.push_back(buttonLed);
         deviceLayout->addWidget(buttonLed);
 
-        QPushButton *new_button = new QPushButton(QString::fromStdString("Start " + id));
+        QPushButton *new_button =
+            new QPushButton(QString::fromStdString(new_widget->getId()));
         connect(new_button, SIGNAL(pressed()), new_widget, SLOT(startup()));
         connect(client,
                 SIGNAL(subCreated(UA_Client *, UA_ClientConfig *,

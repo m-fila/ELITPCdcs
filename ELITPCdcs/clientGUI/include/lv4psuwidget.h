@@ -57,6 +57,9 @@ class LV4psuWidget : public AbstractWidget {
     void changeNamePressed();
     void setVPressed();
     void setIPressed();
+
+  private:
+    std::string getDeviceType() const final { return "HMP4040"; }
 };
 
 #endif  // LV4PSUWIDGET_H

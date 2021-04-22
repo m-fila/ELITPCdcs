@@ -58,9 +58,12 @@ void DCSMKS946Controller::addChildren(const Options &options) {
     auto &ps = addVariable("PIDState", &UA_TYPES[UA_TYPES_BOOLEAN]);
     addVariableUpdate(ps, 1000, &DCSMKS946Controller::getPIDState, this, options);
     ps.setHistorizing();
-    addControllerMethod(
-        "zeroMFC", "zero MFC Channel", {}, {},
-        [this](const UA_Variant *in, UA_Variant *out) { device.zeroMFC(flowCH); });
+    addControllerMethod("zeroMFC", "zero MFC Channel", {}, {},
+                        [this](const UA_Variant *in, UA_Variant *out) {
+                            device.setUserCalibrationEnabled(true);
+                            device.zeroMFC(flowCH);
+                            device.setUserCalibrationEnabled(false);
+                        });
 }
 
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
@@ -152,7 +155,7 @@ UA_PID DCSMKS946Controller::getPID() {
 
     mks.end = std::stod(device.getPIDEnd());
     mks.flowChannel = UA_STRING_ALLOC(device.getPIDMFCChannel().c_str());
-    mks.gain = std::stoi(device.getPIDBand());
+    mks.gain = std::stoi(device.getPIDGain());
     mks.kp = std::stod(device.getPIDKp());
     mks.preset = std::stod(device.getPIDPreset());
     mks.pressureChannel = UA_STRING_ALLOC(device.getPIDPressureChannel().c_str());
@@ -193,26 +196,28 @@ void DCSMKS946Controller::configurePID(const UA_Variant *input, UA_Variant *outp
     auto end = *static_cast<UA_Double *>(input[10].data);
     auto ctrlstart = *static_cast<UA_Double *>(input[11].data);
     auto direction = *static_cast<UA_String *>(input[12].data);
-    auto gain = *static_cast<UA_UInt32 *>(input[13].data);
-    auto band = *static_cast<UA_UInt32 *>(input[14].data);
-    device.setPIDMFCChannel(
-        MKS946codes::PIDFlowChannelFromString.at(DCSUtils::UaToStd(mfc)));
-    device.setPIDPressureChannel(
-        MKS946codes::PIDPressureChannelFromString.at(DCSUtils::UaToStd(prc)));
+    auto band = *static_cast<UA_UInt32 *>(input[13].data);
+    auto gain = *static_cast<UA_UInt32 *>(input[14].data);
+    if(!getPIDState()) {
+        device.setPIDMFCChannel(
+            MKS946codes::PIDFlowChannelFromString.at(DCSUtils::UaToStd(mfc)));
+        device.setPIDPressureChannel(
+            MKS946codes::PIDPressureChannelFromString.at(DCSUtils::UaToStd(prc)));
+        device.setPIDCeiling(ceiling);
+        device.setPIDBase(base);
+        device.setPIDPreset(preset);
+        device.setPIDStart(start);
+        device.setPIDEnd(end);
+        device.setPIDCtrlStart(ctrlstart);
+        device.setPIDDirection(
+            MKS946codes::PIDDirectionFromString.at(DCSUtils::UaToStd(direction)));
+        device.setPIDGain(gain);
+        device.setPIDBand(band);
+    }
     device.setPIDPressureSetPoint(setpoint);
     device.setPIDKp(kp);
     device.setPIDTimeConstant(timeConstant);
     device.setPIDDerivativeTimeConstant(derivativeTimeConstant);
-    device.setPIDCeiling(ceiling);
-    device.setPIDBase(base);
-    device.setPIDPreset(preset);
-    device.setPIDStart(start);
-    device.setPIDEnd(end);
-    device.setPIDCtrlStart(ctrlstart);
-    device.setPIDDirection(
-        MKS946codes::PIDDirectionFromString.at(DCSUtils::UaToStd(direction)));
-    device.setPIDGain(gain);
-    device.setPIDBand(band);
     variables.at("PID")->setValue(getPID());
 }
 

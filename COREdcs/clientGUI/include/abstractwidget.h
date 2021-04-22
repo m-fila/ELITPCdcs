@@ -15,6 +15,9 @@ class AbstractWidget : public BaseWidget {
   public:
     explicit AbstractWidget(opc_controller *controller, std::string,
                             bool horizontalTpcPanel = false, QWidget *parent = 0);
+    virtual std::string getId() const {
+        return getDeviceType() + " (" + instanceName + ")";
+    }
 
   protected:
     opc_controller *controller;

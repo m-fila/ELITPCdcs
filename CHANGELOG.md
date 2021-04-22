@@ -1,5 +1,8 @@
+- fixed MKS946 zero MFC
+- fixed MKS936 setting PID in PID control mode
+- fixed interlock direction GUI
+- fixes in interlock and PID GUI
+- fixed hv precision
 - automated release creation
 - added recovery file
 - added settable log level
-- fixed hv precision
-

@@ -18,11 +18,13 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
     status->setFixedWidth(50);
     firstRow->addWidget(statusLabel);
     firstRow->addWidget(status);
+    firstRow->addStretch();
     auto enabledLabel = new QLabel("Enabled:", this);
     enabled = new QLabel("", this);
     enabled->setFixedWidth(50);
     firstRow->addWidget(enabledLabel);
     firstRow->addWidget(enabled);
+    firstRow->addStretch();
     auto directionLabel = new QLabel("Direction:", this);
     direction = new QLabel("BELOW", this);
     direction->setFixedWidth(50);
@@ -33,17 +35,20 @@ DCSRelayWidget::DCSRelayWidget(size_t nr, RelayDirectionPolicy directionPolicy,
     setpoint->setFixedWidth(50);
     secondRow->addWidget(setpointLabel);
     secondRow->addWidget(setpoint);
+    unitsS = new QLabel("");
+    unitsS->setFixedWidth(50);
+    secondRow->addWidget(unitsS);
     auto hysteresisLabel = new QLabel("Hysteresis:", this);
     hysteresis = new QLabel("", this);
     hysteresis->setFixedWidth(50);
     secondRow->addWidget(hysteresisLabel);
     secondRow->addWidget(hysteresis);
-    units = new QLabel("");
-    units->setFixedWidth(50);
-    secondRow->addWidget(units);
-    setButton = new QPushButton("Set relay", this);
+    unitsH = new QLabel("");
+    unitsH->setFixedWidth(50);
+    secondRow->addWidget(unitsH);
+    setButton = new QPushButton("Configure", this);
     secondRow->addWidget(setButton);
-    setValues({0, 0, 0, 0, 0, "mbar"});
+    setValues({0, 0, 0, 0, 0, ""});
     connectSignals();
 }
 
@@ -55,16 +60,17 @@ void DCSRelayWidget::setValues(const RelayStruct &newVal) {
         enabled->setText(QString::asprintf("%d", value.enabled));
     }
     if(value.direction) {
-        status->setText("ABOVE");
+        direction->setText("ABOVE");
     } else {
-        status->setText("BELOW");
+        direction->setText("BELOW");
     }
     if(value.status) {
         status->setText("ON");
     } else {
         status->setText("OFF");
     }
-    units->setText(QString::fromStdString(value.unit));
+    unitsS->setText(QString::fromStdString(value.unit));
+    unitsH->setText(QString::fromStdString(value.unit));
     setpoint->setText(QString::asprintf("%.2f", value.setpoint));
     hysteresis->setText(QString::asprintf("%.2f", value.hysteresis));
 }
@@ -79,7 +85,7 @@ void DCSRelayWidget::showDialog() {
             auto r = dialog->getValue();
             QMessageBox msgBox;
             msgBox.setIcon(QMessageBox::Question);
-            msgBox.setText(QString::asprintf("Changing Relay %lu to:", number));
+            msgBox.setText(QString::asprintf("Changing relay %lu to:", number));
             msgBox.setInformativeText(QString::asprintf(
                 "Enabled:\t%s\nDirection:\t%s\nSetpoint:\t%f %s\nHysteresis:\t%f "
                 "%s\n\nDo you confirm?",
@@ -112,7 +118,7 @@ RelayDialog::RelayDialog(size_t number, RelayStruct init,
     QFormLayout *mainLayout = new QFormLayout(this);
     setLayout(outerLayout);
     outerLayout->addLayout(mainLayout);
-    text.setText(QString::asprintf("Set Relay %lu:", number));
+    text.setText(QString::asprintf("Configure relay %lu:", number));
     mainLayout->addWidget(&text);
     for(auto i : labels) {
         enabled.addItem(QString::fromStdString(i.second));

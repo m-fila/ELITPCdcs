@@ -64,6 +64,8 @@ class MKS910Widget : public AbstractWidget {
     void connectSignals();
     void loadConfig();
     void saveConfig();
+
+    std::string getDeviceType() const final { return "MKS910"; }
 };
 
 #endif  // MKS910WIDGET_H

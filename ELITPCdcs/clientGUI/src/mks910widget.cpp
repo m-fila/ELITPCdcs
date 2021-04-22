@@ -93,7 +93,6 @@ void MKS910Widget::createLayout() {
     mainLayout->addWidget(tab);
 
     createMTab();
-    createHTab();
     createCTab();
     createRTab();
     mainLayout->addStretch();

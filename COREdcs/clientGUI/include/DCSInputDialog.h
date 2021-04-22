@@ -49,7 +49,7 @@ class DCSInputDialog : public QDialog {
 
     DCSInputDialog(const QString &title, const QString &text, size_t max_row = 10,
                    QWidget *parent = nullptr);
-    FieldOptions &addField(const QString &key, QVariant value, bool disbled = false);
+    FieldOptions &addField(const QString &key, QVariant value, bool disabled = false);
     void addConstant(const QString &key, const QString &value);
     template <typename T> T get(const QString &key) const {
         return getValue(key).value<T>();

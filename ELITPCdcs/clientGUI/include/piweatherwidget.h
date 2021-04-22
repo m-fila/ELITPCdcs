@@ -33,6 +33,9 @@ class PiWeatherWidget : public AbstractWidget {
     void updateConfiguration(UA_Variant data);
 
     void changeNamePressed();
+
+  private:
+    std::string getDeviceType() const final { return "PiWeather"; }
 };
 
 #endif  // PIWEATHER_WIDGET_H

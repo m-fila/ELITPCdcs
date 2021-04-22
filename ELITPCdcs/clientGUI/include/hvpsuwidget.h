@@ -109,6 +109,9 @@ class DT1415Widget : public HVpsuWidget {
     Q_OBJECT
   public:
     DT1415Widget(std::string name, int enabledChannels = 8, QWidget *parent = 0);
+
+  private:
+    std::string getDeviceType() const final { return "DT1415ET"; }
 };
 
 class DT1470Widget : public HVpsuWidget {
@@ -116,6 +119,9 @@ class DT1470Widget : public HVpsuWidget {
   public:
     DT1470Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
     void updateConfiguration(UA_Variant data) final;
+
+  private:
+    std::string getDeviceType() const final { return "DT1470ET"; }
 };
 
 class N1471Widget : public HVpsuWidget {
@@ -123,6 +129,9 @@ class N1471Widget : public HVpsuWidget {
   public:
     N1471Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
     void updateConfiguration(UA_Variant data) final;
+
+  private:
+    std::string getDeviceType() const final { return "N1471"; }
 };
 
 #endif  // HVPSUWIDGET_H
