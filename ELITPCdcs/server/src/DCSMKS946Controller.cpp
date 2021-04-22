@@ -58,9 +58,12 @@ void DCSMKS946Controller::addChildren(const Options &options) {
     auto &ps = addVariable("PIDState", &UA_TYPES[UA_TYPES_BOOLEAN]);
     addVariableUpdate(ps, 1000, &DCSMKS946Controller::getPIDState, this, options);
     ps.setHistorizing();
-    addControllerMethod(
-        "zeroMFC", "zero MFC Channel", {}, {},
-        [this](const UA_Variant *in, UA_Variant *out) { device.zeroMFC(flowCH); });
+    addControllerMethod("zeroMFC", "zero MFC Channel", {}, {},
+                        [this](const UA_Variant *in, UA_Variant *out) {
+                            device.setUserCalibrationEnabled(true);
+                            device.zeroMFC(flowCH);
+                            device.setUserCalibrationEnabled(false);
+                        });
 }
 
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
