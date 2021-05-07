@@ -222,7 +222,7 @@ void HVpsuWidget::setVPressed() {
 
             double d = QInputDialog::getDouble(this, tr("Set CH %1 voltage").arg(i),
                                                label, allTabVset[i]->text().toDouble(), 0,
-                                               1000, 1, &ok);
+                                               8100, 1, &ok);
             if(ok) {
                 QString val;
                 val.sprintf("%6.1lf", d);
@@ -247,7 +247,7 @@ void HVpsuWidget::setVMAXPressed() {
                 label = tr("CH %1  \"%2\"  [Volts]:").arg(i).arg(CHxCustomName[i]);
 
             double d = QInputDialog::getDouble(this, tr("Set CH %1 Vmax").arg(i), label,
-                                               tabCHxVMAX[i]->text().toDouble(), 0, 1000,
+                                               tabCHxVMAX[i]->text().toDouble(), 0, 8100,
                                                1, &ok);
             if(ok) {
                 QString val;
