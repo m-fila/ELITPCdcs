@@ -548,7 +548,7 @@ void HVpsuWidget::createAllChannelsTab() {
         // end IMON and ISET
 
         hbox->addSpacing(20);
-
+        hbox->addStretch();
         // begin kill button
         allTabKill[i] = new QPushButton("KILL");
         if(i == channelsNumber) {
@@ -882,6 +882,7 @@ N1471Widget::N1471Widget(std::string name, int enabledChannels, QWidget *parent)
 }
 
 void N1471Widget::updateConfiguration(UA_DataValue *data) {
+
     UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
@@ -906,6 +907,7 @@ void N1471Widget::updateConfiguration(UA_DataValue *data) {
 
             tabCHxSTATUS[i]->setText(val);
             allTabStatus[i]->setText(val);
+
             auto palette = allTabStatus[i]->palette();
             if(static_cast<bool>(chanStat & N1471codes::ChannelStatus::ON)) {
                 palette.setColor(QPalette::WindowText, Qt::darkGreen);
