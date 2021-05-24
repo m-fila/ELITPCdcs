@@ -63,6 +63,7 @@ class HVpsuWidget : public AbstractWidget {
     std::vector<QLabel *> allTabIset = std::vector<QLabel *>(channelsNumber + 1);
     std::vector<QRadioButton *> allTabOn = std::vector<QRadioButton *>(channelsNumber);
     std::vector<QRadioButton *> allTabOff = std::vector<QRadioButton *>(channelsNumber);
+    std::vector<QLabel *> allTabStatus = std::vector<QLabel *>(channelsNumber);
     QPushButton *allOn;
     QPushButton *allOff;
     // tab CH x containers;
