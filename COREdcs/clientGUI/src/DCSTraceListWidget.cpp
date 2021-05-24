@@ -41,3 +41,9 @@ void DCSTraceListWidget::configureDialog() {
         timer.setInterval(1000 * data.get<int>("Interval [s]"));
     }
 }
+
+void DCSTraceListWidget::addItem(QString message, QDateTime time) {
+    auto *trace = new DCSTraceItem(time, message);
+    traces.push_front(trace);
+    list.addItem(trace);
+}
