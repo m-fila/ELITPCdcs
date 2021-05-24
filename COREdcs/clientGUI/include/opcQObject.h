@@ -48,7 +48,7 @@ class DCSMonitoredItem : public QObject {
         : QObject(parent), browseName(browseName) {}
     std::string getBrowseName() { return browseName; }
   signals:
-    void valueChanged(UA_Variant data);
+    void valueChanged(UA_DataValue *data);
 
   private:
     static void callback(UA_Client *client, UA_UInt32 subId, void *subContext,

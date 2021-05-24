@@ -31,9 +31,9 @@ void MKS946Widget::connectSignals() {
             &MKS946Widget::updatePIDState);
 }
 
-void MKS946Widget::updateStatus(UA_Variant data) {
+void MKS946Widget::updateStatus(UA_DataValue *data) {
     AbstractWidget::updateStatus(data);
-    connectionState = *static_cast<bool *>(data.data);
+    connectionState = *static_cast<bool *>(data->value.data);
     if(!connectionState) {
         mVacuum->display(0);
         mFlow->display(0);
@@ -72,8 +72,8 @@ void MKS946Widget::updateStatus(UA_Variant data) {
     PIDStateButtonON->setEnabled(connectionState && PIDStateLabel->text() == "OFF");
 }
 
-void MKS946Widget::updateMeasurements(UA_Variant data) {
-    UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data.data);
+void MKS946Widget::updateMeasurements(UA_DataValue *data) {
+    UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data->value.data);
     auto f = [](double value) {
         std::string s;
         std::ostringstream os;
@@ -87,15 +87,15 @@ void MKS946Widget::updateMeasurements(UA_Variant data) {
     mFlow->display(f(measurements.flow));
 }
 
-void MKS946Widget::updatePIDState(UA_Variant data) {
-    PIDState = *static_cast<UA_Boolean *>(data.data);
+void MKS946Widget::updatePIDState(UA_DataValue *data) {
+    PIDState = *static_cast<UA_Boolean *>(data->value.data);
     PIDStateLabel->setText(PIDState ? "ON" : "OFF");
     PIDStateButtonOFF->setEnabled(PIDState);
     PIDStateButtonON->setEnabled(!PIDState);
 }
 
-void MKS946Widget::updateConfiguration(UA_Variant data) {
-    UA_MKS946c conf = *static_cast<UA_MKS946c *>(data.data);
+void MKS946Widget::updateConfiguration(UA_DataValue *data) {
+    UA_MKS946c conf = *static_cast<UA_MKS946c *>(data->value.data);
     flowMode.setText(QString::fromStdString(DCSUtils::UaToStd(conf.flowMode)));
     flowSetPoint.setText(QString("%1").arg(conf.flowSetPoint));
     flowNominalRange.setText(QString("%1").arg(conf.flowNominalRange));
@@ -106,8 +106,8 @@ void MKS946Widget::updateConfiguration(UA_Variant data) {
         QString::fromStdString(DCSUtils::UaToStd(conf.manometerVoltageRange)));
 }
 
-void MKS946Widget::updateRelay(UA_Variant data) {
-    auto r = *static_cast<UA_Relay *>(data.data);
+void MKS946Widget::updateRelay(UA_DataValue *data) {
+    auto r = *static_cast<UA_Relay *>(data->value.data);
     for(size_t i = 0; i < r.statusSize; i++) {
         RelayStruct rStruct;
         rStruct.status = r.status[i];
@@ -119,9 +119,9 @@ void MKS946Widget::updateRelay(UA_Variant data) {
     }
 }
 
-void MKS946Widget::updatePID(UA_Variant data) {
+void MKS946Widget::updatePID(UA_DataValue *data) {
 
-    auto pid = *static_cast<UA_PID *>(data.data);
+    auto pid = *static_cast<UA_PID *>(data->value.data);
     PIDUnits.setText(QString::fromStdString(DCSUtils::UaToStd(pid.units)));
     PIDRecipe.setText(QString("%1").arg(pid.recipeNr));
     PIDFlowChannel.setText(QString::fromStdString(DCSUtils::UaToStd(pid.flowChannel)));

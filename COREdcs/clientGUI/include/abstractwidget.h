@@ -27,11 +27,11 @@ class AbstractWidget : public BaseWidget {
     virtual void loadConfig() {}
     virtual void connectSignals();
   public slots:
-    virtual void updateStatus(UA_Variant data);
-    virtual void updateMeasurements(UA_Variant data) {}
-    virtual void updateConfiguration(UA_Variant data) {}
-    virtual void updateConnectionParameters(UA_Variant data);
-    virtual void updateDeviceInfo(UA_Variant data);
+    virtual void updateStatus(UA_DataValue *data);
+    virtual void updateMeasurements(UA_DataValue *data) {}
+    virtual void updateConfiguration(UA_DataValue *data) {}
+    virtual void updateConnectionParameters(UA_DataValue *data);
+    virtual void updateDeviceInfo(UA_DataValue *data);
 
     virtual void controllerInit(UA_Client *client, UA_ClientConfig *config,
                                 UA_CreateSubscriptionResponse resp) override {

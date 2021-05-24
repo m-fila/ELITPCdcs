@@ -61,7 +61,7 @@ void DCSMonitoredItem::callback(UA_Client *client, UA_UInt32 subId, void *subCon
     if(value->hasValue) {
         if(!UA_Variant_isEmpty(&value->value)) {
             auto *context = static_cast<DCSMonitoredItem *>(monContext);
-            emit context->valueChanged(value->value);
+            emit context->valueChanged(value);
         }
     }
 }

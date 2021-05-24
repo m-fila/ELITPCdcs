@@ -25,17 +25,17 @@ void MKS910Widget::connectSignals() {
     connect(unitsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeUnits(int)));
 }
 
-void MKS910Widget::updateStatus(UA_Variant data) {
+void MKS910Widget::updateStatus(UA_DataValue *data) {
     AbstractWidget::updateStatus(data);
-    connectionState = *static_cast<bool *>(data.data);
+    connectionState = *static_cast<bool *>(data->value.data);
     if(!connectionState) {
         mVacuum->display(0);
         mTemp->setText("");
         mStatus->setText("");
     }
 }
-void MKS910Widget::updateMeasurements(UA_Variant data) {
-    UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data.data);
+void MKS910Widget::updateMeasurements(UA_DataValue *data) {
+    UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data->value.data);
     QString val;
     std::string s;
     std::ostringstream os;
@@ -63,10 +63,10 @@ void MKS910Widget::updateMeasurements(UA_Variant data) {
     mTemp->setText(val);
 }
 
-void MKS910Widget::updateConfiguration(UA_Variant data) {}
+void MKS910Widget::updateConfiguration(UA_DataValue *data) {}
 
-void MKS910Widget::updateRelay(UA_Variant data) {
-    auto r = *static_cast<UA_Relay *>(data.data);
+void MKS910Widget::updateRelay(UA_DataValue *data) {
+    auto r = *static_cast<UA_Relay *>(data->value.data);
     for(size_t i = 0; i < r.statusSize; i++) {
         RelayStruct rStruct;
         rStruct.status = r.status[i];
