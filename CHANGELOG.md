@@ -1,3 +1,4 @@
+- fixed MKS946 display baratron pressure
 - added trace list widget to hv  
 - added hv status in front panel
 - fixed hw widget voltage limits
