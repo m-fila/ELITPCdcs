@@ -1,4 +1,5 @@
 #include "hvpsuwidget.h"
+#include "utilsQt.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -123,7 +124,7 @@ void HVpsuWidget::updateMeasurements(UA_DataValue *data) {
     }
 }
 void HVpsuWidget::updateConfiguration(UA_DataValue *data) {
-    auto timestamp = getTimestamp(data);
+    auto timestamp = DCSUtils::getTimestamp(data);
     UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
@@ -889,7 +890,7 @@ N1471Widget::N1471Widget(std::string name, int enabledChannels, QWidget *parent)
 }
 
 void N1471Widget::updateConfiguration(UA_DataValue *data) {
-    auto timestamp = getTimestamp(data);
+    auto timestamp = DCSUtils::getTimestamp(data);
     UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
@@ -978,7 +979,7 @@ void N1471Widget::updateConfiguration(UA_DataValue *data) {
 }
 
 void DT1470Widget::updateConfiguration(UA_DataValue *data) {
-    auto timestamp = getTimestamp(data);
+    auto timestamp = DCSUtils::getTimestamp(data);
     UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;

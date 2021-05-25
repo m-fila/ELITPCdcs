@@ -1,6 +1,7 @@
 #ifndef HVPSUWIDGET_H
 #define HVPSUWIDGET_H
 
+#include "DCSTraceListWidget.h"
 #include "abstractwidget.h"
 #include "dt1415etcodes.h"
 #include "dt1470etcodes.h"
@@ -90,7 +91,8 @@ class HVpsuWidget : public AbstractWidget {
     std::vector<QLabel *> tabCHxVset = std::vector<QLabel *>(channelsNumber);
     std::vector<QPushButton *> tabCHxSetV = std::vector<QPushButton *>(channelsNumber);
     std::vector<QLabel *> tabCHxImon = std::vector<QLabel *>(channelsNumber);
-
+    std::vector<DCSTraceListWidget *> tabCHxTrace =
+        std::vector<DCSTraceListWidget *>(channelsNumber);
     bool isRemote;
     //  bool initialUpdate;
     bool connectionState;
