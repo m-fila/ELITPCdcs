@@ -74,17 +74,17 @@ void MKS946Widget::updateStatus(UA_DataValue *data) {
 
 void MKS946Widget::updateMeasurements(UA_DataValue *data) {
     UA_MKS946m measurements = *static_cast<UA_MKS946m *>(data->value.data);
-    auto f = [](double value) {
+    auto f = [](double value, int precision) {
         std::string s;
         std::ostringstream os;
-        os << std::scientific << std::setprecision(2) << std::uppercase << value;
+        os << std::scientific << std::setprecision(precision) << std::uppercase << value;
         s = os.str();
         s.insert(s.size() - 4, " ");
         return QString::fromStdString(s);
     };
 
-    mVacuum->display(f(measurements.pressure));
-    mFlow->display(f(measurements.flow));
+    mVacuum->display(f(measurements.pressure, 3));
+    mFlow->display(f(measurements.flow, 3));
 }
 
 void MKS946Widget::updatePIDState(UA_DataValue *data) {
