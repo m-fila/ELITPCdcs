@@ -1,4 +1,5 @@
 #include "hvpsuwidget.h"
+#include "utilsQt.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -24,9 +25,9 @@ HVpsuWidget::~HVpsuWidget() { delete ui; }
 
 void HVpsuWidget::connectSignals() { AbstractWidget::connectSignals(); }
 
-void HVpsuWidget::updateStatus(UA_Variant data) {
+void HVpsuWidget::updateStatus(UA_DataValue *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data.data);
+    bool isConnected = *static_cast<bool *>(data->value.data);
     connectionState = isConnected;
     if(isConnected) {
         for(int i = 0; i < channelsNumber; i++) {
@@ -59,6 +60,8 @@ void HVpsuWidget::updateStatus(UA_Variant data) {
             tabCHxLed[i]->setState(static_cast<KLed::State>(ON[i]));
             tabCHxVset[i]->setEnabled(true);
             tabCHxImon[i]->setEnabled(true);
+            tabCHxSTATUS[i]->setEnabled(true);
+            allTabStatus[i]->setEnabled(true);
         }
         allTabLed[channelsNumber]->setState((KLed::State)(true));
         allTabVset[channelsNumber]->setEnabled(true);
@@ -68,7 +71,7 @@ void HVpsuWidget::updateStatus(UA_Variant data) {
         for(int i = 0; i < channelsNumber; i++) {
             allTabOn[i]->setEnabled(false);
             allTabOff[i]->setEnabled(false);
-            allTabKill[i]->setEnabled(false);
+            // allTabKill[i]->setEnabled(false);
             allTabSetV[i]->setEnabled(false);
             allTabLed[i]->setState(static_cast<KLed::State>(false));
             allTabVset[i]->setEnabled(false);
@@ -91,6 +94,8 @@ void HVpsuWidget::updateStatus(UA_Variant data) {
             tabCHxLed[i]->setState(static_cast<KLed::State>(false));
             tabCHxVset[i]->setEnabled(false);
             tabCHxImon[i]->setEnabled(false);
+            tabCHxSTATUS[i]->setEnabled(false);
+            allTabStatus[i]->setEnabled(false);
         }
         allTabLed[channelsNumber]->setState(static_cast<KLed::State>(false));
         allTabVset[channelsNumber]->setEnabled(false);
@@ -100,8 +105,8 @@ void HVpsuWidget::updateStatus(UA_Variant data) {
     allTabKill[channelsNumber]->setEnabled(connectionState);
 }
 
-void HVpsuWidget::updateMeasurements(UA_Variant data) {
-    UA_DT1415m measurements = *static_cast<UA_DT1415m *>(data.data);
+void HVpsuWidget::updateMeasurements(UA_DataValue *data) {
+    UA_DT1415m measurements = *static_cast<UA_DT1415m *>(data->value.data);
     if(measurements.voltageSize) {
         QString val;
         double totalVoltage = 0;
@@ -118,8 +123,9 @@ void HVpsuWidget::updateMeasurements(UA_Variant data) {
         allTabCHvoltage[channelsNumber]->display(val);
     }
 }
-void HVpsuWidget::updateConfiguration(UA_Variant data) {
-    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data.data);
+void HVpsuWidget::updateConfiguration(UA_DataValue *data) {
+    auto timestamp = DCSUtils::getTimestamp(data);
+    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
         QString val;
@@ -142,6 +148,28 @@ void HVpsuWidget::updateConfiguration(UA_Variant data) {
 
             val = QString::fromStdString(DT1415ETcodes::translateChannelStatus(chanStat));
             tabCHxSTATUS[i]->setText(val);
+            allTabStatus[i]->setText(val);
+            auto palette = allTabStatus[i]->palette();
+            if(static_cast<bool>(chanStat & DT1415ETcodes::ChannelStatus::ON)) {
+                palette.setColor(QPalette::WindowText, Qt::darkGreen);
+            } else if(static_cast<bool>(chanStat &
+                                        (DT1415ETcodes::ChannelStatus::OVC |
+                                         DT1415ETcodes::ChannelStatus::OVV |
+                                         DT1415ETcodes::ChannelStatus::UNV |
+                                         DT1415ETcodes::ChannelStatus::TRIP |
+                                         DT1415ETcodes::ChannelStatus::OVP |
+                                         DT1415ETcodes::ChannelStatus::TWN |
+                                         DT1415ETcodes::ChannelStatus::OVT |
+                                         DT1415ETcodes::ChannelStatus::KILL |
+                                         DT1415ETcodes::ChannelStatus::INTLK |
+                                         DT1415ETcodes::ChannelStatus::FAIL))) {
+                palette.setColor(QPalette::WindowText, Qt::red);
+                tabCHxTrace[i]->addItem(val, timestamp);
+            } else {
+                palette.setColor(QPalette::WindowText, Qt::black);
+            }
+            allTabStatus[i]->setPalette(palette);
+            tabCHxSTATUS[i]->setPalette(palette);
             tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetIset[i]->setEnabled(enabled[i] && connectionState);
@@ -526,23 +554,28 @@ void HVpsuWidget::createAllChannelsTab() {
             hbox->addLayout(Igrid);
         // end IMON and ISET
 
+        hbox->addSpacing(20);
         hbox->addStretch();
-
         // begin kill button
         allTabKill[i] = new QPushButton("KILL");
         if(i == channelsNumber) {
             connect(allTabKill[i], SIGNAL(pressed()),
                     dynamic_cast<hv_controller *>(controller), SLOT(callClearAlarm()));
+
+            allTabKill[i]->setFixedWidth(40);
+            // palette = allTabKill[i]->palette();
+            // palette.setColor(QPalette::ButtonText, Qt::red);
+            allTabKill[i]->setPalette(palette);
+            allTabKill[i]->setEnabled(false);
+
+            hbox->addWidget(allTabKill[i]);
+            // end kill button
+        } else {
+            hbox->addWidget(new QLabel("Status: "));
+            allTabStatus[i] = new QLabel("");
+            allTabStatus[i]->setFixedWidth(100);
+            hbox->addWidget(allTabStatus[i]);
         }
-        allTabKill[i]->setFixedWidth(40);
-        // palette = allTabKill[i]->palette();
-        // palette.setColor(QPalette::ButtonText, Qt::red);
-        allTabKill[i]->setPalette(palette);
-        allTabKill[i]->setEnabled(false);
-
-        hbox->addWidget(allTabKill[i]);
-        // end kill button
-
         // set layout for GroupBox
         allTabCHx[i]->setLayout(hbox);
         // add generated groupbox to tab layout
@@ -791,7 +824,8 @@ void HVpsuWidget::createChannelTabs() {
         // end setRDWN
 
         qvb->addWidget(channelSettingsBox);
-
+        tabCHxTrace[i] = new DCSTraceListWidget;
+        qvb->addWidget(tabCHxTrace[i]);
         qvb->addStretch();
 
         tabCHx[i]->setLayout(qvb);
@@ -855,8 +889,9 @@ N1471Widget::N1471Widget(std::string name, int enabledChannels, QWidget *parent)
     //                           .scaled(10, 10, Qt::KeepAspectRatio));
 }
 
-void N1471Widget::updateConfiguration(UA_Variant data) {
-    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data.data);
+void N1471Widget::updateConfiguration(UA_DataValue *data) {
+    auto timestamp = DCSUtils::getTimestamp(data);
+    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
         QString val;
@@ -877,8 +912,29 @@ void N1471Widget::updateConfiguration(UA_Variant data) {
             allTabOff[i]->setChecked((!ON[i]) && connectionState);
 
             val = QString::fromStdString(N1471codes::translateChannelStatus(chanStat));
-
             tabCHxSTATUS[i]->setText(val);
+            allTabStatus[i]->setText(val);
+
+            auto palette = allTabStatus[i]->palette();
+            if(static_cast<bool>(chanStat & N1471codes::ChannelStatus::ON)) {
+                palette.setColor(QPalette::WindowText, Qt::darkGreen);
+            } else if(static_cast<bool>(chanStat & (N1471codes::ChannelStatus::OVC |
+                                                    N1471codes::ChannelStatus::OVV |
+                                                    N1471codes::ChannelStatus::UNV |
+                                                    N1471codes::ChannelStatus::MAXV |
+                                                    N1471codes::ChannelStatus::TRIP |
+                                                    N1471codes::ChannelStatus::OVP |
+                                                    N1471codes::ChannelStatus::OVT |
+                                                    N1471codes::ChannelStatus::KILL |
+                                                    N1471codes::ChannelStatus::ILK |
+                                                    N1471codes::ChannelStatus::NOCAL))) {
+                palette.setColor(QPalette::WindowText, Qt::red);
+
+            } else {
+                palette.setColor(QPalette::WindowText, Qt::black);
+            }
+            allTabStatus[i]->setPalette(palette);
+            tabCHxSTATUS[i]->setPalette(palette);
             tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetIset[i]->setEnabled(enabled[i] && connectionState);
@@ -922,8 +978,9 @@ void N1471Widget::updateConfiguration(UA_Variant data) {
     }
 }
 
-void DT1470Widget::updateConfiguration(UA_Variant data) {
-    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data.data);
+void DT1470Widget::updateConfiguration(UA_DataValue *data) {
+    auto timestamp = DCSUtils::getTimestamp(data);
+    UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
         QString val;
@@ -945,6 +1002,28 @@ void DT1470Widget::updateConfiguration(UA_Variant data) {
 
             val = QString::fromStdString(DT1470ETcodes::translateChannelStatus(chanStat));
             tabCHxSTATUS[i]->setText(val);
+            allTabStatus[i]->setText(val);
+            auto palette = allTabStatus[i]->palette();
+            if(static_cast<bool>(chanStat & DT1470ETcodes::ChannelStatus::ON)) {
+                palette.setColor(QPalette::WindowText, Qt::darkGreen);
+            } else if(static_cast<bool>(chanStat &
+                                        (DT1470ETcodes::ChannelStatus::OVC |
+                                         DT1470ETcodes::ChannelStatus::OVV |
+                                         DT1470ETcodes::ChannelStatus::UNV |
+                                         DT1470ETcodes::ChannelStatus::MAXV |
+                                         DT1470ETcodes::ChannelStatus::TRIP |
+                                         DT1470ETcodes::ChannelStatus::OVP |
+                                         DT1470ETcodes::ChannelStatus::OVT |
+                                         DT1470ETcodes::ChannelStatus::KILL |
+                                         DT1470ETcodes::ChannelStatus::ILK |
+                                         DT1470ETcodes::ChannelStatus::NOCAL))) {
+                palette.setColor(QPalette::WindowText, Qt::red);
+                tabCHxTrace[i]->addItem(val, timestamp);
+            } else {
+                palette.setColor(QPalette::WindowText, Qt::black);
+            }
+            allTabStatus[i]->setPalette(palette);
+            tabCHxSTATUS[i]->setPalette(palette);
             tabCHxSetRUP[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetRDWN[i]->setEnabled(enabled[i] && connectionState);
             tabCHxSetIset[i]->setEnabled(enabled[i] && connectionState);

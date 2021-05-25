@@ -8,9 +8,9 @@ void BaseWidget::startup() {
     this->activateWindow();
 }
 
-void BaseWidget::updateStatus(UA_Variant data) {
+void BaseWidget::updateStatus(UA_DataValue *data) {
     if(externalLed != nullptr) {
-        auto status = static_cast<bool *>(data.data);
+        auto status = static_cast<bool *>(data->value.data);
         if(*status) {
             externalLed->setColor(Qt::darkGreen);
             externalLed->setState(KLed::State::On);

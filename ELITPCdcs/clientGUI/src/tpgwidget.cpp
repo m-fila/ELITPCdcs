@@ -27,9 +27,9 @@ void TPGWidget::connectSignals() {
             &TPGWidget::updateSensorType);
 }
 
-void TPGWidget::updateStatus(UA_Variant data) {
+void TPGWidget::updateStatus(UA_DataValue *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data.data);
+    bool isConnected = *static_cast<bool *>(data->value.data);
     connectionState = isConnected;
     if(isConnected) {
     } else {
@@ -40,8 +40,8 @@ void TPGWidget::updateStatus(UA_Variant data) {
         }
     }
 }
-void TPGWidget::updateMeasurements(UA_Variant data) {
-    UA_TPG362m measurements = *static_cast<UA_TPG362m *>(data.data);
+void TPGWidget::updateMeasurements(UA_DataValue *data) {
+    UA_TPG362m measurements = *static_cast<UA_TPG362m *>(data->value.data);
     if(measurements.statusSize) {
         QString val;
         std::string s;
@@ -67,10 +67,10 @@ void TPGWidget::updateMeasurements(UA_Variant data) {
     }
 }
 
-void TPGWidget::updateConfiguration(UA_Variant data) {}
+void TPGWidget::updateConfiguration(UA_DataValue *data) {}
 
-void TPGWidget::updateRelay(UA_Variant data) {
-    auto r = *static_cast<UA_Relay *>(data.data);
+void TPGWidget::updateRelay(UA_DataValue *data) {
+    auto r = *static_cast<UA_Relay *>(data->value.data);
     for(size_t i = 0; i < r.statusSize; i++) {
         RelayStruct rStruct;
         rStruct.status = r.status[i];
@@ -263,10 +263,10 @@ void TPGWidget::saveConfig() {
     }
 }
 
-void TPGWidget::updateSensorType(UA_Variant data) {
-    if(data.arrayLength == 2) {
-        auto *sensor = static_cast<UA_String *>(data.data);
-        for(size_t i = 0; i < data.arrayLength; ++i) {
+void TPGWidget::updateSensorType(UA_DataValue *data) {
+    if(data->value.arrayLength == 2) {
+        auto *sensor = static_cast<UA_String *>(data->value.data);
+        for(size_t i = 0; i < data->value.arrayLength; ++i) {
             std::string sensorType;
             if(sensor[i].length != 0) {
                 sensorType = std::string(reinterpret_cast<char *>(sensor[i].data),

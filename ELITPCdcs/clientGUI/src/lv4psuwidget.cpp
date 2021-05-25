@@ -46,9 +46,9 @@ void LV4psuWidget::connectSignals() {
     connect(ui->CH4confISet, SIGNAL(pressed()), this, SLOT(setIPressed()));
 }
 
-void LV4psuWidget::updateStatus(UA_Variant data) {
+void LV4psuWidget::updateStatus(UA_DataValue *data) {
     AbstractWidget::updateStatus(data);
-    bool isConnected = *static_cast<bool *>(data.data);
+    bool isConnected = *static_cast<bool *>(data->value.data);
     connectionState = isConnected;
     if(isConnected) {
         ui->CH1on->setEnabled(!deviceSettings.CH1);
@@ -111,8 +111,8 @@ void LV4psuWidget::updateStatus(UA_Variant data) {
     }
 }
 
-void LV4psuWidget::updateMeasurements(UA_Variant data) {
-    UA_HMPm measurements = *static_cast<UA_HMPm *>(data.data);
+void LV4psuWidget::updateMeasurements(UA_DataValue *data) {
+    UA_HMPm measurements = *static_cast<UA_HMPm *>(data->value.data);
     if(measurements.voltageSize) {
         ui->CH1voltage->display(measurements.voltage[0]);
         ui->CH1current->display(measurements.current[0]);
@@ -139,8 +139,8 @@ void LV4psuWidget::updateMeasurements(UA_Variant data) {
         deviceSettings.Output = measurements.output;
     }
 }
-void LV4psuWidget::updateConfiguration(UA_Variant data) {
-    UA_HMPc configuration = *static_cast<UA_HMPc *>(data.data);
+void LV4psuWidget::updateConfiguration(UA_DataValue *data) {
+    UA_HMPc configuration = *static_cast<UA_HMPc *>(data->value.data);
     if(configuration.voltageSetSize) {
         ui->CH1voltageSet->display(configuration.voltageSet[0]);
         ui->CH1currentSet->display(configuration.currentSet[0]);

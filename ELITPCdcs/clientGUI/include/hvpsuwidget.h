@@ -1,6 +1,7 @@
 #ifndef HVPSUWIDGET_H
 #define HVPSUWIDGET_H
 
+#include "DCSTraceListWidget.h"
 #include "abstractwidget.h"
 #include "dt1415etcodes.h"
 #include "dt1470etcodes.h"
@@ -30,9 +31,9 @@ class HVpsuWidget : public AbstractWidget {
     Ui::HVpsuWidget *ui;
   public slots:
 
-    void updateStatus(UA_Variant data) override;
-    void updateMeasurements(UA_Variant data) override;
-    void updateConfiguration(UA_Variant data) override;
+    void updateStatus(UA_DataValue *data) override;
+    void updateMeasurements(UA_DataValue *data) override;
+    void updateConfiguration(UA_DataValue *data) override;
 
     void allOnPressed();
     void allOffPressed();
@@ -63,6 +64,7 @@ class HVpsuWidget : public AbstractWidget {
     std::vector<QLabel *> allTabIset = std::vector<QLabel *>(channelsNumber + 1);
     std::vector<QRadioButton *> allTabOn = std::vector<QRadioButton *>(channelsNumber);
     std::vector<QRadioButton *> allTabOff = std::vector<QRadioButton *>(channelsNumber);
+    std::vector<QLabel *> allTabStatus = std::vector<QLabel *>(channelsNumber);
     QPushButton *allOn;
     QPushButton *allOff;
     // tab CH x containers;
@@ -89,7 +91,8 @@ class HVpsuWidget : public AbstractWidget {
     std::vector<QLabel *> tabCHxVset = std::vector<QLabel *>(channelsNumber);
     std::vector<QPushButton *> tabCHxSetV = std::vector<QPushButton *>(channelsNumber);
     std::vector<QLabel *> tabCHxImon = std::vector<QLabel *>(channelsNumber);
-
+    std::vector<DCSTraceListWidget *> tabCHxTrace =
+        std::vector<DCSTraceListWidget *>(channelsNumber);
     bool isRemote;
     //  bool initialUpdate;
     bool connectionState;
@@ -118,7 +121,7 @@ class DT1470Widget : public HVpsuWidget {
     Q_OBJECT
   public:
     DT1470Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
-    void updateConfiguration(UA_Variant data) final;
+    void updateConfiguration(UA_DataValue *data) final;
 
   private:
     std::string getDeviceType() const final { return "DT1470ET"; }
@@ -128,7 +131,7 @@ class N1471Widget : public HVpsuWidget {
     Q_OBJECT
   public:
     N1471Widget(std::string name, int enabledChannels = 4, QWidget *parent = 0);
-    void updateConfiguration(UA_Variant data) final;
+    void updateConfiguration(UA_DataValue *data) final;
 
   private:
     std::string getDeviceType() const final { return "N1471"; }

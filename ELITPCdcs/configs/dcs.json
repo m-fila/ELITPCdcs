@@ -1,85 +1,86 @@
 {
-    "logFile": "/home/mfila/.dcs/dcs.log",
-    "profileDir": "/home/mfila/.dcs",
+    "recoveryFile": "/data/edcs/dcs/recovery.json",
+    "logLevel": "info",
+    "logFile": "/data/edcs/dcs/logs/dcs.log",
+    "profileDir": "/data/edcs/dcs/profiles",
     "server": {
-        "id": "test server",
-        "address": "192.168.168.2",
-        "port": 6669
+        "id": "ELITPC",
+        "address": "localhost",
+        "port": 6679
     },
     "database": {
         "type": "influxdb",
-        "address": "127.0.0.1",
+        "address": "localhost",
         "port": 8086,
-        "db": "test"
+        "db": "elitpc"
     },
     "devices": [
         {
-            "id": "LV1",
+            "id": "ASAD-LV",
             "type": "HMP2020",
             "address": "192.168.168.20",
             "port": "5025"
         },
         {
-            "id": "LV2",
-            "type": "HMP4040",
+            "id": "EKI-LV",
+            "type": "HMP2020",
+            "address": "192.168.168.21",
             "port": "5025"
         },
         {
-            "id": "HV1",
-            "type": "DT1415ET",
-            "address": "192.168.168.40",
+            "id": "DRIFT-HV",
+            "type": "DT1470ET",
+            "address": "192.168.168.35",
             "port": "1470"
         },
         {
-            "id": "HV2",
-            "type": "N1471",
-            "address": "192.168.168.103",
-            "port": "5303"
-        },
-        {
-            "id": "HiVolta",
+            "id": "GEM-HV",
             "type": "DT1415ET",
-            "address": "192.168.168.40",
-            "port": "1470",
-            "enabledChannels": 6
+            "address": "192.168.168.30",
+            "port": "1470"
         },
         {
-            "id": "DT1470",
-            "type": "DT1470ET",
-            "address": "192.168.168.42",
-            "port": "1470",
-            "enabledChannels": 4
+            "id": "M1",
+            "type": "MKS910",
+            "address": "192.168.168.104",
+            "port": "5300",
+            "interval": 10000
         },
         {
-            "id": "N1471",
-            "type": "N1471",
-            "address": "192.168.168.103",
-            "port": "5303",
-            "enabledChannels": 1
+            "id": "M2",
+            "type": "MKS910",
+            "address": "192.168.168.104",
+            "port": "5301",
+            "interval": 10000
         },
         {
-            "id": "PM1",
+            "id": "M3",
+            "type": "MKS910",
+            "address": "192.168.168.104",
+            "port": "5302",
+            "interval": 10000
+        },
+        {
+            "id": "PID Controller",
+            "type": "MKS946",
+            "address": "192.168.168.105",
+            "port": "5300"
+        },
+        {
+            "id": "PM3",
             "type": "TPG362",
-            "address": "192.168.168.41",
-            "port": "8000"
+            "address": "192.168.168.105",
+            "port": "5301"
         },
         {
             "id": "Weather",
             "type": "PiWeather",
-            "address": "192.168.168.55",
+            "address": "192.168.168.110",
             "port": "2244"
-        },
-        {
-            "id": "MKS1",
-            "type": "MKS910",
-            "address": "192.168.168.102",
-            "port": "5300"
-        },
-        {
-            "id": "MKS2",
-            "type": "MKS910",
-            "address": "192.168.168.102",
-            "port": "5301"
         }
-    ]
+    ],
+    "grafana": {
+        "address": "10.15.4.67",
+        "port": 3000
+    }
 }

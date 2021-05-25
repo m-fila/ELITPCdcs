@@ -5,15 +5,15 @@ AbstractWidget::AbstractWidget(opc_controller *controller, std::string name,
     tcp = new TCPWidget(horizontalTcpPanel, this);
 }
 
-void AbstractWidget::updateStatus(UA_Variant data) {
+void AbstractWidget::updateStatus(UA_DataValue *data) {
     BaseWidget::updateStatus(data);
-    auto status = *static_cast<bool *>(data.data);
+    auto status = *static_cast<bool *>(data->value.data);
     tcp->setStatus(status);
     deviceInfoLabel.setEnabled(status);
 }
 
-void AbstractWidget::updateConnectionParameters(UA_Variant data) {
-    auto *param = static_cast<UA_ParametersTCP *>(data.data);
+void AbstractWidget::updateConnectionParameters(UA_DataValue *data) {
+    auto *param = static_cast<UA_ParametersTCP *>(data->value.data);
 
     std::string address;
     if(param->address.length == 0) {
@@ -49,7 +49,7 @@ void AbstractWidget::connectSignals() {
             &AbstractWidget::updateDeviceInfo);
 }
 
-void AbstractWidget::updateDeviceInfo(UA_Variant data) {
+void AbstractWidget::updateDeviceInfo(UA_DataValue *data) {
     auto f = [](const UA_String &ua) {
         std::string s = "";
         if(ua.length != 0) {
@@ -57,7 +57,7 @@ void AbstractWidget::updateDeviceInfo(UA_Variant data) {
         }
         return s;
     };
-    auto *info = static_cast<UA_DeviceInfo *>(data.data);
+    auto *info = static_cast<UA_DeviceInfo *>(data->value.data);
     std::string deviceInfo = f(info->vendor) + "/" + f(info->model) + "/" +
                              f(info->firmwareVersion) + "/" + f(info->serialNumber);
     deviceInfoLabel.setText(deviceInfo.c_str());

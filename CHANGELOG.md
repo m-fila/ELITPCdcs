@@ -1,3 +1,5 @@
+- added trace list widget to hv  
+- added hv status in front panel
 - fixed hw widget voltage limits
 - fixed MKS946 zero MFC
 - fixed MKS936 setting PID in PID control mode

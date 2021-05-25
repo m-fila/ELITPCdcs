@@ -28,9 +28,9 @@ class PiWeatherWidget : public AbstractWidget {
 
   public slots:
 
-    void updateStatus(UA_Variant data) override;
-    void updateMeasurements(UA_Variant data);
-    void updateConfiguration(UA_Variant data);
+    void updateStatus(UA_DataValue *data) override;
+    void updateMeasurements(UA_DataValue *data);
+    void updateConfiguration(UA_DataValue *data);
 
     void changeNamePressed();
 

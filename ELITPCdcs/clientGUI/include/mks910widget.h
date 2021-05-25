@@ -26,10 +26,10 @@ class MKS910Widget : public AbstractWidget {
 
   public slots:
 
-    void updateStatus(UA_Variant data) override;
-    void updateMeasurements(UA_Variant data) override;
-    void updateConfiguration(UA_Variant data) override;
-    void updateRelay(UA_Variant data);
+    void updateStatus(UA_DataValue *data) override;
+    void updateMeasurements(UA_DataValue *data) override;
+    void updateConfiguration(UA_DataValue *data) override;
+    void updateRelay(UA_DataValue *data);
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
