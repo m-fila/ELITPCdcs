@@ -59,6 +59,8 @@ void HVpsuWidget::updateStatus(UA_DataValue *data) {
             tabCHxLed[i]->setState(static_cast<KLed::State>(ON[i]));
             tabCHxVset[i]->setEnabled(true);
             tabCHxImon[i]->setEnabled(true);
+            tabCHxSTATUS[i]->setEnabled(true);
+            allTabStatus[i]->setEnabled(true);
         }
         allTabLed[channelsNumber]->setState((KLed::State)(true));
         allTabVset[channelsNumber]->setEnabled(true);
@@ -91,6 +93,8 @@ void HVpsuWidget::updateStatus(UA_DataValue *data) {
             tabCHxLed[i]->setState(static_cast<KLed::State>(false));
             tabCHxVset[i]->setEnabled(false);
             tabCHxImon[i]->setEnabled(false);
+            tabCHxSTATUS[i]->setEnabled(false);
+            allTabStatus[i]->setEnabled(false);
         }
         allTabLed[channelsNumber]->setState(static_cast<KLed::State>(false));
         allTabVset[channelsNumber]->setEnabled(false);
@@ -119,6 +123,7 @@ void HVpsuWidget::updateMeasurements(UA_DataValue *data) {
     }
 }
 void HVpsuWidget::updateConfiguration(UA_DataValue *data) {
+    auto timestamp = getTimestamp(data);
     UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
@@ -158,6 +163,7 @@ void HVpsuWidget::updateConfiguration(UA_DataValue *data) {
                                          DT1415ETcodes::ChannelStatus::INTLK |
                                          DT1415ETcodes::ChannelStatus::FAIL))) {
                 palette.setColor(QPalette::WindowText, Qt::red);
+                tabCHxTrace[i]->addItem(val, timestamp);
             } else {
                 palette.setColor(QPalette::WindowText, Qt::black);
             }
@@ -817,7 +823,8 @@ void HVpsuWidget::createChannelTabs() {
         // end setRDWN
 
         qvb->addWidget(channelSettingsBox);
-
+        tabCHxTrace[i] = new DCSTraceListWidget;
+        qvb->addWidget(tabCHxTrace[i]);
         qvb->addStretch();
 
         tabCHx[i]->setLayout(qvb);
@@ -882,7 +889,7 @@ N1471Widget::N1471Widget(std::string name, int enabledChannels, QWidget *parent)
 }
 
 void N1471Widget::updateConfiguration(UA_DataValue *data) {
-
+    auto timestamp = getTimestamp(data);
     UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
@@ -904,7 +911,6 @@ void N1471Widget::updateConfiguration(UA_DataValue *data) {
             allTabOff[i]->setChecked((!ON[i]) && connectionState);
 
             val = QString::fromStdString(N1471codes::translateChannelStatus(chanStat));
-
             tabCHxSTATUS[i]->setText(val);
             allTabStatus[i]->setText(val);
 
@@ -922,6 +928,7 @@ void N1471Widget::updateConfiguration(UA_DataValue *data) {
                                                     N1471codes::ChannelStatus::ILK |
                                                     N1471codes::ChannelStatus::NOCAL))) {
                 palette.setColor(QPalette::WindowText, Qt::red);
+
             } else {
                 palette.setColor(QPalette::WindowText, Qt::black);
             }
@@ -971,6 +978,7 @@ void N1471Widget::updateConfiguration(UA_DataValue *data) {
 }
 
 void DT1470Widget::updateConfiguration(UA_DataValue *data) {
+    auto timestamp = getTimestamp(data);
     UA_DT1415c channelStatus = *static_cast<UA_DT1415c *>(data->value.data);
     if(channelStatus.statusSize) {
         // bool ON;//, enabled;
@@ -1009,6 +1017,7 @@ void DT1470Widget::updateConfiguration(UA_DataValue *data) {
                                          DT1470ETcodes::ChannelStatus::ILK |
                                          DT1470ETcodes::ChannelStatus::NOCAL))) {
                 palette.setColor(QPalette::WindowText, Qt::red);
+                tabCHxTrace[i]->addItem(val, timestamp);
             } else {
                 palette.setColor(QPalette::WindowText, Qt::black);
             }
