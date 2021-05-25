@@ -39,6 +39,7 @@ pip3 install pandas influxdb
 ### Building
 ```
 git clone --recursive ssh://git@dracula.hep.fuw.edu.pl:8822/mfila/dcs.git
+cd dcs
 . env.sh
 mkdir build && cd build
 cmake ..
