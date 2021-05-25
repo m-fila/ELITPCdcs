@@ -1,9 +1,9 @@
 #include "DCSTraceListWidget.h"
 #include "DCSInputDialog.h"
 #include <QHBoxLayout>
+#include <QSizePolicy>
 #include <QVBoxLayout>
 #include <algorithm>
-
 DCSTraceListWidget::DCSTraceListWidget(QWidget *parent) : QWidget(parent) {
     connectSignals();
     auto *mainLayout = new QVBoxLayout;
@@ -12,9 +12,12 @@ DCSTraceListWidget::DCSTraceListWidget(QWidget *parent) : QWidget(parent) {
     auto *buttonLayout = new QHBoxLayout;
     mainLayout->addLayout(buttonLayout);
     buttonLayout->addStretch();
+    buttonLayout->addWidget(&clearAllButton);
+    clearAllButton.setText("Clear");
+    clearAllButton.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
     buttonLayout->addWidget(&configButton);
     configButton.setText("Configure\ntrace");
-    timer.setInterval(10000);
+    timer.setInterval(60000);
     timer.start();
 }
 
@@ -22,6 +25,8 @@ void DCSTraceListWidget::connectSignals() {
     connect(&timer, &QTimer::timeout, this, &DCSTraceListWidget::clearItems);
     connect(&configButton, &QPushButton::pressed, this,
             &DCSTraceListWidget::configureDialog);
+    connect(&clearAllButton, &QPushButton::pressed, this,
+            &DCSTraceListWidget::clearAllItems);
 }
 
 void DCSTraceListWidget::clearItems() {
@@ -31,6 +36,13 @@ void DCSTraceListWidget::clearItems() {
                        [now](const DCSTraceItem *i) { return i->timestamp < now; });
     std::for_each(obsolete, traces.end(), [](DCSTraceItem *i) { delete i; });
     traces.erase(obsolete, traces.end());
+}
+
+void DCSTraceListWidget::clearAllItems() {
+    for(auto *i : traces) {
+        delete i;
+    }
+    traces.clear();
 }
 
 void DCSTraceListWidget::configureDialog() {

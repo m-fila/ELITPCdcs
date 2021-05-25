@@ -31,9 +31,11 @@ class DCSTraceListWidget : public QWidget {
     QListWidget list;
     void connectSignals();
     QPushButton configButton;
+    QPushButton clearAllButton;
   private slots:
     void clearItems();
     void configureDialog();
+    void clearAllItems();
 };
 
 #endif  // DCS_COREDCS_CLIENTGUI_TRACELISTWIDGET_H_
