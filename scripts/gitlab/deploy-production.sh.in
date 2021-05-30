@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo dpkg -i @CPACK_PACKAGE_FILE_NAME@.deb
