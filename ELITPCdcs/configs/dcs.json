@@ -80,7 +80,7 @@
         }
     ],
     "grafana": {
-        "address": "10.15.4.67",
+        "address": "localhost",
         "port": 3000
     }
 }
