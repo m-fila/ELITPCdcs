@@ -8,7 +8,7 @@
 #include <iostream>
 using json = nlohmann::json;
 int main(int argc, char *argv[]) {
-    std::cout << DCSArt::ascii << "v" << ELITPC_DCS_VERSION << std::endl;
+    std::cout << DCSArt::ascii << "v" << DCS_VERSION << std::endl;
     json config = ConfigLoader::getMasterConfig(argc, argv);
 
     DCSLogger::setFile(config.at("logFile").get<std::string>());

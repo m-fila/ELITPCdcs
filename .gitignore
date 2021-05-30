@@ -13,3 +13,5 @@ compile_commands.json
 workspace.code-workspace
 docs/api/*
 deps/include/ProjectVersion.h
+scripts/gitlab/release-assets.sh
+scripts/gitlab/deploy-production.sh

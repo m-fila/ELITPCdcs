@@ -4,6 +4,7 @@ set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
 set(CPACK_PACKAGE_FILE_NAME
     ${CPACK_PACKAGE_NAME}-v${CPACK_PACKAGE_VERSION}-${CMAKE_SYSTEM_NAME})
+
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "mfila")
 set(CPACK_DEBIAN_PACKAGE_HOMEPAGE
     "https://dracula.hep.fuw.edu.pl:8888/mfila/dcs")
@@ -20,4 +21,9 @@ if(BUILD_SERVER)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dcs-server.service
           DESTINATION scripts)
 endif(BUILD_SERVER)
+configure_file(${PROJECT_SOURCE_DIR}/scripts/gitlab/deploy-production.sh.in
+               ${PROJECT_SOURCE_DIR}/scripts/gitlab/deploy-production.sh @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/scripts/gitlab/release-assets.sh.in
+               ${PROJECT_SOURCE_DIR}/scripts/gitlab/release-assets.sh @ONLY)
+
 include(CPack)

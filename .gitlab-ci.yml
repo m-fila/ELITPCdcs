@@ -50,12 +50,9 @@ staging_ssh:
   - ssh
   environment: daq-$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
   script:
-    - cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-    - cmake --build build
-    - rm -rf $HOME/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
-    - cmake --build build --target install
+    - bash scripts/gitlab/deploy-staging.sh 
   dependencies: []
-    
+
 package:
   stage: build
   tags:
@@ -76,14 +73,7 @@ release:
   before_script:
     - apt-get -qq update && apt-get -qq install -y curl
   script:
-    - |
-      curl -k --silent --show-error --fail \
-        --header "PRIVATE-TOKEN: $REPO_KEY" \
-        --data name="$CI_COMMIT_TAG" \
-        --data tag_name="$CI_COMMIT_TAG" \
-        --data description="$(cat CHANGELOG.md)" \
-        --request POST "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
-    - bash tools/release-assets.sh
+    - bash scripts/gitlab/release-assets.sh
   dependencies: []
   only:
     - /^v[0-9]+(?:.[0-9]+)+$/
