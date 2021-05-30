@@ -72,7 +72,9 @@ release:
   stage: release
   before_script:
     - apt-get -qq update && apt-get -qq install -y curl
+    - cmake -S . -Bbuild
   script:
+    - bash scripts/gitlab/make-release.sh
     - bash scripts/gitlab/release-assets.sh
   dependencies: []
   only:
