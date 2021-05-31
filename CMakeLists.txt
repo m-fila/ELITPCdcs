@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(
-  ELITPC_DCS
-  VERSION 1.7.7
+  dcs
+  VERSION 1.7.8
   LANGUAGES CXX C)
 message("\nStarted CMake for ${PROJECT_NAME} v${PROJECT_VERSION}")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} -g3 -fno-inline -Wall -Wno-unused-function")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX
-      "/opt/soft/${PROJECT_NAME}-${PROJECT_VERSION}"
+      "/opt/soft/${PROJECT_NAME}-v${PROJECT_VERSION}"
       CACHE PATH "..." FORCE)
 endif()
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)

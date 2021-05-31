@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv) {
     std::cout << "dcsCheck "
-              << "v" << ELITPC_DCS_VERSION << std::endl;
+              << "v" << DCS_VERSION << std::endl;
     json config = ConfigLoader::getMasterConfig(argc, argv);
     int retv = 0;
     if(config.contains("server")) {
