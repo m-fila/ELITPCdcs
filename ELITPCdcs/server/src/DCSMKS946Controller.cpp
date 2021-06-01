@@ -1,5 +1,6 @@
 #include "DCSMKS946Controller.h"
 #include "utils.h"
+#include <algorithm>
 void DCSMKS946Controller::addChildren(const Options &options) {
     DCSDeviceController<MKS946>::addChildren(options);
     auto &m = addVariable("measurements",
@@ -69,7 +70,11 @@ void DCSMKS946Controller::addChildren(const Options &options) {
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
     UA_MKS946m mks;
     UA_MKS946m_init(&mks);
-    mks.flow = std::stod(device.getFlow(flowCH));
+    auto flow = device.getFlow(flowCH);
+    if(flow.at(0) == '<' || flow.at(0) == '>') {
+        flow = flow.substr(1, flow.size() - 1);
+    }
+    mks.flow = std::stod(flow);
     mks.pressure = std::stod(device.getPressure(pressureCH));
     return mks;
 }
