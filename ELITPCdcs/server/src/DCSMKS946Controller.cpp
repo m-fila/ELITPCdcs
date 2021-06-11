@@ -1,6 +1,7 @@
 #include "DCSMKS946Controller.h"
 #include "utils.h"
 #include <algorithm>
+#include <iostream>
 void DCSMKS946Controller::addChildren(const Options &options) {
     DCSDeviceController<MKS946>::addChildren(options);
     auto &m = addVariable("measurements",
@@ -65,6 +66,7 @@ void DCSMKS946Controller::addChildren(const Options &options) {
                             device.zeroMFC(flowCH);
                             device.setUserCalibrationEnabled(false);
                         });
+    addInterlock(options);
 }
 
 UA_MKS946m DCSMKS946Controller::getMeasurements() {
@@ -268,4 +270,37 @@ UA_Boolean DCSMKS946Controller::getPIDState() {
     } else {
         throw std::runtime_error("Received incorrect pid state: " + response);
     }
+}
+
+void DCSMKS946Controller::addInterlock(const Options &options) {
+    auto &interlockState = addVariable("interlockState", &UA_TYPES[UA_TYPES_BOOLEAN]);
+    auto &interlockEnabled = addVariable("interlockEnabled", &UA_TYPES[UA_TYPES_BOOLEAN]);
+    auto &interlockLimit = addVariable("interlockLimit", &UA_TYPES[UA_TYPES_DOUBLE]);
+    addVariableUpdate(interlockState, 1000, &DCSMKS946Controller::interlockAction, this,
+                      options);
+    interlockEnabled.setValue(options.value("interlockEnabled", false));
+    interlockLimit.setValue(options.value("interlockLimit", std::nan("")));
+    addControllerMethod("configureInterlock", "Configures software interlock",
+                        {{"Enabled", "OFF/ON", &UA_TYPES[UA_TYPES_BOOLEAN]},
+                         {"Limit", "Upper bound", &UA_TYPES[UA_TYPES_DOUBLE]}},
+                        {}, &DCSMKS946Controller::configureInterlock, this);
+}
+
+bool DCSMKS946Controller::interlockAction() {
+    if(!variables.at("interlockEnabled")->getValue<bool>()) {
+        return false;
+    }
+    auto setValue = variables.at("interlockLimit")->getValue<double>();
+    if(!std::isnan(setValue) && (setValue < std::stod(device.getPressure(pressureCH)))) {
+        device.setFlowMode(flowCH, MKS946codes::FlowMode::CLOSE);
+    }
+    return false;
+}
+
+void DCSMKS946Controller::configureInterlock(const UA_Variant *input,
+                                             UA_Variant *output) {
+    auto enabled = *static_cast<UA_Boolean *>(input[0].data);
+    auto limit = *static_cast<UA_Double *>(input[1].data);
+    variables.at("interlockEnabled")->setValue(enabled);
+    variables.at("interlockLimit")->setValue(limit);
 }
