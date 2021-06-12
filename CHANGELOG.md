@@ -1,2 +1,1 @@
-
-- added software interlock
+- added software interlock with gui

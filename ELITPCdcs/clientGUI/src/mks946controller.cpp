@@ -99,4 +99,3 @@ void MKS946_controller::callConfigureInterlock(bool enabled, double limit){
                          nullptr, nullptr, nullptr);
     UA_Variant_clear(input);
 }
-}
