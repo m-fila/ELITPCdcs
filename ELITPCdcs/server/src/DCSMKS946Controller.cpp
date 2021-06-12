@@ -293,6 +293,8 @@ bool DCSMKS946Controller::interlockAction() {
     auto setValue = variables.at("interlockLimit")->getValue<double>();
     if(!std::isnan(setValue) && (setValue < std::stod(device.getPressure(pressureCH)))) {
         device.setFlowMode(flowCH, MKS946codes::FlowMode::CLOSE);
+        variables.at("configuration")->setValue(getConfiguration());
+        return true;
     }
     return false;
 }
