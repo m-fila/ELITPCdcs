@@ -19,5 +19,7 @@ class MKS946_controller : public opc_controller {
                           std::string direction, int band, int gain);
     void callSetPIDState(bool state);
     void callZeroMFC();
+
+    void callConfigureInterlock(bool enabled, double limit);
 };
 #endif  // MKS946_CONTROLLER_H

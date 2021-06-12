@@ -89,3 +89,14 @@ void MKS946_controller::callZeroMFC() {
     UA_Client_call_async(client, ObjectNodeId, browsedIds["zeroMFC"], 0, nullptr, nullptr,
                          nullptr, nullptr);
 }
+
+void MKS946_controller::callConfigureInterlock(bool enabled, double limit){
+        UA_Variant input[2];
+    UA_Variant_init(input);
+    UA_Variant_setScalarCopy(&input[0], &enabled, &UA_TYPES[UA_TYPES_BOOLEAN]);
+    UA_Variant_setScalarCopy(&input[1], &limit, &UA_TYPES[UA_TYPES_DOUBLE]);
+    UA_Client_call_async(client, ObjectNodeId, browsedIds["configureInterlock"], 2, input,
+                         nullptr, nullptr, nullptr);
+    UA_Variant_clear(input);
+}
+}
