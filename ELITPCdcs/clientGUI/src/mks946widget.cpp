@@ -530,8 +530,6 @@ void MKS946Widget::createITab() {
     secondRow->addWidget(new QLabel("Enabled:"));
     secondRow->addWidget(&interlockEnabled);
     secondRow->addStretch();
-    secondRow->addWidget(&interlockStatus);
-    secondRow->addStretch();
     secondRow->addWidget(&setInterlockOn);
     secondRow->addWidget(&setInterlockOff);
     secondRow->addStretch();
@@ -549,7 +547,7 @@ void MKS946Widget::createITab() {
     auto *moniteredItem = controller->addMonitoredItem("interlockLimit");
     connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
             &MKS946Widget::updateSoftwareInterlockValue);
-    moniteredItem = controller->addMonitoredItem("interlockStatus");
+    moniteredItem = controller->addMonitoredItem("interlockState");
     connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
             &MKS946Widget::updateSoftwareInterlockStatus);
     moniteredItem = controller->addMonitoredItem("interlockEnabled");
