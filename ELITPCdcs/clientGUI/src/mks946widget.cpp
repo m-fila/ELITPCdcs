@@ -508,11 +508,14 @@ void MKS946Widget::createITab() {
     tab->addTab(widget, "Software\ninterlock");
     QVBoxLayout *layout = new QVBoxLayout();
     widget->setLayout(layout);
-    auto *interlockBox = new QGroupBox("Software interlock");
+    auto *interlockBox = new QGroupBox("Anti-explosion software interlock");
     layout->addWidget(interlockBox);
     layout->addStretch();
     auto *interlockLayout = new QVBoxLayout();
     interlockBox->setLayout(interlockLayout);
+    interlockLayout->addWidget(new QLabel("Source: Baratron"));
+    interlockLayout->addWidget(new QLabel("Target: MFC"));
+    interlockLayout->addSpacing(10);
     auto *firstRow = new QHBoxLayout();
     interlockLayout->addLayout(firstRow);
     auto *secondRow = new QHBoxLayout();
