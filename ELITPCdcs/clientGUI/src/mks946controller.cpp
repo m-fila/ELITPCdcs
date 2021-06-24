@@ -90,8 +90,8 @@ void MKS946_controller::callZeroMFC() {
                          nullptr, nullptr);
 }
 
-void MKS946_controller::callConfigureInterlock(bool enabled, double limit){
-        UA_Variant input[2];
+void MKS946_controller::callConfigureInterlock(bool enabled, double limit) {
+    UA_Variant input[2];
     UA_Variant_init(input);
     UA_Variant_setScalarCopy(&input[0], &enabled, &UA_TYPES[UA_TYPES_BOOLEAN]);
     UA_Variant_setScalarCopy(&input[1], &limit, &UA_TYPES[UA_TYPES_DOUBLE]);

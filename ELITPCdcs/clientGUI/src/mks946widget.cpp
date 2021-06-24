@@ -85,7 +85,8 @@ void MKS946Widget::updateMeasurements(UA_DataValue *data) {
         return QString::fromStdString(s);
     };
 
-    mVacuum->display(f(measurements.pressure, measurements.pressure > 0 ? 3 : 2));
+    // mVacuum->display(f(measurements.pressure, measurements.pressure > 0 ? 3 : 2));
+    mVacuum->display(f(measurements.pressure, 2));
     mFlow->display(f(measurements.flow, 2));
 }
 
