@@ -55,7 +55,7 @@ void TPGWidget::updateMeasurements(UA_DataValue *data) {
                 mVacuum[i]->display("OFF");
             } else {
                 std::ostringstream os;
-                os << std::scientific << std::setprecision(5) << std::uppercase
+                os << std::scientific << std::setprecision(4) << std::uppercase
                    << measurements.vacuum[i];
                 s = os.str();
                 s.insert(s.size() - 4, " ");

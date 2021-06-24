@@ -38,18 +38,18 @@ void MKS910Widget::updateStatus(UA_DataValue *data) {
 }
 void MKS910Widget::updateMeasurements(UA_DataValue *data) {
     UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data->value.data);
-    auto format = [](QLCDNumber &lcd, double value) {
+    auto format = [](QLCDNumber &lcd, double value, size_t precision) {
         std::string s;
         std::ostringstream os;
-        os << std::scientific << std::setprecision(5) << std::uppercase << value;
+        os << std::scientific << std::setprecision(precision) << std::uppercase << value;
         s = os.str();
         s.insert(s.size() - 4, " ");
         s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
         lcd.display(QString::fromStdString(s));
     };
-    format(combined, measurements.combined);
-    format(pirani, measurements.pirani);
-    format(piezo, measurements.piezo);
+    format(combined, measurements.combined, 3);
+    format(pirani, measurements.pirani, 2);
+    format(piezo, measurements.piezo, 2);
 
     QString val;
     MKS910codes::Units units = static_cast<MKS910codes::Units>(measurements.units);
