@@ -37,7 +37,6 @@ DCSTwoStateButton::DCSTwoStateButton(QString onLabel, QString offLabel,
     connect(&onButton, SIGNAL(clicked()), this, SLOT(click()));
     connect(&offButton, SIGNAL(clicked()), this, SLOT(click()));
     update();
-    connect(this, &DCSTwoStateButton::clicked, this, &DCSTwoStateButton::setState);
 }
 
 DCSTwoStateButton::DCSTwoStateButton(Qt::Orientation orientation, Display display,
