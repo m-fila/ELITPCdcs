@@ -14,8 +14,7 @@ DCSServer::DCSServer(std::string address, int port) {
     UA_String hostname = UA_STRING_ALLOC(address.c_str());
     UA_ServerConfig_setCustomHostname(config, hostname);
     UA_String_deleteMembers(&hostname);
-    //  setDescription("DCS", "urn:DCS.server.application",
-    //                 "http://fuw.edu.pl/~mfila/dcs");
+
     auto retv =
         UA_Server_setNodeContext(server, UA_NODEID_NUMERIC(0, UA_NS0ID_SERVER), this);
     if(retv != UA_STATUSCODE_GOOD) {
@@ -33,19 +32,27 @@ DCSServer::DCSServer(std::string address, int port) {
 
 void DCSServer::setDescription(std::string appName, std::string appURI,
                                std::string productURI) {
-    UA_LocalizedText aName = UA_LOCALIZEDTEXT_ALLOC("en-Us", appName.c_str());
-    UA_String aURI = UA_STRING_ALLOC(appURI.c_str());
-    UA_String pURI = UA_STRING_ALLOC(productURI.c_str());
 
-    config->applicationDescription.applicationName = aName;
-    config->applicationDescription.applicationUri = aURI;
-    config->applicationDescription.productUri = pURI;
+    config->applicationDescription.applicationName =
+        UA_LOCALIZEDTEXT_ALLOC("en-Us", appName.c_str());
+    config->applicationDescription.applicationUri = UA_STRING_ALLOC(appURI.c_str());
+    config->applicationDescription.productUri = UA_STRING_ALLOC(productURI.c_str());
     for(size_t i = 0; i != config->endpointsSize; ++i) {
-        config->endpoints[i].server.applicationName = aName;
-        config->endpoints[i].server.applicationUri = aURI;
-        config->endpoints[i].server.productUri = pURI;
+        config->endpoints[i].server.applicationName =
+            UA_LOCALIZEDTEXT_ALLOC("en-Us", appName.c_str());
+        config->endpoints[i].server.applicationUri = UA_STRING_ALLOC(appURI.c_str());
+        config->endpoints[i].server.productUri = UA_STRING_ALLOC(productURI.c_str());
     }
 }
+
+void DCSServer::setBuildInfo(std::string productUri, std::string productName,
+                             std::string manufacturerName, std::string softwareVersion) {
+    config->buildInfo.productUri = UA_STRING_ALLOC(productUri.c_str());
+    config->buildInfo.productName = UA_STRING_ALLOC(productName.c_str());
+    config->buildInfo.manufacturerName = UA_STRING_ALLOC(manufacturerName.c_str());
+    config->buildInfo.softwareVersion = UA_STRING_ALLOC(softwareVersion.c_str());
+}
+
 DCSServer::~DCSServer() {
     for(auto i : objects) {
         delete i.second;
