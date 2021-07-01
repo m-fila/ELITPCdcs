@@ -5,6 +5,7 @@
 #include <QStyleFactory>
 #include <iostream>
 #include <signal.h>
+#include "ProjectVersion.h"
 using json = nlohmann::json;
 void stopHandler(int sig) {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
@@ -14,7 +15,7 @@ void stopHandler(int sig) {
 int main(int argc, char *argv[]) {
     signal(SIGINT, stopHandler);
     signal(SIGTERM, stopHandler);
-    std::cout << DCSArt::ascii << std::endl;
+    std::cout << DCSArt::ascii << DCS_VERSION << std::endl;
 
     json config = ConfigLoader::getMasterConfig(argc, argv);
 

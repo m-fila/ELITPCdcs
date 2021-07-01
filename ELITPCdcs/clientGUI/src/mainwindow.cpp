@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QFormLayout>
 #include <QMessageBox>
+#include <ProjectVersion.h>
 MainWindow::MainWindow(json &config, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -15,6 +16,7 @@ MainWindow::MainWindow(json &config, QWidget *parent)
     statemachine = new stateMachine("MachineState");
     connectSignals();
     client->start();
+    buildMenu();
 }
 
 MainWindow::~MainWindow() {
@@ -152,4 +154,17 @@ void MainWindow::connectionStatusChanged(bool isConnected) {
     } else {
         emit closeConnectionAlert();
     }
+}
+
+void MainWindow::buildMenu() {
+    auto *helpMenu = menuBar()->addMenu(tr("&Help"));
+    auto *aboutAct = helpMenu->addAction(tr("&About"), this, &MainWindow::aboutAction);
+    aboutAct->setStatusTip(tr("Show about box"));
+}
+
+void MainWindow::aboutAction() {
+    QMessageBox::about(this, tr("About dcs"),
+                       "<p align='center'><b>dcs</b><br/>"
+                       "Detector Control System for ELITPC<br/>" "Client v" DCS_VERSION
+                       "</p>");
 }
