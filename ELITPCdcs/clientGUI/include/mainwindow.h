@@ -2,21 +2,13 @@
 #define MAINWINDOW_H
 
 #include "eli_client_gui.h"
-#include "hvpsuwidget.h"
 #include "kled.h"
-#include "lv4psuwidget.h"
-#include "lvpsuwidget.h"
-#include "mks910widget.h"
-#include "mks946widget.h"
-#include "piweatherwidget.h"
-#include "state.h"
-#include "tpgwidget.h"
-#include <QComboBox>
+#include <QLabel>
 #include <QMainWindow>
-#include <QPushButton>
-#include <json.hpp>
-
-using json = nlohmann::json;
+#include <QString>
+#include <QTimer>
+#include <utility>
+#include <vector>
 
 namespace Ui {
 class MainWindow;
@@ -26,26 +18,21 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
   public:
-    MainWindow(json &config, QWidget *parent = 0);
-    ~MainWindow();
-
-  protected:
-    void closeEvent(QCloseEvent *e);
+    MainWindow(QWidget *parent = 0);
 
   private:
     Ui::MainWindow *ui;
-    eli_client *client;
-    stateMachine *statemachine;
-    std::vector<QPushButton *> startButtons;
-    std::vector<KLed *> controlLeds;
-    std::vector<AbstractWidget *> deviceWidgets;
-    QComboBox *stateBox;
-    void loadWidgets(json &items);
-    void connectSignals();
-    void buildStateBox();
+    QTimer timer;
+    const std::vector<QString> possibleStates = {"stable", "perfect", "fine"};
+    const std::vector<std::pair<QString, QLabel *>> items = {{"HV system", new QLabel()},
+                                                             {"LV system", new QLabel()},
+                                                             {"Gas system", new QLabel()},
+                                                             {"Weather", new QLabel()}};
+    void createWidgets();
+    void createMenu();
+    void aboutAction();
+
   private slots:
-    void connectionStatusChanged(bool);
-  signals:
-    void closeConnectionAlert();
+    void updateLabels();
 };
 #endif  // MAINWINDOW_H
