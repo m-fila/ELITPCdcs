@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <ProjectVersion.h>
 #include <QFormLayout>
 #include <QMessageBox>
-#include <ProjectVersion.h>
 MainWindow::MainWindow(json &config, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -165,6 +165,6 @@ void MainWindow::buildMenu() {
 void MainWindow::aboutAction() {
     QMessageBox::about(this, tr("About dcs"),
                        "<p align='center'><b>dcs</b><br/>"
-                       "Detector Control System for ELITPC<br/>" "Client v" DCS_VERSION
-                       "</p>");
+                       "Detector Control System for ELITPC<br/>"
+                       "Client v" DCS_VERSION "</p>");
 }

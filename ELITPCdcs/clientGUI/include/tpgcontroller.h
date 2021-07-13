@@ -6,6 +6,7 @@ class tpg_controller : public opc_controller {
   public:
     tpg_controller(std::string OName, QObject *parent = 0);
     void callSetRelay(int nr, int enabled, double setpoint, double hysteresis);
+    void callSetStatus(int channel, bool isOn);
 };
 
 #endif  // TPG_CONTROLLER_H

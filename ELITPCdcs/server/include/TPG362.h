@@ -27,6 +27,7 @@ class TPG362 : public DCSGenericDevice {
     std::string setFormat(FORMAT format);
     std::string setGaugesStatus(STATUS s1 = STATUS::nochange,
                                 STATUS s2 = STATUS::nochange);
+    std::string setGaugeStatus(CH channel, STATUS status);
     std::string setUnits(UNIT unit);
     std::string setDisplayResolution(int r1 = 0, int r2 = 0);
     std::string setSwitchingFunction(SWITCHING_FUNCTION f, SWITCHING_STATUS s,

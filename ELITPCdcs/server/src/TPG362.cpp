@@ -46,10 +46,29 @@ std::string TPG362::setFormat(FORMAT format) {
     return sendWithEnquiry("FMT," + std::to_string(f));
 }
 
+#include <iostream>
 std::string TPG362::setGaugesStatus(STATUS s1, STATUS s2) {
+    std::cout<<static_cast<int>(s1)<<" "<<static_cast<int>(s2)<<std::endl;
     int S1 = static_cast<int>(s1);
     int S2 = static_cast<int>(s2);
     return sendWithEnquiry("SEN," + std::to_string(S1) + "," + std::to_string(S2));
+}
+
+std::string TPG362::setGaugeStatus(CH channel, STATUS status) {
+    switch(channel) {
+    case CH::ALL: {
+        return setGaugesStatus(status, status);
+    }
+    case CH::CH1: {
+        return setGaugesStatus(status, STATUS::nochange);
+    }
+    case CH::CH2: {
+        return setGaugesStatus(STATUS::nochange, status);
+    }
+    default:
+        break;
+    }
+    return "";
 }
 
 std::string TPG362::setUnits(UNIT unit) {

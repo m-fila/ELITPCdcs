@@ -39,6 +39,9 @@ void TPGWidget::updateStatus(UA_DataValue *data) {
             mStatus[i]->setText("");
         }
     }
+    for(size_t i = 0; i < 2; ++i) {
+        cStatusButton[i]->setEnabled(connectionState);
+    }
 }
 void TPGWidget::updateMeasurements(UA_DataValue *data) {
     UA_TPG362m measurements = *static_cast<UA_TPG362m *>(data->value.data);
@@ -48,6 +51,7 @@ void TPGWidget::updateMeasurements(UA_DataValue *data) {
         for(int i = 0; i != 2; ++i) {
             TPG362codes::Status stat =
                 static_cast<TPG362codes::Status>(measurements.status[i]);
+            cStatusButton[i]->setState(stat != TPG362codes::Status::SensorOff);
             val = QString::fromStdString(TPG362codes::statusToString.at(stat));
             mStatus[i]->setText(val);
             if(stat == TPG362codes::Status::NoSensor ||
@@ -86,6 +90,13 @@ void TPGWidget::updateRelay(UA_DataValue *data) {
 void TPGWidget::changeRelay(int nr, RelayStruct values) {
     dynamic_cast<tpg_controller *>(controller)
         ->callSetRelay(nr, values.enabled, values.setpoint, values.hysteresis);
+}
+
+void TPGWidget::changeStatus(bool status) {
+    for(int i = 0; i != 2; ++i) {
+        if(sender() == cStatusButton[i])
+            dynamic_cast<tpg_controller *>(controller)->callSetStatus(i + 1, status);
+    }
 }
 
 void TPGWidget::createLayout() {
@@ -165,19 +176,31 @@ void TPGWidget::createCTab() {
     QVBoxLayout *cLayout = new QVBoxLayout();
     cWidget->setLayout(cLayout);
     for(int i = 0; i != 2; ++i) {
-        QGroupBox *cBox = new QGroupBox(("CH " + std::to_string(i + 1)).c_str());
+        auto *cBox = new QGroupBox(("CH " + std::to_string(i + 1)).c_str());
         cLayout->addWidget(cBox);
-        QHBoxLayout *chLayout = new QHBoxLayout();
+        auto *chLayout = new QVBoxLayout;
+        auto *nameLayout = new QHBoxLayout;
         cBox->setLayout(chLayout);
-        QLabel *clabel = new QLabel("Custom name:");
+        chLayout->addLayout(nameLayout);
+        auto *clabel = new QLabel("Custom name:");
         cNameLabel[i] = new QLabel("...");
         cNameButton[i] = new QPushButton("Change name");
         connect(cNameButton[i], SIGNAL(pressed()), this, SLOT(changeNamePressed()));
-        chLayout->addWidget(clabel);
-        chLayout->addWidget(cNameLabel[i]);
-        chLayout->addWidget(cNameButton[i]);
+        nameLayout->addWidget(clabel);
+        nameLayout->addWidget(cNameLabel[i]);
+        nameLayout->addWidget(cNameButton[i]);
+        auto *statusLayout = new QHBoxLayout;
+        chLayout->addLayout(statusLayout);
+        statusLayout->addWidget(new QLabel("Sensor:"));
+        cStatusButton[i] =
+            new DCSTwoStateButton(Qt::Horizontal, DCSTwoStateButton::Display::Label);
+
+        statusLayout->addWidget(cStatusButton[i]);
+        connect(cStatusButton[i], SIGNAL(clicked(bool)), this, SLOT(changeStatus(bool)));
+        cLayout->addStretch();
     }
 }
+
 void TPGWidget::createHTab() {
     QWidget *hWidget = new QWidget();
     tab->addTab(hWidget, "Plots");
