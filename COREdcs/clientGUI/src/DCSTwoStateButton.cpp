@@ -1,7 +1,7 @@
 #include "DCSTwoStateButton.h"
+#include <QFontMetrics>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QFontMetrics>
 DCSTwoStateButton::DCSTwoStateButton(QString onLabel, QString offLabel,
                                      Qt::Orientation orientation, Display display,
                                      QWidget *parent)
@@ -23,11 +23,13 @@ DCSTwoStateButton::DCSTwoStateButton(QString onLabel, QString offLabel,
         layout->addWidget(led);
     }
     if(display == Display::Label) {
+        layout->addStretch();
         label = new QLabel();
         QFontMetrics metrics(label->font());
-        label->setFixedWidth( std::max(metrics.horizontalAdvance(onLabel), metrics.horizontalAdvance(offLabel)));
-        label->setAlignment(Qt::AlignHCenter);
+        label->setFixedWidth(std::max(metrics.horizontalAdvance(onLabel),
+                                      metrics.horizontalAdvance(offLabel)));
         layout->addWidget(label);
+        layout->addStretch();
     }
 
     layout->addWidget(&onButton);

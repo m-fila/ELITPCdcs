@@ -20,6 +20,10 @@ void DCSTPG362Controller::addChildren(const Options &options) {
                          {"Setpoint", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]},
                          {"Hysteresis", "Current units", &UA_TYPES[UA_TYPES_DOUBLE]}},
                         {}, &DCSTPG362Controller::setRelay, this);
+    addControllerMethod("setstatus", "Sets gauge status",
+                        {{"Gauge number", "1-2", &UA_TYPES[UA_TYPES_UINT32]},
+                         {"Status", "ON/OFF", &UA_TYPES[UA_TYPES_BOOLEAN]}},
+                        {}, &DCSTPG362Controller::setStatus, this);
     addVariable("sensorType", &UA_TYPES[UA_TYPES_STRING], true);
 }
 
@@ -160,6 +164,14 @@ void DCSTPG362Controller::setRelay(const UA_Variant *input, UA_Variant *output) 
     device.setSwitchingFunction(static_cast<TPG362::SWITCHING_FUNCTION>(function),
                                 static_cast<TPG362::SWITCHING_STATUS>(assignment),
                                 setpoint, hysteresis);
+}
+
+void DCSTPG362Controller::setStatus(const UA_Variant *input, UA_Variant *output) {
+    auto channel = *static_cast<UA_UInt32 *>(input[0].data);
+    auto status = *static_cast<UA_Boolean *>(input[1].data);
+    device.setGaugeStatus(static_cast<TPG362::CH>(channel),
+                          status ? TPG362::STATUS::on : TPG362::STATUS::off);
+    variables.at("measurements")->setValue(getMeasurements());
 }
 
 void DCSTPG362Controller::postConnect() {
