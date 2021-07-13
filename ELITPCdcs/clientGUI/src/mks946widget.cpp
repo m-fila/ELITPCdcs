@@ -70,6 +70,8 @@ void MKS946Widget::updateStatus(UA_DataValue *data) {
     zeroMFCButton->setEnabled(connectionState);
     PIDStateButtonOFF->setEnabled(connectionState && PIDStateLabel->text() == "ON");
     PIDStateButtonON->setEnabled(connectionState && PIDStateLabel->text() == "OFF");
+
+    interlockStatus.setEnabled(connectionState);
 }
 
 void MKS946Widget::updateMeasurements(UA_DataValue *data) {
@@ -83,7 +85,8 @@ void MKS946Widget::updateMeasurements(UA_DataValue *data) {
         return QString::fromStdString(s);
     };
 
-    mVacuum->display(f(measurements.pressure, measurements.pressure > 0 ? 3 : 2));
+    // mVacuum->display(f(measurements.pressure, measurements.pressure > 0 ? 3 : 2));
+    mVacuum->display(f(measurements.pressure, 2));
     mFlow->display(f(measurements.flow, 2));
 }
 
@@ -155,6 +158,7 @@ void MKS946Widget::createLayout() {
     createCTab();
     createPIDTab();
     createRTab();
+    createITab();
     mainLayout->addStretch();
     mainLayout->addWidget(&deviceInfoLabel);
 
@@ -321,6 +325,7 @@ void MKS946Widget::createRTab() {
                 SLOT(changeRelay(int, RelayStruct)));
         relayWidgets.push_back(relayPanel);
     }
+    rLayout->addStretch();
 }
 
 void MKS946Widget::drawLine() {
@@ -497,4 +502,94 @@ void MKS946Widget::setPIDState() {
         dynamic_cast<MKS946_controller *>(controller)->callSetPIDState(true);
     } else if(obj == PIDStateButtonOFF)
         dynamic_cast<MKS946_controller *>(controller)->callSetPIDState(false);
+}
+
+void MKS946Widget::createITab() {
+    QWidget *widget = new QWidget();
+    tab->addTab(widget, "Software\ninterlock");
+    QVBoxLayout *layout = new QVBoxLayout();
+    widget->setLayout(layout);
+    auto *interlockBox = new QGroupBox("Anti-explosion software interlock");
+    layout->addWidget(interlockBox);
+    layout->addStretch();
+    auto *interlockLayout = new QVBoxLayout();
+    interlockBox->setLayout(interlockLayout);
+    interlockLayout->addWidget(new QLabel("Source: Baratron"));
+    interlockLayout->addWidget(new QLabel("Target: MFC"));
+    interlockLayout->addSpacing(10);
+    auto *firstRow = new QHBoxLayout();
+    interlockLayout->addLayout(firstRow);
+    auto *secondRow = new QHBoxLayout();
+    interlockLayout->addLayout(secondRow);
+    auto *thirdRow = new QHBoxLayout();
+    interlockLayout->addLayout(thirdRow);
+
+    setInterlockOn.setText("ON");
+    setInterlockOff.setText("OFF");
+    setInterlockValue.setText("Set value");
+    firstRow->addWidget(new QLabel("Status:"));
+    firstRow->addWidget(&interlockStatus);
+    firstRow->addStretch();
+
+    secondRow->addWidget(new QLabel("Enabled:"));
+    secondRow->addWidget(&interlockEnabled);
+    secondRow->addStretch();
+    secondRow->addWidget(&setInterlockOn);
+    secondRow->addWidget(&setInterlockOff);
+    secondRow->addStretch();
+
+    thirdRow->addWidget(new QLabel("Limit:"));
+    thirdRow->addWidget(&interlockValue);
+    thirdRow->addWidget(new QLabel("mbar"));
+    thirdRow->addStretch();
+    thirdRow->addWidget(&setInterlockValue);
+    thirdRow->addStretch();
+
+    connect(&setInterlockOff, SIGNAL(pressed()), this, SLOT(setInterlockEnabled()));
+    connect(&setInterlockOn, SIGNAL(pressed()), this, SLOT(setInterlockEnabled()));
+    connect(&setInterlockValue, SIGNAL(pressed()), this, SLOT(setInterlockLimit()));
+    auto *moniteredItem = controller->addMonitoredItem("interlockLimit");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &MKS946Widget::updateSoftwareInterlockValue);
+    moniteredItem = controller->addMonitoredItem("interlockState");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &MKS946Widget::updateSoftwareInterlockStatus);
+    moniteredItem = controller->addMonitoredItem("interlockEnabled");
+    connect(moniteredItem, &DCSMonitoredItem::valueChanged, this,
+            &MKS946Widget::updateSoftwareInterlockEnabled);
+}
+
+void MKS946Widget::updateSoftwareInterlockStatus(UA_DataValue *data) {
+    auto status = *static_cast<bool *>(data->value.data);
+    interlockStatus.setText(status ? "ON" : "OFF");
+}
+void MKS946Widget::updateSoftwareInterlockEnabled(UA_DataValue *data) {
+    auto enabled = *static_cast<bool *>(data->value.data);
+    interlockEnabled.setText(enabled ? "ENABLE" : "DISABLE");
+    setInterlockOff.setEnabled(enabled);
+    setInterlockOn.setEnabled(!enabled);
+}
+
+void MKS946Widget::updateSoftwareInterlockValue(UA_DataValue *data) {
+    auto value = *static_cast<double *>(data->value.data);
+    interlockValue.setText(QString::number(value));
+}
+
+void MKS946Widget::setInterlockEnabled() {
+    bool enabled = false;
+    if(sender() == &setInterlockOn) {
+        enabled = true;
+    }
+    dynamic_cast<MKS946_controller *>(controller)
+        ->callConfigureInterlock(enabled, interlockValue.text().toDouble());
+}
+void MKS946Widget::setInterlockLimit() {
+    bool ok;
+    auto value =
+        QInputDialog::getDouble(this, tr("QInputDialog::getText()"), tr("User name:"),
+                                interlockValue.text().toDouble(), 0, 2147483647, 1, &ok);
+    if(ok) {
+        dynamic_cast<MKS946_controller *>(controller)
+            ->callConfigureInterlock(interlockEnabled.text() == "ENABLE", value);
+    }
 }

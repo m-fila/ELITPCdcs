@@ -1,12 +1,5 @@
-- fixed MKS946 display baratron pressure
-- added trace list widget to hv  
-- added hv status in front panel
-- fixed hw widget voltage limits
-- fixed MKS946 zero MFC
-- fixed MKS936 setting PID in PID control mode
-- fixed interlock direction GUI
-- fixes in interlock and PID GUI
-- fixed hv precision
-- automated release creation
-- added recovery file
-- added settable log level
+
+- fixed displayed precision in gas system guis,
+- added displaying sensors in MKS910,
+- fixed setting ramp up/down values in hv gui,
+- added software interlock with gui

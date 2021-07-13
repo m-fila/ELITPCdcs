@@ -14,9 +14,11 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QStackedWidget>
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include <vector>
+
 class MKS910Widget : public AbstractWidget {
     Q_OBJECT
 
@@ -52,6 +54,9 @@ class MKS910Widget : public AbstractWidget {
     QLabel *cNameLabel;
     QString cCustomName;
     QComboBox *unitsBox;
+    QLCDNumber combined;
+    QLCDNumber pirani;
+    QLCDNumber piezo;
 
     void createLayout();
     void drawLine();

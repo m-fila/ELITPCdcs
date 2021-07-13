@@ -187,9 +187,9 @@ void HVpsuWidget::updateConfiguration(UA_DataValue *data) {
             val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
             tabCHxVset[i]->setText(val);
-            val.sprintf("%3.1lf", channelStatus.rup[i]);
+            val = QString::number(channelStatus.rup[i]);
             tabCHxRUP[i]->setText(val);
-            val.sprintf("%3.1lf", channelStatus.rdown[i]);
+            val = QString::number(channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
             val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
             tabCHxVMAX[i]->setText(val);
@@ -338,12 +338,10 @@ void HVpsuWidget::setRUPPressed() {
             else
                 label = tr("CH %1  \"%2\"  [Volts/s]:").arg(i).arg(CHxCustomName[i]);
 
-            double d =
-                QInputDialog::getDouble(this, tr("Set CH %1 RUP").arg(i), label,
-                                        tabCHxRUP[i]->text().toDouble(), 0, 1000, 1, &ok);
+            auto d = QInputDialog::getInt(this, tr("Set CH %1 RUP").arg(i), label,
+                                          tabCHxRUP[i]->text().toInt(), 0, 1000, 1, &ok);
             if(ok) {
-                QString val;
-                val.sprintf("%6.1lf", d);
+                auto val = QString::number(d);
                 tabCHxRUP[i]->setText(val);
                 dynamic_cast<hv_controller *>(controller)->callSetRampUp(i, d);
             }
@@ -362,12 +360,10 @@ void HVpsuWidget::setRDWNPressed() {
             else
                 label = tr("CH %1  \"%2\"  [Volts/s]:").arg(i).arg(CHxCustomName[i]);
 
-            double d = QInputDialog::getDouble(this, tr("Set CH %1 RDWN").arg(i), label,
-                                               tabCHxRDWN[i]->text().toDouble(), 0, 1000,
-                                               1, &ok);
+            auto d = QInputDialog::getInt(this, tr("Set CH %1 RDWN").arg(i), label,
+                                          tabCHxRDWN[i]->text().toInt(), 0, 1000, 1, &ok);
             if(ok) {
-                QString val;
-                val.sprintf("%6.1lf", d);
+                auto val = QString::number(d);
                 tabCHxRDWN[i]->setText(val);
                 dynamic_cast<hv_controller *>(controller)->callSetRampDown(i, d);
             }
@@ -513,9 +509,9 @@ void HVpsuWidget::createAllChannelsTab() {
         hbox->addWidget(VsetLabel);
 
         allTabVset[i] = new QLabel("");
-        allTabVset[i]->setFixedWidth(50);
+        allTabVset[i]->setFixedWidth(80);
         QFont font = allTabVset[i]->font();
-        // font.setPointSize(72);
+        font.setPointSize(14);
         font.setBold(true);
         allTabVset[i]->setFont(font);
         allTabVset[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -547,6 +543,9 @@ void HVpsuWidget::createAllChannelsTab() {
         allTabImon[i] = new QLabel("");
         allTabImon[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         val.sprintf("%7.3lf", 0.0);
+        auto iFont = allTabImon[i]->font();
+        iFont.setPointSize(14);
+        allTabImon[i]->setFont(iFont);
         allTabImon[i]->setText(val);
         Igrid->addWidget(allTabImon[i], 0, 1, 1, 1);
 
@@ -668,9 +667,9 @@ void HVpsuWidget::createChannelTabs() {
         VsetLabel = new QLabel("VSET [V]:");
         qhbMeasurements->addWidget(VsetLabel);
         tabCHxVset[i] = new QLabel("");
-        tabCHxVset[i]->setFixedWidth(50);
+        tabCHxVset[i]->setFixedWidth(80);
         QFont font = tabCHxVset[i]->font();
-        // font.setPointSize(72);
+        font.setPointSize(14);
         font.setBold(true);
         tabCHxVset[i]->setFont(font);
         tabCHxVset[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -692,6 +691,9 @@ void HVpsuWidget::createChannelTabs() {
         Igrid->addWidget(ImonLabel, 0, 0, 1, 1);
         tabCHxImon[i] = new QLabel("");
         tabCHxImon[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        auto iFont = tabCHxImon[i]->font();
+        iFont.setPointSize(14);
+        tabCHxImon[i]->setFont(iFont);
         val.sprintf("%7.3lf", 0.0);
         tabCHxImon[i]->setText(val);
         Igrid->addWidget(tabCHxImon[i], 0, 1, 1, 1);
@@ -758,8 +760,7 @@ void HVpsuWidget::createChannelTabs() {
         fontRUP.setBold(true);
         tabCHxRUP[i]->setFont(fontRUP);
         tabCHxRUP[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QString valRUP;
-        valRUP.sprintf("%6.1lf", 0.0);
+        auto valRUP = QString::number(0);
         tabCHxRUP[i]->setText(valRUP);
         qhbSettings1->addWidget(tabCHxRUP[i]);
         tabCHxRUP[i]->setEnabled(true);
@@ -808,8 +809,7 @@ void HVpsuWidget::createChannelTabs() {
         fontRDWN.setBold(true);
         tabCHxRDWN[i]->setFont(fontRDWN);
         tabCHxRDWN[i]->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        QString valRDWN;
-        valRDWN.sprintf("%6.1lf", 0.0);
+        auto valRDWN = QString::number(0);
         tabCHxRDWN[i]->setText(valRDWN);
         qhbSettings2->addWidget(tabCHxRDWN[i]);
         tabCHxRDWN[i]->setEnabled(true);
@@ -952,9 +952,9 @@ void N1471Widget::updateConfiguration(UA_DataValue *data) {
             val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
             tabCHxVset[i]->setText(val);
-            val.sprintf("%3.1lf", channelStatus.rup[i]);
+            val = QString::number(channelStatus.rup[i]);
             tabCHxRUP[i]->setText(val);
-            val.sprintf("%3.1lf", channelStatus.rdown[i]);
+            val = QString::number(channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
             val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
             tabCHxVMAX[i]->setText(val);
@@ -1041,9 +1041,9 @@ void DT1470Widget::updateConfiguration(UA_DataValue *data) {
             val.sprintf("%6.1lf", channelStatus.voltageSet[i]);
             allTabVset[i]->setText(val);
             tabCHxVset[i]->setText(val);
-            val.sprintf("%3.1lf", channelStatus.rup[i]);
+            val = QString::number(channelStatus.rup[i]);
             tabCHxRUP[i]->setText(val);
-            val.sprintf("%3.1lf", channelStatus.rdown[i]);
+            val = QString::number(channelStatus.rdown[i]);
             tabCHxRDWN[i]->setText(val);
             val.sprintf("%4.1lf", channelStatus.voltageMax[i]);
             tabCHxVMAX[i]->setText(val);

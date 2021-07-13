@@ -22,6 +22,10 @@ class DCSMKS946Controller : public DCSDeviceController<MKS946>,
     void configurePressure(const UA_Variant *input, UA_Variant *output);
     void setPIDState(const UA_Variant *input, UA_Variant *output);
 
+    void addInterlock(const Options &options);
+    void configureInterlock(const UA_Variant *input, UA_Variant *output);
+    bool interlockAction();
+
     void postConnect() override;
 
     UA_MKS946m getMeasurements();

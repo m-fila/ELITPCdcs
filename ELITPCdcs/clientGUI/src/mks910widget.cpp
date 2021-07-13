@@ -29,24 +29,29 @@ void MKS910Widget::updateStatus(UA_DataValue *data) {
     AbstractWidget::updateStatus(data);
     connectionState = *static_cast<bool *>(data->value.data);
     if(!connectionState) {
-        mVacuum->display(0);
+        combined.display(0);
+        piezo.display(0);
+        pirani.display(0);
         mTemp->setText("");
         mStatus->setText("");
     }
 }
 void MKS910Widget::updateMeasurements(UA_DataValue *data) {
     UA_MKS910m measurements = *static_cast<UA_MKS910m *>(data->value.data);
-    QString val;
-    std::string s;
-    std::ostringstream os;
-    os << std::scientific << std::setprecision(5) << std::uppercase
-       << measurements.combined;
-    s = os.str();
-    s.insert(s.size() - 4, " ");
-    s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
-    val = QString::fromStdString(s);
-    mVacuum->display(val);
+    auto format = [](QLCDNumber &lcd, double value, size_t precision) {
+        std::string s;
+        std::ostringstream os;
+        os << std::scientific << std::setprecision(precision) << std::uppercase << value;
+        s = os.str();
+        s.insert(s.size() - 4, " ");
+        s.erase(std::remove(s.begin(), s.end(), '+'), s.end());
+        lcd.display(QString::fromStdString(s));
+    };
+    format(combined, measurements.combined, 3);
+    format(pirani, measurements.pirani, 2);
+    format(piezo, measurements.piezo, 2);
 
+    QString val;
     MKS910codes::Units units = static_cast<MKS910codes::Units>(measurements.units);
     val = QString::fromStdString(MKS910codes::unitsToString.at(units)).toLower();
     mUnitLabel->setText(val);
@@ -59,7 +64,7 @@ void MKS910Widget::updateMeasurements(UA_DataValue *data) {
     mStatus->setText(val);
     unitsBox->setCurrentIndex(static_cast<int>(units));
 
-    val.sprintf("%2.1f ± 3 °C", measurements.temperature);
+    val.sprintf("%2.1f Â± 3 Â°C", measurements.temperature);
     mTemp->setText(val);
 }
 
@@ -106,6 +111,7 @@ void MKS910Widget::createMTab() {
     mWidget->setLayout(mLayout);
     // mainLayout->addStretch();
     mBox = new QGroupBox("Pressure");
+    mLayout->addWidget(mBox);
     QVBoxLayout *mvLayout = new QVBoxLayout();
     mBox->setLayout(mvLayout);
     QHBoxLayout *mhStatusLayout = new QHBoxLayout();
@@ -124,30 +130,40 @@ void MKS910Widget::createMTab() {
     mvLayout->addLayout(mhTempLayout);
     auto mTempLabel = new QLabel("Temperature: ");
     mTempLabel->setAlignment(Qt::AlignLeft);
-    mTemp = new QLabel("°C");
+    mTemp = new QLabel("Â°C");
     mTemp->setAlignment(Qt::AlignLeft);
     mhTempLayout->addWidget(mTempLabel);
     mhTempLayout->addWidget(mTemp);
 
     QHBoxLayout *mhUnitLayout = new QHBoxLayout();
+    auto *sensorCombo = new QComboBox();
     mvLayout->addLayout(mhUnitLayout);
     mUnitLabel = new QLabel("mbar");
-    mUnitLabel->setAlignment(Qt::AlignRight);
+    mhUnitLayout->addWidget(sensorCombo);
+    mhUnitLayout->addStretch();
     mhUnitLayout->addWidget(mUnitLabel);
 
     QHBoxLayout *mhVacuumLayout = new QHBoxLayout();
     mvLayout->addLayout(mhVacuumLayout);
-    mVacuum = new QLCDNumber();
-    mVacuum->setDigitCount(12);
-    mVacuum->setSegmentStyle(QLCDNumber::Flat);
-    mVacuum->setMinimumSize(QSize(200, 50));
-    QPalette palette = mVacuum->palette();
-    palette.setColor(QPalette::WindowText, Qt::darkGreen);
-    mVacuum->setPalette(palette);
-    mVacuum->display(0.00);
-    mhVacuumLayout->addWidget(mVacuum);
 
-    mLayout->addWidget(mBox);
+    auto *stackedDisplay = new QStackedWidget();
+    auto format = [sensorCombo, stackedDisplay](QLCDNumber &lcd, QString label) {
+        sensorCombo->addItem(label);
+        lcd.setDigitCount(12);
+        lcd.setSegmentStyle(QLCDNumber::Flat);
+        lcd.setMinimumSize(QSize(200, 50));
+        auto lcdPalette = lcd.palette();
+        lcdPalette.setColor(QPalette::WindowText, Qt::darkGreen);
+        lcd.setPalette(lcdPalette);
+        lcd.display(0.0);
+        stackedDisplay->addWidget(&lcd);
+    };
+    format(combined, "Combined");
+    format(piezo, "Piezo");
+    format(pirani, "Pirani");
+    connect(sensorCombo, SIGNAL(currentIndexChanged(int)), stackedDisplay,
+            SLOT(setCurrentIndex(int)));
+    mhVacuumLayout->addWidget(stackedDisplay);
     mLayout->addStretch();
 }
 void MKS910Widget::createCTab() {

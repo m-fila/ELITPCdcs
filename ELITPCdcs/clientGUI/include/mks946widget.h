@@ -32,6 +32,9 @@ class MKS946Widget : public AbstractWidget {
     void updateRelay(UA_DataValue *data);
     void updatePID(UA_DataValue *data);
     void updatePIDState(UA_DataValue *data);
+    void updateSoftwareInterlockValue(UA_DataValue *data);
+    void updateSoftwareInterlockStatus(UA_DataValue *data);
+    void updateSoftwareInterlockEnabled(UA_DataValue *data);
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
@@ -41,6 +44,8 @@ class MKS946Widget : public AbstractWidget {
     void showPressureDialog();
     void zeroMFC();
     void setPIDState();
+    void setInterlockEnabled();
+    void setInterlockLimit();
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
@@ -86,6 +91,13 @@ class MKS946Widget : public AbstractWidget {
     QLabel PIDGain;
     QPushButton *PIDButton;
 
+    QLabel interlockValue;
+    QLabel interlockEnabled;
+    QLabel interlockStatus;
+    QPushButton setInterlockValue;
+    QPushButton setInterlockOn;
+    QPushButton setInterlockOff;
+
     QPushButton *PIDStateButtonON;
     QPushButton *PIDStateButtonOFF;
     QLabel *PIDStateLabel;
@@ -98,6 +110,7 @@ class MKS946Widget : public AbstractWidget {
     void createCTab();
     void createPIDTab();
     void createRTab();
+    void createITab();
     void setChannelName();
     void connectSignals();
     void loadConfig();
