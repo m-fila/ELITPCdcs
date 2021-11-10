@@ -64,7 +64,7 @@ void MKS910Widget::updateMeasurements(UA_DataValue *data) {
     mStatus->setText(val);
     unitsBox->setCurrentIndex(static_cast<int>(units));
 
-    val.sprintf("%2.1f Â± 3 Â°C", measurements.temperature);
+    val.sprintf("%2.1f ± 3 °C", measurements.temperature);
     mTemp->setText(val);
 }
 
