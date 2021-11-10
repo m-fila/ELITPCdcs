@@ -26,8 +26,14 @@ DCSTwoStateButton::DCSTwoStateButton(QString onLabel, QString offLabel,
         layout->addStretch();
         label = new QLabel();
         QFontMetrics metrics(label->font());
-        label->setFixedWidth(std::max(metrics.horizontalAdvance(onLabel),
-                                      metrics.horizontalAdvance(offLabel)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+        auto onLabelSize = metrics.horizontalAdvance(onLabel);
+        auto offLabelSize = metrics.horizontalAdvance(offLabel);
+#else
+        auto onLabelSize = metrics.boundingRect(onLabel).size().width();
+        auto offLabelSize = metrics.boundingRect(offLabel).size().width();
+#endif
+        label->setFixedWidth(std::max(onLabelSize, offLabelSize));
         layout->addWidget(label);
         layout->addStretch();
     }

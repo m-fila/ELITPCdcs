@@ -1,9 +1,9 @@
 #ifndef DCS_TWO_STATE_BUTTON_H
 #define DCS_TWO_STATE_BUTTON_H
+#include "kled.h"
 #include <QLabel>
 #include <QPushButton>
 #include <QString>
-#include "kled.h"
 class DCSTwoStateButton : public QWidget {
     Q_OBJECT
     Q_PROPERTY(bool state MEMBER state READ getState WRITE setState NOTIFY stateChanged)
@@ -21,8 +21,8 @@ class DCSTwoStateButton : public QWidget {
     QPushButton offButton;
     bool state = false;
     void update();
-    QLabel *label=nullptr;
-    KLed *led=nullptr;
+    QLabel *label = nullptr;
+    KLed *led = nullptr;
   signals:
     void onClicked();
     void offClicked();
