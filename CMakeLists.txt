@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(
   dcs
-  VERSION 1.8.0
+  VERSION 1.8.3
   LANGUAGES CXX C)
 message("\nStarted CMake for ${PROJECT_NAME} v${PROJECT_VERSION}")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
