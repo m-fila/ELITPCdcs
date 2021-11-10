@@ -16,7 +16,7 @@ void tpg_controller::callSetRelay(int nr, int enabled, double setpoint,
     UA_Variant_clear(input);
 }
 
-void tpg_controller::callSetStatus(int channel, bool isOn){
+void tpg_controller::callSetStatus(int channel, bool isOn) {
     UA_Variant input[2];
     UA_Variant_init(input);
     UA_Variant_setScalarCopy(&input[0], &channel, &UA_TYPES[UA_TYPES_UINT32]);

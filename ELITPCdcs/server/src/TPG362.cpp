@@ -46,9 +46,7 @@ std::string TPG362::setFormat(FORMAT format) {
     return sendWithEnquiry("FMT," + std::to_string(f));
 }
 
-#include <iostream>
 std::string TPG362::setGaugesStatus(STATUS s1, STATUS s2) {
-    std::cout<<static_cast<int>(s1)<<" "<<static_cast<int>(s2)<<std::endl;
     int S1 = static_cast<int>(s1);
     int S2 = static_cast<int>(s2);
     return sendWithEnquiry("SEN," + std::to_string(S1) + "," + std::to_string(S2));

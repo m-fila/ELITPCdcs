@@ -1,11 +1,11 @@
 #include "DCSArt.h"
+#include "ProjectVersion.h"
 #include "configloader.h"
 #include "mainwindow.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <iostream>
 #include <signal.h>
-#include "ProjectVersion.h"
 using json = nlohmann::json;
 void stopHandler(int sig) {
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND, "received ctrl-c");
