@@ -158,7 +158,7 @@ void MainWindow::connectionStatusChanged(bool isConnected) {
 
 void MainWindow::buildMenu() {
     auto *helpMenu = menuBar()->addMenu(tr("&Help"));
-    auto *aboutAct = helpMenu->addAction(tr("&About"), this, &MainWindow::aboutAction);
+    auto *aboutAct = helpMenu->addAction(tr("&About"), this, SLOT(aboutAction()));
     aboutAct->setStatusTip(tr("Show about box"));
 }
 
