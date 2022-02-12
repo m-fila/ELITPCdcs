@@ -1,4 +1,4 @@
-
+- alternating colors in hv gui channel list,
 - fixed displayed precision in gas system guis,
 - added displaying sensors in MKS910,
 - fixed setting ramp up/down values in hv gui,
