@@ -443,13 +443,15 @@ void HVpsuWidget::createAllChannelsTab() {
     for(i = 0; i < channelsNumber + 1; i++) {
         // Generate GroupBoxes
         allTabCHx[i] = new QGroupBox();
-
         // allChannelsTabCHx[i]->setStyleSheet("QGroupBox {border: 1px solid
         // silver;margin-top: 6px;font: bold;} QGroupBox::title {subcontrol-origin:
         // margin;left: 7px; padding: 0px 5px 0px 5px;}");
 
         // define new layout for Groupbox and add customized controls
         QHBoxLayout *hbox = new QHBoxLayout();
+        if(i % 2) {
+            allTabCHx[i]->setStyleSheet("QGroupBox{background-color : transparent;}");
+        }
         // add customized controls to GroupBox layout
         // begin LED
         allTabLed[i] = new KLed();
