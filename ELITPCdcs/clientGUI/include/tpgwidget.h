@@ -2,6 +2,7 @@
 #define TPGWIDGET_H
 
 #include "DCSRelayWidget.h"
+#include "DCSTwoStateButton.h"
 #include "abstractwidget.h"
 #include "open62541/types_elitpcnodeset_generated.h"
 #include "tpg362codes.h"
@@ -16,6 +17,7 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include <vector>
+
 class TPGWidget : public AbstractWidget {
     Q_OBJECT
 
@@ -33,6 +35,7 @@ class TPGWidget : public AbstractWidget {
 
     void changeNamePressed();
     void changeRelay(int nr, RelayStruct values);
+    void changeStatus(bool status);
 
   private:
     std::vector<DCSRelayWidget *> relayWidgets;
@@ -55,6 +58,7 @@ class TPGWidget : public AbstractWidget {
     QPushButton *cNameButton[2];
     QLabel *cNameLabel[2];
     QString cCustomName[2];
+    DCSTwoStateButton *cStatusButton[2];
 
     void createLayout();
     void drawLine();

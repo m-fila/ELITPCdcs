@@ -1,4 +1,5 @@
 #include "DCSArt.h"
+#include "ProjectVersion.h"
 #include "configloader.h"
 #include "mainwindow.h"
 #include <QApplication>
@@ -14,7 +15,7 @@ void stopHandler(int sig) {
 int main(int argc, char *argv[]) {
     signal(SIGINT, stopHandler);
     signal(SIGTERM, stopHandler);
-    std::cout << DCSArt::ascii << std::endl;
+    std::cout << DCSArt::ascii << DCS_VERSION << std::endl;
 
     json config = ConfigLoader::getMasterConfig(argc, argv);
 

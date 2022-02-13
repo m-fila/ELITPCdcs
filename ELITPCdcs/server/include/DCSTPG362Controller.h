@@ -16,6 +16,7 @@ class DCSTPG362Controller : public DCSDeviceController<TPG362>,
     void addChildren(const Options &options) override;
     void postConnect() override;
     void setRelay(const UA_Variant *, UA_Variant *);
+    void setStatus(const UA_Variant *, UA_Variant *);
 
     UA_TPG362m getMeasurements();
     UA_TPG362c getConfiguration();

@@ -43,8 +43,12 @@ class MainWindow : public QMainWindow {
     void loadWidgets(json &items);
     void connectSignals();
     void buildStateBox();
+    void buildMenu();
+
   private slots:
     void connectionStatusChanged(bool);
+    void aboutAction();
+
   signals:
     void closeConnectionAlert();
 };

@@ -48,6 +48,8 @@ class DCSServer {
 
     template <class T> T &addHistoryBackend(std::string name);
     void setDescription(std::string appName, std::string appURI, std::string productURI);
+    void setBuildInfo(std::string productUri, std::string productName,
+                      std::string manufacturerName, std::string softwareVersion);
 
     void setProfileDir(const std::string &path) {
         profileDir = path;

@@ -57,6 +57,11 @@ int main(int argc, char *argv[]) {
         server.addObject(type, id, i);
     }
 
+    server.setDescription(config.at("server").value("id", "dcs"),
+                          "urn:DCS.server.application", "http://fuw.edu.pl/~mfila/dcs");
+    server.setBuildInfo("http://fuw.edu.pl/~mfila/dcs", "ELITPC dcs server", "ELITPC",
+                        DCS_VERSION);
+
     server.run();
 
     return 0;

@@ -15,3 +15,13 @@ void tpg_controller::callSetRelay(int nr, int enabled, double setpoint,
                    nullptr);
     UA_Variant_clear(input);
 }
+
+void tpg_controller::callSetStatus(int channel, bool isOn) {
+    UA_Variant input[2];
+    UA_Variant_init(input);
+    UA_Variant_setScalarCopy(&input[0], &channel, &UA_TYPES[UA_TYPES_UINT32]);
+    UA_Variant_setScalarCopy(&input[1], &isOn, &UA_TYPES[UA_TYPES_BOOLEAN]);
+    UA_Client_call(client, ObjectNodeId, browsedIds["setstatus"], 2, input, nullptr,
+                   nullptr);
+    UA_Variant_clear(input);
+}

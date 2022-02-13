@@ -52,6 +52,23 @@ std::string TPG362::setGaugesStatus(STATUS s1, STATUS s2) {
     return sendWithEnquiry("SEN," + std::to_string(S1) + "," + std::to_string(S2));
 }
 
+std::string TPG362::setGaugeStatus(CH channel, STATUS status) {
+    switch(channel) {
+    case CH::ALL: {
+        return setGaugesStatus(status, status);
+    }
+    case CH::CH1: {
+        return setGaugesStatus(status, STATUS::nochange);
+    }
+    case CH::CH2: {
+        return setGaugesStatus(STATUS::nochange, status);
+    }
+    default:
+        break;
+    }
+    return "";
+}
+
 std::string TPG362::setUnits(UNIT unit) {
     int u = static_cast<int>(unit);
     return sendWithEnquiry("UNI," + std::to_string(u));
